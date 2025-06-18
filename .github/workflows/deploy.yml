@@ -1,0 +1,56 @@
+name: Deploy to Azure
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: '.nvmrc'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Generate Prisma client
+      run: npx prisma generate
+
+    - name: Build application
+      run: npm run build
+      env:
+        NEXT_PUBLIC_SITE_NAME: ${{ secrets.NEXT_PUBLIC_SITE_NAME }}
+        NEXT_PUBLIC_SITE_DESCRIPTION: ${{ secrets.NEXT_PUBLIC_SITE_DESCRIPTION }}
+        NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+        NEXT_PUBLIC_TWITTER_HANDLE: ${{ secrets.NEXT_PUBLIC_TWITTER_HANDLE }}
+        NEXT_PUBLIC_GITHUB_PROFILE: ${{ secrets.NEXT_PUBLIC_GITHUB_PROFILE }}
+        NEXT_PUBLIC_LINKEDIN_PROFILE: ${{ secrets.NEXT_PUBLIC_LINKEDIN_PROFILE }}
+
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v3
+      with:
+        app-name: ${{ secrets.AZURE_APP_NAME }}
+        slot-name: production
+        package: .
+
+    - name: Run database migrations
+      run: |
+        echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env.production
+        npx prisma migrate deploy
+      env:
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}

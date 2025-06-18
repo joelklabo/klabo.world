@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: '.nvmrc'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: make install
+
+    - name: Setup test environment
+      run: |
+        cp .env.example .env
+        echo "DATABASE_URL=file:./test.db" >> .env
+        echo "NEXTAUTH_SECRET=test-secret" >> .env
+        echo "GITHUB_USERNAME=test" >> .env
+
+    - name: Generate Prisma client
+      run: npx prisma generate
+
+    - name: Setup database
+      run: make db-setup
+
+    - name: Run TypeScript check
+      run: npx tsc --noEmit
+
+    - name: Run linting
+      run: npm run lint
+
+    - name: Run tests
+      run: make test
+
+    - name: Build application
+      run: make build
+
+    - name: Check for security vulnerabilities
+      run: npm audit --audit-level=high
+
+  dependency-review:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Dependency Review
+      uses: actions/dependency-review-action@v4
