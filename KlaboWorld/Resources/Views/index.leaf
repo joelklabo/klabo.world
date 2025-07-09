@@ -1,0 +1,236 @@
+#extend("base"):
+#export("head"):
+<style>
+    
+    /* Hover underline effect */
+    .hover-underline {
+        position: relative;
+        text-decoration: none;
+    }
+    
+    .hover-underline::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: currentColor;
+        transition: width 0.3s ease;
+    }
+    
+    .hover-underline:hover::after {
+        width: 100%;
+    }
+    
+    /* Card hover effect */
+    .card-hover {
+        transition: all 0.3s ease;
+    }
+    
+    .card-hover:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+    
+    
+    /* Compact app carousel styles */
+    .app-carousel {
+        display: flex;
+        gap: 1rem;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 0.5rem;
+    }
+    
+    .app-carousel::-webkit-scrollbar {
+        height: 6px;
+    }
+    
+    .app-carousel::-webkit-scrollbar-track {
+        background: #f3f4f6;
+        border-radius: 3px;
+    }
+    
+    .app-carousel::-webkit-scrollbar-thumb {
+        background: #d1d5db;
+        border-radius: 3px;
+    }
+    
+    .app-carousel::-webkit-scrollbar-thumb:hover {
+        background: #9ca3af;
+    }
+    
+    .app-card {
+        flex: 0 0 280px;
+        scroll-snap-align: start;
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.75rem;
+        padding: 1rem;
+        transition: all 0.2s ease;
+    }
+    
+    .app-card:hover {
+        border-color: #d1d5db;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    
+    .app-content {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+    
+    .app-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 0.75rem;
+        object-fit: cover;
+        flex-shrink: 0;
+    }
+    
+    .app-info {
+        flex: 1;
+        min-width: 0;
+    }
+    
+    .app-name {
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 0.25rem;
+        font-size: 1rem;
+    }
+    
+    .app-description {
+        font-size: 0.875rem;
+        color: #6b7280;
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    .app-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 0.75rem;
+        font-size: 0.75rem;
+    }
+    
+    .app-version {
+        color: #9ca3af;
+    }
+    
+    .app-arrow {
+        color: #6366f1;
+        transition: transform 0.2s ease;
+    }
+    
+    .app-card:hover .app-arrow {
+        transform: translateX(2px);
+    }
+    
+    @media (max-width: 640px) {
+        .app-card {
+            flex: 0 0 240px;
+        }
+    }
+</style>
+#endexport
+
+#export("body"):
+<div class="min-h-screen bg-gray-50">
+    
+    <!-- Latest Posts Section -->
+    <section class="py-20 px-6 bg-white">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex items-center justify-between mb-12">
+                <h2 class="text-3xl font-bold text-gray-900">Latest Articles</h2>
+                <a href="/posts" class="text-indigo-600 hover:text-indigo-700 font-medium hover-underline">
+                    View all →
+                </a>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                #if(count(recentPosts) > 0):
+                    #for(post in recentPosts):
+                    <article class="bg-white rounded-lg p-6 border border-gray-200 card-hover">
+                        <span class="text-sm text-gray-500">#date(post.date, "MMM d, yyyy")</span>
+                        <h3 class="text-lg font-semibold text-gray-900 mt-2 mb-3">
+                            <a href="/posts/#(post.slug)" class="hover:text-indigo-600 transition-colors">
+                                #(post.title)
+                            </a>
+                        </h3>
+                        <p class="text-gray-600 text-sm mb-4">#(post.summary)</p>
+                        #if(post.tags):
+                        <div class="flex flex-wrap gap-2">
+                            #for(tag in post.tags):
+                            <a href="/posts/tags/#(tag)" class="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded hover:bg-gray-200 transition-colors">
+                                #(tag)
+                            </a>
+                            #endfor
+                        </div>
+                        #endif
+                    </article>
+                    #endfor
+                #else:
+                    <article class="bg-white rounded-lg p-6 border border-gray-200">
+                        <span class="text-sm text-gray-500">No posts yet</span>
+                        <h3 class="text-lg font-semibold text-gray-900 mt-2 mb-3">Recent posts coming soon</h3>
+                        <p class="text-gray-600 text-sm">Check back for the latest articles on Swift, Vapor, and Bitcoin development.</p>
+                    </article>
+                #endif
+            </div>
+        </div>
+    </section>
+    
+    <!-- Apps Section -->
+    #if(count(apps) > 0):
+    <section class="py-16 px-6 bg-gray-50">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-2xl font-bold text-gray-900">My Apps</h2>
+                <a href="/apps" class="text-sm text-indigo-600 hover:text-indigo-700 font-medium">
+                    View all →
+                </a>
+            </div>
+            
+            <div class="flex gap-4 overflow-x-auto pb-2" style="scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;">
+                #for(app in apps):
+                <a href="/apps/#(app.slug)" class="block bg-white rounded-lg border border-gray-200 p-4 hover:border-gray-300 hover:shadow-md transition-all" style="flex: 0 0 280px; scroll-snap-align: start;">
+                    <div class="flex gap-3 items-start">
+                        #if(app.icon && app.icon != ""):
+                        <img src="#(app.icon)" alt="#(app.name)" class="w-12 h-12 rounded-lg object-cover flex-shrink-0">
+                        #else:
+                        <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-semibold flex-shrink-0">
+                            #(app.name.prefix(1))
+                        </div>
+                        #endif
+                        
+                        <div class="flex-1 min-w-0">
+                            <h3 class="font-semibold text-gray-900 mb-1">#(app.name)</h3>
+                            <p class="text-sm text-gray-600 line-clamp-2" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">#(app.fullDescription)</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
+                        <span class="text-xs text-gray-500">v#(app.version)</span>
+                        <svg width="16" height="16" class="text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </div>
+                </a>
+                #endfor
+            </div>
+        </div>
+    </section>
+    #endif
+    
+</div>
+#endexport
+#endextend

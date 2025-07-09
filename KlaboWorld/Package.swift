@@ -1,0 +1,47 @@
+// swift-tools-version:6.0
+import PackageDescription
+
+let package = Package(
+    name: "KlaboWorld",
+    platforms: [
+       .macOS(.v13)
+    ],
+    dependencies: [
+        // 💧 A server-side Swift web framework.
+        .package(url: "https://github.com/vapor/vapor.git", from: "4.115.0"),
+        // 🍃 An expressive, performant, and extensible templating language built for Swift.
+        .package(url: "https://github.com/vapor/leaf.git", from: "4.3.0"),
+        // 🔵 Non-blocking, event-driven networking for Swift. Used for custom executors
+        .package(url: "https://github.com/apple/swift-nio.git", from: "2.65.0"),
+        // 📝 Markdown parser (cmark wrapper) with proper code block support
+        .package(url: "https://github.com/johnxnguyen/Down.git", from: "0.11.0"),
+        // 📧 SMTP email support for Vapor.
+        .package(url: "https://github.com/Mikroservices/Smtp.git", from: "3.0.0"),
+    ],
+    targets: [
+        .executableTarget(
+            name: "KlaboWorld",
+            dependencies: [
+                .product(name: "Leaf", package: "leaf"),
+                .product(name: "Vapor", package: "vapor"),
+                .product(name: "NIOCore", package: "swift-nio"),
+                .product(name: "NIOPosix", package: "swift-nio"),
+                .product(name: "Down", package: "Down"),
+                .product(name: "Smtp", package: "Smtp"),
+            ],
+            swiftSettings: swiftSettings
+        ),
+        .testTarget(
+            name: "KlaboWorldTests",
+            dependencies: [
+                .target(name: "KlaboWorld"),
+                .product(name: "VaporTesting", package: "vapor"),
+            ],
+            swiftSettings: swiftSettings
+        )
+    ]
+)
+
+var swiftSettings: [SwiftSetting] { [
+    .enableUpcomingFeature("ExistentialAny"),
+] }

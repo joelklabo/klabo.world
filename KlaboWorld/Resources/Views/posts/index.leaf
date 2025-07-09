@@ -1,0 +1,52 @@
+#extend("base"):
+#export("body"):
+<div class="max-w-4xl mx-auto px-6 py-12">
+    <h1 class="text-4xl font-bold text-gray-900 mb-8">#(title)</h1>
+    
+    #if(currentTag):
+    <div class="mb-8 flex items-center gap-2">
+        <span class="text-gray-600">Showing posts tagged with:</span>
+        <span class="inline-block bg-purple-100 text-purple-800 px-4 py-2 rounded-full font-medium">#(currentTag)</span>
+        <a href="/posts" class="ml-4 text-purple-600 hover:text-purple-700 text-sm transition-colors">
+            Clear filter ×
+        </a>
+    </div>
+    #endif
+    
+    #if(count(posts) > 0):
+        <div class="space-y-8">
+            #for(post in posts):
+            <article class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+                #if(post.featuredImage):
+                    <a href="/posts/#(post.slug)">
+                        <img src="#(post.featuredImage)" alt="#(post.title)" class="w-full h-48 object-cover">
+                    </a>
+                #endif
+                <div class="p-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2">
+                        <a href="/posts/#(post.slug)" class="hover:text-blue-600 transition-colors">#(post.title)</a>
+                    </h2>
+                    <p class="text-sm text-gray-500 mb-4">
+                        <time datetime="#date(post.date, "yyyy-MM-dd")">#date(post.date, "MMMM d, yyyy")</time>
+                        #if(post.tags):
+                            <span class="ml-4">
+                                #for(tag in post.tags):
+                                    <a href="/posts/tag/#(tag)" class="inline-block bg-gray-100 hover:bg-purple-100 text-gray-700 hover:text-purple-700 px-3 py-1 rounded-full text-xs mr-2 transition-colors">#(tag)</a>
+                                #endfor
+                            </span>
+                        #endif
+                    </p>
+                    <p class="text-gray-600 mb-4">#(post.summary)</p>
+                    <a href="/posts/#(post.slug)" class="text-blue-600 font-medium hover:text-blue-700 transition-colors">
+                        Read more →
+                    </a>
+                </div>
+            </article>
+            #endfor
+        </div>
+    #else:
+        <p class="text-gray-600 text-center py-8">No posts available yet. Check back soon!</p>
+    #endif
+</div>
+#endexport
+#endextend

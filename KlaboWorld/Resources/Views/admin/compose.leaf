@@ -1,0 +1,120 @@
+#extend("base"):
+#export("body"):
+<div class="max-w-4xl mx-auto px-6 py-8">
+    <h1 class="text-3xl font-bold mb-8">Compose New Post</h1>
+    
+    <form id="compose-form" action="/admin/compose" method="POST" class="space-y-6">
+        <div>
+            <label for="title" class="block text-sm font-semibold text-gray-700 mb-2">Title</label>
+            <input type="text" id="title" name="title" required 
+                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+        </div>
+        
+        <div>
+            <label for="summary" class="block text-sm font-semibold text-gray-700 mb-2">Summary</label>
+            <textarea id="summary" name="summary" rows="3" required 
+                      class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-y"></textarea>
+        </div>
+        
+        <div>
+            <label for="tags" class="block text-sm font-semibold text-gray-700 mb-2">Tags (comma-separated)</label>
+            <input type="text" id="tags" name="tags" placeholder="swift, vapor, web development" 
+                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+        </div>
+        
+        <div>
+            <label for="publishDate" class="block text-sm font-semibold text-gray-700 mb-2">Publish Date</label>
+            <input type="date" id="publishDate" name="publishDate" 
+                   class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+            <p class="mt-1 text-sm text-gray-500">Leave empty to publish immediately</p>
+        </div>
+        
+        <div>
+            <label for="content" class="block text-sm font-semibold text-gray-700 mb-2">Content (Markdown)</label>
+            <div class="flex gap-2 p-2 bg-gray-50 border border-gray-300 border-b-0 rounded-t-md">
+                <button type="button" onclick="insertMarkdown('**', '**')" title="Bold" 
+                        class="px-3 py-1.5 bg-white border border-gray-300 rounded hover:bg-gray-100 font-bold transition-colors">B</button>
+                <button type="button" onclick="insertMarkdown('*', '*')" title="Italic" 
+                        class="px-3 py-1.5 bg-white border border-gray-300 rounded hover:bg-gray-100 italic transition-colors">I</button>
+                <button type="button" onclick="insertMarkdown('## ', '')" title="Heading" 
+                        class="px-3 py-1.5 bg-white border border-gray-300 rounded hover:bg-gray-100 font-semibold transition-colors">H</button>
+                <button type="button" onclick="insertMarkdown('[', '](url)')" title="Link" 
+                        class="px-3 py-1.5 bg-white border border-gray-300 rounded hover:bg-gray-100 transition-colors">Link</button>
+                <button type="button" onclick="insertMarkdown('```\n', '\n```')" title="Code Block" 
+                        class="px-3 py-1.5 bg-white border border-gray-300 rounded hover:bg-gray-100 transition-colors">Code</button>
+                <button type="button" onclick="uploadImage()" title="Upload Image" 
+                        class="px-3 py-1.5 bg-white border border-gray-300 rounded hover:bg-gray-100 transition-colors">Image</button>
+            </div>
+            <textarea id="content" name="content" rows="20" required 
+                      class="w-full px-4 py-2 border border-gray-300 rounded-b-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-y font-mono text-sm"></textarea>
+        </div>
+        
+        <div class="flex gap-4">
+            <button type="submit" class="px-6 py-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition-colors">
+                Create Post
+            </button>
+            <a href="/admin" class="px-6 py-3 bg-gray-600 text-white font-medium rounded-md hover:bg-gray-700 transition-colors">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+
+<script>
+function insertMarkdown(before, after) {
+    const textarea = document.getElementById('content');
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = textarea.value.substring(start, end);
+    const replacement = before + selectedText + after;
+    
+    textarea.value = textarea.value.substring(0, start) + replacement + textarea.value.substring(end);
+    
+    const newCursorPos = start + before.length + selectedText.length;
+    textarea.setSelectionRange(newCursorPos, newCursorPos);
+    textarea.focus();
+}
+
+async function uploadImage() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    
+    input.onchange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        const formData = new FormData();
+        formData.append('image', file);
+        
+        try {
+            const response = await fetch('/admin/upload', {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                insertMarkdown('![', `](${data.url})`);
+            } else {
+                alert('Failed to upload image');
+            }
+        } catch (error) {
+            alert('Error uploading image: ' + error.message);
+        }
+    };
+    
+    input.click();
+}
+
+document.getElementById('compose-form').addEventListener('submit', function(e) {
+    const publishDate = document.getElementById('publishDate');
+    if (!publishDate.value) {
+        const today = new Date().toISOString().split('T')[0];
+        publishDate.value = today;
+    }
+});
+</script>
+#endexport
+#endextend

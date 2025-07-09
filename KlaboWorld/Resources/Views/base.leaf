@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>#(title) - klabow.world</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    typography: {
+                        DEFAULT: {
+                            css: {
+                                maxWidth: 'none',
+                                code: {
+                                    backgroundColor: '#f3f4f6',
+                                    padding: '0.125rem 0.25rem',
+                                    borderRadius: '0.25rem',
+                                    fontWeight: '400',
+                                },
+                                'code::before': {
+                                    content: '""'
+                                },
+                                'code::after': {
+                                    content: '""'
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    #if(highlightjs):
+    <!-- Highlight.js for syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/swift.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            hljs.highlightAll();
+        });
+    </script>
+    <style>
+        /* Override highlight.js backgrounds to work with Tailwind */
+        .hljs {
+            background: rgb(17 24 39) !important;
+            padding: 1.5rem !important;
+            border-radius: 0.5rem !important;
+            font-size: 0.95rem !important;
+            line-height: 1.6 !important;
+        }
+        pre code.hljs {
+            padding: 1.5rem !important;
+        }
+        /* Make syntax highlighting more vibrant */
+        .hljs-string { color: #98c379 !important; }
+        .hljs-keyword { color: #c678dd !important; }
+        .hljs-function { color: #61afef !important; }
+        .hljs-number { color: #d19a66 !important; }
+        .hljs-comment { color: #5c6370 !important; }
+        .hljs-variable { color: #e06c75 !important; }
+        .hljs-built_in { color: #e6c07b !important; }
+        .hljs-attr { color: #d19a66 !important; }
+        .hljs-name { color: #61afef !important; }
+        .hljs-tag { color: #e06c75 !important; }
+        .hljs-selector-class { color: #d19a66 !important; }
+        .hljs-selector-id { color: #61afef !important; }
+        .hljs-title { color: #61afef !important; }
+        .hljs-params { color: #abb2bf !important; }
+        .hljs-class { color: #e6c07b !important; }
+        .hljs-literal { color: #56b6c2 !important; }
+        .hljs-meta { color: #61afef !important; }
+        .hljs-operator { color: #56b6c2 !important; }
+        .hljs-punctuation { color: #abb2bf !important; }
+        /* Base text color */
+        .hljs, code.hljs { color: #abb2bf !important; }
+    </style>
+    #endif
+    
+    #if(gaTrackingID):
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=#(gaTrackingID)"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '#(gaTrackingID)');
+    </script>
+    #endif
+</head>
+<body class="bg-gray-50 text-gray-900">
+    <header class="sticky top-0 z-50 bg-gradient-to-r from-slate-900 via-purple-900 to-slate-900 backdrop-blur-md shadow-xl border-b border-purple-500/20">
+        <nav class="max-w-7xl mx-auto px-6 py-5">
+            <div class="flex items-center justify-between gap-4">
+                <!-- Logo with rocket icon -->
+                <a href="/" class="group flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-purple-500/30">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <span class="text-3xl font-extrabold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent group-hover:from-purple-300 group-hover:to-pink-300 transition-all duration-300">klabo.world</span>
+                </a>
+                
+                <!-- Search bar (hidden on mobile) -->
+                <div class="hidden md:flex flex-1 max-w-md mx-4 relative">
+                    <input type="text" id="search-input" placeholder="Search" 
+                           class="w-full px-4 py-2 pl-10 bg-white/10 backdrop-blur-sm border border-purple-500/30 rounded-full text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300">
+                    <svg class="absolute left-3 top-2.5 w-5 h-5 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <!-- Search results overlay -->
+                    <div id="search-results" class="absolute top-full mt-2 w-full bg-slate-900 border border-purple-500/30 rounded-lg shadow-2xl hidden overflow-hidden">
+                        <div class="max-h-96 overflow-y-auto"></div>
+                    </div>
+                </div>
+                
+                <!-- Main navigation -->
+                <ul class="hidden md:flex items-center space-x-1">
+                    <li><a href="/" class="px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">Home</a></li>
+                    <li><a href="/posts" class="px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">Blog</a></li>
+                    <li><a href="/apps" class="px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">Apps</a></li>
+                    
+                    <!-- Tags dropdown -->
+                    <li class="relative group">
+                        <button class="px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 font-medium flex items-center gap-1">
+                            Tags
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="absolute top-full mt-2 w-48 bg-slate-900 border border-purple-500/30 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden">
+                            #if(popularTags):
+                            <div class="py-2">
+                                #for(tag in popularTags):
+                                <a href="/posts/tag/#(tag.tag)" class="block px-4 py-2 text-white/80 hover:text-white hover:bg-purple-500/20 transition-colors duration-150">
+                                    #(tag.tag) <span class="text-white/40 text-sm">(#(tag.count))</span>
+                                </a>
+                                #endfor
+                                <div class="border-t border-purple-500/20 mt-2 pt-2">
+                                    <a href="/posts/tags" class="block px-4 py-2 text-purple-400 hover:text-purple-300 hover:bg-purple-500/20 transition-colors duration-150 text-sm font-medium">
+                                        View all tags →
+                                    </a>
+                                </div>
+                            </div>
+                            #else:
+                            <div class="px-4 py-3 text-white/60 text-sm">No tags available</div>
+                            #endif
+                        </div>
+                    </li>
+                    
+                    <li><a href="/contact" class="px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">Contact</a></li>
+                </ul>
+                
+                <!-- Mobile menu button -->
+                <button id="mobile-menu-button" class="md:hidden p-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Mobile menu -->
+            <div id="mobile-menu" class="hidden md:hidden mt-4 space-y-1">
+                <!-- Mobile search -->
+                <div class="relative mb-4">
+                    <input type="text" id="mobile-search-input" placeholder="Search" 
+                           class="w-full px-4 py-2 pl-10 bg-white/10 backdrop-blur-sm border border-purple-500/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                    <svg class="absolute left-3 top-2.5 w-5 h-5 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+                <a href="/" class="block px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">Home</a>
+                <a href="/posts" class="block px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">Blog</a>
+                <a href="/apps" class="block px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">Apps</a>
+                <a href="/posts/tags" class="block px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">Browse Tags</a>
+                <a href="/contact" class="block px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">Contact</a>
+            </div>
+        </nav>
+    </header>
+    
+    <main class="min-h-screen">
+        #import("body")
+    </main>
+    
+    <footer class="bg-gray-900 text-white py-8 mt-16">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <p>&copy; 2025 Joel Klabo. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button')?.addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+        
+        // Search functionality
+        let searchTimeout;
+        const searchInput = document.getElementById('search-input');
+        const mobileSearchInput = document.getElementById('mobile-search-input');
+        const searchResults = document.getElementById('search-results');
+        
+        async function performSearch(query) {
+            if (query.length < 2) {
+                searchResults.classList.add('hidden');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/search?q=${encodeURIComponent(query)}`);
+                const results = await response.json();
+                
+                const resultsContainer = searchResults.querySelector('div');
+                
+                if (results.length === 0) {
+                    resultsContainer.innerHTML = '<div class="px-4 py-3 text-white/60">No results found</div>';
+                } else {
+                    resultsContainer.innerHTML = results.map(result => `
+                        <a href="${result.url}" class="block px-4 py-3 hover:bg-purple-500/20 transition-colors duration-150 border-b border-purple-500/10 last:border-0">
+                            <div class="flex items-start gap-3">
+                                ${result.type === 'app' && result.icon ? `
+                                    <img src="${result.icon}" alt="${result.title} icon" class="w-10 h-10 rounded-lg flex-shrink-0 object-cover">
+                                ` : ''}
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-medium text-white">${result.title}</span>
+                                        <span class="text-xs px-2 py-0.5 rounded-full ${
+                                            result.type === 'app' ? 'bg-blue-500/20 text-blue-300' : 'bg-green-500/20 text-green-300'
+                                        }">${result.type}</span>
+                                    </div>
+                                    <div class="text-sm text-white/60 mt-1">${result.description}</div>
+                                    ${result.tags ? `<div class="flex gap-2 mt-2">${result.tags.map(tag => 
+                                        `<span class="text-xs px-2 py-1 bg-purple-500/20 text-purple-300 rounded">${tag}</span>`
+                                    ).join('')}</div>` : ''}
+                                </div>
+                            </div>
+                        </a>
+                    `).join('');
+                }
+                
+                searchResults.classList.remove('hidden');
+            } catch (error) {
+                console.error('Search error:', error);
+                searchResults.classList.add('hidden');
+            }
+        }
+        
+        // Desktop search
+        searchInput?.addEventListener('input', function(e) {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => performSearch(e.target.value), 300);
+        });
+        
+        // Mobile search with redirect
+        mobileSearchInput?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && e.target.value.length >= 2) {
+                window.location.href = `/posts/search?q=${encodeURIComponent(e.target.value)}`;
+            }
+        });
+        
+        // Close search results when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!searchInput?.contains(e.target) && !searchResults?.contains(e.target)) {
+                searchResults?.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

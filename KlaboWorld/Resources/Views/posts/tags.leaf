@@ -1,0 +1,32 @@
+#extend("base"):
+#export("body"):
+<div class="max-w-4xl mx-auto px-6 py-12">
+    <h1 class="text-4xl font-bold text-gray-900 mb-8">All Tags</h1>
+    
+    <div class="flex flex-wrap gap-4">
+        #for(tag in tags):
+        <a href="/posts/tag/#(tag.tag)" 
+           class="group relative px-6 py-3 bg-gradient-to-br from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 rounded-lg border border-purple-200 hover:border-purple-300 transition-all duration-200 hover:scale-105 hover:shadow-lg">
+            <span class="font-medium text-gray-800 group-hover:text-purple-700 transition-colors">#(tag.tag)</span>
+            <span class="ml-2 text-sm text-gray-600 bg-white px-2 py-1 rounded-full shadow-sm">#(tag.count)</span>
+        </a>
+        #endfor
+    </div>
+    
+    #if(count(tags) == 0):
+    <div class="text-center py-12">
+        <p class="text-gray-600">No tags found yet.</p>
+    </div>
+    #endif
+    
+    <div class="mt-12 text-center">
+        <a href="/posts" class="inline-flex items-center text-purple-600 hover:text-purple-700 font-medium transition-colors">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            Back to all posts
+        </a>
+    </div>
+</div>
+#endexport
+#endextend
