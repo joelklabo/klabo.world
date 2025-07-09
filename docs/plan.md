@@ -12,16 +12,16 @@ Move the relevant documentation from this folder into a folder called `vapor/` i
 
 **Install Swift and Vapor Toolbox:** Ensure you have an up-to-date Swift toolchain (Swift 5.8+). On macOS, install the Vapor Toolbox via Homebrew: `brew install vapor`. This provides a CLI for creating projects and other utilities.
 
-**Initialize the Vapor app:** Use the Vapor CLI to create a new project named "KlabowWorld".
+**Initialize the Vapor app:** Use the Vapor CLI to create a new project named "KlaboWorld".
 
 ```bash
-vapor new KlabowWorld
+vapor new KlaboWorld
 ```
 
 Vapor will fetch a template and prompt for components. To match our use case, **enable Leaf templating** (for rendering HTML pages) when prompted, and **include the Docker files**. Decline Fluent for now, as we will use Markdown files for blog posts. After creation, navigate into the project folder:
 
 ```bash
-cd KlabowWorld
+cd KlaboWorld
 ```
 
 **Project’s initial build and run:** Vapor projects use Swift Package Manager (SPM). Open the project in VS Code (`code .`) or Xcode (`open Package.swift`). If using VS Code, install the official Vapor extension. To build and run the project, execute:

@@ -24,8 +24,8 @@ Building a personal website with blog functionality using Vapor 4 (Swift web fra
 
 ### 1. Project Structure
 ```
-KlabowWorld/
-├── Sources/KlabowWorld/
+KlaboWorld/
+├── Sources/KlaboWorld/
 │   ├── Controllers/     # Route handlers (PostsController, AdminController, ContactController, AppsController)
 │   ├── Models/          # Data models and Content structs
 │   ├── Middleware/      # Admin auth middleware
