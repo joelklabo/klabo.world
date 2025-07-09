@@ -34,6 +34,10 @@ public func configure(_ app: Application) async throws {
     // Enable file serving from Public directory
     app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
     
+    // Enable file serving from persistent uploads directory (for Azure deployment)
+    // This allows uploaded files to persist across container restarts
+    app.middleware.use(FileMiddleware(publicDirectory: config.uploadsDir))
+    
     // Configure Leaf templating
     app.views.use(.leaf)
     

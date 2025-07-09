@@ -8,6 +8,7 @@ struct SiteConfiguration: Codable {
     let adminPassword: String
     let uploadsDir: String
     let gaTrackingID: String?
+    let buildVersion: String?
 }
 
 struct ConfigKey: StorageKey {
@@ -22,7 +23,8 @@ extension Environment {
             "smtpPassword": get("SMTP_PASSWORD") ?? "",
             "adminPassword": get("ADMIN_PASSWORD") ?? "",
             "uploadsDir": get("UPLOADS_DIR") ?? "./Public/uploads",
-            "gaTrackingID": get("GA_TRACKING_ID")
+            "gaTrackingID": get("GA_TRACKING_ID"),
+            "buildVersion": get("BUILD_VERSION")
         ])
         return try JSONDecoder().decode(T.self, from: data)
     }

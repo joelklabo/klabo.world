@@ -11,6 +11,7 @@ func routes(_ app: Application) throws {
             let popularTags: [TagCount]
             let recentPosts: [PostMetadata]
             let apps: [AppMetadata]
+            let buildVersion: String?
         }
         
         // Get recent posts
@@ -33,7 +34,8 @@ func routes(_ app: Application) throws {
             gaTrackingID: baseContext.gaTrackingID,
             popularTags: baseContext.popularTags,
             recentPosts: recentPosts,
-            apps: publishedApps
+            apps: publishedApps,
+            buildVersion: baseContext.buildVersion
         )
         
         req.logger.info("Rendering home page")

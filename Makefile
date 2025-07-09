@@ -207,5 +207,35 @@ stop: ## Stop any running servers
 .PHONY: restart
 restart: stop start ## Restart server
 
+# Testing Commands for Deployment
+.PHONY: test-azure-local
+test-azure-local: ## Test Azure-like deployment locally
+	@./scripts/test-azure-deployment.sh
+
+.PHONY: test-env
+test-env: ## Test environment variable injection
+	@./scripts/test-env-vars.sh
+
+.PHONY: test-storage
+test-storage: ## Test persistent storage
+	@./scripts/test-storage.sh
+
+.PHONY: verify-build
+verify-build: ## Verify Docker build
+	@./scripts/verify-docker-build.sh
+
+.PHONY: deploy-checklist
+deploy-checklist: ## Run pre-deployment checklist
+	@./scripts/pre-deploy-checklist.sh
+
+.PHONY: prod-env
+prod-env: ## Create production environment file from example
+	@if [ ! -f .env.production ]; then \
+		cp .env.production.example .env.production; \
+		echo "✅ Created .env.production - please update with real values"; \
+	else \
+		echo "⚠️  .env.production already exists"; \
+	fi
+
 # Default target
 .DEFAULT_GOAL := help

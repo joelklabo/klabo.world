@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  app-prod:
+    build:
+      context: .
+      args:
+        BUILD_VERSION: ${BUILD_VERSION:-test-local}
+    environment:
+      # These simulate Azure App Service environment variables
+      WEBSITES_PORT: 8080
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_USERNAME: ${SMTP_USERNAME}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      UPLOADS_DIR: ${UPLOADS_DIR:-/home/site/wwwroot/uploads}
+      GA_TRACKING_ID: ${GA_TRACKING_ID}
+      BUILD_VERSION: ${BUILD_VERSION:-test-local}
+    ports:
+      - "8080:8080"
+    volumes:
+      # Simulate Azure's persistent storage at /home
+      - production-uploads:/home/site/wwwroot/uploads
+    command: ["serve", "--env", "production", "--hostname", "0.0.0.0", "--port", "8080"]
+
+volumes:
+  production-uploads:
+    driver: local

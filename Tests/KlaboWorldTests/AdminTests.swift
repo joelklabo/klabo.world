@@ -14,7 +14,8 @@ struct AdminTests {
                 smtpPassword: "test",
                 adminPassword: "test-password",
                 uploadsDir: "./test",
-                gaTrackingID: nil
+                gaTrackingID: nil,
+                buildVersion: "test-build"
             )
             
             try await app.testing().test(.GET, "admin", afterResponse: { res async in
@@ -33,7 +34,8 @@ struct AdminTests {
                 smtpPassword: "test",
                 adminPassword: "test-password",
                 uploadsDir: "./test",
-                gaTrackingID: nil
+                gaTrackingID: nil,
+                buildVersion: "test-build"
             )
             app.storage[PostsCacheKey.self] = []
             
@@ -57,7 +59,8 @@ struct AdminTests {
                 smtpPassword: "test",
                 adminPassword: "test-password",
                 uploadsDir: "./test",
-                gaTrackingID: nil
+                gaTrackingID: nil,
+                buildVersion: "test-build"
             )
             
             let basicAuth = "admin:wrong-password".data(using: .utf8)!.base64EncodedString()
@@ -79,7 +82,8 @@ struct AdminTests {
                 smtpPassword: "test",
                 adminPassword: "test-password",
                 uploadsDir: "./test",
-                gaTrackingID: nil
+                gaTrackingID: nil,
+                buildVersion: "test-build"
             )
             
             let basicAuth = "admin:test-password".data(using: .utf8)!.base64EncodedString()

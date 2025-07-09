@@ -9,6 +9,7 @@ db.sqlite
 .env
 .env.*
 !.env.example
+!.env.production.example
 .claude/
 server.log
 claude.local

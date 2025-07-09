@@ -35,9 +35,10 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-            ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          build-args: |
+            BUILD_VERSION=${{ github.sha }}
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
@@ -45,6 +46,30 @@ jobs:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           images: 'ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}'
+
+      - name: Verify Deployment
+        run: |
+          echo "Waiting for deployment to be ready..."
+          sleep 30
+          
+          # Check if the app is responding
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net/)
+          
+          if [ "$RESPONSE" = "200" ]; then
+            echo "✅ Deployment successful! Application is responding."
+            echo "🔗 Application URL: https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net"
+            
+            # Verify build version
+            BUILD_VERSION_IN_HTML=$(curl -s https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net/ | grep -o "Build: ${{ github.sha }}" || echo "Build version not found")
+            if [ "$BUILD_VERSION_IN_HTML" = "Build: ${{ github.sha }}" ]; then
+              echo "✅ Build version verified: ${{ github.sha }}"
+            else
+              echo "⚠️ Build version not found in footer"
+            fi
+          else
+            echo "❌ Deployment verification failed! HTTP response code: $RESPONSE"
+            exit 1
+          fi
 
   # Optional: Add deployment notification
       - name: Deployment Status

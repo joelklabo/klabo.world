@@ -191,7 +191,7 @@
     
     <footer class="bg-gray-900 text-white py-8 mt-16">
         <div class="max-w-6xl mx-auto px-6 text-center">
-            <p>&copy; 2025 Joel Klabo. All rights reserved.</p>
+            <p>&copy; 2025 Joel Klabo. All rights reserved.#if(buildVersion): • Build: #(buildVersion)#endif</p>
         </div>
     </footer>
     

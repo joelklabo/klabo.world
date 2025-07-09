@@ -22,6 +22,7 @@ struct AppsController: RouteCollection {
             let apps: [AppMetadata]
             let gaTrackingID: String?
             let popularTags: [TagCount]
+            let buildVersion: String?
         }
         
         let baseContext = BaseContext.create(from: req.application)
@@ -29,7 +30,8 @@ struct AppsController: RouteCollection {
             title: "Apps",
             apps: publishedApps,
             gaTrackingID: baseContext.gaTrackingID,
-            popularTags: baseContext.popularTags
+            popularTags: baseContext.popularTags,
+            buildVersion: baseContext.buildVersion
         )
         
         return try await req.view.render("apps/index", context)
@@ -51,6 +53,7 @@ struct AppsController: RouteCollection {
             let app: AppMetadata
             let gaTrackingID: String?
             let popularTags: [TagCount]
+            let buildVersion: String?
         }
         
         let baseContext = BaseContext.create(from: req.application)
@@ -58,7 +61,8 @@ struct AppsController: RouteCollection {
             title: app.name,
             app: app,
             gaTrackingID: baseContext.gaTrackingID,
-            popularTags: baseContext.popularTags
+            popularTags: baseContext.popularTags,
+            buildVersion: baseContext.buildVersion
         )
         
         return try await req.view.render("apps/show", context)

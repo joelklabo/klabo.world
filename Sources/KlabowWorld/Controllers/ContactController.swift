@@ -13,13 +13,15 @@ struct ContactController: RouteCollection {
             let title: String
             let gaTrackingID: String?
             let popularTags: [TagCount]
+            let buildVersion: String?
         }
         
         let baseContext = BaseContext.create(from: req.application)
         let context = ContactContext(
             title: "Contact",
             gaTrackingID: baseContext.gaTrackingID,
-            popularTags: baseContext.popularTags
+            popularTags: baseContext.popularTags,
+            buildVersion: baseContext.buildVersion
         )
         
         return try await req.view.render("contact", context)

@@ -269,3 +269,6 @@ This ensures the user can immediately see and interact with the changes without 
 - `scripts/deploy-check.sh` - Pre-deployment checklist
 - `.env` - Local configuration (never commit!)
 - `docker-compose.yml` - Docker services (app and app-dev)
+
+## CI/CD Memory
+- Got a CI error, can you check those actions after you push from now on. And check it now.

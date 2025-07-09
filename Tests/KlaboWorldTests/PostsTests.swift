@@ -16,7 +16,8 @@ struct PostsTests {
                 smtpPassword: "test",
                 adminPassword: "test",
                 uploadsDir: "./test",
-                gaTrackingID: nil
+                gaTrackingID: nil,
+                buildVersion: "test-build"
             )
             app.storage[PostsCacheKey.self] = []
             
@@ -96,7 +97,8 @@ struct PostsTests {
                 smtpPassword: "test",
                 adminPassword: "test",
                 uploadsDir: "./test",
-                gaTrackingID: nil
+                gaTrackingID: nil,
+                buildVersion: "test-build"
             )
             app.storage[PostsCacheKey.self] = posts
             
