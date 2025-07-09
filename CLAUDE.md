@@ -26,7 +26,7 @@ Building a personal website with blog functionality using Vapor 4 (Swift web fra
 ```
 KlabowWorld/
 ├── Sources/KlabowWorld/
-│   ├── Controllers/     # Route handlers (PostsController, AdminController, ContactController)
+│   ├── Controllers/     # Route handlers (PostsController, AdminController, ContactController, AppsController)
 │   ├── Models/          # Data models and Content structs
 │   ├── Middleware/      # Admin auth middleware
 │   ├── configure.swift  # App configuration on startup
@@ -34,7 +34,8 @@ KlabowWorld/
 │   └── entrypoint.swift # App entry point
 ├── Resources/
 │   ├── Views/          # Leaf templates
-│   └── Posts/          # Markdown blog posts
+│   ├── Posts/          # Markdown blog posts
+│   └── Apps/           # JSON app metadata files
 ├── Public/             # Static assets (CSS, JS, images)
 ├── Tests/              # Swift Testing framework tests
 ├── scripts/            # Helper scripts
@@ -65,6 +66,7 @@ Access via: `req.application.storage[ConfigKey.self]!`
 
 ### 4. Performance Optimizations
 - **Post Caching**: Load all post metadata on startup into `app.storage[PostsCacheKey.self]`
+- **App Caching**: Load all app metadata on startup into `app.storage[AppsCacheKey.self]`
 - **Docker Volumes**: Use named volume for `.build` directory in docker-compose.yml
 - **Vapor Binding**: Must bind to `0.0.0.0` in container (already in default Dockerfile)
 
@@ -87,7 +89,15 @@ app.smtp.configuration.secure = .ssl
 - **Rendering**: Use Ink library, render with Leaf's `#raw()` tag
 - **File Location**: `Resources/Posts/` directory
 
-### 8. Testing Requirements
+### 8. Apps Showcase System
+- **JSON Storage**: App metadata stored as JSON files in `Resources/Apps/`
+- **App Model**: AppMetadata with fields: name, slug, fullDescription, version, publishDate, icon, screenshots, appStoreURL, githubURL, features
+- **Publishing**: Apps can be scheduled with publishDate like blog posts
+- **Admin Management**: Full CRUD operations for apps via admin panel
+- **Image Handling**: App icons and screenshots uploaded to persistent storage
+- **Display**: Grid layout on index, detailed view for individual apps
+
+### 9. Testing Requirements
 - Write integration tests in `Tests/KlabowWorldTests/`
 - Use Swift Testing framework with `@Test` and `@Suite` attributes
 - Use `VaporTesting` for HTTP request testing
@@ -105,7 +115,7 @@ func testPostsIndex() async throws {
 }
 ```
 
-### 9. Styling with Tailwind CSS
+### 10. Styling with Tailwind CSS
 - **Implementation**: Tailwind CSS via CDN (no build step required)
 - **Configuration**: Custom config in base.leaf template
 - **Syntax Highlighting**: Highlight.js with GitHub Dark theme
@@ -166,6 +176,9 @@ make docker-dev
 # Create new blog post
 make new-post title="My New Post"
 
+# Create new app (manual - create JSON in Resources/Apps/)
+# Example: Resources/Apps/my-app.json
+
 # View all commands
 make help
 ```
@@ -208,10 +221,13 @@ docker build -t klabo-world .
 
 ## Implemented Features
 - ✅ Blog system with Markdown and front matter
+- ✅ Apps showcase system with JSON storage
 - ✅ Admin panel with authentication
 - ✅ Contact form with SMTP email
 - ✅ Image upload with security
 - ✅ Post scheduling via publishDate
+- ✅ App scheduling via publishDate
+- ✅ Full CRUD operations for both posts and apps
 - ✅ Google Analytics integration
 - ✅ Docker setup optimized for macOS
 - ✅ Comprehensive test suite
@@ -222,6 +238,7 @@ docker build -t klabo-world .
 
 ## Development Reminders
 - Use the makefile for running, if it's not doing what you want, update the makefile, or add to it
+- **CRITICAL**: ALWAYS ensure the server is running before attempting to view changes. Use `make run` in a separate terminal or run in background with `make run > server.log 2>&1 &`
 
 ## Task Completion Checklist
 When completing any development task, ALWAYS:

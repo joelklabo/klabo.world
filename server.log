@@ -1,8 +1,0 @@
-[0/1] Planning build
-Building for debugging...
-[0/3] Write swift-version-39B54973F684ADAB.txt
-Build of product 'KlabowWorld' complete! (3.02s)
-[ INFO ] Loaded 19 posts
-[ NOTICE ] Server started on http://127.0.0.1:8080
-[ INFO ] GET /posts [request-id: 43520E7A-9824-4D74-B2C1-0B62D4DF601C]
-
