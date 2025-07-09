@@ -98,7 +98,7 @@ app.smtp.configuration.secure = .ssl
 - **Display**: Grid layout on index, detailed view for individual apps
 
 ### 9. Testing Requirements
-- Write integration tests in `Tests/KlabowWorldTests/`
+- Write integration tests in `Tests/KlaboWorldTests/`
 - Use Swift Testing framework with `@Test` and `@Suite` attributes
 - Use `VaporTesting` for HTTP request testing
 - CI/CD runs `swift test` before deployment
