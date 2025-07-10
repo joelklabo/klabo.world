@@ -3,7 +3,7 @@ import Leaf
 import Down
 
 struct PostsController: RouteCollection {
-    func boot(routes: RoutesBuilder) throws {
+    func boot(routes: any RoutesBuilder) throws {
         let posts = routes.grouped("posts")
         
         // Main routes

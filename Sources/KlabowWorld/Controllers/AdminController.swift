@@ -4,7 +4,7 @@ import Foundation
 import NIOCore
 
 struct AdminController: RouteCollection {
-    func boot(routes: RoutesBuilder) throws {
+    func boot(routes: any RoutesBuilder) throws {
         let adminRoutes = routes.grouped("admin")
             .grouped(AdminAuthMiddleware())
         

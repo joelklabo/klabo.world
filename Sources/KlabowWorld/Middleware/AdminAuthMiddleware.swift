@@ -1,7 +1,7 @@
 import Vapor
 
 struct AdminAuthMiddleware: AsyncMiddleware {
-    func respond(to request: Request, chainingTo next: AsyncResponder) async throws -> Response {
+    func respond(to request: Request, chainingTo next: any AsyncResponder) async throws -> Response {
         let config = request.application.storage[ConfigKey.self]!
         
         guard let authHeader = request.headers[.authorization].first else {

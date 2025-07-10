@@ -2,7 +2,7 @@ import Vapor
 import Leaf
 
 struct AppsController: RouteCollection {
-    func boot(routes: RoutesBuilder) throws {
+    func boot(routes: any RoutesBuilder) throws {
         let apps = routes.grouped("apps")
         
         // Main routes

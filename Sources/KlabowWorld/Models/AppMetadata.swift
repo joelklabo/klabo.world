@@ -43,7 +43,7 @@ struct AppMetadata: Content {
         self.features = features
     }
     
-    init(from decoder: Decoder) throws {
+    init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.name = try container.decode(String.self, forKey: .name)
         self.slug = try container.decode(String.self, forKey: .slug)
@@ -57,7 +57,7 @@ struct AppMetadata: Content {
         self.features = try container.decode([String].self, forKey: .features)
     }
     
-    func encode(to encoder: Encoder) throws {
+    func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(name, forKey: .name)
         try container.encode(slug, forKey: .slug)

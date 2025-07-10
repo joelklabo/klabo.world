@@ -33,7 +33,7 @@ A resource group is a logical container for all related Azure resources.
 # Create resource group
 az group create \
   --name klabo-world-rg \
-  --location eastus
+  --location westus
 
 # Verify creation
 az group show --name klabo-world-rg --output table

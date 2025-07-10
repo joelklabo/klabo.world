@@ -3,7 +3,7 @@ import Leaf
 import Smtp
 
 struct ContactController: RouteCollection {
-    func boot(routes: RoutesBuilder) throws {
+    func boot(routes: any RoutesBuilder) throws {
         routes.get("contact", use: showForm)
         routes.post("contact", use: sendEmail)
     }
