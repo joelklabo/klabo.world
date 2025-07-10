@@ -15,8 +15,6 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.65.0"),
         // 📝 Markdown parser (cmark wrapper) with proper code block support
         .package(url: "https://github.com/johnxnguyen/Down.git", from: "0.11.0"),
-        // 📧 SMTP email support for Vapor.
-        .package(url: "https://github.com/Mikroservices/Smtp.git", from: "3.0.0"),
     ],
     targets: [
         .executableTarget(
@@ -27,7 +25,6 @@ let package = Package(
                 .product(name: "NIOCore", package: "swift-nio"),
                 .product(name: "NIOPosix", package: "swift-nio"),
                 .product(name: "Down", package: "Down"),
-                .product(name: "Smtp", package: "Smtp"),
             ],
             swiftSettings: swiftSettings
         ),

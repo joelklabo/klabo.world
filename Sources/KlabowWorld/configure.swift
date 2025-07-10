@@ -2,7 +2,6 @@ import Leaf
 import Vapor
 import NIOCore
 import NIOPosix
-import Smtp
 
 // configures your application
 public func configure(_ app: Application) async throws {
@@ -25,14 +24,6 @@ public func configure(_ app: Application) async throws {
     // Load configuration from environment variables
     let config = try Environment.decode(SiteConfiguration.self)
     app.storage[ConfigKey.self] = config
-    
-    // Configure SMTP
-    app.smtp.configuration.hostname = config.smtpHost
-    app.smtp.configuration.signInMethod = .credentials(
-        username: config.smtpUsername,
-        password: config.smtpPassword
-    )
-    app.smtp.configuration.secure = .ssl
     
     // Enable file serving from Public directory
     app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))

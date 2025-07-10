@@ -227,6 +227,5 @@ func routes(_ app: Application) throws {
     try app.register(collection: PostsController())
     try app.register(collection: AppsController())
     try app.register(collection: AdminController())
-    try app.register(collection: ContactController())
     try app.register(collection: AuthController())
 }
