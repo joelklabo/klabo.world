@@ -7,8 +7,8 @@ on:
     branches: [ main ]
 
 env:
-  AZURE_WEBAPP_NAME: klabow-world-app  # Your Azure Web App name
-  IMAGE_NAME: klabow-world             # Name for your Docker image
+  AZURE_WEBAPP_NAME: klabo-world-app   # Your Azure Web App name
+  IMAGE_NAME: klaboworld               # Name for your Docker image
 
 jobs:
   build-and-deploy:
