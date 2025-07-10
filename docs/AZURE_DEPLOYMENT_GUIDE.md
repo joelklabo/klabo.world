@@ -110,8 +110,17 @@ az webapp config appsettings set \
   --settings \
     SMTP_HOST="smtp.sendgrid.net" \
     SMTP_USERNAME="apikey" \
-    SMTP_PASSWORD="YOUR_SENDGRID_API_KEY" \
-    ADMIN_PASSWORD="YOUR_SECURE_ADMIN_PASSWORD"
+    SMTP_PASSWORD="YOUR_SENDGRID_API_KEY"
+
+# IMPORTANT: Admin password must be BCrypt hashed!
+# Use the provided script to set up authentication:
+# ./azure-auth-setup.sh
+# Or manually generate a hash and set it:
+# swift run KlaboWorld hash-password
+# az webapp config appsettings set \
+#   --name klabo-world-app \
+#   --resource-group klabo-world-rg \
+#   --settings ADMIN_PASSWORD="$2b$12$..."
 
 # Set persistent storage path
 az webapp config appsettings set \

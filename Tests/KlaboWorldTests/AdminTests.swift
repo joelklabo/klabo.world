@@ -18,9 +18,10 @@ struct AdminTests {
                 buildVersion: "test-build"
             )
             
+            // Test accessing admin without session cookie
             try await app.testing().test(.GET, "admin", afterResponse: { res async in
-                #expect(res.status == .unauthorized)
-                #expect(res.headers["WWW-Authenticate"].first == "Basic realm=\"Admin Area\"")
+                #expect(res.status == .seeOther)
+                #expect(res.headers["Location"].first == "/admin/login")
             })
         }
     }
@@ -28,21 +29,42 @@ struct AdminTests {
     @Test("Test admin access with valid credentials")
     func testAdminAccessWithAuth() async throws {
         try await withApp(configure: configure) { app in
+            // Hash the test password
+            let hashedPassword = try app.password.hash("test-password")
+            
             app.storage[ConfigKey.self] = SiteConfiguration(
                 smtpHost: "test",
                 smtpUsername: "test",
                 smtpPassword: "test",
-                adminPassword: "test-password",
+                adminPassword: hashedPassword,
                 uploadsDir: "./test",
                 gaTrackingID: nil,
                 buildVersion: "test-build"
             )
             app.storage[PostsCacheKey.self] = []
             
-            let basicAuth = "admin:test-password".data(using: .utf8)!.base64EncodedString()
+            // First, login to get session cookie
+            let loginBody = "username=admin&password=test-password&csrfToken=test"
+            var sessionCookie: String? = nil
             
+            try await app.testing().test(.POST, "admin/login", headers: [
+                "Content-Type": "application/x-www-form-urlencoded"
+            ], body: ByteBuffer(string: loginBody), afterResponse: { res async in
+                #expect(res.status == .seeOther)
+                #expect(res.headers["Location"].first == "/admin")
+                // Extract session cookie
+                if let setCookie = res.headers["Set-Cookie"].first {
+                    let parts = setCookie.split(separator: ";").first?.split(separator: "=")
+                    if parts?.first == "admin_session" {
+                        sessionCookie = String(parts![1])
+                    }
+                }
+                #expect(sessionCookie != nil)
+            })
+            
+            // Now access admin with session cookie
             try await app.testing().test(.GET, "admin", headers: [
-                "Authorization": "Basic \(basicAuth)"
+                "Cookie": "admin_session=\(sessionCookie!)"
             ], afterResponse: { res async in
                 #expect(res.status == .ok)
                 #expect(res.body.string.contains("Admin Dashboard"))
@@ -53,22 +75,27 @@ struct AdminTests {
     @Test("Test admin access with invalid credentials")
     func testAdminAccessWithInvalidAuth() async throws {
         try await withApp(configure: configure) { app in
+            // Hash the test password
+            let hashedPassword = try app.password.hash("test-password")
+            
             app.storage[ConfigKey.self] = SiteConfiguration(
                 smtpHost: "test",
                 smtpUsername: "test",
                 smtpPassword: "test",
-                adminPassword: "test-password",
+                adminPassword: hashedPassword,
                 uploadsDir: "./test",
                 gaTrackingID: nil,
                 buildVersion: "test-build"
             )
             
-            let basicAuth = "admin:wrong-password".data(using: .utf8)!.base64EncodedString()
+            // Try to login with wrong password
+            let loginBody = "username=admin&password=wrong-password&csrfToken=test"
             
-            try await app.testing().test(.GET, "admin", headers: [
-                "Authorization": "Basic \(basicAuth)"
-            ], afterResponse: { res async in
-                #expect(res.status == .unauthorized)
+            try await app.testing().test(.POST, "admin/login", headers: [
+                "Content-Type": "application/x-www-form-urlencoded"
+            ], body: ByteBuffer(string: loginBody), afterResponse: { res async in
+                #expect(res.status == .seeOther)
+                #expect(res.headers["Location"].first == "/admin/login?error=Invalid+credentials")
             })
         }
     }
@@ -76,21 +103,38 @@ struct AdminTests {
     @Test("Test image upload validation")
     func testImageUploadValidation() async throws {
         try await withApp(configure: configure) { app in
+            // Hash the test password
+            let hashedPassword = try app.password.hash("test-password")
+            
             app.storage[ConfigKey.self] = SiteConfiguration(
                 smtpHost: "test",
                 smtpUsername: "test",
                 smtpPassword: "test",
-                adminPassword: "test-password",
+                adminPassword: hashedPassword,
                 uploadsDir: "./test",
                 gaTrackingID: nil,
                 buildVersion: "test-build"
             )
+            app.storage[PostsCacheKey.self] = []
             
-            let basicAuth = "admin:test-password".data(using: .utf8)!.base64EncodedString()
+            // First, login to get session cookie
+            let loginBody = "username=admin&password=test-password&csrfToken=test"
+            var sessionCookie: String? = nil
+            
+            try await app.testing().test(.POST, "admin/login", headers: [
+                "Content-Type": "application/x-www-form-urlencoded"
+            ], body: ByteBuffer(string: loginBody), afterResponse: { res async in
+                if let setCookie = res.headers["Set-Cookie"].first {
+                    let parts = setCookie.split(separator: ";").first?.split(separator: "=")
+                    if parts?.first == "admin_session" {
+                        sessionCookie = String(parts![1])
+                    }
+                }
+            })
             
             // Test upload without image
             try await app.testing().test(.POST, "admin/upload", headers: [
-                "Authorization": "Basic \(basicAuth)",
+                "Cookie": "admin_session=\(sessionCookie!)",
                 "Content-Type": "multipart/form-data; boundary=test"
             ], body: ByteBuffer(string: "--test\r\nContent-Disposition: form-data; name=\"image\"\r\n\r\n\r\n--test--"), afterResponse: { res async in
                 #expect(res.status == .badRequest)

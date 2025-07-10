@@ -26,4 +26,5 @@ Building a personal website with blog functionality using Vapor 4 (Swift web fra
 
 ## Critical Implementation Details
 
-[... rest of the existing content remains unchanged ...]
+## Azure Deployment Notes
+- Running this on Azure, remember to set environment variables specific to Azure deployment

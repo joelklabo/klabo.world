@@ -6,6 +6,9 @@ import Smtp
 
 // configures your application
 public func configure(_ app: Application) async throws {
+    // Add command support
+    app.commands.use(HashPasswordCommand(), as: "hash-password")
+    
     // Configure max body size for file uploads
     app.routes.defaultMaxBodySize = "10mb"
     
@@ -40,6 +43,12 @@ public func configure(_ app: Application) async throws {
     
     // Configure Leaf templating
     app.views.use(.leaf)
+    
+    // Initialize session storage
+    app.storage[SessionStorageKey.self] = [:]
+    
+    // Initialize rate limiter
+    app.storage[RateLimiterKey.self] = RateLimiter()
     
     // Load all post metadata on startup
     do {

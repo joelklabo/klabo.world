@@ -6,7 +6,7 @@ import NIOCore
 struct AdminController: RouteCollection {
     func boot(routes: any RoutesBuilder) throws {
         let adminRoutes = routes.grouped("admin")
-            .grouped(AdminAuthMiddleware())
+            .grouped(SessionAuthMiddleware())
         
         adminRoutes.get(use: index)
         adminRoutes.get("compose", use: compose)
