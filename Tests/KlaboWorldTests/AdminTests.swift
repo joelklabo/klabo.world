@@ -9,9 +9,6 @@ struct AdminTests {
     func testAdminAuthRequired() async throws {
         try await withApp(configure: configure) { app in
             app.storage[ConfigKey.self] = SiteConfiguration(
-                smtpHost: "test",
-                smtpUsername: "test",
-                smtpPassword: "test",
                 adminPassword: "test-password",
                 uploadsDir: "./test",
                 gaTrackingID: nil,
@@ -33,9 +30,6 @@ struct AdminTests {
             let hashedPassword = try app.password.hash("test-password")
             
             app.storage[ConfigKey.self] = SiteConfiguration(
-                smtpHost: "test",
-                smtpUsername: "test",
-                smtpPassword: "test",
                 adminPassword: hashedPassword,
                 uploadsDir: "./test",
                 gaTrackingID: nil,
@@ -79,9 +73,6 @@ struct AdminTests {
             let hashedPassword = try app.password.hash("test-password")
             
             app.storage[ConfigKey.self] = SiteConfiguration(
-                smtpHost: "test",
-                smtpUsername: "test",
-                smtpPassword: "test",
                 adminPassword: hashedPassword,
                 uploadsDir: "./test",
                 gaTrackingID: nil,
@@ -107,9 +98,6 @@ struct AdminTests {
             let hashedPassword = try app.password.hash("test-password")
             
             app.storage[ConfigKey.self] = SiteConfiguration(
-                smtpHost: "test",
-                smtpUsername: "test",
-                smtpPassword: "test",
                 adminPassword: hashedPassword,
                 uploadsDir: "./test",
                 gaTrackingID: nil,

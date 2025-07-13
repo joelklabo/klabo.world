@@ -25,6 +25,10 @@ Building a personal website with blog functionality using Vapor 4 (Swift web fra
 - Can use `gh` (GitHub CLI) for GitHub repository and workflow interactions
 
 ## Critical Implementation Details
+- Instead of asking for information about rendered HTML, always use curl to get it yourself. Use Playwright to get screenshots
 
 ## Azure Deployment Notes
 - Running this on Azure, remember to set environment variables specific to Azure deployment
+
+## Testing
+- Can use Playwright to test things for this site

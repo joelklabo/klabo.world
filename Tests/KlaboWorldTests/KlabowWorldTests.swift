@@ -9,9 +9,6 @@ struct KlaboWorldTests {
     func testHomePage() async throws {
         try await withApp(configure: configure) { app in
             app.storage[ConfigKey.self] = SiteConfiguration(
-                smtpHost: "test",
-                smtpUsername: "test",
-                smtpPassword: "test",
                 adminPassword: "test",
                 uploadsDir: "./test",
                 gaTrackingID: "UA-TEST-123",
@@ -32,9 +29,6 @@ struct KlaboWorldTests {
     func testHomePageWithoutGA() async throws {
         try await withApp(configure: configure) { app in
             app.storage[ConfigKey.self] = SiteConfiguration(
-                smtpHost: "test",
-                smtpUsername: "test",
-                smtpPassword: "test",
                 adminPassword: "test",
                 uploadsDir: "./test",
                 gaTrackingID: nil,
@@ -53,9 +47,6 @@ struct KlaboWorldTests {
     func testStaticFileServing() async throws {
         try await withApp(configure: configure) { app in
             app.storage[ConfigKey.self] = SiteConfiguration(
-                smtpHost: "test",
-                smtpUsername: "test",
-                smtpPassword: "test",
                 adminPassword: "test",
                 uploadsDir: "./test",
                 gaTrackingID: nil,

@@ -1,0 +1,5 @@
+<svg class="h-10" viewBox="0 0 200 40" xmlns="http://www.w3.org/2000/svg">
+    <text x="0" y="30" class="text-3xl font-extrabold fill-purple-600 dark:fill-purple-400 group-hover:fill-purple-500 dark:group-hover:fill-purple-300 transition-colors duration-300" style="font-family: 'Inter', sans-serif; font-size: 30px; font-weight: 800;">
+        klabo.world
+    </text>
+</svg>

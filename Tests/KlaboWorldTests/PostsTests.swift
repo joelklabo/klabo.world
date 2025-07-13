@@ -11,9 +11,6 @@ struct PostsTests {
         try await withApp(configure: configure) { app in
             // Set up test environment
             app.storage[ConfigKey.self] = SiteConfiguration(
-                smtpHost: "test",
-                smtpUsername: "test",
-                smtpPassword: "test",
                 adminPassword: "test",
                 uploadsDir: "./test",
                 gaTrackingID: nil,
@@ -92,9 +89,6 @@ struct PostsTests {
             ]
             
             app.storage[ConfigKey.self] = SiteConfiguration(
-                smtpHost: "test",
-                smtpUsername: "test",
-                smtpPassword: "test",
                 adminPassword: "test",
                 uploadsDir: "./test",
                 gaTrackingID: nil,

@@ -2,6 +2,12 @@ import Vapor
 import Leaf
 import Down
 
+extension Array {
+    subscript(safe index: Int) -> Element? {
+        return indices.contains(index) ? self[index] : nil
+    }
+}
+
 struct PostsController: RouteCollection {
     func boot(routes: any RoutesBuilder) throws {
         let posts = routes.grouped("posts")
@@ -68,7 +74,7 @@ struct PostsController: RouteCollection {
         
         let baseContext = BaseContext.create(from: req.application)
         let context = TagPostsContext(
-            title: "Posts tagged with \"\(tag)\"",
+            title: "Posts tagged with \(tag)",
             posts: filteredPosts,
             currentTag: tag,
             gaTrackingID: baseContext.gaTrackingID,
@@ -141,10 +147,16 @@ struct PostsController: RouteCollection {
         }
         
         let posts = req.application.storage[PostsCacheKey.self] ?? []
+        let publishedPosts = posts.filter { $0.isPublished }.sorted { $0.date > $1.date }
         
-        guard let postMetadata = posts.first(where: { $0.slug == slug && $0.isPublished }) else {
+        guard let currentIndex = publishedPosts.firstIndex(where: { $0.slug == slug }),
+              let postMetadata = publishedPosts[safe: currentIndex] else {
             throw Abort(.notFound)
         }
+        
+        // Get previous and next posts
+        let previousPost = currentIndex > 0 ? publishedPosts[currentIndex - 1] : nil
+        let nextPost = publishedPosts[safe: currentIndex + 1]
         
         struct PostContext: Content, ViewContext {
             let title: String
@@ -154,6 +166,10 @@ struct PostsController: RouteCollection {
             let popularTags: [TagCount]
             let highlightjs: Bool = true
             let buildVersion: String?
+            let readingTime: Int?
+            let previousPost: PostMetadata?
+            let nextPost: PostMetadata?
+            let siteURL: String
         }
         
         let postPath = req.application.directory.resourcesDirectory + "Posts/\(slug).md"
@@ -163,14 +179,24 @@ struct PostsController: RouteCollection {
             let fileContent = String(buffer: data)
             let htmlContent = parseMarkdownToHTML(fileContent)
             
+            // Calculate reading time (assuming 200 words per minute)
+            let wordCount = fileContent.split(separator: " ").count
+            let readingTime = max(1, wordCount / 200)
+            
             let baseContext = BaseContext.create(from: req.application)
+            let siteURL = Environment.get("SITE_URL") ?? "https://klabo.world"
+            
             let context = PostContext(
                 title: postMetadata.title,
                 post: postMetadata,
                 content: htmlContent,
                 gaTrackingID: baseContext.gaTrackingID,
                 popularTags: baseContext.popularTags,
-                buildVersion: baseContext.buildVersion
+                buildVersion: baseContext.buildVersion,
+                readingTime: readingTime,
+                previousPost: previousPost,
+                nextPost: nextPost,
+                siteURL: siteURL
             )
             
             return try await req.view.render("posts/show", context)

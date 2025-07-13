@@ -8,14 +8,14 @@
         <a href="/posts/tag/#(tag.tag)" 
            class="group relative px-6 py-3 bg-gradient-to-br from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 rounded-lg border border-purple-200 hover:border-purple-300 transition-all duration-200 hover:scale-105 hover:shadow-lg">
             <span class="font-medium text-gray-800 group-hover:text-purple-700 transition-colors">#(tag.tag)</span>
-            <span class="ml-2 text-sm text-gray-600 bg-white px-2 py-1 rounded-full shadow-sm">#(tag.count)</span>
+            <span class="ml-2 text-sm text-gray-700 bg-white px-2 py-1 rounded-full shadow-sm">#(tag.count)</span>
         </a>
         #endfor
     </div>
     
     #if(count(tags) == 0):
     <div class="text-center py-12">
-        <p class="text-gray-600">No tags found yet.</p>
+        <p class="text-gray-700">No tags found yet.</p>
     </div>
     #endif
     

@@ -9,32 +9,257 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="apple-touch-icon" href="/favicon.svg">
     
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <style>
+        /* Fix for macOS subpixel antialiasing causing background box in dark mode */
+        #site-logo {
+            /* Font smoothing to prevent subpixel rendering artifacts */
+            -webkit-font-smoothing: antialiased !important;
+            -moz-osx-font-smoothing: grayscale !important;
+            text-rendering: optimizeLegibility !important;
+            
+            /* Remove all backgrounds */
+            background: none !important;
+            background-color: transparent !important;
+            background-image: none !important;
+            background-clip: unset !important;
+            -webkit-background-clip: unset !important;
+            -webkit-text-fill-color: unset !important;
+            
+            /* Remove shadows and effects */
+            text-shadow: none !important;
+            box-shadow: none !important;
+            filter: none !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            
+            /* Prevent blend mode issues */
+            isolation: isolate !important;
+            mix-blend-mode: normal !important;
+            
+            /* Force GPU acceleration */
+            transform: translateZ(0) !important;
+            will-change: transform !important;
+            
+            /* Additional fixes */
+            -webkit-tap-highlight-color: transparent !important;
+            text-decoration: none !important;
+            opacity: 0.999 !important; /* Rendering hack for some browsers */
+        }
+        
+        /* Remove any pseudo-elements that might add backgrounds */
+        #site-logo::before,
+        #site-logo::after,
+        #site-logo *::before,
+        #site-logo *::after {
+            display: none !important;
+        }
+        
+        /* Ensure parent elements don't add backgrounds */
+        a:has(#site-logo),
+        .group:has(#site-logo) {
+            background: none !important;
+            background-color: transparent !important;
+        }
+        
+        /* Solution 1: Font smoothing to prevent dark mode rendering issues */
+        #site-logo {
+            -webkit-font-smoothing: antialiased !important;
+            -moz-osx-font-smoothing: grayscale !important;
+            font-smoothing: antialiased !important;
+        }
+        
+        /* Solution 2: CSS isolation to prevent blending issues */
+        a:has(#site-logo) {
+            isolation: isolate !important;
+        }
+        
+        /* Solution 3: Force specific rendering properties */
+        #site-logo {
+            will-change: auto !important;
+            transform: translateZ(0) !important; /* Force GPU acceleration */
+            backface-visibility: hidden !important;
+            -webkit-backface-visibility: hidden !important;
+            perspective: 1px !important;
+        }
+        
+        /* Solution 4: Ensure no text shadows or outlines */
+        #site-logo {
+            text-shadow: none !important;
+            outline: none !important;
+            -webkit-text-stroke: 0 !important;
+            text-stroke: 0 !important;
+        }
+        
+        /* Solution 5: Override any potential gradient text effects */
+        .dark #site-logo {
+            background: none !important;
+            background-color: transparent !important;
+            background-image: none !important;
+            -webkit-background-clip: unset !important;
+            background-clip: unset !important;
+            -webkit-text-fill-color: #c084fc !important; /* purple-400 */
+            color: #c084fc !important;
+        }
+        
+        /* Solution 6: Apply opacity hack if needed */
+        .dark #site-logo {
+            opacity: 0.999 !important; /* Hack to fix certain rendering issues */
+        }
+        
+        /* Dark mode specific color */
+        .dark #site-logo {
+            color: #c084fc !important; /* purple-400 */
+        }
+        
+        .dark .group:hover #site-logo {
+            color: #d8b4fe !important; /* purple-300 */
+        }
+        
+        /* Override any typography plugin styles that might affect the logo */
+        .prose #site-logo,
+        .prose-invert #site-logo,
+        .dark .prose #site-logo,
+        .dark .prose-invert #site-logo {
+            background: none !important;
+            background-color: transparent !important;
+        }
+    </style>
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
-                    typography: {
+                    fontFamily: {
+                        'sans': ['Inter', 'ui-sans-serif', 'system-ui'],
+                        'mono': ['JetBrains Mono', 'ui-monospace', 'monospace'],
+                    },
+                    colors: {
+                        'bitcoin': '#f7931a',
+                        'lightning': '#792de4',
+                        'nostr': '#9B5DE5',
+                    },
+                    typography: (theme) => ({
                         DEFAULT: {
                             css: {
                                 maxWidth: 'none',
+                                color: theme('colors.gray.800'),
+                                lineHeight: '1.75',
+                                fontSize: '1.125rem',
+                                h1: {
+                                    fontWeight: '800',
+                                    fontSize: '2.5rem',
+                                    marginTop: '2rem',
+                                    marginBottom: '1rem',
+                                },
+                                h2: {
+                                    fontWeight: '700',
+                                    fontSize: '2rem',
+                                    marginTop: '2.5rem',
+                                    marginBottom: '1rem',
+                                },
+                                h3: {
+                                    fontWeight: '600',
+                                    fontSize: '1.5rem',
+                                    marginTop: '2rem',
+                                    marginBottom: '0.75rem',
+                                },
+                                p: {
+                                    marginBottom: '1.5rem',
+                                },
                                 code: {
-                                    backgroundColor: '#f3f4f6',
+                                    backgroundColor: theme('colors.gray.100'),
+                                    color: theme('colors.gray.800'),
                                     padding: '0.125rem 0.25rem',
                                     borderRadius: '0.25rem',
-                                    fontWeight: '400',
+                                    fontWeight: '500',
+                                    fontSize: '0.875em',
                                 },
                                 'code::before': {
                                     content: '""'
                                 },
                                 'code::after': {
                                     content: '""'
-                                }
+                                },
+                                pre: {
+                                    backgroundColor: theme('colors.gray.900'),
+                                    borderRadius: '0.5rem',
+                                    marginTop: '1.5rem',
+                                    marginBottom: '1.5rem',
+                                    border: 'none',
+                                    outline: 'none',
+                                    boxShadow: 'none',
+                                    padding: '1.5rem',
+                                },
+                                'pre code': {
+                                    backgroundColor: 'transparent',
+                                    padding: 0,
+                                    color: theme('colors.gray.100'),
+                                },
+                                a: {
+                                    color: theme('colors.indigo.600'),
+                                    textDecoration: 'none',
+                                    fontWeight: '500',
+                                    '&:hover': {
+                                        color: theme('colors.indigo.700'),
+                                        textDecoration: 'underline',
+                                    },
+                                },
+                                blockquote: {
+                                    borderLeftColor: theme('colors.indigo.500'),
+                                    backgroundColor: theme('colors.indigo.50'),
+                                    padding: '1rem 1.5rem',
+                                    borderRadius: '0.25rem',
+                                    fontStyle: 'normal',
+                                },
+                                'ul > li': {
+                                    paddingLeft: '1.5rem',
+                                },
+                                'ol > li': {
+                                    paddingLeft: '1.5rem',
+                                },
+                            }
+                        },
+                        dark: {
+                            css: {
+                                color: theme('colors.gray.300'),
+                                p: { color: theme('colors.gray.300') },
+                                h1: { color: theme('colors.gray.100') },
+                                h2: { color: theme('colors.gray.100') },
+                                h3: { color: theme('colors.gray.100') },
+                                h4: { color: theme('colors.gray.100') },
+                                code: {
+                                    backgroundColor: theme('colors.gray.800'),
+                                    color: theme('colors.gray.200'),
+                                },
+                                pre: {
+                                    border: '0 none',
+                                    outline: 'none',
+                                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2)',
+                                },
+                                a: {
+                                    color: theme('colors.indigo.400'),
+                                    '&:hover': {
+                                        color: theme('colors.indigo.300'),
+                                    },
+                                },
+                                blockquote: {
+                                    borderLeftColor: theme('colors.indigo.400'),
+                                    backgroundColor: theme('colors.gray.800'),
+                                    color: theme('colors.gray.300'),
+                                },
+                                'pre code': {
+                                    color: theme('colors.gray.200'),
+                                },
                             }
                         }
-                    }
+                    })
                 }
             }
         }
@@ -45,29 +270,152 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/swift.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+    <style>
+        /* Override any Highlight.js borders and backgrounds */
+        .hljs {
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
+        }
+        pre code.hljs {
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
+        }
+        pre {
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            background-color: rgb(17 24 39) !important; /* gray-900 */
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        .dark pre {
+            background-color: rgb(0 0 0) !important; /* black */
+            border: none !important;
+            outline: none !important;
+        }
+        /* Remove any wrapper borders */
+        .highlight, .highlighter-rouge {
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+        }
+        /* Ensure the code block fills the pre element */
+        pre > code {
+            display: block !important;
+            width: 100% !important;
+            border: none !important;
+            outline: none !important;
+        }
+    </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             hljs.highlightAll();
+            
+            // Add copy buttons to code blocks
+            document.querySelectorAll('pre code').forEach((codeBlock) => {
+                const pre = codeBlock.parentElement;
+                pre.style.position = 'relative';
+                
+                const button = document.createElement('button');
+                button.className = 'copy-code-button';
+                button.textContent = 'Copy';
+                button.type = 'button';
+                
+                button.addEventListener('click', async () => {
+                    const code = codeBlock.textContent;
+                    try {
+                        await navigator.clipboard.writeText(code);
+                        button.textContent = 'Copied!';
+                        button.classList.add('copied');
+                        setTimeout(() => {
+                            button.textContent = 'Copy';
+                            button.classList.remove('copied');
+                        }, 2000);
+                    } catch (err) {
+                        console.error('Failed to copy:', err);
+                    }
+                });
+                
+                pre.appendChild(button);
+            });
         });
     </script>
     <style>
+        /* Code block styling */
+        pre {
+            position: relative;
+            border: 0 none !important;
+            outline: none !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .dark pre {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+        }
+        
+        
+        .copy-code-button {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            background-color: rgba(255, 255, 255, 0.08);
+            color: #abb2bf;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 10;
+            backdrop-filter: blur(8px);
+        }
+        
+        .copy-code-button:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .copy-code-button.copied {
+            background-color: #10b981;
+            border-color: #10b981;
+            color: white;
+        }
+        
         /* Override highlight.js backgrounds to work with Tailwind */
         .hljs {
             background: rgb(17 24 39) !important;
             padding: 1.5rem !important;
+            padding-top: 3rem !important;
             border-radius: 0.5rem !important;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
             font-size: 0.95rem !important;
-            line-height: 1.6 !important;
+            line-height: 1.75 !important;
+            font-family: 'JetBrains Mono', monospace !important;
+            outline: none !important;
         }
         pre code.hljs {
             padding: 1.5rem !important;
+            padding-top: 3rem !important;
+            border: 0 none !important;
+            outline: none !important;
         }
         /* Make syntax highlighting more vibrant */
         .hljs-string { color: #98c379 !important; }
         .hljs-keyword { color: #c678dd !important; }
         .hljs-function { color: #61afef !important; }
         .hljs-number { color: #d19a66 !important; }
-        .hljs-comment { color: #5c6370 !important; }
+        .hljs-comment { color: #5c6370 !important; font-style: italic !important; }
         .hljs-variable { color: #e06c75 !important; }
         .hljs-built_in { color: #e6c07b !important; }
         .hljs-attr { color: #d19a66 !important; }
@@ -76,6 +424,26 @@
         .hljs-selector-class { color: #d19a66 !important; }
         .hljs-selector-id { color: #61afef !important; }
         .hljs-title { color: #61afef !important; }
+        
+        /* Dark mode specific overrides for code blocks */
+        .dark .hljs {
+            background: rgb(0 0 0) !important;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+        }
+        
+        .dark pre {
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+        }
+        
+        .dark pre code.hljs {
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+        }
         .hljs-params { color: #abb2bf !important; }
         .hljs-class { color: #e6c07b !important; }
         .hljs-literal { color: #56b6c2 !important; }
@@ -97,9 +465,86 @@
       gtag('config', '#(gaTrackingID)');
     </script>
     #endif
+    <style>
+        /* Custom animations and utilities */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f3f4f6;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 6px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+        
+        .dark ::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+        
+        .dark ::-webkit-scrollbar-thumb {
+            background: #4b5563;
+        }
+        
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #6b7280;
+        }
+        
+        /* Loading skeleton animation */
+        @keyframes shimmer {
+            0% { background-position: -468px 0; }
+            100% { background-position: 468px 0; }
+        }
+        
+        .skeleton {
+            background: linear-gradient(to right, #f3f4f6 4%, #e5e7eb 25%, #f3f4f6 36%);
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite;
+        }
+        
+        /* Tag colors by category */
+        .tag-bitcoin { background-color: #f7931a20; color: #f7931a; border-color: #f7931a40; }
+        .tag-bitcoin:hover { background-color: #f7931a30; }
+        
+        .tag-lightning { background-color: #792de420; color: #792de4; border-color: #792de440; }
+        .tag-lightning:hover { background-color: #792de430; }
+        
+        .tag-nostr { background-color: #9B5DE520; color: #9B5DE5; border-color: #9B5DE540; }
+        .tag-nostr:hover { background-color: #9B5DE530; }
+        
+        .dark .tag-bitcoin { background-color: #f7931a30; }
+        .dark .tag-lightning { background-color: #792de430; }
+        .dark .tag-nostr { background-color: #9B5DE530; }
+        
+        /* Prevent logo text selection and highlight */
+        #site-logo {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+    </style>
 </head>
-<body class="bg-gray-50 text-gray-900">
-    <header class="sticky top-0 z-50 bg-gradient-to-r from-slate-900 via-purple-900 to-slate-900 backdrop-blur-md shadow-xl border-b border-purple-500/20">
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
+    <header class="sticky top-0 z-50 bg-white dark:bg-gradient-to-r dark:from-slate-900 dark:via-purple-900 dark:to-slate-900 backdrop-blur-md shadow-lg dark:shadow-xl border-b border-gray-200 dark:border-purple-500/20">
         <nav class="max-w-7xl mx-auto px-6 py-5">
             <div class="flex items-center justify-between gap-4">
                 <!-- Logo with rocket icon -->
@@ -110,59 +555,63 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
                         </svg>
                     </div>
-                    <span class="text-3xl font-extrabold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent group-hover:from-purple-300 group-hover:to-pink-300 transition-all duration-300">klabo.world</span>
+                    <svg class="h-10" viewBox="0 0 200 40" xmlns="http://www.w3.org/2000/svg">
+                        <text x="0" y="30" fill="currentColor" style="font-family: 'Inter', sans-serif; font-size: 30px; font-weight: 800;" class="fill-purple-600 dark:fill-purple-400 group-hover:fill-purple-500 dark:group-hover:fill-purple-300 transition-all duration-300">
+                            klabo.world
+                        </text>
+                    </svg>
                 </a>
                 
                 <!-- Search bar (hidden on mobile) -->
                 <div class="hidden md:flex flex-1 max-w-md mx-4 relative">
                     <input type="text" id="search-input" placeholder="Search" 
-                           class="w-full px-4 py-2 pl-10 bg-white/10 backdrop-blur-sm border border-purple-500/30 rounded-full text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300">
-                    <svg class="absolute left-3 top-2.5 w-5 h-5 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                           class="w-full px-4 py-2 pl-10 bg-gray-100 dark:bg-white/10 backdrop-blur-sm border border-gray-300 dark:border-purple-500/30 rounded-full text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300">
+                    <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-500 dark:text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
                     <!-- Search results overlay -->
-                    <div id="search-results" class="absolute top-full mt-2 w-full bg-slate-900 border border-purple-500/30 rounded-lg shadow-2xl hidden overflow-hidden">
+                    <div id="search-results" class="absolute top-full mt-2 w-full bg-white dark:bg-slate-900 border border-gray-200 dark:border-purple-500/30 rounded-lg shadow-2xl hidden overflow-hidden">
                         <div class="max-h-96 overflow-y-auto"></div>
                     </div>
                 </div>
                 
                 <!-- Main navigation -->
                 <ul class="hidden md:flex items-center space-x-1">
-                    <li><a href="/" class="px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">Home</a></li>
-                    <li><a href="/posts" class="px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">Blog</a></li>
-                    <li><a href="/apps" class="px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">Apps</a></li>
+                    <li><a href="/" class="px-4 py-2 text-gray-700 dark:text-white/80 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">Home</a></li>
+                    <li><a href="/posts" class="px-4 py-2 text-gray-700 dark:text-white/80 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">Blog</a></li>
+                    <li><a href="/apps" class="px-4 py-2 text-gray-700 dark:text-white/80 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">Apps</a></li>
                     
                     <!-- Tags dropdown -->
                     <li class="relative group">
-                        <button class="px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 font-medium flex items-center gap-1">
+                        <button class="px-4 py-2 text-gray-700 dark:text-white/80 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-all duration-200 font-medium flex items-center gap-1">
                             Tags
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
-                        <div class="absolute top-full mt-2 w-48 bg-slate-900 border border-purple-500/30 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden">
+                        <div class="absolute top-full mt-2 w-48 bg-white dark:bg-slate-900 border border-gray-200 dark:border-purple-500/30 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 overflow-hidden">
                             #if(popularTags):
                             <div class="py-2">
                                 #for(tag in popularTags):
-                                <a href="/posts/tag/#(tag.tag)" class="block px-4 py-2 text-white/80 hover:text-white hover:bg-purple-500/20 transition-colors duration-150">
-                                    #(tag.tag) <span class="text-white/40 text-sm">(#(tag.count))</span>
+                                <a href="/posts/tag/#(tag.tag)" class="block px-4 py-2 text-gray-700 dark:text-white/80 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-purple-500/20 transition-colors duration-150">
+                                    #(tag.tag) <span class="text-gray-500 dark:text-white/40 text-sm">(#(tag.count))</span>
                                 </a>
                                 #endfor
-                                <div class="border-t border-purple-500/20 mt-2 pt-2">
-                                    <a href="/posts/tags" class="block px-4 py-2 text-purple-400 hover:text-purple-300 hover:bg-purple-500/20 transition-colors duration-150 text-sm font-medium">
+                                <div class="border-t border-gray-200 dark:border-purple-500/20 mt-2 pt-2">
+                                    <a href="/posts/tags" class="block px-4 py-2 text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-gray-100 dark:hover:bg-purple-500/20 transition-colors duration-150 text-sm font-medium">
                                         View all tags →
                                     </a>
                                 </div>
                             </div>
                             #else:
-                            <div class="px-4 py-3 text-white/60 text-sm">No tags available</div>
+                            <div class="px-4 py-3 text-gray-500 dark:text-white/60 text-sm">No tags available</div>
                             #endif
                         </div>
                     </li>
                     
                     <!-- Social Media Links -->
                     <li>
-                        <a href="https://x.com/joelklabo" target="_blank" class="px-3 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 inline-flex items-center gap-2">
+                        <a href="https://x.com/joelklabo" target="_blank" class="px-3 py-2 text-gray-700 dark:text-white/80 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-all duration-200 inline-flex items-center gap-2">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                             </svg>
@@ -170,17 +619,29 @@
                         </a>
                     </li>
                     <li>
-                        <a href="https://github.com/joelklabo" target="_blank" class="px-3 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 inline-flex items-center gap-2">
+                        <a href="https://github.com/joelklabo" target="_blank" class="px-3 py-2 text-gray-700 dark:text-white/80 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-all duration-200 inline-flex items-center gap-2">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"/>
                             </svg>
                             <span class="sr-only">GitHub</span>
                         </a>
                     </li>
+                    
+                    <!-- Dark mode toggle -->
+                    <li>
+                        <button id="theme-toggle" class="px-3 py-2 text-gray-700 dark:text-white/80 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-all duration-200">
+                            <svg class="w-5 h-5 hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+                            </svg>
+                            <svg class="w-5 h-5 block dark:hidden" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                            </svg>
+                        </button>
+                    </li>
                 </ul>
                 
                 <!-- Mobile menu button -->
-                <button id="mobile-menu-button" class="md:hidden p-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200">
+                <button id="mobile-menu-button" class="md:hidden p-2 text-gray-700 dark:text-white/80 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-all duration-200">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
@@ -192,23 +653,23 @@
                 <!-- Mobile search -->
                 <div class="relative mb-4">
                     <input type="text" id="mobile-search-input" placeholder="Search" 
-                           class="w-full px-4 py-2 pl-10 bg-white/10 backdrop-blur-sm border border-purple-500/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                    <svg class="absolute left-3 top-2.5 w-5 h-5 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                           class="w-full px-4 py-2 pl-10 bg-gray-100 dark:bg-white/10 backdrop-blur-sm border border-gray-300 dark:border-purple-500/30 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                    <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-500 dark:text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
                 </div>
-                <a href="/" class="block px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">Home</a>
-                <a href="/posts" class="block px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">Blog</a>
-                <a href="/apps" class="block px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">Apps</a>
-                <a href="/posts/tags" class="block px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">Browse Tags</a>
+                <a href="/" class="block px-4 py-2 text-gray-700 dark:text-white/80 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">Home</a>
+                <a href="/posts" class="block px-4 py-2 text-gray-700 dark:text-white/80 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">Blog</a>
+                <a href="/apps" class="block px-4 py-2 text-gray-700 dark:text-white/80 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">Apps</a>
+                <a href="/posts/tags" class="block px-4 py-2 text-gray-700 dark:text-white/80 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">Browse Tags</a>
                 <div class="flex gap-4 px-4 py-2">
-                    <a href="https://x.com/joelklabo" target="_blank" class="flex-1 flex items-center justify-center gap-2 px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">
+                    <a href="https://x.com/joelklabo" target="_blank" class="flex-1 flex items-center justify-center gap-2 px-4 py-2 text-gray-700 dark:text-white/80 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                         </svg>
                         X.com
                     </a>
-                    <a href="https://github.com/joelklabo" target="_blank" class="flex-1 flex items-center justify-center gap-2 px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">
+                    <a href="https://github.com/joelklabo" target="_blank" class="flex-1 flex items-center justify-center gap-2 px-4 py-2 text-gray-700 dark:text-white/80 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"/>
                         </svg>
@@ -223,18 +684,18 @@
         #import("body")
     </main>
     
-    <footer class="bg-gray-900 text-white py-12 mt-16">
+    <footer class="bg-gray-900 dark:bg-gray-950 text-white py-16 mt-20 border-t border-gray-800">
         <div class="max-w-6xl mx-auto px-6">
             <div class="flex flex-col items-center space-y-6">
                 <!-- Social Media Links -->
                 <div class="flex gap-6">
-                    <a href="https://x.com/joelklabo" target="_blank" class="text-gray-400 hover:text-white transition-colors duration-200">
+                    <a href="https://x.com/joelklabo" target="_blank" class="text-gray-300 hover:text-white transition-colors duration-200">
                         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                         </svg>
                         <span class="sr-only">X (Twitter)</span>
                     </a>
-                    <a href="https://github.com/joelklabo" target="_blank" class="text-gray-400 hover:text-white transition-colors duration-200">
+                    <a href="https://github.com/joelklabo" target="_blank" class="text-gray-300 hover:text-white transition-colors duration-200">
                         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"/>
                         </svg>
@@ -242,12 +703,36 @@
                     </a>
                 </div>
                 <!-- Copyright -->
-                <p class="text-gray-400">&copy; 2025 Joel Klabo. All rights reserved.#if(buildVersion): • Build: #(buildVersion)#endif</p>
+                <p class="text-gray-300">&copy; 2025 Joel Klabo. All rights reserved.#if(buildVersion): • Build: #(buildVersion)#endif</p>
             </div>
         </div>
     </footer>
     
     <script>
+        // Dark mode toggle
+        const html = document.documentElement;
+        const themeToggle = document.getElementById('theme-toggle');
+        
+        // Check for saved theme preference or default to light
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        html.classList.toggle('dark', currentTheme === 'dark');
+        
+        themeToggle?.addEventListener('click', () => {
+            const isDark = html.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        });
+        
+        // Active navigation state
+        const currentPath = window.location.pathname;
+        // Only select navigation links, not the logo
+        const navLinks = document.querySelectorAll('nav ul a[href]');
+        navLinks.forEach(link => {
+            const href = link.getAttribute('href');
+            if (href === currentPath || (href !== '/' && currentPath.startsWith(href))) {
+                link.classList.add('bg-white/20', 'text-white');
+            }
+        });
+        
         // Mobile menu toggle
         document.getElementById('mobile-menu-button')?.addEventListener('click', function() {
             const menu = document.getElementById('mobile-menu');
@@ -256,6 +741,7 @@
         
         // Search functionality
         let searchTimeout;
+        let currentSearchQuery = '';
         const searchInput = document.getElementById('search-input');
         const mobileSearchInput = document.getElementById('mobile-search-input');
         const searchResults = document.getElementById('search-results');
@@ -266,43 +752,73 @@
                 return;
             }
             
+            currentSearchQuery = query;
+            const resultsContainer = searchResults.querySelector('div');
+            
+            // Show loading state
+            resultsContainer.innerHTML = `
+                <div class="px-4 py-3">
+                    <div class="skeleton h-4 w-3/4 mb-2 rounded"></div>
+                    <div class="skeleton h-3 w-full rounded"></div>
+                </div>
+            `;
+            searchResults.classList.remove('hidden');
+            
             try {
                 const response = await fetch(`/search?q=${encodeURIComponent(query)}`);
                 const results = await response.json();
                 
-                const resultsContainer = searchResults.querySelector('div');
+                // Check if this is still the current search
+                if (query !== currentSearchQuery) return;
                 
                 if (results.length === 0) {
                     resultsContainer.innerHTML = '<div class="px-4 py-3 text-white/60">No results found</div>';
                 } else {
-                    resultsContainer.innerHTML = results.map(result => `
-                        <a href="${result.url}" class="block px-4 py-3 hover:bg-purple-500/20 transition-colors duration-150 border-b border-purple-500/10 last:border-0">
-                            <div class="flex items-start gap-3">
-                                ${result.type === 'app' && result.icon ? `
-                                    <img src="${result.icon}" alt="${result.title} icon" class="w-10 h-10 rounded-lg flex-shrink-0 object-cover">
-                                ` : ''}
-                                <div class="flex-1">
-                                    <div class="flex items-center gap-2">
-                                        <span class="font-medium text-white">${result.title}</span>
-                                        <span class="text-xs px-2 py-0.5 rounded-full ${
-                                            result.type === 'app' ? 'bg-blue-500/20 text-blue-300' : 'bg-green-500/20 text-green-300'
-                                        }">${result.type}</span>
+                    resultsContainer.innerHTML = results.map(result => {
+                        // Determine tag color class
+                        const getTagClass = (tag) => {
+                            const tagLower = tag.toLowerCase();
+                            if (tagLower.includes('bitcoin')) return 'tag-bitcoin';
+                            if (tagLower.includes('lightning')) return 'tag-lightning';
+                            if (tagLower.includes('nostr') || tagLower.includes('nip')) return 'tag-nostr';
+                            return 'bg-purple-500/20 text-purple-300';
+                        };
+                        
+                        return `
+                            <a href="${result.url}" class="block px-4 py-3 hover:bg-purple-500/20 transition-colors duration-150 border-b border-purple-500/10 last:border-0">
+                                <div class="flex items-start gap-3">
+                                    ${result.type === 'app' && result.icon ? `
+                                        <img src="${result.icon}" alt="${result.title} icon" class="w-10 h-10 rounded-lg flex-shrink-0 object-cover">
+                                    ` : ''}
+                                    <div class="flex-1">
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-medium text-white">${highlightMatch(result.title, query)}</span>
+                                            <span class="text-xs px-2 py-0.5 rounded-full ${
+                                                result.type === 'app' ? 'bg-blue-500/20 text-blue-300' : 'bg-green-500/20 text-green-300'
+                                            }">${result.type}</span>
+                                        </div>
+                                        <div class="text-sm text-white/60 mt-1">${highlightMatch(result.description, query)}</div>
+                                        ${result.tags ? `<div class="flex gap-2 mt-2">${result.tags.map(tag => 
+                                            `<span class="text-xs px-2 py-1 ${getTagClass(tag)} rounded-full border">${tag}</span>`
+                                        ).join('')}</div>` : ''}
                                     </div>
-                                    <div class="text-sm text-white/60 mt-1">${result.description}</div>
-                                    ${result.tags ? `<div class="flex gap-2 mt-2">${result.tags.map(tag => 
-                                        `<span class="text-xs px-2 py-1 bg-purple-500/20 text-purple-300 rounded">${tag}</span>`
-                                    ).join('')}</div>` : ''}
                                 </div>
-                            </div>
-                        </a>
-                    `).join('');
+                            </a>
+                        `;
+                    }).join('');
                 }
                 
                 searchResults.classList.remove('hidden');
             } catch (error) {
                 console.error('Search error:', error);
-                searchResults.classList.add('hidden');
+                resultsContainer.innerHTML = '<div class="px-4 py-3 text-red-400">Search error. Please try again.</div>';
             }
+        }
+        
+        // Highlight search matches
+        function highlightMatch(text, query) {
+            const regex = new RegExp(`(${query})`, 'gi');
+            return text.replace(regex, '<mark class="bg-yellow-400/30 text-yellow-200">$1</mark>');
         }
         
         // Desktop search
@@ -318,11 +834,29 @@
             }
         });
         
-        // Close search results when clicking outside
+        // Close search results when clicking outside or pressing Escape
         document.addEventListener('click', function(e) {
             if (!searchInput?.contains(e.target) && !searchResults?.contains(e.target)) {
                 searchResults?.classList.add('hidden');
             }
+        });
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                searchResults?.classList.add('hidden');
+                searchInput?.blur();
+            }
+        });
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
         });
     </script>
 </body>
