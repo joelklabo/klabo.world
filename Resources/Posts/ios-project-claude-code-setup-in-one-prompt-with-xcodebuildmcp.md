@@ -996,10 +996,11 @@ You'll know the setup is successful when:
 5. **Workflow feels natural**: Commands match your needs
 
 The goal is to make iOS development with Claude Code feel magical - where everything just works and Claude understands your project deeply.
-```
+````
 
 ## The workflow
 
+````markdown
 ### 1) Prime Claude with `/init`
 I started by running `/init` so Claude reads the repo and rewrites `CLAUDE.md` with real project affordances: how to run one test with `xcodebuild`, where Vice models live, what Swift 6.1 concurrency rules we enforce, and the bundle/CloudKit facts. I cut redundancy, kept only the sharp bits, and verified with CI. This establishes a trustworthy “ops manual” Claude sees first, not tribal memory.
 
@@ -1062,3 +1063,4 @@ No assumptions about Make/Rake; the prompt builds what it needs, asks for option
 6) Tighten the screws (Claude-specific, fewer foot-guns)
 
 Final pass: removed non-Claude IDE talk, added a real troubleshooting appendix, and clarified that MCP is already available in Claude Code (no extra config files needed there). Hooks and settings are optional but recommended; the context script is mandatory (it’s where the magic lives).
+````
