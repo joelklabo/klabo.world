@@ -172,37 +172,76 @@ struct PostsController: RouteCollection {
             let siteURL: String
         }
         
-        let postPath = req.application.directory.resourcesDirectory + "Posts/\(slug).md"
+        // Try to fetch content from GitHub first if available
+        let fileContent: String
         
-        do {
-            let data = try await req.fileio.readFile(at: postPath).collect(upTo: 1024 * 1024) // 1MB max
-            let fileContent = String(buffer: data)
-            let htmlContent = parseMarkdownToHTML(fileContent)
-            
-            // Calculate reading time (assuming 200 words per minute)
-            let wordCount = fileContent.split(separator: " ").count
-            let readingTime = max(1, wordCount / 200)
-            
-            let baseContext = BaseContext.create(from: req.application)
-            let siteURL = Environment.get("SITE_URL") ?? "https://klabo.world"
-            
-            let context = PostContext(
-                title: postMetadata.title,
-                post: postMetadata,
-                content: htmlContent,
-                gaTrackingID: baseContext.gaTrackingID,
-                popularTags: baseContext.popularTags,
-                buildVersion: baseContext.buildVersion,
-                readingTime: readingTime,
-                previousPost: previousPost,
-                nextPost: nextPost,
-                siteURL: siteURL
-            )
-            
-            return try await req.view.render("posts/show", context)
-        } catch {
-            throw Abort(.notFound)
+        if let github = req.application.github {
+            // Try GitHub first
+            let gitPath = "Resources/Posts/\(slug).md"
+            do {
+                fileContent = try await github.getFileContent(path: gitPath)
+                req.logger.info("Fetched post from GitHub: \(gitPath)")
+            } catch {
+                req.logger.warning("Failed to fetch post from GitHub, trying local: \(error)")
+                // Fallback to local file system
+                let postPath = req.application.directory.resourcesDirectory + "Posts/\(slug).md"
+                do {
+                    let data = try await req.fileio.readFile(at: postPath).collect(upTo: 1024 * 1024) // 1MB max
+                    fileContent = String(buffer: data)
+                } catch {
+                    // Also check uploads directory
+                    let config = req.application.storage[ConfigKey.self]!
+                    let uploadsPath = config.uploadsDir + "/posts/\(slug).md"
+                    do {
+                        let data = try await req.fileio.readFile(at: uploadsPath).collect(upTo: 1024 * 1024)
+                        fileContent = String(buffer: data)
+                    } catch {
+                        throw Abort(.notFound)
+                    }
+                }
+            }
+        } else {
+            // No GitHub service, use local file system
+            let postPath = req.application.directory.resourcesDirectory + "Posts/\(slug).md"
+            do {
+                let data = try await req.fileio.readFile(at: postPath).collect(upTo: 1024 * 1024) // 1MB max
+                fileContent = String(buffer: data)
+            } catch {
+                // Also check uploads directory
+                let config = req.application.storage[ConfigKey.self]!
+                let uploadsPath = config.uploadsDir + "/posts/\(slug).md"
+                do {
+                    let data = try await req.fileio.readFile(at: uploadsPath).collect(upTo: 1024 * 1024)
+                    fileContent = String(buffer: data)
+                } catch {
+                    throw Abort(.notFound)
+                }
+            }
         }
+        
+        let htmlContent = parseMarkdownToHTML(fileContent)
+        
+        // Calculate reading time (assuming 200 words per minute)
+        let wordCount = fileContent.split(separator: " ").count
+        let readingTime = max(1, wordCount / 200)
+        
+        let baseContext = BaseContext.create(from: req.application)
+        let siteURL = Environment.get("SITE_URL") ?? "https://klabo.world"
+        
+        let context = PostContext(
+            title: postMetadata.title,
+            post: postMetadata,
+            content: htmlContent,
+            gaTrackingID: baseContext.gaTrackingID,
+            popularTags: baseContext.popularTags,
+            buildVersion: baseContext.buildVersion,
+            readingTime: readingTime,
+            previousPost: previousPost,
+            nextPost: nextPost,
+            siteURL: siteURL
+        )
+        
+        return try await req.view.render("posts/show", context)
     }
     
     private func parseMarkdownToHTML(_ markdown: String) -> String {

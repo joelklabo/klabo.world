@@ -66,25 +66,55 @@ public func configure(_ app: Application) async throws {
     // Initialize rate limiter
     app.storage[RateLimiterKey.self] = RateLimiter()
     
-    // Load all post metadata on startup - from both Resources and uploads directory
+    // Load all post metadata on startup
     do {
-        // Load from Resources directory (bundled posts)
-        let resourcePosts = try await loadAllPostMetadata(from: app.directory.resourcesDirectory + "Posts/", on: app)
+        var allPosts: [PostMetadata] = []
         
-        // Load from uploads directory (dynamically created posts)
-        let uploadsPosts = try await loadAllPostMetadata(from: config.uploadsDir + "/posts/", on: app)
-        
-        // Combine both sources, removing duplicates based on slug
-        var allPosts = resourcePosts
-        
-        // Add upload posts, preferring uploaded versions over resource versions
-        for uploadPost in uploadsPosts {
-            allPosts.removeAll { $0.slug == uploadPost.slug }
-            allPosts.append(uploadPost)
+        // If GitHub is configured, fetch posts from there
+        if let github = app.github {
+            do {
+                // Fetch list of posts from GitHub
+                let files = try await github.listFiles(path: "Resources/Posts")
+                var githubPosts: [PostMetadata] = []
+                
+                for file in files where file.hasSuffix(".md") {
+                    do {
+                        let content = try await github.getFileContent(path: "Resources/Posts/\(file)")
+                        if let metadata = parsePostMetadata(from: content, filename: file) {
+                            githubPosts.append(metadata)
+                        }
+                    } catch {
+                        app.logger.warning("Failed to load post \(file) from GitHub: \(error)")
+                    }
+                }
+                
+                allPosts = githubPosts
+                app.logger.info("Loaded \(githubPosts.count) posts from GitHub")
+            } catch {
+                app.logger.warning("Failed to load posts from GitHub, falling back to local: \(error)")
+                // Fallback to local loading
+                let resourcePosts = try await loadAllPostMetadata(from: app.directory.resourcesDirectory + "Posts/", on: app)
+                let uploadsPosts = try await loadAllPostMetadata(from: config.uploadsDir + "/posts/", on: app)
+                allPosts = resourcePosts
+                for uploadPost in uploadsPosts {
+                    allPosts.removeAll { $0.slug == uploadPost.slug }
+                    allPosts.append(uploadPost)
+                }
+            }
+        } else {
+            // No GitHub configured, load from local file system
+            let resourcePosts = try await loadAllPostMetadata(from: app.directory.resourcesDirectory + "Posts/", on: app)
+            let uploadsPosts = try await loadAllPostMetadata(from: config.uploadsDir + "/posts/", on: app)
+            
+            allPosts = resourcePosts
+            for uploadPost in uploadsPosts {
+                allPosts.removeAll { $0.slug == uploadPost.slug }
+                allPosts.append(uploadPost)
+            }
+            app.logger.info("Loaded \(allPosts.count) posts (\(resourcePosts.count) from Resources, \(uploadsPosts.count) from uploads)")
         }
         
         app.storage[PostsCacheKey.self] = allPosts
-        app.logger.info("Loaded \(allPosts.count) posts (\(resourcePosts.count) from Resources, \(uploadsPosts.count) from uploads)")
         
         // Build tag frequency map
         var tagCounts: [String: Int] = [:]
