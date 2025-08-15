@@ -71,7 +71,13 @@ struct AdminController: RouteCollection {
             let publishDate: String?
         }
         
-        let form = try req.content.decode(PostForm.self)
+        let form: PostForm
+        do {
+            form = try req.content.decode(PostForm.self)
+        } catch {
+            req.logger.error("Failed to decode post form: \(error)")
+            throw Abort(.badRequest, reason: "Invalid form data: \(error.localizedDescription)")
+        }
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
@@ -101,22 +107,38 @@ struct AdminController: RouteCollection {
         
         // Get configuration for uploads directory
         guard let config = req.application.storage[ConfigKey.self] else {
+            req.logger.error("Configuration not found in storage")
             throw Abort(.internalServerError, reason: "Configuration not found")
         }
+        
+        req.logger.info("Using uploads directory: \(config.uploadsDir)")
         
         // Write to persistent uploads directory instead of read-only Resources
         let postsDir = config.uploadsDir + "/posts"
         
         // Create posts directory if it doesn't exist
         let fileManager = FileManager.default
-        try fileManager.createDirectory(atPath: postsDir, withIntermediateDirectories: true, attributes: nil)
+        do {
+            try fileManager.createDirectory(atPath: postsDir, withIntermediateDirectories: true, attributes: nil)
+            req.logger.info("Created/verified posts directory at: \(postsDir)")
+        } catch {
+            req.logger.error("Failed to create posts directory at \(postsDir): \(error)")
+            throw Abort(.internalServerError, reason: "Failed to create posts directory: \(error.localizedDescription)")
+        }
         
         let filePath = postsDir + "/\(slug).md"
+        req.logger.info("Attempting to write post to: \(filePath)")
         
         let data = Data(fullContent.utf8)
         let buffer = ByteBuffer(data: data)
         
-        try await req.fileio.writeFile(buffer, at: filePath)
+        do {
+            try await req.fileio.writeFile(buffer, at: filePath)
+            req.logger.info("Successfully wrote post to: \(filePath)")
+        } catch {
+            req.logger.error("Failed to write file to \(filePath): \(error)")
+            throw Abort(.internalServerError, reason: "Failed to write file: \(error.localizedDescription)")
+        }
         
         let newPost = PostMetadata(
             title: form.title,
