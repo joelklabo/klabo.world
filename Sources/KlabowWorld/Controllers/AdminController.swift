@@ -105,39 +105,58 @@ struct AdminController: RouteCollection {
         
         let fullContent = frontMatter + form.content
         
-        // Get configuration for uploads directory
-        guard let config = req.application.storage[ConfigKey.self] else {
-            req.logger.error("Configuration not found in storage")
-            throw Abort(.internalServerError, reason: "Configuration not found")
-        }
-        
-        req.logger.info("Using uploads directory: \(config.uploadsDir)")
-        
-        // Write to persistent uploads directory instead of read-only Resources
-        let postsDir = config.uploadsDir + "/posts"
-        
-        // Create posts directory if it doesn't exist
-        let fileManager = FileManager.default
-        do {
-            try fileManager.createDirectory(atPath: postsDir, withIntermediateDirectories: true, attributes: nil)
-            req.logger.info("Created/verified posts directory at: \(postsDir)")
-        } catch {
-            req.logger.error("Failed to create posts directory at \(postsDir): \(error)")
-            throw Abort(.internalServerError, reason: "Failed to create posts directory: \(error.localizedDescription)")
-        }
-        
-        let filePath = postsDir + "/\(slug).md"
-        req.logger.info("Attempting to write post to: \(filePath)")
-        
-        let data = Data(fullContent.utf8)
-        let buffer = ByteBuffer(data: data)
-        
-        do {
-            try await req.fileio.writeFile(buffer, at: filePath)
-            req.logger.info("Successfully wrote post to: \(filePath)")
-        } catch {
-            req.logger.error("Failed to write file to \(filePath): \(error)")
-            throw Abort(.internalServerError, reason: "Failed to write file: \(error.localizedDescription)")
+        // Check if GitHub service is available
+        if let github = req.application.github {
+            // Use GitHub API to create/update the post in the repository
+            let gitPath = "Resources/Posts/\(slug).md"
+            let commitMessage = "Add blog post: \(form.title)"
+            
+            do {
+                try await github.createOrUpdateFile(
+                    path: gitPath,
+                    content: fullContent,
+                    message: commitMessage
+                )
+                req.logger.info("Successfully created post via GitHub API: \(gitPath)")
+            } catch {
+                req.logger.error("Failed to create post via GitHub API: \(error)")
+                throw Abort(.internalServerError, reason: "Failed to create post on GitHub: \(error.localizedDescription)")
+            }
+        } else {
+            // Fallback to local file system (for development without GitHub token)
+            guard let config = req.application.storage[ConfigKey.self] else {
+                req.logger.error("Configuration not found in storage")
+                throw Abort(.internalServerError, reason: "Configuration not found")
+            }
+            
+            // For local development, write to Resources/Posts directory
+            let postsDir = req.application.environment == .development 
+                ? req.application.directory.resourcesDirectory + "Posts"
+                : config.uploadsDir + "/posts"
+            
+            // Create posts directory if it doesn't exist
+            let fileManager = FileManager.default
+            do {
+                try fileManager.createDirectory(atPath: postsDir, withIntermediateDirectories: true, attributes: nil)
+                req.logger.info("Created/verified posts directory at: \(postsDir)")
+            } catch {
+                req.logger.error("Failed to create posts directory at \(postsDir): \(error)")
+                throw Abort(.internalServerError, reason: "Failed to create posts directory: \(error.localizedDescription)")
+            }
+            
+            let filePath = postsDir + "/\(slug).md"
+            req.logger.info("Writing post locally to: \(filePath)")
+            
+            let data = Data(fullContent.utf8)
+            let buffer = ByteBuffer(data: data)
+            
+            do {
+                try await req.fileio.writeFile(buffer, at: filePath)
+                req.logger.info("Successfully wrote post locally to: \(filePath)")
+            } catch {
+                req.logger.error("Failed to write file to \(filePath): \(error)")
+                throw Abort(.internalServerError, reason: "Failed to write file: \(error.localizedDescription)")
+            }
         }
         
         let newPost = PostMetadata(
@@ -440,9 +459,24 @@ struct AdminController: RouteCollection {
         }
         
         // Read the markdown file content
-        let postPath = req.application.directory.resourcesDirectory + "Posts/\(slug).md"
-        let data = try await req.fileio.readFile(at: postPath).collect(upTo: 1024 * 1024)
-        let fileContent = String(buffer: data)
+        let fileContent: String
+        
+        if let github = req.application.github {
+            // Fetch from GitHub
+            let gitPath = "Resources/Posts/\(slug).md"
+            do {
+                fileContent = try await github.getFileContent(path: gitPath)
+                req.logger.info("Fetched post from GitHub: \(gitPath)")
+            } catch {
+                req.logger.error("Failed to fetch post from GitHub: \(error)")
+                throw Abort(.notFound, reason: "Post not found on GitHub")
+            }
+        } else {
+            // Fallback to local file system
+            let postPath = req.application.directory.resourcesDirectory + "Posts/\(slug).md"
+            let data = try await req.fileio.readFile(at: postPath).collect(upTo: 1024 * 1024)
+            fileContent = String(buffer: data)
+        }
         
         // Extract content without front matter
         let lines = fileContent.split(separator: "\n", omittingEmptySubsequences: false)
@@ -520,12 +554,33 @@ struct AdminController: RouteCollection {
         
         let fullContent = frontMatter + form.content
         
-        let filePath = req.application.directory.resourcesDirectory + "Posts/\(slug).md"
-        
-        let data = Data(fullContent.utf8)
-        let buffer = ByteBuffer(data: data)
-        
-        try await req.fileio.writeFile(buffer, at: filePath)
+        // Check if GitHub service is available
+        if let github = req.application.github {
+            // Use GitHub API to update the post in the repository
+            let gitPath = "Resources/Posts/\(slug).md"
+            let commitMessage = "Update blog post: \(form.title)"
+            
+            do {
+                try await github.createOrUpdateFile(
+                    path: gitPath,
+                    content: fullContent,
+                    message: commitMessage
+                )
+                req.logger.info("Successfully updated post via GitHub API: \(gitPath)")
+            } catch {
+                req.logger.error("Failed to update post via GitHub API: \(error)")
+                throw Abort(.internalServerError, reason: "Failed to update post on GitHub: \(error.localizedDescription)")
+            }
+        } else {
+            // Fallback to local file system
+            let filePath = req.application.directory.resourcesDirectory + "Posts/\(slug).md"
+            
+            let data = Data(fullContent.utf8)
+            let buffer = ByteBuffer(data: data)
+            
+            try await req.fileio.writeFile(buffer, at: filePath)
+            req.logger.info("Updated post locally: \(filePath)")
+        }
         
         // Update the post metadata in cache
         let updatedPost = PostMetadata(
@@ -552,15 +607,38 @@ struct AdminController: RouteCollection {
             throw Abort(.badRequest)
         }
         
+        // Get the post title for commit message
+        let posts = req.application.storage[PostsCacheKey.self] ?? []
+        let postTitle = posts.first(where: { $0.slug == slug })?.title ?? slug
+        
         // Delete the markdown file
-        let filePath = req.application.directory.resourcesDirectory + "Posts/\(slug).md"
-        let fileManager = FileManager.default
-        try fileManager.removeItem(atPath: filePath)
+        if let github = req.application.github {
+            // Use GitHub API to delete the post from the repository
+            let gitPath = "Resources/Posts/\(slug).md"
+            let commitMessage = "Delete blog post: \(postTitle)"
+            
+            do {
+                try await github.deleteFile(
+                    path: gitPath,
+                    message: commitMessage
+                )
+                req.logger.info("Successfully deleted post via GitHub API: \(gitPath)")
+            } catch {
+                req.logger.error("Failed to delete post via GitHub API: \(error)")
+                throw Abort(.internalServerError, reason: "Failed to delete post on GitHub: \(error.localizedDescription)")
+            }
+        } else {
+            // Fallback to local file system
+            let filePath = req.application.directory.resourcesDirectory + "Posts/\(slug).md"
+            let fileManager = FileManager.default
+            try fileManager.removeItem(atPath: filePath)
+            req.logger.info("Deleted post locally: \(filePath)")
+        }
         
         // Update posts cache
-        var posts = req.application.storage[PostsCacheKey.self] ?? []
-        posts.removeAll { $0.slug == slug }
-        req.application.storage[PostsCacheKey.self] = posts
+        var updatedPosts = posts
+        updatedPosts.removeAll { $0.slug == slug }
+        req.application.storage[PostsCacheKey.self] = updatedPosts
         
         return req.redirect(to: "/admin")
     }

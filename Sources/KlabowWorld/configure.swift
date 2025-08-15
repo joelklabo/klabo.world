@@ -25,6 +25,18 @@ public func configure(_ app: Application) async throws {
     let config = try Environment.decode(SiteConfiguration.self)
     app.storage[ConfigKey.self] = config
     
+    // Initialize GitHub service if token is configured
+    if config.githubToken != nil {
+        do {
+            app.github = try GitHubService(app: app)
+            app.logger.info("GitHub service initialized")
+        } catch {
+            app.logger.warning("GitHub service not available: \(error)")
+        }
+    } else {
+        app.logger.info("GitHub token not configured - posts will be saved locally only")
+    }
+    
     // Ensure uploads directories exist
     let fileManager = FileManager.default
     let postsDir = config.uploadsDir + "/posts"
