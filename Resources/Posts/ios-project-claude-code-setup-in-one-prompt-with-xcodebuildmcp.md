@@ -6,6 +6,17 @@ publishDate: 2025-08-15
 tags: Claude, Claude Code, iOS, xcodebuildmcp, prompts
 ---
 
+I have been using Claude Code for a month or so now. I have created a `CLAUDE.md` and set up and MCP server but hadn't really done much to configure Claude better. The amount of options was a little overwhelming and "configuration" is not something that really peaks my interest usually.
+
+I kept seeing examples of other projects with very precise and useful configuration though, and I knew I was not getting the best I could out of the tool.
+
+So, I decided to ask Claude to do it for me. I won't go into too much detail because I'll post the steps I took below. And, a single prompt you can use to do the same for your iOS project.
+
+If you are like me, just run this and let Claude improve your setup for you.
+
+## The prompt
+
+```markdown
 # Complete iOS Project Claude Code Setup - Master Prompt
 
 **IMPORTANT**: This comprehensive setup will transform any iOS project into a fully automated, context-aware, self-maintaining Claude Code environment. This prompt is designed specifically for Claude Code (claude.ai/code) users.
@@ -985,3 +996,69 @@ You'll know the setup is successful when:
 5. **Workflow feels natural**: Commands match your needs
 
 The goal is to make iOS development with Claude Code feel magical - where everything just works and Claude understands your project deeply.
+```
+
+## The workflow
+
+### 1) Prime Claude with `/init`
+I started by running `/init` so Claude reads the repo and rewrites `CLAUDE.md` with real project affordances: how to run one test with `xcodebuild`, where Vice models live, what Swift 6.1 concurrency rules we enforce, and the bundle/CloudKit facts. I cut redundancy, kept only the sharp bits, and verified with CI. This establishes a trustworthy “ops manual” Claude sees first, not tribal memory.
+
+**Why**: if the source of truth is precise, agents stop hallucinating paths/flags.
+
+### 2) Level up Claude Code (settings, commands, hooks, nested docs)
+Next pass: I mapped the whole Claude Code surface (settings, slash commands, MCP hooks, status line, nested `CLAUDE.md`s). Then I added:
+
+- `.claude/settings.json` — status line, model prefs, environment, and hook wiring.  
+- Custom commands as the primary UX: small, composable, documented.
+- Hooks for pre/post edit guardrails (formatting, concurrency checks).
+- Nested `CLAUDE.md` per target/package so context is hyper-local and bloat-free.
+
+**Examples**
+
+```text
+/build-device                  # Build+install to a plugged-in device
+/test-single ViceStatsTests    # Run just this class (or test) fast
+/pr-ready                      # Lint, format, unit tests, widget tests
+/swift6-check                  # Strict concurrency audit
+
+Opinion: commands are the product. Don’t bury them in a Makefile if Claude is the driver; keep them where the agent looks first.
+
+3) Make it self-healing (maintenance commands + policy)
+
+I created /claude-optimize to re-scan the project and suggest upgrades when Claude ships new features, and /update-docs to rewrite all CLAUDE.md files with current paths, commands, and “last updated” stamps. I set a light process: run optimize weekly, update docs at sprint end, and before a release. This keeps the doc surface tight without thinking about it.
+
+4) Swap raw xcodebuild for MCP (XcodeBuildMCP)
+
+Goal: unified tool calls Claude can drive. I integrated XcodeBuildMCP and removed raw xcodebuild from slash commands.
+	•	Context detection (.claude/scripts/detect-context.sh) sets env defaults based on CWD:
+	•	In Packages/ViceKit → use Swift package test tools.
+	•	In app target dirs → pick the main scheme/workspace.
+	•	For widgets → choose the widget scheme.
+	•	Auto-select a booted simulator or the newest iPhone.
+	•	Dynamic tools: I wanted “dynamic” discovery; Claude Code doesn’t support sampling-based tool discovery yet, so I emulate “dynamic” via env + routing (pragmatic, works today).
+	•	Commands now call MCP tools exclusively: build, test, run, clean, device/sim ops.
+
+// pseudo mcp server config shell-out
+{
+  "XcodeBuildMCP": {
+    "command": "bash",
+    "args": ["-c", "source .claude/scripts/detect-context.sh && npx xcodebuildmcp"]
+  }
+}
+
+Net effect: one interface, better errors, fewer flags.
+
+5) One-shot “setup prompt” for any iOS repo
+
+I wrote a master prompt (setup-prompt.md) that recreates the entire system in a new project in one Claude session:
+	•	Phase 0: verify prerequisites (Xcode, Node/npm for MCP, Git).
+	•	Phase 1: deep analysis (workspace vs project, schemes, packages, tests, Swift version).
+	•	Phase 2: scaffold Claude structure (.claude/, nested docs, commands, hooks).
+	•	Phase 3: wire XcodeBuildMCP with context detection.
+	•	Phase 4–8: create commands, optional hooks/settings, test + verify, and add troubleshooting.
+
+No assumptions about Make/Rake; the prompt builds what it needs, asks for optional imports if present, and ships with a clear success checklist.
+
+6) Tighten the screws (Claude-specific, fewer foot-guns)
+
+Final pass: removed non-Claude IDE talk, added a real troubleshooting appendix, and clarified that MCP is already available in Claude Code (no extra config files needed there). Hooks and settings are optional but recommended; the context script is mandatory (it’s where the magic lives).
