@@ -123,16 +123,20 @@ struct AdminController: RouteCollection {
                 throw Abort(.internalServerError, reason: "Failed to create post on GitHub: \(error.localizedDescription)")
             }
         } else {
-            // Fallback to local file system (for development without GitHub token)
+            // GitHub token not configured
+            if req.application.environment == .production {
+                req.logger.error("GitHub token not configured in production")
+                throw Abort(.serviceUnavailable, reason: "GitHub integration not configured. Please set up a GitHub personal access token to enable blog post creation. See documentation for setup instructions.")
+            }
+            
+            // For local development only, allow filesystem writes
             guard let config = req.application.storage[ConfigKey.self] else {
                 req.logger.error("Configuration not found in storage")
                 throw Abort(.internalServerError, reason: "Configuration not found")
             }
             
             // For local development, write to Resources/Posts directory
-            let postsDir = req.application.environment == .development 
-                ? req.application.directory.resourcesDirectory + "Posts"
-                : config.uploadsDir + "/posts"
+            let postsDir = req.application.directory.resourcesDirectory + "Posts"
             
             // Create posts directory if it doesn't exist
             let fileManager = FileManager.default
@@ -572,7 +576,13 @@ struct AdminController: RouteCollection {
                 throw Abort(.internalServerError, reason: "Failed to update post on GitHub: \(error.localizedDescription)")
             }
         } else {
-            // Fallback to local file system
+            // GitHub token not configured
+            if req.application.environment == .production {
+                req.logger.error("GitHub token not configured in production")
+                throw Abort(.serviceUnavailable, reason: "GitHub integration not configured. Please set up a GitHub personal access token to enable blog post updates.")
+            }
+            
+            // For local development only
             let filePath = req.application.directory.resourcesDirectory + "Posts/\(slug).md"
             
             let data = Data(fullContent.utf8)
@@ -628,7 +638,13 @@ struct AdminController: RouteCollection {
                 throw Abort(.internalServerError, reason: "Failed to delete post on GitHub: \(error.localizedDescription)")
             }
         } else {
-            // Fallback to local file system
+            // GitHub token not configured
+            if req.application.environment == .production {
+                req.logger.error("GitHub token not configured in production")
+                throw Abort(.serviceUnavailable, reason: "GitHub integration not configured. Please set up a GitHub personal access token to enable blog post deletion.")
+            }
+            
+            // For local development only
             let filePath = req.application.directory.resourcesDirectory + "Posts/\(slug).md"
             let fileManager = FileManager.default
             try fileManager.removeItem(atPath: filePath)
