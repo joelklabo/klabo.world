@@ -2,7 +2,7 @@ import Vapor
 import Foundation
 
 struct GistController: RouteCollection {
-    func boot(routes: RoutesBuilder) throws {
+    func boot(routes: any RoutesBuilder) throws {
         let gists = routes.grouped("api", "gists")
         gists.get(":username", ":gistId", use: getGist)
     }
