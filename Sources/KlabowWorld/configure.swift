@@ -25,6 +25,19 @@ public func configure(_ app: Application) async throws {
     let config = try Environment.decode(SiteConfiguration.self)
     app.storage[ConfigKey.self] = config
     
+    // Ensure uploads directories exist
+    let fileManager = FileManager.default
+    let postsDir = config.uploadsDir + "/posts"
+    let appsDir = config.uploadsDir + "/apps"
+    
+    do {
+        try fileManager.createDirectory(atPath: postsDir, withIntermediateDirectories: true, attributes: nil)
+        try fileManager.createDirectory(atPath: appsDir, withIntermediateDirectories: true, attributes: nil)
+        app.logger.info("Created/verified uploads directories at \(config.uploadsDir)")
+    } catch {
+        app.logger.error("Failed to create uploads directories: \(error)")
+    }
+    
     // Enable file serving from Public directory
     app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
     
