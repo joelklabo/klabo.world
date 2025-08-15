@@ -3,8 +3,9 @@
 # ================================
 FROM swift:6.0-noble AS build
 
-# Accept build version as argument
+# Accept build version and date as arguments
 ARG BUILD_VERSION
+ARG BUILD_DATE
 
 # Install OS updates
 RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
@@ -55,9 +56,11 @@ RUN [ -d /build/Resources ] && { mv /build/Resources ./Resources && chmod -R a-w
 # ================================
 FROM ubuntu:noble
 
-# Accept build version argument and set as environment variable
+# Accept build version and date arguments and set as environment variables
 ARG BUILD_VERSION
+ARG BUILD_DATE
 ENV BUILD_VERSION=${BUILD_VERSION}
+ENV BUILD_DATE=${BUILD_DATE}
 
 # Make sure all system packages are up to date, and install only essential packages.
 RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \

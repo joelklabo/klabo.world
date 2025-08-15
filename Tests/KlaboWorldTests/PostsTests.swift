@@ -14,7 +14,11 @@ struct PostsTests {
                 adminPassword: "test",
                 uploadsDir: "./test",
                 gaTrackingID: nil,
-                buildVersion: "test-build"
+                buildVersion: "test-build",
+                buildDate: "test-date",
+                githubToken: nil,
+                githubOwner: nil,
+                githubRepo: nil
             )
             app.storage[PostsCacheKey.self] = []
             
@@ -92,7 +96,11 @@ struct PostsTests {
                 adminPassword: "test",
                 uploadsDir: "./test",
                 gaTrackingID: nil,
-                buildVersion: "test-build"
+                buildVersion: "test-build",
+                buildDate: "test-date",
+                githubToken: nil,
+                githubOwner: nil,
+                githubRepo: nil
             )
             app.storage[PostsCacheKey.self] = posts
             

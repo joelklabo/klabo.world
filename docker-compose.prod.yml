@@ -6,6 +6,7 @@ services:
       context: .
       args:
         BUILD_VERSION: ${BUILD_VERSION:-test-local}
+        BUILD_DATE: ${BUILD_DATE:-test-date}
     environment:
       # These simulate Azure App Service environment variables
       WEBSITES_PORT: 8080
@@ -16,6 +17,7 @@ services:
       UPLOADS_DIR: ${UPLOADS_DIR:-/home/site/wwwroot/uploads}
       GA_TRACKING_ID: ${GA_TRACKING_ID}
       BUILD_VERSION: ${BUILD_VERSION:-test-local}
+      BUILD_DATE: ${BUILD_DATE:-test-date}
     ports:
       - "8080:8080"
     volumes:

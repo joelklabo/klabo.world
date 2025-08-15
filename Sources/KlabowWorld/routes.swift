@@ -12,6 +12,8 @@ func routes(_ app: Application) throws {
             let recentPosts: [PostMetadata]
             let apps: [AppMetadata]
             let buildVersion: String?
+            let buildDate: String?
+            let buildInfo: String?
         }
         
         // Get recent posts
@@ -35,7 +37,9 @@ func routes(_ app: Application) throws {
             popularTags: baseContext.popularTags,
             recentPosts: recentPosts,
             apps: publishedApps,
-            buildVersion: baseContext.buildVersion
+            buildVersion: baseContext.buildVersion,
+            buildDate: baseContext.buildDate,
+            buildInfo: baseContext.buildInfo
         )
         
         req.logger.info("Rendering home page")

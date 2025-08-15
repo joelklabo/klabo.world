@@ -12,7 +12,11 @@ struct AdminTests {
                 adminPassword: "test-password",
                 uploadsDir: "./test",
                 gaTrackingID: nil,
-                buildVersion: "test-build"
+                buildVersion: "test-build",
+                buildDate: "test-date",
+                githubToken: nil,
+                githubOwner: nil,
+                githubRepo: nil
             )
             
             // Test accessing admin without session cookie
@@ -33,7 +37,11 @@ struct AdminTests {
                 adminPassword: hashedPassword,
                 uploadsDir: "./test",
                 gaTrackingID: nil,
-                buildVersion: "test-build"
+                buildVersion: "test-build",
+                buildDate: "test-date",
+                githubToken: nil,
+                githubOwner: nil,
+                githubRepo: nil
             )
             app.storage[PostsCacheKey.self] = []
             
@@ -76,7 +84,11 @@ struct AdminTests {
                 adminPassword: hashedPassword,
                 uploadsDir: "./test",
                 gaTrackingID: nil,
-                buildVersion: "test-build"
+                buildVersion: "test-build",
+                buildDate: "test-date",
+                githubToken: nil,
+                githubOwner: nil,
+                githubRepo: nil
             )
             
             // Try to login with wrong password
@@ -101,7 +113,11 @@ struct AdminTests {
                 adminPassword: hashedPassword,
                 uploadsDir: "./test",
                 gaTrackingID: nil,
-                buildVersion: "test-build"
+                buildVersion: "test-build",
+                buildDate: "test-date",
+                githubToken: nil,
+                githubOwner: nil,
+                githubRepo: nil
             )
             app.storage[PostsCacheKey.self] = []
             

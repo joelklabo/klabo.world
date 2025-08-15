@@ -39,6 +39,8 @@ struct PostsController: RouteCollection {
             let gaTrackingID: String?
             let popularTags: [TagCount]
             let buildVersion: String?
+            let buildDate: String?
+            let buildInfo: String?
         }
         
         let baseContext = BaseContext.create(from: req.application)
@@ -47,7 +49,9 @@ struct PostsController: RouteCollection {
             posts: publishedPosts,
             gaTrackingID: baseContext.gaTrackingID,
             popularTags: baseContext.popularTags,
-            buildVersion: baseContext.buildVersion
+            buildVersion: baseContext.buildVersion,
+            buildDate: baseContext.buildDate,
+            buildInfo: baseContext.buildInfo
         )
         
         return try await req.view.render("posts/index", context)
@@ -70,6 +74,8 @@ struct PostsController: RouteCollection {
             let gaTrackingID: String?
             let popularTags: [TagCount]
             let buildVersion: String?
+            let buildDate: String?
+            let buildInfo: String?
         }
         
         let baseContext = BaseContext.create(from: req.application)
@@ -79,7 +85,9 @@ struct PostsController: RouteCollection {
             currentTag: tag,
             gaTrackingID: baseContext.gaTrackingID,
             popularTags: baseContext.popularTags,
-            buildVersion: baseContext.buildVersion
+            buildVersion: baseContext.buildVersion,
+            buildDate: baseContext.buildDate,
+            buildInfo: baseContext.buildInfo
         )
         
         return try await req.view.render("posts/index", context)
@@ -94,6 +102,8 @@ struct PostsController: RouteCollection {
             let gaTrackingID: String?
             let popularTags: [TagCount]
             let buildVersion: String?
+            let buildDate: String?
+            let buildInfo: String?
         }
         
         let baseContext = BaseContext.create(from: req.application)
@@ -102,7 +112,9 @@ struct PostsController: RouteCollection {
             tags: allTags,
             gaTrackingID: baseContext.gaTrackingID,
             popularTags: baseContext.popularTags,
-            buildVersion: baseContext.buildVersion
+            buildVersion: baseContext.buildVersion,
+            buildDate: baseContext.buildDate,
+            buildInfo: baseContext.buildInfo
         )
         
         return try await req.view.render("posts/tags", context)
@@ -166,6 +178,8 @@ struct PostsController: RouteCollection {
             let popularTags: [TagCount]
             let highlightjs: Bool = true
             let buildVersion: String?
+            let buildDate: String?
+            let buildInfo: String?
             let readingTime: Int?
             let previousPost: PostMetadata?
             let nextPost: PostMetadata?
@@ -235,6 +249,8 @@ struct PostsController: RouteCollection {
             gaTrackingID: baseContext.gaTrackingID,
             popularTags: baseContext.popularTags,
             buildVersion: baseContext.buildVersion,
+            buildDate: baseContext.buildDate,
+            buildInfo: baseContext.buildInfo,
             readingTime: readingTime,
             previousPost: previousPost,
             nextPost: nextPost,

@@ -44,6 +44,7 @@ jobs:
             type=registry,ref=ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:cache,mode=max
           build-args: |
             BUILD_VERSION=${{ github.sha }}
+            BUILD_DATE=${{ github.event.head_commit.timestamp }}
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2

@@ -6,6 +6,7 @@ struct SiteConfiguration: Codable {
     let uploadsDir: String
     let gaTrackingID: String?
     let buildVersion: String?
+    let buildDate: String?
     let githubToken: String?
     let githubOwner: String?
     let githubRepo: String?
@@ -22,6 +23,7 @@ extension Environment {
             "uploadsDir": get("UPLOADS_DIR") ?? "./Public/uploads",
             "gaTrackingID": get("GA_TRACKING_ID"),
             "buildVersion": get("BUILD_VERSION"),
+            "buildDate": get("BUILD_DATE"),
             "githubToken": get("GITHUB_TOKEN"),
             "githubOwner": get("GITHUB_OWNER") ?? "joelklabo",
             "githubRepo": get("GITHUB_REPO") ?? "KlaboWorld"

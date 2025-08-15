@@ -703,7 +703,7 @@
                     </a>
                 </div>
                 <!-- Copyright -->
-                <p class="text-gray-300">&copy; 2025 Joel Klabo. All rights reserved.#if(buildVersion): • Build: #(buildVersion)#endif</p>
+                <p class="text-gray-300">&copy; 2025 Joel Klabo. All rights reserved.#if(buildInfo): • Build: #(buildInfo)#endif</p>
             </div>
         </div>
     </footer>

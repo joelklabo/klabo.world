@@ -12,7 +12,11 @@ struct KlaboWorldTests {
                 adminPassword: "test",
                 uploadsDir: "./test",
                 gaTrackingID: "UA-TEST-123",
-                buildVersion: "test-build"
+                buildVersion: "test-build",
+                buildDate: "test-date",
+                githubToken: nil,
+                githubOwner: nil,
+                githubRepo: nil
             )
             
             try await app.testing().test(.GET, "/", afterResponse: { res async in
@@ -32,7 +36,11 @@ struct KlaboWorldTests {
                 adminPassword: "test",
                 uploadsDir: "./test",
                 gaTrackingID: nil,
-                buildVersion: "test-build"
+                buildVersion: "test-build",
+                buildDate: "test-date",
+                githubToken: nil,
+                githubOwner: nil,
+                githubRepo: nil
             )
             
             try await app.testing().test(.GET, "/", afterResponse: { res async in
@@ -50,7 +58,11 @@ struct KlaboWorldTests {
                 adminPassword: "test",
                 uploadsDir: "./test",
                 gaTrackingID: nil,
-                buildVersion: "test-build"
+                buildVersion: "test-build",
+                buildDate: "test-date",
+                githubToken: nil,
+                githubOwner: nil,
+                githubRepo: nil
             )
             
             try await app.testing().test(.GET, "/css/style.css", afterResponse: { res async in
