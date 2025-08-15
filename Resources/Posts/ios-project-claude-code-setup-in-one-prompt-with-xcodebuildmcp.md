@@ -18,7 +18,7 @@ If you are like me, just run this and let Claude improve your setup for you.
 
 View the complete setup prompt on GitHub Gist:
 
-📋 **[iOS Project Claude Code Setup Prompt - Complete setup instructions](https://gist.github.com/klabo/6df9fa603bec3478dec7efc17ea44596)**
+📋 **[iOS Project Claude Code Setup Prompt - Complete setup instructions](https://gist.github.com/joelklabo/6df9fa603bec3478dec7efc17ea44596)**
 
 This comprehensive prompt will transform any iOS project into a fully automated, context-aware, self-maintaining Claude Code environment with XcodeBuildMCP integration.
 
@@ -26,6 +26,6 @@ This comprehensive prompt will transform any iOS project into a fully automated,
 
 View the complete workflow description on GitHub Gist:
 
-📋 **[iOS Claude Code Setup Workflow - How I configured my iOS project](https://gist.github.com/klabo/36cbd765b4a3a47c7a03cb2685de1162)**
+📋 **[iOS Claude Code Setup Workflow - How I configured my iOS project](https://gist.github.com/joelklabo/36cbd765b4a3a47c7a03cb2685de1162)**
 
 This shows the step-by-step approach I used to transform my iOS project with Claude Code, including priming with `/init`, integrating XcodeBuildMCP, creating self-healing maintenance commands, and building a one-shot setup prompt for any iOS repository.
