@@ -99,7 +99,19 @@ struct AdminController: RouteCollection {
         
         let fullContent = frontMatter + form.content
         
-        let filePath = req.application.directory.resourcesDirectory + "Posts/\(slug).md"
+        // Get configuration for uploads directory
+        guard let config = req.application.storage[ConfigKey.self] else {
+            throw Abort(.internalServerError, reason: "Configuration not found")
+        }
+        
+        // Write to persistent uploads directory instead of read-only Resources
+        let postsDir = config.uploadsDir + "/posts"
+        
+        // Create posts directory if it doesn't exist
+        let fileManager = FileManager.default
+        try fileManager.createDirectory(atPath: postsDir, withIntermediateDirectories: true, attributes: nil)
+        
+        let filePath = postsDir + "/\(slug).md"
         
         let data = Data(fullContent.utf8)
         let buffer = ByteBuffer(data: data)
@@ -253,8 +265,20 @@ struct AdminController: RouteCollection {
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
         encoder.dateEncodingStrategy = .iso8601
         
+        // Get configuration for uploads directory
+        guard let config = req.application.storage[ConfigKey.self] else {
+            throw Abort(.internalServerError, reason: "Configuration not found")
+        }
+        
+        // Write to persistent uploads directory instead of read-only Resources
+        let appsDir = config.uploadsDir + "/apps"
+        
+        // Create apps directory if it doesn't exist
+        let fileManager = FileManager.default
+        try fileManager.createDirectory(atPath: appsDir, withIntermediateDirectories: true, attributes: nil)
+        
         let jsonData = try encoder.encode(app)
-        let filePath = req.application.directory.resourcesDirectory + "Apps/\(slug).json"
+        let filePath = appsDir + "/\(slug).json"
         
         try jsonData.write(to: URL(fileURLWithPath: filePath))
         

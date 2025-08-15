@@ -41,15 +41,29 @@ public func configure(_ app: Application) async throws {
     // Initialize rate limiter
     app.storage[RateLimiterKey.self] = RateLimiter()
     
-    // Load all post metadata on startup
+    // Load all post metadata on startup - from both Resources and uploads directory
     do {
-        let postMetadata = try await loadAllPostMetadata(from: app.directory.resourcesDirectory + "Posts/", on: app)
-        app.storage[PostsCacheKey.self] = postMetadata
-        app.logger.info("Loaded \(postMetadata.count) posts")
+        // Load from Resources directory (bundled posts)
+        let resourcePosts = try await loadAllPostMetadata(from: app.directory.resourcesDirectory + "Posts/", on: app)
+        
+        // Load from uploads directory (dynamically created posts)
+        let uploadsPosts = try await loadAllPostMetadata(from: config.uploadsDir + "/posts/", on: app)
+        
+        // Combine both sources, removing duplicates based on slug
+        var allPosts = resourcePosts
+        
+        // Add upload posts, preferring uploaded versions over resource versions
+        for uploadPost in uploadsPosts {
+            allPosts.removeAll { $0.slug == uploadPost.slug }
+            allPosts.append(uploadPost)
+        }
+        
+        app.storage[PostsCacheKey.self] = allPosts
+        app.logger.info("Loaded \(allPosts.count) posts (\(resourcePosts.count) from Resources, \(uploadsPosts.count) from uploads)")
         
         // Build tag frequency map
         var tagCounts: [String: Int] = [:]
-        for post in postMetadata where post.isPublished {
+        for post in allPosts where post.isPublished {
             if let tags = post.tags {
                 for tag in tags {
                     tagCounts[tag, default: 0] += 1
@@ -69,11 +83,25 @@ public func configure(_ app: Application) async throws {
         app.storage[TagCountsCacheKey.self] = []
     }
     
-    // Load all app metadata on startup
+    // Load all app metadata on startup - from both Resources and uploads directory
     do {
-        let appMetadata = try await loadAllAppMetadata(from: app.directory.resourcesDirectory + "Apps/", on: app)
-        app.storage[AppsCacheKey.self] = appMetadata
-        app.logger.info("Loaded \(appMetadata.count) apps")
+        // Load from Resources directory (bundled apps)
+        let resourceApps = try await loadAllAppMetadata(from: app.directory.resourcesDirectory + "Apps/", on: app)
+        
+        // Load from uploads directory (dynamically created apps)
+        let uploadsApps = try await loadAllAppMetadata(from: config.uploadsDir + "/apps/", on: app)
+        
+        // Combine both sources, removing duplicates based on slug
+        var allApps = resourceApps
+        
+        // Add upload apps, preferring uploaded versions over resource versions
+        for uploadApp in uploadsApps {
+            allApps.removeAll { $0.slug == uploadApp.slug }
+            allApps.append(uploadApp)
+        }
+        
+        app.storage[AppsCacheKey.self] = allApps
+        app.logger.info("Loaded \(allApps.count) apps (\(resourceApps.count) from Resources, \(uploadsApps.count) from uploads)")
     } catch {
         app.logger.error("Failed to load apps: \(error)")
         app.storage[AppsCacheKey.self] = []
