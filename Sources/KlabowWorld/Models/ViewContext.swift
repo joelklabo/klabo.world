@@ -28,6 +28,8 @@ struct BaseContext {
                 let displayFormatter = DateFormatter()
                 displayFormatter.dateStyle = .medium
                 displayFormatter.timeStyle = .short
+                // Set timezone to PST
+                displayFormatter.timeZone = TimeZone(identifier: "America/Los_Angeles")
                 return "\(shortHash) (\(displayFormatter.string(from: date)))"
             }
             // If we can't parse it, just use the raw date
