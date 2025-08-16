@@ -1,15 +1,23 @@
-Packages
-.build
-xcuserdata
-*.xcodeproj
+# Xcode
+.build/
 DerivedData/
-.DS_Store
-db.sqlite
-.swiftpm
+*.xcodeproj
+*.xcworkspace
+
+# Swift Package Manager
+Package.resolved
+.swiftpm/
+
+# Environment
 .env
 .env.*
-!.env.example
-!.env.production.example
-.claude/
-server.log
-claude.local
+
+# macOS
+.DS_Store
+
+# Uploaded files (should not be in version control)
+Public/uploads/
+!Public/uploads/.gitkeep
+
+# Test files
+Public/test-upload.html
