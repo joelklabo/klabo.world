@@ -1,7 +1,7 @@
 ---
 title: iOS Project Claude Code Setup in One Prompt - with xcodebuildmcp
 summary: Setup Claude Code with hierarchical CLAUDE.md files, xcodebuildmcp integration, slash commands etc. All in one prompt.
-date: 2025-08-15
+date: 2025-08-16
 publishDate: 2025-08-15
 tags: Claude, Claude Code, iOS, xcodebuildmcp, prompts
 ---
@@ -14,7 +14,7 @@ So, I decided to ask Claude to do it for me. I won't go into too much detail bec
 
 If you are like me, just run this and let Claude improve your setup for you.
 
-## The prompt
+## The Prompt
 
 View the complete setup prompt on GitHub Gist:
 
@@ -22,7 +22,7 @@ View the complete setup prompt on GitHub Gist:
 
 This comprehensive prompt will transform any iOS project into a fully automated, context-aware, self-maintaining Claude Code environment with XcodeBuildMCP integration.
 
-## The workflow
+## The Workflow
 
 View the complete workflow description on GitHub Gist:
 
