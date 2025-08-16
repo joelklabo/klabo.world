@@ -274,7 +274,7 @@ struct AdminController: RouteCollection {
             return try await errorResponse.encodeResponse(status: .internalServerError, for: req)
         }
         
-        let publicURL = "/uploads/\(uniqueFilename)"
+        let publicURL = "/\(uniqueFilename)"
         
         struct UploadResponse: Content {
             let url: String
