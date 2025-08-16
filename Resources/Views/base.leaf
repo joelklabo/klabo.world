@@ -580,6 +580,7 @@
                     <li><a href="/" class="px-4 py-2 text-gray-700 dark:text-white/80 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">Home</a></li>
                     <li><a href="/posts" class="px-4 py-2 text-gray-700 dark:text-white/80 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">Blog</a></li>
                     <li><a href="/apps" class="px-4 py-2 text-gray-700 dark:text-white/80 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">Apps</a></li>
+                    <li><a href="/contexts" class="px-4 py-2 text-gray-700 dark:text-white/80 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">Contexts</a></li>
                     
                     <!-- Tags dropdown -->
                     <li class="relative group">
@@ -661,6 +662,7 @@
                 <a href="/" class="block px-4 py-2 text-gray-700 dark:text-white/80 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">Home</a>
                 <a href="/posts" class="block px-4 py-2 text-gray-700 dark:text-white/80 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">Blog</a>
                 <a href="/apps" class="block px-4 py-2 text-gray-700 dark:text-white/80 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">Apps</a>
+                <a href="/contexts" class="block px-4 py-2 text-gray-700 dark:text-white/80 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">Contexts</a>
                 <a href="/posts/tags" class="block px-4 py-2 text-gray-700 dark:text-white/80 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">Browse Tags</a>
                 <div class="flex gap-4 px-4 py-2">
                     <a href="https://x.com/joelklabo" target="_blank" class="flex-1 flex items-center justify-center gap-2 px-4 py-2 text-gray-700 dark:text-white/80 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">

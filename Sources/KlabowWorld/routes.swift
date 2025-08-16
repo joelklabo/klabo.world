@@ -210,6 +210,34 @@ func routes(_ app: Application) throws {
             ))
         }
         
+        // Search contexts
+        let contexts = req.application.storage[ContextsCacheKey.self] ?? []
+        let matchingContexts = contexts.filter { context in
+            guard context.isPublished else { return false }
+            
+            if context.title.lowercased().contains(searchTerm) ||
+               context.summary.lowercased().contains(searchTerm) {
+                return true
+            }
+            
+            if let tags = context.tags {
+                return tags.contains { $0.lowercased().contains(searchTerm) }
+            }
+            
+            return false
+        }.prefix(5) // Limit to 5 contexts
+        
+        for context in matchingContexts {
+            results.append(SearchResult(
+                type: "context",
+                title: context.title,
+                description: context.summary,
+                url: "/contexts/\(context.slug)",
+                icon: nil,
+                tags: context.tags
+            ))
+        }
+        
         // Sort by relevance (title matches first)
         results.sort { lhs, rhs in
             let lhsTitleMatch = lhs.title.lowercased().contains(searchTerm)
@@ -230,6 +258,7 @@ func routes(_ app: Application) throws {
     
     try app.register(collection: PostsController())
     try app.register(collection: AppsController())
+    try app.register(collection: ContextsController())
     try app.register(collection: AdminController())
     try app.register(collection: AuthController())
     try app.register(collection: GistController())

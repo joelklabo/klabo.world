@@ -41,12 +41,14 @@ public func configure(_ app: Application) async throws {
     let fileManager = FileManager.default
     let postsDir = config.uploadsDir + "/posts"
     let appsDir = config.uploadsDir + "/apps"
+    let contextsDir = config.uploadsDir + "/contexts"
     
     do {
         // Create main uploads directory first
         try fileManager.createDirectory(atPath: config.uploadsDir, withIntermediateDirectories: true, attributes: nil)
         try fileManager.createDirectory(atPath: postsDir, withIntermediateDirectories: true, attributes: nil)
         try fileManager.createDirectory(atPath: appsDir, withIntermediateDirectories: true, attributes: nil)
+        try fileManager.createDirectory(atPath: contextsDir, withIntermediateDirectories: true, attributes: nil)
         app.logger.info("Created/verified uploads directories at \(config.uploadsDir)")
     } catch {
         app.logger.error("Failed to create uploads directories: \(error)")
@@ -162,6 +164,32 @@ public func configure(_ app: Application) async throws {
     } catch {
         app.logger.error("Failed to load apps: \(error)")
         app.storage[AppsCacheKey.self] = []
+    }
+    
+    // Load all context metadata on startup
+    do {
+        var allContexts: [ContextMetadata] = []
+        
+        // Load from Resources directory (bundled contexts)
+        let resourceContexts = try await loadAllContextMetadata(from: app.directory.resourcesDirectory + "Contexts/", on: app)
+        
+        // Load from uploads directory (dynamically created contexts)
+        let uploadsContexts = try await loadAllContextMetadata(from: config.uploadsDir + "/contexts/", on: app)
+        
+        // Combine both sources, removing duplicates based on slug
+        allContexts = resourceContexts
+        
+        // Add upload contexts, preferring uploaded versions over resource versions
+        for uploadContext in uploadsContexts {
+            allContexts.removeAll { $0.slug == uploadContext.slug }
+            allContexts.append(uploadContext)
+        }
+        
+        app.storage[ContextsCacheKey.self] = allContexts
+        app.logger.info("Loaded \(allContexts.count) contexts (\(resourceContexts.count) from Resources, \(uploadsContexts.count) from uploads)")
+    } catch {
+        app.logger.error("Failed to load contexts: \(error)")
+        app.storage[ContextsCacheKey.self] = []
     }
     
     // Register routes
@@ -290,4 +318,37 @@ func loadAllAppMetadata(from directory: String, on app: Application) async throw
     }
     
     return apps
+}
+
+func loadAllContextMetadata(from directory: String, on app: Application) async throws -> [ContextMetadata] {
+    var contexts: [ContextMetadata] = []
+    
+    let fileManager = FileManager.default
+    
+    do {
+        try fileManager.createDirectory(atPath: directory, withIntermediateDirectories: true)
+    } catch {
+        app.logger.info("Contexts directory already exists or could not be created")
+    }
+    
+    guard let files = try? fileManager.contentsOfDirectory(atPath: directory) else {
+        app.logger.warning("No contexts directory found at \(directory)")
+        return []
+    }
+    
+    for file in files where file.hasSuffix(".md") {
+        let filePath = directory + file
+        
+        do {
+            let content = try String(contentsOfFile: filePath, encoding: .utf8)
+            
+            if let metadata = parseContextMetadata(from: content, filename: file) {
+                contexts.append(metadata)
+            }
+        } catch {
+            app.logger.error("Failed to load context \(file): \(error)")
+        }
+    }
+    
+    return contexts
 }

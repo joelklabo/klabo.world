@@ -1,0 +1,191 @@
+#extend("base"):
+#export("head"):
+<style>
+    /* Code highlighting styles */
+    .prose pre {
+        background-color: rgb(30, 30, 30);
+        color: #f8f8f2;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        overflow-x: auto;
+    }
+    
+    .prose code {
+        background-color: rgba(110, 118, 129, 0.1);
+        padding: 0.2em 0.4em;
+        border-radius: 0.25rem;
+        font-size: 0.875em;
+    }
+    
+    .prose pre code {
+        background-color: transparent;
+        padding: 0;
+    }
+    
+    /* Copy button animation */
+    @keyframes copySuccess {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+    
+    .copy-success {
+        animation: copySuccess 0.3s ease-in-out;
+    }
+</style>
+#endexport
+
+#export("content"):
+<div class="max-w-4xl mx-auto px-6 py-8">
+    <!-- Header with title and actions -->
+    <div class="mb-8">
+        <div class="flex items-start justify-between gap-4 mb-4">
+            <div>
+                <h1 class="text-4xl font-bold mb-2">#(context.title)</h1>
+                <p class="text-lg text-gray-600 dark:text-gray-400">#(context.summary)</p>
+            </div>
+            
+            <!-- Action buttons -->
+            <div class="flex flex-col gap-2">
+                <button onclick="copyFullContext()" 
+                        id="copy-context-btn"
+                        class="inline-flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                    </svg>
+                    Copy Context
+                </button>
+                
+                <a href="/api/contexts/#(context.slug)/raw" 
+                   download="#(context.slug).md"
+                   class="inline-flex items-center gap-2 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                    </svg>
+                    Download
+                </a>
+            </div>
+        </div>
+        
+        <!-- Tags and metadata -->
+        <div class="flex flex-wrap items-center gap-4 text-sm">
+            #if(context.tags):
+                <div class="flex flex-wrap gap-2">
+                    #for(tag in context.tags):
+                        <a href="/contexts/tag/#(tag)" 
+                           class="inline-block px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors">
+                            ##(tag)
+                        </a>
+                    #endfor
+                </div>
+            #endif
+            
+            <div class="text-gray-500 dark:text-gray-400">
+                Updated: #date(context.updatedDate, "MMM d, yyyy")
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick copy notice -->
+    <div class="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+        <div class="flex items-start gap-3">
+            <svg class="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+            </svg>
+            <div class="text-sm text-blue-800 dark:text-blue-200">
+                <p class="font-medium mb-1">How to use this context:</p>
+                <ol class="list-decimal list-inside space-y-1 text-blue-700 dark:text-blue-300">
+                    <li>Click the "Copy Context" button above</li>
+                    <li>Paste it into your AI assistant conversation</li>
+                    <li>The AI will use this context to provide more accurate and relevant responses</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Context content (rendered markdown) -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
+        <div class="prose prose-lg dark:prose-invert max-w-none">
+            #unsafeHTML(content)
+        </div>
+    </div>
+    
+    <!-- API Access info -->
+    <div class="mt-8 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+        <h3 class="font-semibold mb-2 text-gray-900 dark:text-gray-100">API Access</h3>
+        <div class="space-y-2 text-sm font-mono text-gray-600 dark:text-gray-400">
+            <div>
+                <span class="text-gray-500 dark:text-gray-500">GET</span>
+                <code class="ml-2 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">/api/contexts/#(context.slug)</code>
+                <span class="ml-2 text-gray-500 italic">JSON metadata + content</span>
+            </div>
+            <div>
+                <span class="text-gray-500 dark:text-gray-500">GET</span>
+                <code class="ml-2 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">/api/contexts/#(context.slug)/raw</code>
+                <span class="ml-2 text-gray-500 italic">Raw markdown</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden textarea for copying -->
+<textarea id="context-markdown" style="position: absolute; left: -9999px;">#(rawContent)</textarea>
+
+<script>
+async function copyFullContext() {
+    const btn = document.getElementById('copy-context-btn');
+    const markdown = document.getElementById('context-markdown').value;
+    
+    try {
+        await navigator.clipboard.writeText(markdown);
+        
+        // Update button to show success
+        const originalContent = btn.innerHTML;
+        btn.classList.add('copy-success', 'bg-green-700');
+        btn.innerHTML = `
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            Copied!
+        `;
+        
+        // Reset after 2 seconds
+        setTimeout(() => {
+            btn.classList.remove('copy-success', 'bg-green-700');
+            btn.innerHTML = originalContent;
+        }, 2000);
+    } catch (err) {
+        console.error('Failed to copy:', err);
+        
+        // Fallback: select the text
+        const textarea = document.getElementById('context-markdown');
+        textarea.style.position = 'fixed';
+        textarea.style.top = '50%';
+        textarea.style.left = '50%';
+        textarea.style.transform = 'translate(-50%, -50%)';
+        textarea.select();
+        
+        btn.innerHTML = `
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+            </svg>
+            Select & Copy
+        `;
+        
+        setTimeout(() => {
+            textarea.style.position = 'absolute';
+            textarea.style.left = '-9999px';
+        }, 3000);
+    }
+}
+
+// Add keyboard shortcut (Cmd/Ctrl + Shift + C)
+document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'C') {
+        e.preventDefault();
+        copyFullContext();
+    }
+});
+</script>
+#endexport
+#endextend

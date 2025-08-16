@@ -11,6 +11,9 @@
             <a href="/admin/apps" class="inline-block px-6 py-3 bg-purple-600 text-white font-medium rounded-md hover:bg-purple-700 transition-colors">
                 Manage Apps
             </a>
+            <a href="/admin/contexts" class="inline-block px-6 py-3 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 transition-colors">
+                Manage Contexts
+            </a>
             <a href="/admin/change-password" class="inline-block px-6 py-3 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 transition-colors">
                 Change Password
             </a>

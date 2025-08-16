@@ -26,6 +26,14 @@ struct AdminController: RouteCollection {
         adminRoutes.get("posts", ":slug", "edit", use: editPost)
         adminRoutes.post("posts", ":slug", "edit", use: updatePost)
         adminRoutes.post("posts", ":slug", "delete", use: deletePost)
+        
+        // Contexts management routes
+        adminRoutes.get("contexts", use: contextsIndex)
+        adminRoutes.get("contexts", "compose", use: composeContext)
+        adminRoutes.post("contexts", "compose", use: createContext)
+        adminRoutes.get("contexts", ":slug", "edit", use: editContext)
+        adminRoutes.post("contexts", ":slug", "edit", use: updateContext)
+        adminRoutes.post("contexts", ":slug", "delete", use: deleteContext)
     }
     
     func index(req: Request) async throws -> View {
@@ -736,4 +744,309 @@ struct AdminController: RouteCollection {
         
         return try await PreviewResponse(html: html).encodeResponse(for: req)
     }
+    
+    // MARK: - Context Management
+    
+    func contextsIndex(req: Request) async throws -> View {
+        let config = req.application.storage[ConfigKey.self]!
+        let contexts = req.application.storage[ContextsCacheKey.self] ?? []
+        
+        struct ContextsAdminContext: Encodable {
+            let title: String
+            let contexts: [ContextMetadata]
+            let gaTrackingID: String?
+        }
+        
+        let context = ContextsAdminContext(
+            title: "Manage Contexts",
+            contexts: contexts.sorted { $0.updatedDate > $1.updatedDate },
+            gaTrackingID: config.gaTrackingID
+        )
+        
+        return try await req.view.render("admin/contexts/index", context)
+    }
+    
+    func composeContext(req: Request) async throws -> View {
+        let config = req.application.storage[ConfigKey.self]!
+        
+        struct ComposeContextContext: Encodable {
+            let title: String
+            let gaTrackingID: String?
+        }
+        
+        let context = ComposeContextContext(
+            title: "Create New Context",
+            gaTrackingID: config.gaTrackingID
+        )
+        
+        return try await req.view.render("admin/contexts/compose", context)
+    }
+    
+    func createContext(req: Request) async throws -> Response {
+        struct ContextForm: Content {
+            let title: String
+            let summary: String
+            let content: String
+            let tags: String?
+            let isPublished: Bool?
+        }
+        
+        let form = try req.content.decode(ContextForm.self)
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        let currentDate = Date()
+        let slug = form.title.lowercased()
+            .replacingOccurrences(of: " ", with: "-")
+            .replacingOccurrences(of: "[^a-z0-9-]", with: "", options: .regularExpression)
+        
+        var frontMatter = """
+        ---
+        title: \(form.title)
+        summary: \(form.summary)
+        createdDate: \(dateFormatter.string(from: currentDate))
+        updatedDate: \(dateFormatter.string(from: currentDate))
+        isPublished: \(form.isPublished ?? true)
+        """
+        
+        if let tags = form.tags, !tags.isEmpty {
+            let tagArray = tags.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
+            frontMatter += "\ntags: [\(tagArray.map { "\"\($0)\"" }.joined(separator: ", "))]"
+        }
+        
+        frontMatter += "\n---\n\n"
+        
+        let fullContent = frontMatter + form.content
+        
+        // Save to uploads directory
+        let config = req.application.storage[ConfigKey.self]!
+        let filePath = config.uploadsDir + "/contexts/\(slug).md"
+        
+        do {
+            try fullContent.write(toFile: filePath, atomically: true, encoding: .utf8)
+            req.logger.info("Created context: \(filePath)")
+        } catch {
+            req.logger.error("Failed to create context: \(error)")
+            throw Abort(.internalServerError, reason: "Failed to save context")
+        }
+        
+        // Parse and add to cache
+        if let metadata = parseContextMetadata(from: fullContent, filename: "\(slug).md") {
+            var contexts = req.application.storage[ContextsCacheKey.self] ?? []
+            contexts.removeAll { $0.slug == slug }
+            contexts.append(metadata)
+            req.application.storage[ContextsCacheKey.self] = contexts
+        }
+        
+        return req.redirect(to: "/admin/contexts")
+    }
+    
+    func editContext(req: Request) async throws -> View {
+        guard let slug = req.parameters.get("slug") else {
+            throw Abort(.badRequest)
+        }
+        
+        let contexts = req.application.storage[ContextsCacheKey.self] ?? []
+        guard let contextMetadata = contexts.first(where: { $0.slug == slug }) else {
+            throw Abort(.notFound)
+        }
+        
+        // Load full content
+        let config = req.application.storage[ConfigKey.self]!
+        let content: String
+        
+        // Try uploads directory first
+        let uploadsPath = config.uploadsDir + "/contexts/\(slug).md"
+        if FileManager.default.fileExists(atPath: uploadsPath) {
+            content = try String(contentsOfFile: uploadsPath, encoding: .utf8)
+        } else {
+            // Try Resources directory
+            let resourcePath = req.application.directory.resourcesDirectory + "Contexts/\(slug).md"
+            content = try String(contentsOfFile: resourcePath, encoding: .utf8)
+        }
+        
+        // Extract content without front matter
+        let lines = content.split(separator: "\n", omittingEmptySubsequences: false)
+        var contentStartIndex = 0
+        if lines.first == "---" {
+            for (index, line) in lines.dropFirst().enumerated() {
+                if line == "---" {
+                    contentStartIndex = index + 2
+                    break
+                }
+            }
+        }
+        let rawContent = lines.dropFirst(contentStartIndex).joined(separator: "\n")
+        
+        struct EditContextContext: Encodable {
+            let title: String
+            let context: ContextMetadata
+            let content: String
+            let tags: String
+            let gaTrackingID: String?
+        }
+        
+        let tagsString = contextMetadata.tags?.joined(separator: ", ") ?? ""
+        
+        let context = EditContextContext(
+            title: "Edit Context",
+            context: contextMetadata,
+            content: rawContent,
+            tags: tagsString,
+            gaTrackingID: config.gaTrackingID
+        )
+        
+        return try await req.view.render("admin/contexts/edit", context)
+    }
+    
+    func updateContext(req: Request) async throws -> Response {
+        guard let slug = req.parameters.get("slug") else {
+            throw Abort(.badRequest)
+        }
+        
+        struct UpdateContextForm: Content {
+            let title: String
+            let summary: String
+            let content: String
+            let tags: String?
+            let isPublished: Bool?
+        }
+        
+        let form = try req.content.decode(UpdateContextForm.self)
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        // Get the original created date if it exists
+        let contexts = req.application.storage[ContextsCacheKey.self] ?? []
+        let originalContext = contexts.first(where: { $0.slug == slug })
+        let createdDate = originalContext?.createdDate ?? Date()
+        
+        var frontMatter = """
+        ---
+        title: \(form.title)
+        summary: \(form.summary)
+        createdDate: \(dateFormatter.string(from: createdDate))
+        updatedDate: \(dateFormatter.string(from: Date()))
+        isPublished: \(form.isPublished ?? true)
+        """
+        
+        if let tags = form.tags, !tags.isEmpty {
+            let tagArray = tags.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
+            frontMatter += "\ntags: [\(tagArray.map { "\"\($0)\"" }.joined(separator: ", "))]"
+        }
+        
+        frontMatter += "\n---\n\n"
+        
+        let fullContent = frontMatter + form.content
+        
+        // Save to uploads directory
+        let config = req.application.storage[ConfigKey.self]!
+        let filePath = config.uploadsDir + "/contexts/\(slug).md"
+        
+        do {
+            try fullContent.write(toFile: filePath, atomically: true, encoding: .utf8)
+            req.logger.info("Updated context: \(filePath)")
+        } catch {
+            req.logger.error("Failed to update context: \(error)")
+            throw Abort(.internalServerError, reason: "Failed to save context")
+        }
+        
+        // Update cache
+        if let metadata = parseContextMetadata(from: fullContent, filename: "\(slug).md") {
+            var contexts = req.application.storage[ContextsCacheKey.self] ?? []
+            contexts.removeAll { $0.slug == slug }
+            contexts.append(metadata)
+            req.application.storage[ContextsCacheKey.self] = contexts
+        }
+        
+        return req.redirect(to: "/admin/contexts")
+    }
+    
+    func deleteContext(req: Request) async throws -> Response {
+        guard let slug = req.parameters.get("slug") else {
+            throw Abort(.badRequest)
+        }
+        
+        let config = req.application.storage[ConfigKey.self]!
+        let filePath = config.uploadsDir + "/contexts/\(slug).md"
+        
+        // Remove file if it exists
+        if FileManager.default.fileExists(atPath: filePath) {
+            do {
+                try FileManager.default.removeItem(atPath: filePath)
+                req.logger.info("Deleted context: \(filePath)")
+            } catch {
+                req.logger.error("Failed to delete context: \(error)")
+            }
+        }
+        
+        // Remove from cache
+        var contexts = req.application.storage[ContextsCacheKey.self] ?? []
+        contexts.removeAll { $0.slug == slug }
+        req.application.storage[ContextsCacheKey.self] = contexts
+        
+        return req.redirect(to: "/admin/contexts")
+    }
+}
+
+// Helper function to parse context metadata
+func parseContextMetadata(from content: String, filename: String) -> ContextMetadata? {
+    let lines = content.split(separator: "\n", maxSplits: 20)
+    
+    guard lines.first == "---" else { return nil }
+    
+    var frontMatter: [String: String] = [:]
+    var lineIndex = 1
+    
+    while lineIndex < lines.count && lines[lineIndex] != "---" {
+        let line = String(lines[lineIndex])
+        if let colonIndex = line.firstIndex(of: ":") {
+            let key = String(line[..<colonIndex]).trimmingCharacters(in: .whitespaces)
+            let value = String(line[line.index(after: colonIndex)...]).trimmingCharacters(in: .whitespaces)
+            frontMatter[key] = value
+        }
+        lineIndex += 1
+    }
+    
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy-MM-dd"
+    
+    guard let title = frontMatter["title"],
+          let summary = frontMatter["summary"] else {
+        return nil
+    }
+    
+    let slug = filename.replacingOccurrences(of: ".md", with: "")
+    
+    let createdDate = frontMatter["createdDate"].flatMap { dateFormatter.date(from: $0) } ?? Date()
+    let updatedDate = frontMatter["updatedDate"].flatMap { dateFormatter.date(from: $0) } ?? createdDate
+    
+    var tags: [String]? = nil
+    if let tagsString = frontMatter["tags"] {
+        if tagsString.hasPrefix("[") && tagsString.hasSuffix("]") {
+            let tagList = tagsString.dropFirst().dropLast()
+            tags = tagList.split(separator: ",").map { tag in
+                tag.trimmingCharacters(in: .whitespaces)
+                    .trimmingCharacters(in: CharacterSet(charactersIn: "\"'"))
+            }
+        } else {
+            tags = tagsString.split(separator: ",").map { 
+                $0.trimmingCharacters(in: .whitespaces) 
+            }
+        }
+    }
+    
+    let isPublished = frontMatter["isPublished"].flatMap { Bool($0) } ?? true
+    
+    return ContextMetadata(
+        title: title,
+        summary: summary,
+        tags: tags,
+        slug: slug,
+        createdDate: createdDate,
+        updatedDate: updatedDate,
+        isPublished: isPublished
+    )
 }
