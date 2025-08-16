@@ -6,6 +6,8 @@ publishDate: 2025-08-15
 tags: Claude, Claude Code, iOS, xcodebuildmcp, prompts
 ---
 
+![Image](/uploads/390DDE95-A185-472F-9913-58E15C7F08D6.png)
+
 I have been using Claude Code for a month or so now. I have created a `CLAUDE.md` and set up and MCP server but hadn't really done much to configure Claude better. The amount of options was a little overwhelming and "configuration" is not something that really peaks my interest usually.
 
 I kept seeing examples of other projects with very precise and useful configuration though, and I knew I was not getting the best I could out of the tool.
