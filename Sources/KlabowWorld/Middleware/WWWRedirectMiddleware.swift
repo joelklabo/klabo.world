@@ -1,7 +1,7 @@
 import Vapor
 
 struct WWWRedirectMiddleware: AsyncMiddleware {
-    func respond(to request: Request, chainingTo next: AsyncResponder) async throws -> Response {
+    func respond(to request: Request, chainingTo next: any AsyncResponder) async throws -> Response {
         // Check if the host is the apex domain without www
         if let host = request.headers.first(name: .host) {
             // Handle both HTTP and HTTPS apex domain requests

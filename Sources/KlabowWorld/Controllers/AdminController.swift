@@ -12,6 +12,7 @@ struct AdminController: RouteCollection {
         adminRoutes.get("compose", use: compose)
         adminRoutes.post("compose", use: createPost)
         adminRoutes.post("upload", use: uploadImage)
+        adminRoutes.post("preview", use: previewMarkdown)
         
         // Apps management routes
         adminRoutes.get("apps", use: appsIndex)
@@ -719,5 +720,20 @@ struct AdminController: RouteCollection {
         req.application.storage[PostsCacheKey.self] = updatedPosts
         
         return req.redirect(to: "/admin")
+    }
+    
+    func previewMarkdown(req: Request) async throws -> Response {
+        struct PreviewRequest: Content {
+            let markdown: String
+        }
+        
+        let previewReq = try req.content.decode(PreviewRequest.self)
+        let html = MarkdownUtility.parseMarkdownToHTML(previewReq.markdown)
+        
+        struct PreviewResponse: Content {
+            let html: String
+        }
+        
+        return try await PreviewResponse(html: html).encodeResponse(for: req)
     }
 }
