@@ -69,8 +69,19 @@
 
 <script>
 function uploadImage(input) {
+    console.log('uploadImage function called');
+    
     const file = input.files[0];
-    if (!file) return;
+    if (!file) {
+        console.log('No file selected');
+        return;
+    }
+    
+    console.log('File selected:', {
+        name: file.name,
+        size: file.size,
+        type: file.type
+    });
     
     const formData = new FormData();
     formData.append('image', file);
@@ -78,14 +89,78 @@ function uploadImage(input) {
     const resultDiv = document.getElementById('uploadResult');
     resultDiv.innerHTML = '<p class="text-sm text-blue-600">Uploading...</p>';
     
+    console.log('Starting upload to /admin/upload');
+    
     fetch('/admin/upload', {
         method: 'POST',
         body: formData
     })
-    .then(response => response.json())
+    .then(response => {
+        console.log('Response received:', {
+            status: response.status,
+            statusText: response.statusText,
+            headers: Object.fromEntries(response.headers.entries()),
+            ok: response.ok
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
+        }
+        
+        // Clone the response to read it multiple times
+        const responseClone = response.clone();
+        
+        // First, try to get the raw text to see what we're actually receiving
+        return response.text().then(rawText => {
+            console.log('Raw response text:', rawText);
+            
+            // Try to parse as JSON
+            try {
+                const data = JSON.parse(rawText);
+                console.log('Parsed JSON data:', data);
+                return data;
+            } catch (parseError) {
+                console.error('Failed to parse JSON:', parseError);
+                console.log('Response was not valid JSON');
+                throw new Error(`Invalid JSON response: ${parseError.message}. Raw response: ${rawText}`);
+            }
+        });
+    })
     .then(data => {
+        console.log('Processing upload response data:', data);
+        
+        // Defensive checks for the data structure
+        if (!data) {
+            console.error('Data is null or undefined');
+            throw new Error('Server returned null or undefined data');
+        }
+        
+        if (typeof data !== 'object') {
+            console.error('Data is not an object:', typeof data, data);
+            throw new Error(`Expected object but got ${typeof data}: ${JSON.stringify(data)}`);
+        }
+        
+        console.log('Checking for url property in data...');
+        console.log('data.url:', data.url);
+        console.log('Has url property:', 'url' in data);
+        console.log('Object keys:', Object.keys(data));
+        
+        if (!data.hasOwnProperty('url')) {
+            console.error('Response data missing url property. Available properties:', Object.keys(data));
+            throw new Error(`Server response missing 'url' property. Available properties: ${Object.keys(data).join(', ')}. Full response: ${JSON.stringify(data)}`);
+        }
+        
+        if (!data.url) {
+            console.error('url property exists but is falsy:', data.url);
+            throw new Error(`Server returned empty or invalid URL: ${JSON.stringify(data.url)}`);
+        }
+        
+        console.log('URL validation passed. Creating full URL...');
         const fullURL = window.location.origin + data.url;
+        console.log('Full URL created:', fullURL);
+        
         const markdownImage = `![Image](${fullURL})`;
+        console.log('Markdown image syntax:', markdownImage);
         
         resultDiv.innerHTML = `
             <p class="text-sm text-green-600 mb-1">Upload successful!</p>
@@ -113,10 +188,37 @@ function uploadImage(input) {
                     </div>
                 </div>
             </div>
+            <div class="mt-2 p-2 bg-gray-100 rounded text-xs">
+                <p class="text-gray-600">Debug info:</p>
+                <p class="text-gray-500">Server response: ${JSON.stringify(data)}</p>
+            </div>
         `;
+        
+        console.log('Upload processing completed successfully');
     })
     .catch(error => {
-        resultDiv.innerHTML = '<p class="text-sm text-red-600">Upload failed. Please try again.</p>';
+        console.error('Upload error:', error);
+        console.error('Error details:', {
+            message: error.message,
+            stack: error.stack,
+            name: error.name
+        });
+        
+        resultDiv.innerHTML = `
+            <div class="text-sm text-red-600">
+                <p class="font-medium">Upload failed!</p>
+                <p class="mt-1">Error: ${error.message}</p>
+                <details class="mt-2">
+                    <summary class="cursor-pointer text-red-500 hover:text-red-700">Show debug details</summary>
+                    <div class="mt-1 p-2 bg-red-50 rounded text-xs">
+                        <p><strong>Error Name:</strong> ${error.name}</p>
+                        <p><strong>Error Message:</strong> ${error.message}</p>
+                        ${error.stack ? `<p><strong>Stack:</strong><br><pre class="whitespace-pre-wrap">${error.stack}</pre></p>` : ''}
+                    </div>
+                </details>
+                <p class="mt-2 text-xs">Check the browser console for more details.</p>
+            </div>
+        `;
     });
 }
 

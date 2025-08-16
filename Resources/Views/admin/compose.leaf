@@ -96,7 +96,8 @@ async function uploadImage() {
             
             if (response.ok) {
                 const data = await response.json();
-                insertMarkdown('![', `](${data.url})`);
+                const fullURL = window.location.origin + data.url;
+                insertMarkdown('![', `](${fullURL})`);
             } else {
                 alert('Failed to upload image');
             }
