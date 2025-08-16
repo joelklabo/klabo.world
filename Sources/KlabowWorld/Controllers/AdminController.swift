@@ -130,7 +130,7 @@ struct AdminController: RouteCollection {
             }
             
             // For local development only, allow filesystem writes
-            guard let config = req.application.storage[ConfigKey.self] else {
+            guard req.application.storage[ConfigKey.self] != nil else {
                 req.logger.error("Configuration not found in storage")
                 throw Abort(.internalServerError, reason: "Configuration not found")
             }
@@ -181,20 +181,51 @@ struct AdminController: RouteCollection {
     }
     
     func uploadImage(req: Request) async throws -> Response {
+        req.logger.info("Upload request received")
+        req.logger.info("Content-Type: \(req.headers.first(name: .contentType) ?? "none")")
+        
         struct ImageUpload: Content {
             let image: File
         }
         
-        let upload = try req.content.decode(ImageUpload.self)
+        let upload: ImageUpload
+        do {
+            upload = try req.content.decode(ImageUpload.self)
+            req.logger.info("Successfully decoded upload with file: \(upload.image.filename)")
+        } catch {
+            req.logger.error("Failed to decode upload: \(error)")
+            req.logger.error("Request body size: \(req.body.data?.readableBytes ?? 0) bytes")
+            
+            // Return JSON error response instead of throwing
+            struct ErrorResponse: Content {
+                let error: Bool
+                let message: String
+            }
+            
+            let errorResponse = ErrorResponse(error: true, message: "Failed to decode upload: \(error.localizedDescription)")
+            return try await errorResponse.encodeResponse(status: .badRequest, for: req)
+        }
         
         guard upload.image.data.readableBytes > 0 else {
-            throw Abort(.badRequest, reason: "No image data provided")
+            req.logger.error("No image data provided")
+            struct ErrorResponse: Content {
+                let error: Bool
+                let message: String
+            }
+            let errorResponse = ErrorResponse(error: true, message: "No image data provided")
+            return try await errorResponse.encodeResponse(status: .badRequest, for: req)
         }
         
         let allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp"]
         guard let contentType = upload.image.contentType,
               allowedTypes.contains(contentType.serialize()) else {
-            throw Abort(.badRequest, reason: "Invalid image type. Allowed: JPEG, PNG, GIF, WebP")
+            req.logger.error("Invalid image type: \(upload.image.contentType?.serialize() ?? "unknown")")
+            struct ErrorResponse: Content {
+                let error: Bool
+                let message: String
+            }
+            let errorResponse = ErrorResponse(error: true, message: "Invalid image type. Allowed: JPEG, PNG, GIF, WebP")
+            return try await errorResponse.encodeResponse(status: .badRequest, for: req)
         }
         
         let fileExtension: String
@@ -217,11 +248,31 @@ struct AdminController: RouteCollection {
         let fileManager = FileManager.default
         if !fileManager.fileExists(atPath: config.uploadsDir) {
             req.logger.warning("Uploads directory doesn't exist, creating: \(config.uploadsDir)")
-            try fileManager.createDirectory(atPath: config.uploadsDir, withIntermediateDirectories: true, attributes: nil)
+            do {
+                try fileManager.createDirectory(atPath: config.uploadsDir, withIntermediateDirectories: true, attributes: nil)
+            } catch {
+                req.logger.error("Failed to create uploads directory: \(error)")
+                struct ErrorResponse: Content {
+                    let error: Bool
+                    let message: String
+                }
+                let errorResponse = ErrorResponse(error: true, message: "Failed to create uploads directory: \(error.localizedDescription)")
+                return try await errorResponse.encodeResponse(status: .internalServerError, for: req)
+            }
         }
         
-        try await req.fileio.writeFile(upload.image.data, at: uploadPath)
-        req.logger.info("Successfully uploaded image to: \(uploadPath)")
+        do {
+            try await req.fileio.writeFile(upload.image.data, at: uploadPath)
+            req.logger.info("Successfully uploaded image to: \(uploadPath)")
+        } catch {
+            req.logger.error("Failed to write file: \(error)")
+            struct ErrorResponse: Content {
+                let error: Bool
+                let message: String
+            }
+            let errorResponse = ErrorResponse(error: true, message: "Failed to write file: \(error.localizedDescription)")
+            return try await errorResponse.encodeResponse(status: .internalServerError, for: req)
+        }
         
         let publicURL = "/uploads/\(uniqueFilename)"
         
@@ -229,6 +280,7 @@ struct AdminController: RouteCollection {
             let url: String
         }
         
+        req.logger.info("Returning success response with URL: \(publicURL)")
         return try await UploadResponse(url: publicURL).encodeResponse(for: req)
     }
     
