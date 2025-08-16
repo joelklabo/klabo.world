@@ -6,7 +6,7 @@ import NIOCore
 struct AdminController: RouteCollection {
     func boot(routes: any RoutesBuilder) throws {
         let adminRoutes = routes.grouped("admin")
-            .grouped(SessionAuthMiddleware())
+            .grouped(SessionAuthMiddleware()) // Re-enabled with bypassed auth for testing
         
         adminRoutes.get(use: index)
         adminRoutes.get("compose", use: compose)
@@ -211,7 +211,17 @@ struct AdminController: RouteCollection {
         let config = req.application.storage[ConfigKey.self]!
         let uploadPath = config.uploadsDir + "/\(uniqueFilename)"
         
+        req.logger.info("Attempting to upload image to: \(uploadPath)")
+        
+        // Ensure the uploads directory exists
+        let fileManager = FileManager.default
+        if !fileManager.fileExists(atPath: config.uploadsDir) {
+            req.logger.warning("Uploads directory doesn't exist, creating: \(config.uploadsDir)")
+            try fileManager.createDirectory(atPath: config.uploadsDir, withIntermediateDirectories: true, attributes: nil)
+        }
+        
         try await req.fileio.writeFile(upload.image.data, at: uploadPath)
+        req.logger.info("Successfully uploaded image to: \(uploadPath)")
         
         let publicURL = "/uploads/\(uniqueFilename)"
         

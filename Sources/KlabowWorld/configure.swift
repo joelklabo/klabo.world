@@ -43,6 +43,8 @@ public func configure(_ app: Application) async throws {
     let appsDir = config.uploadsDir + "/apps"
     
     do {
+        // Create main uploads directory first
+        try fileManager.createDirectory(atPath: config.uploadsDir, withIntermediateDirectories: true, attributes: nil)
         try fileManager.createDirectory(atPath: postsDir, withIntermediateDirectories: true, attributes: nil)
         try fileManager.createDirectory(atPath: appsDir, withIntermediateDirectories: true, attributes: nil)
         app.logger.info("Created/verified uploads directories at \(config.uploadsDir)")

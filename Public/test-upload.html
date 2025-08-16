@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upload Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .upload-section {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .log-section {
+            background-color: #f5f5f5;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .response-section {
+            border: 1px solid #007bff;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .error {
+            color: red;
+        }
+        .success {
+            color: green;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        input[type="file"] {
+            margin: 10px 0;
+        }
+        .preview {
+            max-width: 300px;
+            max-height: 300px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Image Upload Test</h1>
+    
+    <div class="upload-section">
+        <h2>Upload Image</h2>
+        <input type="file" id="fileInput" accept="image/*">
+        <br>
+        <img id="preview" class="preview" style="display: none;">
+        <br>
+        <button id="uploadBtn" onclick="uploadFile()">Upload Image</button>
+        <button onclick="clearLog()">Clear Log</button>
+    </div>
+
+    <div class="response-section">
+        <h3>Server Response Analysis</h3>
+        <div id="responseAnalysis"></div>
+    </div>
+
+    <div class="log-section">
+        <h3>Debug Log</h3>
+        <div id="log"></div>
+    </div>
+
+    <script>
+        const logDiv = document.getElementById('log');
+        const responseDiv = document.getElementById('responseAnalysis');
+        const fileInput = document.getElementById('fileInput');
+        const preview = document.getElementById('preview');
+        const uploadBtn = document.getElementById('uploadBtn');
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toISOString();
+            const className = type === 'error' ? 'error' : type === 'success' ? 'success' : '';
+            logDiv.innerHTML += `<span class="${className}">[${timestamp}] ${message}</span>\n`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(`[${timestamp}] ${message}`);
+        }
+
+        function clearLog() {
+            logDiv.innerHTML = '';
+            responseDiv.innerHTML = '';
+        }
+
+        // Preview selected image
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                log(`Selected file: ${file.name} (${file.type}, ${file.size} bytes)`);
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        async function uploadFile() {
+            const file = fileInput.files[0];
+            if (!file) {
+                log('No file selected', 'error');
+                return;
+            }
+
+            log(`Starting upload for: ${file.name}`);
+            uploadBtn.disabled = true;
+
+            try {
+                // Create FormData
+                const formData = new FormData();
+                formData.append('image', file);
+                
+                log('FormData created, sending request to /admin/upload');
+                log(`Request details:
+- URL: ${window.location.origin}/admin/upload
+- Method: POST
+- File: ${file.name}
+- File type: ${file.type}
+- File size: ${file.size} bytes`);
+
+                // Send request
+                const response = await fetch('/admin/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                log(`Response received:
+- Status: ${response.status} ${response.statusText}
+- Headers: ${JSON.stringify(Object.fromEntries(response.headers.entries()), null, 2)}`);
+
+                // Get response text first
+                const responseText = await response.text();
+                log(`Raw response text: "${responseText}"`);
+
+                // Try to parse as JSON
+                let jsonData = null;
+                try {
+                    jsonData = JSON.parse(responseText);
+                    log(`Parsed JSON data: ${JSON.stringify(jsonData, null, 2)}`, 'success');
+                } catch (parseError) {
+                    log(`JSON parse error: ${parseError.message}`, 'error');
+                    log(`Response is not valid JSON`, 'error');
+                }
+
+                // Analyze the response
+                analyzeResponse(response.status, responseText, jsonData);
+
+                if (response.ok && jsonData) {
+                    log(`Upload successful!`, 'success');
+                    if (jsonData.url) {
+                        log(`Image URL: ${jsonData.url}`, 'success');
+                        
+                        // Test different URL constructions
+                        testUrlConstruction(jsonData.url);
+                    }
+                } else {
+                    log(`Upload failed with status ${response.status}`, 'error');
+                    if (jsonData && jsonData.error) {
+                        log(`Server error: ${jsonData.error}`, 'error');
+                    }
+                }
+
+            } catch (error) {
+                log(`Network/Request error: ${error.message}`, 'error');
+                log(`Error stack: ${error.stack}`, 'error');
+            } finally {
+                uploadBtn.disabled = false;
+            }
+        }
+
+        function analyzeResponse(status, responseText, jsonData) {
+            let analysis = `<h4>Response Analysis</h4>`;
+            analysis += `<p><strong>Status:</strong> ${status}</p>`;
+            analysis += `<p><strong>Raw Response Length:</strong> ${responseText.length} characters</p>`;
+            analysis += `<p><strong>Raw Response:</strong> <code>${escapeHtml(responseText)}</code></p>`;
+            
+            if (jsonData) {
+                analysis += `<p><strong>JSON Valid:</strong> Yes ✓</p>`;
+                analysis += `<p><strong>JSON Keys:</strong> ${Object.keys(jsonData).join(', ')}</p>`;
+                
+                if (jsonData.url) {
+                    analysis += `<p><strong>URL Value:</strong> <code>${escapeHtml(jsonData.url)}</code></p>`;
+                    analysis += `<p><strong>URL Type:</strong> ${typeof jsonData.url}</p>`;
+                    analysis += `<p><strong>URL Length:</strong> ${jsonData.url.length} characters</p>`;
+                    
+                    // Check if URL starts with expected patterns
+                    const patterns = ['/uploads/', 'http://', 'https://', './uploads/', '../uploads/'];
+                    const matches = patterns.filter(pattern => jsonData.url.startsWith(pattern));
+                    analysis += `<p><strong>URL Pattern Matches:</strong> ${matches.length > 0 ? matches.join(', ') : 'None'}</p>`;
+                }
+                
+                if (jsonData.error) {
+                    analysis += `<p><strong>Error:</strong> <code>${escapeHtml(jsonData.error)}</code></p>`;
+                }
+            } else {
+                analysis += `<p><strong>JSON Valid:</strong> No ✗</p>`;
+                analysis += `<p><strong>Response Type:</strong> Likely HTML or plain text</p>`;
+            }
+            
+            responseDiv.innerHTML = analysis;
+        }
+
+        function testUrlConstruction(url) {
+            log(`\n=== URL Construction Tests ===`);
+            log(`Original URL from server: "${url}"`);
+            
+            const currentOrigin = window.location.origin;
+            log(`Current origin: "${currentOrigin}"`);
+            
+            // Test different ways to construct the full URL
+            const tests = [
+                { name: 'Direct use', url: url },
+                { name: 'Origin + URL', url: currentOrigin + url },
+                { name: 'Origin + / + URL', url: currentOrigin + '/' + url },
+                { name: 'Remove leading slash', url: currentOrigin + '/' + url.replace(/^\/+/, '') },
+                { name: 'Ensure single slash', url: (currentOrigin + '/' + url).replace(/([^:]\/)\/+/g, '$1') }
+            ];
+            
+            tests.forEach(test => {
+                log(`${test.name}: "${test.url}"`);
+                
+                // Test if we can create a valid URL object
+                try {
+                    const urlObj = new URL(test.url);
+                    log(`  ✓ Valid URL object created`);
+                    log(`    Protocol: ${urlObj.protocol}`);
+                    log(`    Host: ${urlObj.host}`);
+                    log(`    Pathname: ${urlObj.pathname}`);
+                } catch (e) {
+                    log(`  ✗ Invalid URL: ${e.message}`, 'error');
+                }
+            });
+            
+            // Create a test image to see which URL actually works
+            log(`\n=== Testing Image Loading ===`);
+            tests.forEach((test, index) => {
+                const img = new Image();
+                img.onload = () => log(`✓ Image loaded successfully with: ${test.name} - "${test.url}"`, 'success');
+                img.onerror = () => log(`✗ Image failed to load with: ${test.name} - "${test.url}"`, 'error');
+                img.src = test.url;
+                
+                // Set a timeout to avoid hanging
+                setTimeout(() => {
+                    if (!img.complete) {
+                        log(`⏱ Timeout loading image with: ${test.name}`, 'error');
+                    }
+                }, 5000);
+            });
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Log initial page load
+        log('Test page loaded successfully');
+        log(`Current URL: ${window.location.href}`);
+        log(`Upload endpoint will be: ${window.location.origin}/admin/upload`);
+    </script>
+</body>
+</html>
