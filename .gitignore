@@ -21,3 +21,17 @@ Public/uploads/
 
 # Test files
 Public/test-upload.html
+
+# Node modules
+node_modules/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+azure_logs*.zip
+cookies.txt
+
+# Documentation drafts
+docs/drafts/

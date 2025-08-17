@@ -7,11 +7,13 @@ FROM swift:6.0-noble AS build
 ARG BUILD_VERSION
 ARG BUILD_DATE
 
-# Install OS updates
+# Install OS updates and Node.js for Tailwind CSS
 RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
     && apt-get -q update \
     && apt-get -q dist-upgrade -y \
-    && apt-get install -y libjemalloc-dev
+    && apt-get install -y libjemalloc-dev curl \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs
 
 # Set up a build area
 WORKDIR /build
@@ -26,6 +28,9 @@ RUN swift package resolve \
 
 # Copy entire repo into container
 COPY . .
+
+# Build Tailwind CSS
+RUN npm install && npx tailwindcss -i ./tailwind.input.css -o ./Public/css/app.css --minify
 
 # Build the application, with optimizations, with static linking, and using jemalloc
 # N.B.: The static version of jemalloc is incompatible with the static Swift runtime.

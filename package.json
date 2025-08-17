@@ -1,0 +1,30 @@
+{
+  "name": "klabo.world",
+  "version": "1.0.0",
+  "description": "A modern personal website and blog built with Vapor 4 (Swift), featuring Markdown-based content management, an admin interface, and automated deployment to Azure.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-css": "tailwindcss -i ./tailwind.input.css -o ./Public/css/app.css --minify",
+    "watch-css": "tailwindcss -i ./tailwind.input.css -o ./Public/css/app.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joelklabo/KlaboWorld.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/joelklabo/KlaboWorld/issues"
+  },
+  "homepage": "https://github.com/joelklabo/KlaboWorld#readme",
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.16",
+    "tailwindcss": "^3.4.17"
+  }
+}

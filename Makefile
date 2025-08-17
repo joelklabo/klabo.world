@@ -41,6 +41,7 @@ dev: ## Run development server with auto-reload
 
 .PHONY: build
 build: ## Build the project
+	npx tailwindcss -i ./tailwind.input.css -o ./Public/css/app.css --minify
 	swift build
 
 .PHONY: clean

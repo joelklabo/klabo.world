@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles for tag colors */
+.tag-bitcoin {
+  @apply bg-orange-500/20 text-orange-300 border-orange-500/30;
+}
+
+.tag-lightning {
+  @apply bg-yellow-500/20 text-yellow-300 border-yellow-500/30;
+}
+
+.tag-nostr {
+  @apply bg-purple-500/20 text-purple-300 border-purple-500/30;
+}
+
+/* Skeleton loading animation */
+@keyframes skeleton-loading {
+  0% {
+    background-color: rgba(139, 92, 246, 0.1);
+  }
+  50% {
+    background-color: rgba(139, 92, 246, 0.2);
+  }
+  100% {
+    background-color: rgba(139, 92, 246, 0.1);
+  }
+}
+
+.skeleton {
+  animation: skeleton-loading 1.5s infinite;
+}
+
+/* Code highlighting styles */
+.hljs {
+  @apply bg-gray-900 text-gray-300 p-4 rounded-lg overflow-x-auto;
+}
+
+/* Search result highlighting */
+mark {
+  @apply bg-yellow-400/30 text-yellow-200;
+}
