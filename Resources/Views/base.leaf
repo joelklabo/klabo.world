@@ -570,7 +570,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
                     <!-- Search results overlay -->
-                    <div id="search-results" class="absolute top-full mt-2 w-full bg-white dark:bg-slate-900 border border-gray-200 dark:border-purple-500/30 rounded-lg shadow-2xl hidden overflow-hidden">
+                    <div id="search-results" class="absolute top-full mt-2 w-full bg-white dark:bg-slate-900 border border-gray-200 dark:border-purple-500/30 rounded-lg shadow-2xl hidden overflow-hidden z-50">
                         <div class="max-h-96 overflow-y-auto"></div>
                     </div>
                 </div>
@@ -650,14 +650,18 @@
             </div>
             
             <!-- Mobile menu -->
-            <div id="mobile-menu" class="hidden md:hidden mt-4 space-y-1">
+            <div id="mobile-menu" class="hidden mt-4 space-y-1">
                 <!-- Mobile search -->
                 <div class="relative mb-4">
                     <input type="text" id="mobile-search-input" placeholder="Search" 
-                           class="w-full px-4 py-2 pl-10 bg-gray-100 dark:bg-white/10 backdrop-blur-sm border border-gray-300 dark:border-purple-500/30 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                           class="w-full px-4 py-2 pl-10 bg-gray-100 dark:bg-white/10 backdrop-blur-sm border border-gray-300 dark:border-purple-500/30 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300">
                     <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-500 dark:text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
+                    <!-- Mobile search results overlay -->
+                    <div id="mobile-search-results" class="absolute top-full mt-2 w-full bg-white dark:bg-slate-900 border border-gray-200 dark:border-purple-500/30 rounded-lg shadow-2xl hidden overflow-hidden z-50">
+                        <div class="max-h-96 overflow-y-auto"></div>
+                    </div>
                 </div>
                 <a href="/" class="block px-4 py-2 text-gray-700 dark:text-white/80 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">Home</a>
                 <a href="/posts" class="block px-4 py-2 text-gray-700 dark:text-white/80 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">Blog</a>
@@ -796,7 +800,9 @@
                                         <div class="flex items-center gap-2">
                                             <span class="font-medium text-white">${highlightMatch(result.title, query)}</span>
                                             <span class="text-xs px-2 py-0.5 rounded-full ${
-                                                result.type === 'app' ? 'bg-blue-500/20 text-blue-300' : 'bg-green-500/20 text-green-300'
+                                                result.type === 'app' ? 'bg-blue-500/20 text-blue-300' : 
+                                                result.type === 'context' ? 'bg-purple-500/20 text-purple-300' :
+                                                'bg-green-500/20 text-green-300'
                                             }">${result.type}</span>
                                         </div>
                                         <div class="text-sm text-white/60 mt-1">${highlightMatch(result.description, query)}</div>
@@ -829,24 +835,107 @@
             searchTimeout = setTimeout(() => performSearch(e.target.value), 300);
         });
         
-        // Mobile search with redirect
-        mobileSearchInput?.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter' && e.target.value.length >= 2) {
-                window.location.href = `/posts/search?q=${encodeURIComponent(e.target.value)}`;
+        // Mobile search with AJAX (same as desktop)
+        const mobileSearchResults = document.getElementById('mobile-search-results');
+        let mobileSearchDebounce = null;
+        
+        mobileSearchInput?.addEventListener('input', function(e) {
+            clearTimeout(mobileSearchDebounce);
+            const query = e.target.value.trim();
+            
+            if (query.length < 2) {
+                mobileSearchResults?.classList.add('hidden');
+                return;
             }
+            
+            mobileSearchDebounce = setTimeout(() => performMobileSearch(query), 300);
         });
+        
+        async function performMobileSearch(query) {
+            if (query.length < 2) {
+                mobileSearchResults.classList.add('hidden');
+                return;
+            }
+            
+            currentSearchQuery = query;
+            const resultsContainer = mobileSearchResults.querySelector('div');
+            
+            // Show loading state
+            resultsContainer.innerHTML = `
+                <div class="px-4 py-3">
+                    <div class="skeleton h-4 w-3/4 mb-2 rounded"></div>
+                    <div class="skeleton h-3 w-full rounded"></div>
+                </div>
+            `;
+            mobileSearchResults.classList.remove('hidden');
+            
+            try {
+                const response = await fetch(`/search?q=${encodeURIComponent(query)}`);
+                const results = await response.json();
+                
+                // Check if this is still the current search
+                if (query !== currentSearchQuery) return;
+                
+                if (results.length === 0) {
+                    resultsContainer.innerHTML = '<div class="px-4 py-3 text-white/60">No results found</div>';
+                } else {
+                    resultsContainer.innerHTML = results.map(result => {
+                        // Determine tag color class
+                        const getTagClass = (tag) => {
+                            const tagLower = tag.toLowerCase();
+                            if (tagLower.includes('bitcoin')) return 'tag-bitcoin';
+                            if (tagLower.includes('lightning')) return 'tag-lightning';
+                            if (tagLower.includes('nostr') || tagLower.includes('nip')) return 'tag-nostr';
+                            return 'bg-purple-500/20 text-purple-300';
+                        };
+                        
+                        return `
+                            <a href="${result.url}" class="block px-4 py-3 hover:bg-purple-500/20 transition-colors duration-150 border-b border-purple-500/10 last:border-0">
+                                <div class="flex items-start gap-3">
+                                    ${result.type === 'app' && result.icon ? `
+                                        <img src="${result.icon}" alt="${result.title} icon" class="w-10 h-10 rounded-lg flex-shrink-0 object-cover">
+                                    ` : ''}
+                                    <div class="flex-1">
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-medium text-white">${highlightMatch(result.title, query)}</span>
+                                            <span class="text-xs px-2 py-0.5 rounded-full ${
+                                                result.type === 'app' ? 'bg-blue-500/20 text-blue-300' : 
+                                                result.type === 'context' ? 'bg-purple-500/20 text-purple-300' :
+                                                'bg-green-500/20 text-green-300'
+                                            }">${result.type}</span>
+                                        </div>
+                                        <div class="text-sm text-white/60 mt-1">${highlightMatch(result.description, query)}</div>
+                                        ${result.tags ? `<div class="flex gap-2 mt-2">${result.tags.map(tag => 
+                                            `<span class="text-xs px-2 py-1 ${getTagClass(tag)} rounded-full border">${tag}</span>`
+                                        ).join('')}</div>` : ''}
+                                    </div>
+                                </div>
+                            </a>
+                        `;
+                    }).join('');
+                }
+            } catch (error) {
+                console.error('Search error:', error);
+                resultsContainer.innerHTML = '<div class="px-4 py-3 text-red-400">Search error. Please try again.</div>';
+            }
+        }
         
         // Close search results when clicking outside or pressing Escape
         document.addEventListener('click', function(e) {
             if (!searchInput?.contains(e.target) && !searchResults?.contains(e.target)) {
                 searchResults?.classList.add('hidden');
             }
+            if (!mobileSearchInput?.contains(e.target) && !mobileSearchResults?.contains(e.target)) {
+                mobileSearchResults?.classList.add('hidden');
+            }
         });
         
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 searchResults?.classList.add('hidden');
+                mobileSearchResults?.classList.add('hidden');
                 searchInput?.blur();
+                mobileSearchInput?.blur();
             }
         });
         
