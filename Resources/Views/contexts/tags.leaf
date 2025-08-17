@@ -1,5 +1,5 @@
 #extend("base"):
-#export("content"):
+#export("body"):
 <div class="max-w-4xl mx-auto px-6 py-8">
     <div class="mb-8">
         <h1 class="text-4xl font-bold mb-4">Context Tags</h1>

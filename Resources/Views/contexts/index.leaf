@@ -1,5 +1,5 @@
 #extend("base"):
-#export("content"):
+#export("body"):
 <div class="max-w-4xl mx-auto px-6 py-8">
     <div class="mb-8">
         <h1 class="text-4xl font-bold mb-4">AI Agent Contexts</h1>
@@ -28,7 +28,7 @@
     
     <!-- Contexts list -->
     <div id="contexts-list" class="space-y-6">
-        #if(count(contexts) > 0):
+        #if(contexts):
             #for(context in contexts):
                 <article class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-200">
                     <div class="flex justify-between items-start mb-3">

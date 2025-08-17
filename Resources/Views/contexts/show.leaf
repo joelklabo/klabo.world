@@ -35,7 +35,7 @@
 </style>
 #endexport
 
-#export("content"):
+#export("body"):
 <div class="max-w-4xl mx-auto px-6 py-8">
     <!-- Header with title and actions -->
     <div class="mb-8">

@@ -1,5 +1,5 @@
 #extend("base"):
-#export("content"):
+#export("body"):
 <div class="max-w-6xl mx-auto px-6 py-8">
     <div class="mb-8 flex justify-between items-center">
         <h1 class="text-3xl font-bold">Manage Contexts</h1>
