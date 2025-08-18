@@ -61,6 +61,7 @@ public func configure(_ app: Application) async throws {
     // This allows uploaded files to persist across container restarts
     app.middleware.use(FileMiddleware(publicDirectory: config.uploadsDir))
     
+    
     // Configure Leaf templating
     app.views.use(.leaf)
     

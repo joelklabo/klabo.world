@@ -2,6 +2,23 @@ import Vapor
 import Down
 
 func routes(_ app: Application) throws {
+    // Serve app icons from Resources/Apps
+    app.get("app-icons", ":filename") { req async throws -> Response in
+        guard let filename = req.parameters.get("filename"),
+              filename.hasSuffix(".png") || filename.hasSuffix(".jpg") || filename.hasSuffix(".jpeg") else {
+            throw Abort(.notFound)
+        }
+        
+        let resourcesPath = req.application.directory.resourcesDirectory + "Apps/" + filename
+        let fileManager = FileManager.default
+        
+        if fileManager.fileExists(atPath: resourcesPath) {
+            return try await req.fileio.asyncStreamFile(at: resourcesPath)
+        } else {
+            throw Abort(.notFound)
+        }
+    }
+    
     app.get { req async throws -> View in
         req.logger.info("Processing home page request")
         

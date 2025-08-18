@@ -14,7 +14,7 @@
   ],
   "fullDescription" : "ViceChips is a modern iOS habit tracking app built with Swift 6 and SwiftUI, featuring a unique 'chip budget' system for managing personal habits. Unlike traditional habit trackers, ViceChips uses a gamified approach where you allocate a monthly budget of 'chips' to each habit, helping you maintain balance and moderation. With comprehensive statistics, beautiful charts, and CloudKit sync, ViceChips makes it easy to track your progress and build better habits over time.",
   "githubURL" : "https://github.com/joelklabo/ViceChips",
-  "icon" : "/uploads/vicechips-icon.png",
+  "icon" : "/app-icons/vicechips-icon.png",
   "name" : "ViceChips",
   "publishDate" : "2025-01-09T08:00:00Z",
   "screenshots" : [],

@@ -778,7 +778,7 @@
                 if (query !== currentSearchQuery) return;
                 
                 if (results.length === 0) {
-                    resultsContainer.innerHTML = '<div class="px-4 py-3 text-white/60">No results found</div>';
+                    resultsContainer.innerHTML = '<div class="px-4 py-3 text-gray-600 dark:text-white/60">No results found</div>';
                 } else {
                     resultsContainer.innerHTML = results.map(result => {
                         // Determine tag color class
@@ -798,14 +798,14 @@
                                     ` : ''}
                                     <div class="flex-1">
                                         <div class="flex items-center gap-2">
-                                            <span class="font-medium text-white">${highlightMatch(result.title, query)}</span>
+                                            <span class="font-medium text-gray-900 dark:text-white">${highlightMatch(result.title, query)}</span>
                                             <span class="text-xs px-2 py-0.5 rounded-full ${
                                                 result.type === 'app' ? 'bg-blue-500/20 text-blue-300' : 
                                                 result.type === 'context' ? 'bg-purple-500/20 text-purple-300' :
                                                 'bg-green-500/20 text-green-300'
                                             }">${result.type}</span>
                                         </div>
-                                        <div class="text-sm text-white/60 mt-1">${highlightMatch(result.description, query)}</div>
+                                        <div class="text-sm text-gray-600 dark:text-white/60 mt-1">${highlightMatch(result.description, query)}</div>
                                         ${result.tags ? `<div class="flex gap-2 mt-2">${result.tags.map(tag => 
                                             `<span class="text-xs px-2 py-1 ${getTagClass(tag)} rounded-full border">${tag}</span>`
                                         ).join('')}</div>` : ''}
@@ -877,7 +877,7 @@
                 if (query !== currentSearchQuery) return;
                 
                 if (results.length === 0) {
-                    resultsContainer.innerHTML = '<div class="px-4 py-3 text-white/60">No results found</div>';
+                    resultsContainer.innerHTML = '<div class="px-4 py-3 text-gray-600 dark:text-white/60">No results found</div>';
                 } else {
                     resultsContainer.innerHTML = results.map(result => {
                         // Determine tag color class
@@ -897,14 +897,14 @@
                                     ` : ''}
                                     <div class="flex-1">
                                         <div class="flex items-center gap-2">
-                                            <span class="font-medium text-white">${highlightMatch(result.title, query)}</span>
+                                            <span class="font-medium text-gray-900 dark:text-white">${highlightMatch(result.title, query)}</span>
                                             <span class="text-xs px-2 py-0.5 rounded-full ${
                                                 result.type === 'app' ? 'bg-blue-500/20 text-blue-300' : 
                                                 result.type === 'context' ? 'bg-purple-500/20 text-purple-300' :
                                                 'bg-green-500/20 text-green-300'
                                             }">${result.type}</span>
                                         </div>
-                                        <div class="text-sm text-white/60 mt-1">${highlightMatch(result.description, query)}</div>
+                                        <div class="text-sm text-gray-600 dark:text-white/60 mt-1">${highlightMatch(result.description, query)}</div>
                                         ${result.tags ? `<div class="flex gap-2 mt-2">${result.tags.map(tag => 
                                             `<span class="text-xs px-2 py-1 ${getTagClass(tag)} rounded-full border">${tag}</span>`
                                         ).join('')}</div>` : ''}
