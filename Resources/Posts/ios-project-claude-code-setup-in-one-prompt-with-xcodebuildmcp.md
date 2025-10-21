@@ -1,33 +1,987 @@
 ---
-title: iOS Project Claude Code Setup in One Prompt - with xcodebuildmcp
-summary: Setup Claude Code with hierarchical CLAUDE.md files, xcodebuildmcp integration, slash commands etc. All in one prompt.
-date: 2025-08-16
+title: iOS Project Claude Code Setup in One Prompt: with xcodebuildmcp
+summary: Setup Claude Code with hierarchical CLAUDE.md files, `xcodebuildmcp` integration, slash commands etc. All in one prompt.
+date: 2025-10-21
 publishDate: 2025-08-15
 tags: Claude, Claude Code, iOS, xcodebuildmcp, prompts
 ---
 
-![Image](/6DF0706D-BB51-4A93-83E5-60FBAE976574.png)
+# Complete iOS Project Claude Code Setup - Master Prompt
 
-I have been using Claude Code for a month or so now. I have created a `CLAUDE.md` and set up and MCP server but hadn't really done much to configure Claude better. The amount of options was a little overwhelming and "configuration" is not something that really peaks my interest usually.
+**IMPORTANT**: This comprehensive setup will transform any iOS project into a fully automated, context-aware, self-maintaining Claude Code environment. This prompt is designed specifically for Claude Code (claude.ai/code) users.
 
-I kept seeing examples of other projects with very precise and useful configuration though, and I knew I was not getting the best I could out of the tool.
+---
 
-So, I decided to ask Claude to do it for me. I won't go into too much detail because I'll post the steps I took below. And, a single prompt you can use to do the same for your iOS project.
+## PHASE 0: Prerequisites & Environment Verification
 
-If you are like me, just run this and let Claude improve your setup for you.
+### 0.1 Check Required Tools
+Before starting, verify these tools are installed:
+```bash
+# Check Xcode
+xcodebuild -version || echo "ERROR: Xcode not found - install from App Store"
 
-## The Prompt
+# Check Node.js (required for XcodeBuildMCP)
+node --version || echo "ERROR: Node.js not found - install from nodejs.org or 'brew install node'"
 
-View the complete setup prompt on GitHub Gist:
+# Check npm
+npm --version || echo "ERROR: npm not found - comes with Node.js"
 
-📋 **[iOS Project Claude Code Setup Prompt - Complete setup instructions](https://gist.github.com/joelklabo/6df9fa603bec3478dec7efc17ea44596)**
+# Check Git
+git --version || echo "ERROR: Git not found"
 
-This comprehensive prompt will transform any iOS project into a fully automated, context-aware, self-maintaining Claude Code environment with XcodeBuildMCP integration.
+# Check if we're in a git repository
+git status || echo "WARNING: Not a git repository - some features won't work"
+```
 
-## The Workflow
+If any tools are missing, document them and provide installation instructions before proceeding.
 
-View the complete workflow description on GitHub Gist:
+### 0.2 Detect Claude Code Environment
+```bash
+# Claude Code always runs from the project root
+PROJECT_ROOT=$(pwd)
+echo "Project root: $PROJECT_ROOT"
 
-📋 **[iOS Claude Code Setup Workflow - How I configured my iOS project](https://gist.github.com/joelklabo/36cbd765b4a3a47c7a03cb2685de1162)**
+# Claude Code MCP configuration location
+MCP_CONFIG_PATH="$HOME/Library/Application Support/Claude/claude_desktop_config.json"
+if [ -f "$MCP_CONFIG_PATH" ]; then
+    echo "Claude Desktop config found"
+else
+    echo "NOTE: Will need to configure MCP manually in Claude Code settings"
+fi
+```
 
-This shows the step-by-step approach I used to transform my iOS project with Claude Code, including priming with `/init`, integrating XcodeBuildMCP, creating self-healing maintenance commands, and building a one-shot setup prompt for any iOS repository.
+---
+
+## PHASE 1: Deep Project Analysis [CRITICAL - DO NOT SKIP]
+
+Before creating anything, perform exhaustive project discovery:
+
+### 1.1 Project Structure Discovery
+```bash
+# Find Xcode project files
+find . -name "*.xcodeproj" -o -name "*.xcworkspace" | head -5
+
+# Detect Swift version
+if [ -f "Package.swift" ]; then
+    grep "swift-tools-version" Package.swift
+fi
+
+# Check for project configuration
+if ls *.xcodeproj >/dev/null 2>&1; then
+    PROJECT_FILE=$(ls *.xcodeproj | head -1)
+    echo "Found project: $PROJECT_FILE"
+    
+    # Extract key information
+    xcodebuild -list -project "$PROJECT_FILE" 2>/dev/null || true
+fi
+
+# Detect minimum iOS version from Info.plist or project settings
+find . -name "Info.plist" -exec grep -A1 "MinimumOSVersion" {} \; 2>/dev/null || true
+```
+
+### 1.2 Build System Analysis
+```bash
+# Check for build configuration files
+ls -la | grep -E "project.yml|project.yaml|Tuist|Package.swift"
+
+# List available schemes
+if [ -n "$PROJECT_FILE" ]; then
+    xcodebuild -list -project "$PROJECT_FILE" | grep -A20 "Schemes:" || true
+fi
+
+# Check for dependency managers
+[ -f "Podfile" ] && echo "Found CocoaPods"
+[ -f "Cartfile" ] && echo "Found Carthage"
+[ -f "Package.swift" ] && echo "Found Swift Package Manager"
+```
+
+### 1.3 Package and Module Discovery
+```bash
+# Find all Swift packages
+find . -name "Package.swift" -not -path "*/.*" | while read pkg; do
+    echo "Package found: $pkg"
+    dirname "$pkg"
+done
+
+# Find test targets
+find . -name "*Tests" -type d -not -path "*/.*" | head -10
+```
+
+### 1.4 Testing Infrastructure
+```bash
+# Detect test framework
+grep -r "@testable import\|import XCTest\|import Testing" --include="*.swift" . | head -5 || true
+
+# Find UI test targets
+find . -name "*UITests" -type d -not -path "*/.*"
+```
+
+### 1.5 Extensions and Targets
+```bash
+# Find app extensions
+find . -name "*.appex" -o -name "*Widget*" -o -name "*Extension*" -type d | grep -v ".build" | head -10
+```
+
+### 1.6 Code Quality Tools
+```bash
+# Check for linting/formatting tools
+[ -f ".swiftlint.yml" ] && echo "SwiftLint configured"
+[ -f ".swiftformat" ] && echo "SwiftFormat configured"
+```
+
+### 1.7 Existing Automation
+```bash
+# Check for existing build scripts
+[ -f "Makefile" ] && echo "Makefile found"
+[ -f "Rakefile" ] && echo "Rakefile found"
+[ -f "build.sh" ] && echo "Build script found"
+ls scripts/*.sh 2>/dev/null | head -5
+```
+
+Document ALL findings before proceeding. This analysis drives everything that follows.
+
+---
+
+## PHASE 2: Claude Code Infrastructure Creation
+
+### 2.1 Create Directory Structure
+```bash
+# Create the Claude configuration directory structure
+mkdir -p .claude/commands
+mkdir -p .claude/hooks  
+mkdir -p .claude/scripts
+mkdir -p .claude/imports
+
+# Confirm structure
+tree .claude || ls -la .claude/
+```
+
+### 2.2 Create Master CLAUDE.md
+Create the main `CLAUDE.md` at project root. This file will be customized based on your Phase 1 analysis:
+
+```markdown
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+**⚠️ IMPORTANT**: Keep this documentation updated! Run `/update-docs` after significant changes.
+**Last Updated**: [CURRENT_DATE]
+
+## 📋 Documentation Maintenance
+
+- **When to Update**: After adding features, changing architecture, or modifying workflows
+- **Update Command**: Use `/update-docs` to refresh all CLAUDE.md files
+- **Optimize Setup**: Use `/claude-optimize` to analyze and improve configuration
+- **Review Schedule**: Check documentation accuracy weekly
+
+## Quick Reference
+
+**Project**: [PROJECT_NAME - from analysis]
+**Language**: Swift [VERSION - from analysis]
+**Platform**: [iOS/macOS/etc - from analysis]
+**Architecture**: [Detected pattern - SwiftUI/UIKit/etc]
+**Key Command**: Build and test via MCP tools
+
+## 🔧 XcodeBuildMCP Integration
+
+**IMPORTANT**: This project uses XcodeBuildMCP for all Xcode operations. The MCP server is automatically available in Claude Code.
+
+### Why XcodeBuildMCP?
+- Provides intelligent, context-aware Xcode operations
+- Automatically handles simulator management
+- Simplifies device deployment
+- Offers better error handling than raw xcodebuild
+
+### Common MCP Operations
+```swift
+// Building
+mcp__xcodebuildmcp__build_sim_name_proj      // Build for simulator
+mcp__xcodebuildmcp__build_dev_proj           // Build for device
+
+// Testing
+mcp__xcodebuildmcp__test_sim_name_proj       // Test on simulator
+mcp__xcodebuildmcp__swift_package_test       // Test Swift packages
+
+// Running
+mcp__xcodebuildmcp__build_run_sim_name_proj  // Build and run on simulator
+mcp__xcodebuildmcp__launch_app_sim           // Launch existing app
+
+// Utilities
+mcp__xcodebuildmcp__clean_proj               // Clean build artifacts
+mcp__xcodebuildmcp__list_sims                // List available simulators
+mcp__xcodebuildmcp__screenshot               // Take simulator screenshot
+```
+
+## 📁 Project Structure
+
+[This will be filled in based on Phase 1 analysis]
+
+## 🚀 Essential Commands
+
+### Quick Actions
+- `/build` - Smart build based on context
+- `/test` - Run appropriate tests
+- `/run` - Build and run the app
+- `/clean` - Clean build artifacts
+
+### Testing
+- `/test-all` - Run all tests (app + packages)
+- `/test-single [TestName]` - Run specific test
+
+### Device Deployment  
+- `/device-build` - Build and deploy to connected device
+- `/device-list` - Show connected devices
+
+### Maintenance
+- `/update-docs` - Update all documentation
+- `/claude-optimize` - Analyze and optimize setup
+
+## 🔑 Key Patterns & Rules
+
+[Document project-specific patterns discovered in Phase 1]
+
+## 📱 Development Workflow
+
+1. Start with `/build` to verify project builds
+2. Run `/test` to ensure tests pass
+3. Use `/run` to launch in simulator
+4. Before commits, run `/test-all`
+
+## ⚠️ Important Notes
+
+- All Xcode operations use MCP tools (never raw xcodebuild)
+- Commands are context-aware and adapt to your current directory
+- The setup is self-maintaining via `/update-docs` and `/claude-optimize`
+```
+
+### 2.3 Create Context Detection System
+
+Create `.claude/scripts/detect-context.sh`. This script will be customized based on your project structure:
+
+```bash
+#!/bin/bash
+# Context detection for Claude Code XcodeBuildMCP integration
+# This script analyzes the current context and sets appropriate defaults
+
+# Get absolute project root (Claude Code always runs from project root)
+PROJECT_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+CURRENT_DIR=$(pwd)
+
+# Function to find project file
+find_project_file() {
+    # Look for xcworkspace first (takes precedence)
+    local workspace=$(find "$PROJECT_ROOT" -name "*.xcworkspace" -maxdepth 2 | grep -v xcodeproj | head -1)
+    if [ -n "$workspace" ]; then
+        echo "$workspace"
+        return
+    fi
+    
+    # Fall back to xcodeproj
+    local project=$(find "$PROJECT_ROOT" -name "*.xcodeproj" -maxdepth 2 | head -1)
+    if [ -n "$project" ]; then
+        echo "$project"
+        return
+    fi
+}
+
+# Function to detect default scheme
+detect_default_scheme() {
+    local project_file="$1"
+    if [ -n "$project_file" ]; then
+        # Try to extract the main scheme
+        xcodebuild -list -project "$project_file" 2>/dev/null | \
+            grep -A10 "Schemes:" | \
+            grep -v "Schemes:" | \
+            head -1 | \
+            xargs
+    fi
+}
+
+# Function to find newest simulator
+find_newest_simulator() {
+    xcrun simctl list devices available | \
+        grep "iPhone" | \
+        grep -v "unavailable" | \
+        tail -1 | \
+        sed 's/.*(\(.*\)).*/\1/'
+}
+
+# Detect project configuration
+PROJECT_FILE=$(find_project_file)
+DEFAULT_SCHEME=$(detect_default_scheme "$PROJECT_FILE")
+DEFAULT_SIMULATOR=$(find_newest_simulator)
+
+# Export for MCP tools
+export XCODEBUILDMCP_PROJECT_ROOT="$PROJECT_ROOT"
+export XCODEBUILDMCP_DEFAULT_PROJECT="$PROJECT_FILE"
+export XCODEBUILDMCP_DEFAULT_SCHEME="${DEFAULT_SCHEME:-YourApp}"
+export XCODEBUILDMCP_DEFAULT_SIMULATOR="${DEFAULT_SIMULATOR:-iPhone 15}"
+
+# Detect if we're in a package directory
+if [ -f "Package.swift" ]; then
+    export XCODEBUILDMCP_CONTEXT="package"
+    export XCODEBUILDMCP_PACKAGE_PATH="$CURRENT_DIR"
+elif [[ "$CURRENT_DIR" == *"Tests"* ]]; then
+    export XCODEBUILDMCP_CONTEXT="tests"
+elif [[ "$CURRENT_DIR" == *"UITests"* ]]; then
+    export XCODEBUILDMCP_CONTEXT="uitests"
+else
+    export XCODEBUILDMCP_CONTEXT="app"
+fi
+
+# Check for booted simulator
+BOOTED_SIM=$(xcrun simctl list devices | grep "Booted" | head -1 | awk -F'[()]' '{print $2}')
+if [ -n "$BOOTED_SIM" ]; then
+    export XCODEBUILDMCP_BOOTED_SIMULATOR="$BOOTED_SIM"
+fi
+
+# Check for connected physical devices
+if xcrun devicectl list devices 2>/dev/null | grep -q "iPhone\|iPad"; then
+    export XCODEBUILDMCP_HAS_DEVICE="true"
+fi
+
+# Output context (useful for debugging)
+if [ "${DEBUG_CONTEXT}" = "true" ]; then
+    echo "Context Detection Results:"
+    echo "  Project: $PROJECT_FILE"
+    echo "  Scheme: $DEFAULT_SCHEME"
+    echo "  Simulator: $DEFAULT_SIMULATOR"
+    echo "  Context: $XCODEBUILDMCP_CONTEXT"
+    echo "  Has Device: ${XCODEBUILDMCP_HAS_DEVICE:-false}"
+fi
+```
+
+Make it executable: `chmod +x .claude/scripts/detect-context.sh`
+
+---
+
+## PHASE 3: XcodeBuildMCP Configuration for Claude Code
+
+### 3.1 Understanding MCP in Claude Code
+
+Claude Code comes with XcodeBuildMCP pre-configured, but you can optimize it for your specific project. The MCP tools are available immediately without additional setup.
+
+### 3.2 Verify MCP is Working
+
+Test that MCP tools are available:
+```bash
+# This should return diagnostic information
+mcp__xcodebuildmcp__diagnostic
+
+# List available simulators
+mcp__xcodebuildmcp__list_sims
+
+# If these don't work, MCP may need to be enabled in settings
+```
+
+### 3.3 Create MCP Best Practices Guide
+
+Create `.claude/imports/mcp-best-practices.md`:
+
+```markdown
+# XcodeBuildMCP Best Practices
+
+## Always Use MCP Tools
+Never use raw xcodebuild commands. Always use the appropriate MCP tool:
+- Building: `mcp__xcodebuildmcp__build_sim_name_proj`
+- Testing: `mcp__xcodebuildmcp__test_sim_name_proj`
+- Running: `mcp__xcodebuildmcp__build_run_sim_name_proj`
+- Package operations: `mcp__xcodebuildmcp__swift_package_*`
+
+## Context-Aware Tool Selection
+The context detection script automatically determines which tools to use based on your current directory.
+
+## Common Patterns
+[Document patterns specific to this project]
+```
+
+---
+
+## PHASE 4: Custom Commands Creation
+
+Create these essential slash commands in `.claude/commands/`:
+
+### 4.1 Core Build Commands
+
+**`.claude/commands/build.md`:**
+```markdown
+---
+description: Build the project intelligently
+---
+
+# Build the project based on context
+
+First, I'll detect what needs to be built based on the current directory and project structure.
+
+Then I'll use the appropriate MCP tool:
+- For the main app: `mcp__xcodebuildmcp__build_sim_name_proj`
+- For packages: `mcp__xcodebuildmcp__swift_package_build`
+- For specific schemes: Build with the detected scheme
+
+The build will use your project's default simulator and configuration.
+```
+
+**`.claude/commands/test.md`:**
+```markdown
+---
+description: Run all relevant tests
+---
+
+# Run tests based on context
+
+I'll run the appropriate tests for your current location:
+- App tests: `mcp__xcodebuildmcp__test_sim_name_proj`
+- Package tests: `mcp__xcodebuildmcp__swift_package_test`
+- UI tests if available
+
+Tests will run on the default simulator with proper configuration.
+
+$ARGUMENTS
+```
+
+**`.claude/commands/run.md`:**
+```markdown
+---
+description: Build and run the app
+---
+
+# Build and run in simulator
+
+I'll build and launch your app using:
+`mcp__xcodebuildmcp__build_run_sim_name_proj`
+
+This will:
+1. Build the latest code
+2. Install on simulator
+3. Launch the app
+4. Show you the simulator
+
+$ARGUMENTS
+```
+
+### 4.2 Testing Commands
+
+**`.claude/commands/test-all.md`:**
+```markdown
+---
+description: Run ALL tests (app + packages)
+---
+
+# Complete test suite
+
+I'll run your entire test suite:
+1. App unit tests
+2. Package tests
+3. UI tests (if present)
+
+This ensures everything works before committing.
+```
+
+**`.claude/commands/test-single.md`:**
+```markdown
+---
+description: Run a specific test
+---
+
+# Run specific test
+
+Usage: `/test-single TestClassName` or `/test-single TestClassName/testMethod`
+
+I'll find and run just the test you specify using the appropriate MCP tool with filtering.
+
+$ARGUMENTS
+```
+
+### 4.3 Device Commands
+
+**`.claude/commands/device-list.md`:**
+```markdown
+---
+description: Show connected devices
+---
+
+# List physical devices
+
+I'll show all connected iOS devices using:
+`mcp__xcodebuildmcp__list_devices`
+
+This will display device names, UUIDs, and connection status.
+```
+
+**`.claude/commands/device-build.md`:**
+```markdown
+---
+description: Deploy to physical device
+---
+
+# Deploy to device
+
+I'll deploy your app to a connected device:
+1. List available devices
+2. Build for device architecture
+3. Install the app
+4. Launch on device
+
+Requires a device to be connected via USB or WiFi.
+
+$ARGUMENTS
+```
+
+### 4.4 Maintenance Commands
+
+**`.claude/commands/clean.md`:**
+```markdown
+---
+description: Clean build artifacts
+---
+
+# Clean build folder
+
+I'll clean all build artifacts using:
+`mcp__xcodebuildmcp__clean_proj`
+
+This helps resolve build issues and ensures a fresh build.
+```
+
+**`.claude/commands/update-docs.md`:**
+```markdown
+---
+description: Update all documentation
+---
+
+# Update documentation
+
+I'll refresh all CLAUDE.md files:
+1. Analyze current project structure
+2. Update main CLAUDE.md
+3. Update nested documentation
+4. Add new discoveries
+5. Update timestamps
+
+This keeps your Claude Code setup current.
+```
+
+**`.claude/commands/claude-optimize.md`:**
+```markdown
+---
+description: Optimize Claude Code setup
+---
+
+# Analyze and optimize
+
+I'll review your entire Claude Code configuration:
+1. Check for missing commands
+2. Verify MCP is working
+3. Test all hooks
+4. Suggest improvements
+5. Find unused features
+6. Recommend new tools
+
+This helps you get the most from Claude Code.
+```
+
+### 4.5 Project-Specific Commands
+
+Based on Phase 1 analysis, create additional commands:
+
+**If SwiftLint is found - `.claude/commands/lint.md`:**
+```markdown
+---
+description: Run SwiftLint
+---
+
+# Lint code
+
+Run SwiftLint to check code style and fix issues.
+```
+
+**If multiple schemes - `.claude/commands/scheme-list.md`:**
+```markdown
+---
+description: List available schemes
+---
+
+# Show all schemes
+
+Display all available build schemes for this project.
+```
+
+---
+
+## PHASE 5: Automation Hooks (Optional but Recommended)
+
+Hooks provide automatic context and validation. Create these in `.claude/hooks/`:
+
+### 5.1 Simple Session Start Hook
+**`.claude/hooks/session-start.sh`:**
+```bash
+#!/bin/bash
+# Welcome message with project context
+
+PROJECT_NAME=$(basename "$(pwd)")
+SWIFT_VERSION=$(swift --version 2>/dev/null | head -1 | grep -o '[0-9]\+\.[0-9]\+' | head -1)
+
+echo "🚀 Starting $PROJECT_NAME session" >&2
+echo "📱 Swift $SWIFT_VERSION | Xcode $(xcodebuild -version | head -1)" >&2
+
+# Check for common issues
+if ! command -v node &> /dev/null; then
+    echo "⚠️  Node.js not found - MCP tools may not work" >&2
+fi
+
+# Show git status
+BRANCH=$(git branch --show-current 2>/dev/null)
+if [ -n "$BRANCH" ]; then
+    echo "🌿 Branch: $BRANCH" >&2
+fi
+
+exit 0
+```
+
+### 5.2 Build Validation Hook  
+**`.claude/hooks/pre-build.sh`:**
+```bash
+#!/bin/bash
+# Checks before building
+
+# Ensure we're not on main branch with uncommitted changes
+BRANCH=$(git branch --show-current 2>/dev/null)
+if [ "$BRANCH" = "main" ] || [ "$BRANCH" = "master" ]; then
+    CHANGES=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
+    if [ "$CHANGES" -gt "0" ]; then
+        echo "⚠️  Warning: Building on main with uncommitted changes" >&2
+    fi
+fi
+
+exit 0
+```
+
+### 5.3 Swift Format Hook (if formatters are available)
+**`.claude/hooks/post-swift-edit.sh`:**
+```bash
+#!/bin/bash
+# Auto-format Swift files after editing
+
+INPUT=$(cat)
+FILE_PATH=$(echo "$INPUT" | grep -o '"file_path"[[:space:]]*:[[:space:]]*"[^"]*"' | sed 's/.*: *"\(.*\)"/\1/')
+
+if [[ "$FILE_PATH" == *.swift ]]; then
+    # Only run if formatters exist
+    if [ -f ".swiftformat" ] && command -v swiftformat &> /dev/null; then
+        swiftformat "$FILE_PATH" 2>/dev/null || true
+        echo "✨ Formatted $FILE_PATH" >&2
+    fi
+    
+    if [ -f ".swiftlint.yml" ] && command -v swiftlint &> /dev/null; then
+        swiftlint lint --fix "$FILE_PATH" 2>/dev/null || true
+    fi
+fi
+
+exit 0
+```
+
+Make all hooks executable:
+```bash
+chmod +x .claude/hooks/*.sh
+```
+
+---
+
+## PHASE 6: Settings Configuration (Optional)
+
+Claude Code settings can enhance your workflow. Create these if you want additional automation:
+
+### 6.1 Project Settings
+**`.claude/settings.json`:**
+```json
+{
+  "env": {
+    "PROJECT_NAME": "[Your project name]",
+    "DEFAULT_SIMULATOR": "iPhone 15",
+    "SWIFT_VERSION": "[From analysis]"
+  },
+  "hooks": {
+    "SessionStart": [{
+      "matcher": ".*",
+      "hooks": [{
+        "type": "command",
+        "command": ".claude/hooks/session-start.sh"
+      }]
+    }],
+    "PostToolUse": [{
+      "matcher": "Edit.*\\.swift|Write.*\\.swift",
+      "hooks": [{
+        "type": "command",
+        "command": ".claude/hooks/post-swift-edit.sh"
+      }]
+    }]
+  }
+}
+```
+
+### 6.2 Tool Permissions (if you want to restrict tools)
+**`.claude/settings.local.json`:**
+```json
+{
+  "permissions": {
+    "allow": [
+      "mcp__xcodebuildmcp__*",
+      "Read",
+      "Write",
+      "Edit",
+      "Bash(git*)",
+      "Bash(swift*)",
+      "WebFetch"
+    ]
+  }
+}
+```
+
+Note: These settings files are optional. Claude Code works well with just the CLAUDE.md and commands.
+
+---
+
+## PHASE 7: Documentation Structure
+
+### 7.1 Create Nested Documentation (Based on Analysis)
+
+For each major component found in Phase 1, create a CLAUDE.md file:
+
+**For Swift Packages - `Packages/[PackageName]/CLAUDE.md`:**
+```markdown
+# [Package Name] Package
+
+## Purpose
+[What this package does]
+
+## Structure
+- Sources/
+- Tests/
+
+## Testing
+Run tests with: `mcp__xcodebuildmcp__swift_package_test`
+
+## Key APIs
+[List main public interfaces]
+```
+
+**For App Extensions - `[ExtensionName]/CLAUDE.md`:**
+```markdown
+# [Extension Name]
+
+## Type
+[Widget/Watch/Share/etc]
+
+## Building
+Use scheme: [Scheme name]
+
+## Testing
+[How to test this extension]
+```
+
+### 7.2 Create `.claude/CLAUDE.md` Overview
+```markdown
+# Claude Code Configuration
+
+This directory contains all Claude Code setup for this iOS project.
+
+## Quick Command Reference
+
+**Building & Running:**
+- `/build` - Build the project
+- `/run` - Build and run in simulator
+- `/clean` - Clean build artifacts
+
+**Testing:**
+- `/test` - Run tests
+- `/test-all` - Run all tests
+- `/test-single [name]` - Run specific test
+
+**Device:**
+- `/device-list` - Show connected devices
+- `/device-build` - Deploy to device
+
+**Maintenance:**
+- `/update-docs` - Update documentation
+- `/claude-optimize` - Optimize setup
+
+## Directory Structure
+```
+.claude/
+├── commands/     # Slash commands
+├── hooks/        # Automation scripts
+├── scripts/      # Helper utilities
+└── imports/      # Reusable patterns
+```
+
+## How Commands Work
+Each .md file in commands/ becomes a slash command.
+The filename (without .md) is the command name.
+
+## How Hooks Work
+Hooks run automatically at specific times:
+- session-start.sh: When Claude Code starts
+- post-swift-edit.sh: After editing Swift files
+```
+
+---
+
+## PHASE 8: Testing & Verification
+
+### 8.1 Test MCP Tools
+```bash
+# Verify MCP is working
+mcp__xcodebuildmcp__diagnostic
+
+# If this fails, MCP may not be enabled
+# User should check Claude Code settings
+```
+
+### 8.2 Test Commands
+Try each command to ensure it works:
+```bash
+/build       # Should build the project
+/test        # Should run tests
+/run         # Should launch in simulator
+/clean       # Should clean build artifacts
+```
+
+### 8.3 Verify Context Detection
+```bash
+# Test the context script
+DEBUG_CONTEXT=true bash .claude/scripts/detect-context.sh
+
+# Should show:
+# - Project file path
+# - Default scheme
+# - Default simulator
+# - Current context
+```
+
+---
+
+## TROUBLESHOOTING GUIDE
+
+### Common Issues and Solutions
+
+**Issue: MCP tools not found**
+```bash
+# Solution: MCP may not be enabled in Claude Code
+# The user needs to check their Claude Code settings
+# Or ensure Node.js is installed:
+brew install node
+```
+
+**Issue: "Command not found" for slash commands**
+```bash
+# Solution: Ensure .claude/commands/ directory exists
+# and contains .md files with proper frontmatter:
+---
+description: Your description here
+---
+```
+
+**Issue: Hooks not running**
+```bash
+# Solution: Make hooks executable
+chmod +x .claude/hooks/*.sh
+
+# And ensure paths in settings.json are correct
+```
+
+**Issue: Build fails with "scheme not found"**
+```bash
+# Solution: List available schemes
+xcodebuild -list -project *.xcodeproj
+
+# Update detect-context.sh with correct scheme
+```
+
+**Issue: Simulator not found**
+```bash
+# Solution: List available simulators
+xcrun simctl list devices
+
+# Update defaults in detect-context.sh
+```
+
+---
+
+## COMPLETION CHECKLIST
+
+After setup, verify:
+
+✅ **Phase 0-1: Analysis Complete**
+- [ ] All tools verified (Xcode, Node.js, Git)
+- [ ] Project structure documented
+- [ ] Build system understood
+- [ ] Testing framework identified
+
+✅ **Phase 2: Infrastructure Created**
+- [ ] `.claude/` directory structure exists
+- [ ] Main CLAUDE.md created and customized
+- [ ] Context detection script works
+
+✅ **Phase 3: MCP Configured**
+- [ ] MCP tools accessible (`mcp__xcodebuildmcp__diagnostic` works)
+- [ ] Best practices documented
+
+✅ **Phase 4: Commands Created**
+- [ ] All essential commands created
+- [ ] Commands tested and working
+- [ ] Project-specific commands added
+
+✅ **Phase 5-6: Optional Enhancements**
+- [ ] Hooks created (if desired)
+- [ ] Settings configured (if needed)
+
+✅ **Phase 7: Documentation Complete**
+- [ ] Nested CLAUDE.md files created
+- [ ] `.claude/CLAUDE.md` overview created
+
+✅ **Phase 8: Everything Tested**
+- [ ] MCP tools work
+- [ ] Commands work
+- [ ] Context detection works
+- [ ] Documentation is accurate
+
+---
+
+## FINAL ADVICE
+
+### What Makes a Good Setup
+
+1. **Simplicity First**: Start with essential commands, add more as needed
+2. **Test Everything**: Each command should be tested before moving on
+3. **Document Reality**: Document what actually exists, not what should exist
+4. **Adapt to Project**: Every project is different - customize accordingly
+5. **Iterate**: The setup will evolve as the project grows
+
+### Maintenance
+
+- Run `/update-docs` weekly or after major changes
+- Run `/claude-optimize` monthly to find improvements
+- Add new commands as patterns emerge
+- Remove commands that aren't used
+
+### Getting Help
+
+If something doesn't work:
+1. Check this troubleshooting guide
+2. Verify prerequisites (Node.js, Xcode)
+3. Test MCP with `mcp__xcodebuildmcp__diagnostic`
+4. Simplify and test individual components
+
+---
+
+## SUCCESS INDICATORS
+
+You'll know the setup is successful when:
+
+1. **Building is effortless**: Just type `/build`
+2. **Testing is automatic**: `/test` knows what to run
+3. **Context is smart**: Commands adapt to your location
+4. **Documentation stays current**: Via `/update-docs`
+5. **Workflow feels natural**: Commands match your needs
+
+The goal is to make iOS development with Claude Code feel magical - where everything just works and Claude understands your project deeply.
