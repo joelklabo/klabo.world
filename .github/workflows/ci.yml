@@ -22,6 +22,8 @@ jobs:
       - run: corepack enable
       - name: Install dependencies
         run: pnpm install --ignore-scripts
+      - name: Generate Contentlayer artifacts
+        run: pnpm --filter app exec contentlayer build
       - name: Lint
         run: pnpm turbo lint
       - name: Unit tests
