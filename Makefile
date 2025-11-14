@@ -1,11 +1,11 @@
 SHELL := /bin/bash
 
-.PHONY: help bootstrap dev lint test doctor "db:reset" "load-test" "agent-shell"
+.PHONY: help bootstrap dev lint test doctor db-reset load-test agent-shell
 
 help:
 	@echo "klabo.world (Next.js) – canonical commands"
 	@echo "Use 'just' targets directly whenever possible."
-	@echo "Targets: bootstrap, dev, lint, test, doctor, db:reset, load-test, agent-shell"
+	@echo "Targets: bootstrap, dev, lint, test, doctor, db-reset, load-test, agent-shell"
 
 bootstrap:
 	just bootstrap
@@ -22,11 +22,11 @@ test:
 doctor:
 	just doctor
 
-"db:reset":
-	just db:reset
+db-reset:
+	just db-reset
 
-"load-test":
+load-test:
 	just load-test
 
-"agent-shell":
+agent-shell:
 	just agent-shell

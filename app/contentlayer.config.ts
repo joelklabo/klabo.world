@@ -4,6 +4,8 @@ import {
   type ComputedFields,
 } from 'contentlayer/source-files';
 
+const isDev = process.env.NODE_ENV !== 'production';
+
 const computedFields: ComputedFields = {
   slug: {
     type: 'string',
@@ -61,4 +63,10 @@ export default makeSource({
   contentDirExclude: ['README.md'],
   documentTypes: [Post, AppDoc, ContextDoc],
   disableImportAliasWarning: true,
+  mdx: {
+    mdxOptions: (opts) => {
+      opts.development = isDev;
+      return opts;
+    },
+  },
 });

@@ -24,7 +24,7 @@ watch:
 	pnpm vitest --runInBand --watch
 
 # Reset database to clean state
-"db:reset":
+db-reset:
 	docker compose -f docker-compose.dev.yml up -d db redis
 	pnpm prisma migrate reset --force
 
@@ -34,11 +34,11 @@ doctor:
 	docker compose -f docker-compose.dev.yml ps
 
 # Load testing shortcut
-"load-test":
+load-test:
 	pnpm k6 run scripts/load-smoke.js
 
 # AI agent friendly tmux session stub
-"agent-shell":
+agent-shell:
 	tmux new-session -d -s klaboworld 'pnpm dev' \
 		&& tmux split-window -v 'pnpm vitest --watch' \
 		&& tmux split-window -h 'docker compose -f docker-compose.dev.yml logs -f' \

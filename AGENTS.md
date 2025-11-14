@@ -36,7 +36,7 @@ All commands assume repo root.
 | `just lint` | Runs `pnpm turbo lint` (Next ESLint + package lint). |
 | `just test` | Runs `pnpm turbo test` (Vitest + Playwright, once implemented). |
 | `just watch` | Launches Vitest watch mode (TDD loop). |
-| `just db:reset` | Applies Prisma migrations and seeds against the local containerized Postgres + Redis. |
+| `just db-reset` | Applies Prisma migrations and seeds against the local containerized Postgres + Redis. |
 | `just load-test` | Executes the short k6 smoke (`scripts/load-smoke.js`). |
 | `just agent-shell` | Spawns a tmux layout with dev server, vitest watcher, and Docker logs for human/AI pair work. |
 | `pnpm --filter @klaboworld/scripts run export-legacy` | Copies legacy `Resources/{Posts,Apps,Contexts}` into `content/` for Contentlayer. |

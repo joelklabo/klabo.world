@@ -18,7 +18,7 @@ just dev                # spins up Postgres/Redis/Azurite + next dev server
 | `just bootstrap` | Corepack enable + pnpm install + envinfo snapshot. |
 | `just dev` | Starts docker-compose services (`docker-compose.dev.yml`) and runs `pnpm --filter app dev`. |
 | `just lint` / `just test` | Run turborepo lint/test pipelines (ESLint + Vitest placeholder). |
-| `just db:reset` | Runs Prisma migrations + seeds against local Postgres. |
+| `just db-reset` | Runs Prisma migrations + seeds against local Postgres. |
 | `just doctor` | Prints envinfo + docker status (kept under `docs/verifications/`). |
 | `just load-test` | Placeholder for k6 smoke tests. |
 | `just agent-shell` | Opens tmux layout for AI/human pair sessions. |
@@ -80,7 +80,7 @@ GITHUB_TOKEN=...
 1. Start services: `docker compose -f docker-compose.dev.yml up -d db redis` (handled by `just dev`).
 2. Create/inspect schema: edit `app/prisma/schema.prisma`.
 3. Run migrations locally: `cd app && pnpm prisma migrate dev --name init` (CI uses `pnpm prisma format` + `pnpm prisma generate`).
-4. Reset DB: `just db:reset` (drops + re-seeds).
+4. Reset DB: `just db-reset` (drops + re-seeds).
 
 ## Contentlayer
 

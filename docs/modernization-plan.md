@@ -215,11 +215,11 @@ To keep execution deterministic—and trivial for local dev—follow these order
      doctor: pnpm dlx envinfo --system --binaries && docker compose ps
      ```
    - Verification: `just doctor` passes on macOS/Linux and inside devcontainer; results stored in `docs/verifications/doctor.md`.
-4. **Wire Prisma + Auth (`just db:reset`)**
+4. **Wire Prisma + Auth (`just db-reset`)**
    - Scaffold `app/prisma/schema.prisma` with Admin, Session, RateLimiter tables.
    - `docker compose up -d db redis` ensures Postgres 17.6 + Redis 7.4 start with pinned images.
    - `pnpm prisma migrate dev --name init` + `pnpm prisma db seed`.
-   - Verification: `pnpm vitest prisma.spec.ts` hits Prisma client, `pnpm prisma studio` lists tables, and `just db:reset` (which runs migrate + seed) exits 0 twice in a row.
+   - Verification: `pnpm vitest prisma.spec.ts` hits Prisma client, `pnpm prisma studio` lists tables, and `just db-reset` (which runs migrate + seed) exits 0 twice in a row.
 5. **Port Content**
    - Run `pnpm tsx packages/scripts/src/export-legacy.ts`, commit generated MDX/JSON.
    - Verification: `pnpm contentlayer build` succeeds; `pnpm vitest content.spec.ts` ensures metadata parsing matches legacy fixtures.

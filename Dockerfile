@@ -27,13 +27,13 @@ RUN pnpm --filter app build
 FROM base AS runner
 WORKDIR /app
 ENV NODE_ENV=production
-ENV PORT=8080
+ENV PORT=80
 
 COPY --from=builder /app/app/.next/standalone ./
 COPY --from=builder /app/app/.next/static ./.next/static
 COPY --from=builder /app/app/public ./public
 COPY --from=builder /app/content ./content
 
-EXPOSE 8080
+EXPOSE 80
 
 CMD ["node", "server.js"]
