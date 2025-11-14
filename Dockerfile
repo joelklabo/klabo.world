@@ -13,13 +13,14 @@ COPY app/package.json app/package.json
 COPY packages/config/package.json packages/config/package.json
 COPY packages/scripts/package.json packages/scripts/package.json
 COPY packages/ui/package.json packages/ui/package.json
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile --unsafe-perm
 
 FROM base AS builder
 WORKDIR /app
 COPY . .
 COPY --from=deps /app/node_modules ./node_modules
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile --unsafe-perm
+RUN pnpm --filter app exec prisma generate
 RUN pnpm --filter app exec contentlayer build
 RUN pnpm --filter app build
 
