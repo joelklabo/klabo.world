@@ -1,0 +1,30 @@
+name: ci
+
+on:
+  push:
+    branches: ["*"]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 10.22.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.11.1
+          cache: pnpm
+      - run: corepack enable
+      - name: Install dependencies
+        run: pnpm install --ignore-scripts
+      - name: Lint
+        run: pnpm turbo lint
+      - name: Unit tests
+        run: pnpm vitest run
+      - name: Build Next.js app
+        run: pnpm --filter app build

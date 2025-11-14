@@ -1,0 +1,20 @@
+{
+  "name": "klaboworld-next",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:1-24-bullseye",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "24.11.1"
+    }
+  },
+  "postCreateCommand": "corepack enable && pnpm install",
+  "remoteUser": "node",
+  "updateContentCommand": "just doctor",
+  "containerEnv": {
+    "PNPM_HOME": "/home/node/.local/share/pnpm"
+  },
+  "forwardPorts": [3000, 5432, 6379, 10000],
+  "mounts": [
+    "source=klaboworld-pnpm-store,target=/home/node/.local/share/pnpm,type=volume"
+  ]
+}

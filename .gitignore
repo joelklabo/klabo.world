@@ -24,6 +24,10 @@ Public/test-upload.html
 
 # Node modules
 node_modules/
+.turbo/
+.contentlayer/
+app/.contentlayer/
+pnpm-debug.log
 
 # Temporary files
 *.tmp
