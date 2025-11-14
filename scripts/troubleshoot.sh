@@ -1,6 +1,10 @@
 #!/bin/bash
 # Troubleshooting script for klabow.world
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+SWIFT_CMD="$REPO_ROOT/scripts/swift-tmp.sh"
+
 echo "🔍 klabow.world Troubleshooting"
 echo "================================"
 echo ""
@@ -62,10 +66,10 @@ echo ""
 
 # Test build
 echo "6. Testing build..."
-if swift build &> /dev/null; then
+if "$SWIFT_CMD" build &> /dev/null; then
     echo "   ✅ Build successful"
 else
-    echo "   ❌ Build failed! Run 'swift build' to see errors"
+    echo "   ❌ Build failed! Run './scripts/swift-tmp.sh build' to see errors"
 fi
 echo ""
 
@@ -92,5 +96,5 @@ echo ""
 echo "Common fixes:"
 echo "• Missing .env:     Run 'make setup'"
 echo "• Port in use:      Kill the process or use a different port"
-echo "• Build errors:     Check 'swift build' output"
+echo "• Build errors:     Check './scripts/swift-tmp.sh build' output"
 echo "• No posts:         Create a post with 'make new-post title=\"My Post\"'"

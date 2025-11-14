@@ -1,6 +1,10 @@
 #!/bin/bash
 # Initial setup script for klabow.world
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+SWIFT_CMD="$REPO_ROOT/scripts/swift-tmp.sh"
+
 echo "🚀 Setting up klabow.world..."
 echo ""
 
@@ -59,7 +63,7 @@ echo ""
 
 # Install dependencies
 echo "Installing Swift dependencies..."
-swift package resolve
+"$SWIFT_CMD" package resolve
 echo "✅ Dependencies installed"
 echo ""
 

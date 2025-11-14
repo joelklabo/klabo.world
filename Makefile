@@ -1,6 +1,9 @@
 # Makefile for klabow.world
 # Provides convenient shortcuts for common development tasks
 
+SWIFT := ./scripts/swift-tmp.sh
+SWIFT_SCRATCH_PATH := $(shell ./scripts/swift-scratch-path.sh)
+
 .PHONY: help
 help: ## Show this help message
 	@echo "klabow.world Development Commands"
@@ -24,7 +27,7 @@ setup: ## Initial project setup
 	else \
 		echo "✅ .env file already exists"; \
 	fi
-	@swift package resolve
+	@$(SWIFT) package resolve
 	@echo "✅ Setup complete!"
 
 .PHONY: run
@@ -37,36 +40,36 @@ run: ## Run development server
 .PHONY: dev
 dev: ## Run development server with auto-reload
 	@echo "🔄 Starting server with auto-reload (if available)..."
-	@swift run --enable-hot-reload 2>/dev/null || ./scripts/run-server.sh
+	@$(SWIFT) run --enable-hot-reload 2>/dev/null || ./scripts/run-server.sh
 
 .PHONY: build
 build: ## Build the project
 	npx tailwindcss -i ./tailwind.input.css -o ./Public/css/app.css --minify
-	swift build
+	$(SWIFT) build
 
 .PHONY: clean
 clean: ## Clean build artifacts
-	swift package clean
-	rm -rf .build
+	$(SWIFT) package clean
+	rm -rf .build "$(SWIFT_SCRATCH_PATH)"
 
 .PHONY: test
 test: ## Run all tests
-	swift test
+	$(SWIFT) test
 
 .PHONY: test-verbose
 test-verbose: ## Run tests with verbose output
-	swift test --verbose
+	$(SWIFT) test --verbose
 
 .PHONY: test-coverage
 test-coverage: ## Run tests with coverage
-	swift test --enable-code-coverage
+	$(SWIFT) test --enable-code-coverage
 	@echo "Coverage report available in .build/debug/codecov/"
 
 .PHONY: test-watch
 test-watch: ## Run tests in watch mode
 	@echo "Running tests in watch mode..."
 	@while true; do \
-		swift test; \
+		$(SWIFT) test; \
 		echo "Waiting for changes..."; \
 		fswatch -o Sources Tests | read; \
 	done
@@ -140,7 +143,7 @@ pre-commit: lint test ## Run checks before committing
 
 .PHONY: preview
 preview: build ## Build and run for preview
-	swift run --configuration release
+	$(SWIFT) run --configuration release
 
 .PHONY: docker-push
 docker-push: ## Build and push Docker image
@@ -187,12 +190,12 @@ troubleshoot: env-check ## Run troubleshooting diagnostics
 
 .PHONY: deps
 deps: ## Install dependencies
-	swift package resolve
+	$(SWIFT) package resolve
 	@echo "✅ Dependencies installed"
 
 .PHONY: update
 update: ## Update dependencies
-	swift package update
+	$(SWIFT) package update
 	@echo "✅ Dependencies updated"
 
 # Server Commands

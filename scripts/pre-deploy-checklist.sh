@@ -3,6 +3,10 @@
 # pre-deploy-checklist.sh
 # Automated checklist to run before deploying to Azure
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+SWIFT_CMD="$REPO_ROOT/scripts/swift-tmp.sh"
+
 echo "🚀 Pre-Deployment Checklist"
 echo "=========================="
 echo ""
@@ -74,7 +78,7 @@ fi
 # 5. Check if tests pass
 echo ""
 echo "🧪 Running tests..."
-if swift test > /dev/null 2>&1; then
+if "$SWIFT_CMD" test > /dev/null 2>&1; then
     echo "✅ All tests passed"
 else
     echo "❌ Tests failed"

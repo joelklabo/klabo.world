@@ -1,6 +1,10 @@
 #!/bin/bash
 # Server startup script with better user feedback
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+SWIFT_CMD="$REPO_ROOT/scripts/swift-tmp.sh"
+
 echo "🚀 Starting klabow.world server..."
 echo ""
 
@@ -22,7 +26,7 @@ fi
 
 # Build and run
 echo "Building project..."
-swift build
+"$SWIFT_CMD" build
 
 if [ $? -ne 0 ]; then
     echo "❌ Build failed!"
@@ -54,4 +58,4 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo ""
 
 # Run the server
-exec swift run
+exec "$SWIFT_CMD" run

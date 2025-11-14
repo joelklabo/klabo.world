@@ -1,6 +1,10 @@
 #!/bin/bash
 # Pre-deployment checklist
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+SWIFT_CMD="$REPO_ROOT/scripts/swift-tmp.sh"
+
 echo "🚀 Deployment Readiness Check"
 echo "============================"
 echo ""
@@ -32,7 +36,7 @@ echo ""
 
 # Check if tests pass
 echo "Running tests..."
-if swift test > /dev/null 2>&1; then
+if "$SWIFT_CMD" test > /dev/null 2>&1; then
     echo "✅ All tests pass"
 else
     echo "❌ Tests failing"
