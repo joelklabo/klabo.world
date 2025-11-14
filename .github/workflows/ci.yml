@@ -24,6 +24,8 @@ jobs:
         run: pnpm install --ignore-scripts
       - name: Generate Contentlayer artifacts
         run: pnpm --filter app exec contentlayer build
+      - name: Generate Prisma client
+        run: pnpm --filter app exec prisma generate
       - name: Lint
         run: pnpm turbo lint
       - name: Unit tests
