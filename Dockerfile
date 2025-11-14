@@ -20,6 +20,7 @@ WORKDIR /app
 COPY . .
 COPY --from=deps /app/node_modules ./node_modules
 RUN pnpm install --frozen-lockfile
+RUN pnpm contentlayer build --config contentlayer.config.ts
 RUN pnpm --filter app build
 
 FROM base AS runner
