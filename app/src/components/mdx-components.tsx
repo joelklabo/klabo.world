@@ -4,7 +4,7 @@ import { ClipboardDocumentIcon, ClipboardDocumentCheckIcon } from '@heroicons/re
 import Highlight, { defaultProps, type Language } from 'prism-react-renderer';
 import theme from 'prism-react-renderer/themes/nightOwl';
 import Link from 'next/link';
-import { useState, type ReactNode } from 'react';
+import React, { useState, type ReactNode } from 'react';
 
 const baseCodeStyles =
   'relative mt-4 rounded-2xl border border-slate-800/70 bg-slate-950/80 p-4 shadow-[0_20px_45px_rgba(2,6,23,0.85)] text-sm leading-relaxed';
@@ -32,30 +32,30 @@ function CodeBlock({ children }: { children: ReactNode }) {
 
   return (
     <div className={`${baseCodeStyles} relative`}>
-      <div className="absolute right-3 top-3 flex items-center gap-1 text-[13px] uppercase tracking-[0.4em] text-slate-400">
-        <span>{language.toUpperCase()}</span>
-        <button
-          type="button"
-          onClick={handleCopy}
-          className="flex items-center gap-1 rounded-full border border-white/10 bg-white/5 px-2 py-1 text-[11px] text-slate-100 transition hover:border-white/30"
-        >
-          {copied ? (
-            <>
-              <ClipboardDocumentCheckIcon className="h-3 w-3" />
-              Copied
-            </>
-          ) : (
-            <>
-              <ClipboardDocumentIcon className="h-3 w-3" />
-              Copy
-            </>
-          )}
-        </button>
+      <div className="absolute left-3 top-3 rounded-full border border-white/10 bg-slate-900/70 px-3 py-1 text-[11px] tracking-[0.6em] text-slate-400">
+        {language.toUpperCase()}
       </div>
+      <button
+        type="button"
+        onClick={handleCopy}
+        className="absolute right-3 top-3 flex items-center gap-1 rounded-full border border-white/10 bg-slate-900/80 px-3 py-1 text-[11px] uppercase tracking-[0.4em] text-slate-100 transition hover:border-white/30"
+      >
+        {copied ? (
+          <>
+            <ClipboardDocumentCheckIcon className="h-3 w-3" />
+            Copied
+          </>
+        ) : (
+          <>
+            <ClipboardDocumentIcon className="h-3 w-3" />
+            Copy
+          </>
+        )}
+      </button>
       <Highlight {...defaultProps} code={trimmedCode} language={language} theme={theme}>
         {({ className, style, tokens, getLineProps, getTokenProps }) => (
-          <pre className="overflow-x-auto rounded-xl" aria-label={`Code snippet (${language})`}>
-            <code className={className} style={{ ...style, paddingTop: '1.5rem' }}>
+          <pre className="mt-10 overflow-x-auto rounded-xl" aria-label={`Code snippet (${language})`}>
+            <code className={className} style={{ ...style, paddingTop: '0.5rem' }}>
               {tokens.map((line, lineIndex) => {
                 const lineProps = getLineProps({ line, key: lineIndex });
                 const { key: lineKey, ...lineRest } = lineProps;
@@ -83,6 +83,27 @@ function InlineCode(props: { children: ReactNode }) {
   return (
     <code className="rounded bg-slate-800 px-1 py-0.5 font-mono text-xs font-semibold tracking-wide text-indigo-100" {...props} />
   );
+}
+
+function Paragraph({ children, ...props }: { children: ReactNode; [key: string]: unknown }) {
+  const unwrapFigure = () => {
+    if (Array.isArray(children)) {
+      const onlyChild = children.filter(Boolean)[0];
+      if (React.isValidElement(onlyChild) && onlyChild.type === 'figure') {
+        return onlyChild;
+      }
+    } else if (React.isValidElement(children) && children.type === 'figure') {
+      return children;
+    }
+    return null;
+  };
+
+  const figure = unwrapFigure();
+  if (figure) {
+    return figure;
+  }
+
+  return <p {...props}>{children}</p>;
 }
 
 function ProseImage(props: { src?: string | null; alt?: string; title?: string }) {
@@ -119,6 +140,7 @@ function BlockQuote(props: { children: ReactNode }) {
 const components = {
   pre: ({ children }: { children: ReactNode }) => <CodeBlock>{children}</CodeBlock>,
   code: InlineCode,
+  p: Paragraph,
   img: ProseImage,
   blockquote: BlockQuote,
   table: (props: { children: ReactNode }) => (
