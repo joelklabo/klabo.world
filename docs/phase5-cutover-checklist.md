@@ -3,7 +3,7 @@
 Use this checklist when promoting the Next.js site to become klabo.world’s primary deployment.
 
 ## Pre-Cutover
-- [ ] Confirm latest commit deployed to `https://klabo-world-app.azurewebsites.net` (check `BUILD_VERSION` footer).
+- [x] Confirm latest commit deployed to `https://klabo-world-app.azurewebsites.net` (GH Actions run 19385057155 finished 2025-11-15 05:30 UTC; `/api/health` reports version `dev` from commit f5f041a).
 - [x] `pnpm turbo lint && pnpm turbo test` (Vitest) ✅ – 2025-11-15 05:13 UTC; see `docs/verifications/phase5-smoke-local.md`.
 - [x] `PLAYWRIGHT_BASE_URL=https://klabo-world-app.azurewebsites.net pnpm --filter app exec playwright test` (or local equivalent) – 2025-11-15 05:12 UTC; results captured in `docs/verifications/phase5-smoke-local.md`.
 - [x] `k6 run scripts/load-smoke.js` against production (recorded in `docs/verifications/phase5-load-test.md`).

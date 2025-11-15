@@ -58,9 +58,11 @@ All commands assume repo root.
 - `az webapp log tail --name <app> --resource-group <rg>` – stream container stdout/stderr for debugging boot issues.
 - `az webapp config appsettings list --name <app> --resource-group <rg>` – inspect current environment variables (PORT, DB URLs, etc.).
 - `az webapp config appsettings set --name <app> --resource-group <rg> --settings KEY=value` – update App Service env vars (e.g., to define `PORT`).
+- `az webapp config container show --name <app> --resource-group <rg>` – confirm which container image/tag is running (e.g., `DOCKER|ghcr.io/<owner>/<image>:<sha>`).
 - `gh run list --limit N` – view recent GitHub Actions runs.
 - `gh run watch <run-id>` – tail a CI/CD run in real time.
 - `gh run rerun <run-id>` – re-trigger a failed workflow with the same inputs/secrets.
+- `gh workflow run "Build, Test, and Deploy to Azure" --ref main` – manually kick off the Azure deployment pipeline (enabled via `workflow_dispatch`).
 
 Use `pnpm` commands only via the workspace root; individual package scripts should not be run with npm/yarn.
 
