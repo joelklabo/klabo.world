@@ -93,19 +93,20 @@ This document captures the detailed plan for translating every feature and piece
 
 ## Phase 4 – Observability, Ops, & Parity Polish
 
-1. **Application Insights / OTel**
-   - Finalize `instrumentation.ts` with `@opentelemetry/sdk-node` + Azure Monitor exporter. Trace page routes and admin server actions.
+1. **Application Insights / OTel** ✅ (2025-11-15)
+   - `app/instrumentation.ts` wires `@opentelemetry/sdk-node` with the Azure Monitor exporter and wraps admin server actions with telemetry spans.
+   - Deployments now expose traces/metrics automatically whenever `APPLICATIONINSIGHTS_CONNECTION_STRING` is set.
 
-2. **Secrets & environment management**
-   - :white_check_mark: Move secrets (GitHub token, DB credentials) into Key Vault + GitHub Actions secrets; update deployment instructions.
-   - :white_check_mark: Document fallback behavior when GitHub token missing (local-only mode). See `docs/runbooks/secrets.md`.
+2. **Secrets & environment management** ✅ (2025-11-15)
+   - Secrets (GitHub token, DB credentials) live in Azure App Service settings / Key Vault and GitHub Actions secrets.
+   - `docs/runbooks/secrets.md` explains local fallback behavior when tokens are missing.
 
-3. **CI/CD enhancements**
-   - Extend `ci.yml` to run Playwright (headed via xvfb) and capture artifacts on failure.
-   - Add automated smoke test step after deploy (curl `/`, `/posts`, `/apps`) before marking success.
+3. **CI/CD enhancements** ✅ (2025-11-15)
+   - `ci.yml` installs Playwright browsers, launches the built Next.js app, and runs the smoke suite headfully via `xvfb-run --auto-servernum ... playwright test --headed`. Artifacts (`app/test-results`, `/tmp/next.log`) upload automatically on failure.
+   - `Build, Test, and Deploy to Azure` runs `scripts/deploy-smoke.sh` after each push to `main`, curling `/`, `/posts`, `/apps`, `/contexts`, `/search`, and `/api/health` before marking the job successful.
 
-4. **Documentation**
-   - Update `README.md`, `AGENTS.md`, `docs/modernization-plan.md`, and add runbooks under `docs/runbooks/` for admin workflows, backup, and recovery.
+4. **Documentation** ✅ (2025-11-15)
+   - README, AGENTS.md, and runbooks (`admin-content`, `observability`, `secrets`) are up to date with the new workflows.
 
 **Exit criteria:** Observability is wired, deployment pipeline enforces smoke tests, and docs cover new workflows.
 
@@ -120,9 +121,9 @@ This document captures the detailed plan for translating every feature and piece
 2. **Performance & load**
    - :white_check_mark: Run `just load-test` (k6) against staging/production to validate App Service scaling (see `docs/verifications/phase5-load-test.md`).
 
-3. **Stakeholder sign-off**
-   - Demo to stakeholders, collect approvals, and make the Next.js app the canonical production deployment. *(pending – log approvals in `docs/verifications/phase5-stakeholder-approval.md`)*.
-   - Freeze legacy Swift repo (read-only) once parity is confirmed. *(pending)*.
+3. **Stakeholder sign-off** ✅ (2025-11-15)
+   - Demo to stakeholders, collect approvals, and make the Next.js app the canonical production deployment. (See `docs/verifications/phase5-stakeholder-approval.md`.)
+   - Legacy Swift repo `joelklabo/klabo-blog` archived and marked read-only now that Next.js is the source of truth.
 
 **Exit criteria:** Stakeholders agree the new stack fully replaces the legacy app, and all runbooks/tests are in place.
 
