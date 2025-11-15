@@ -15,7 +15,7 @@ This initiative closes the gap between the automated Playwright smoke checks we 
 3. **Fixture data + seeding**: extend the existing SQLite seeding scripts (or future Postgres seeds) so each Playwright run starts from a known state. Provide helper to reset uploads dir + content caches before tests.
 
 ## Phase 2 – Automated Playwright Suite Expansion
-1. **Configurable base URL**: update `playwright.config.ts` to read `SMOKE_BASE_URL` and `ADMIN_BASE_URL`. Default to `http://127.0.0.1:3000`, but allow `https://staging.klabo.world` so the exact same spec files exercise real domains.
+1. **Configurable base URL**: `playwright.config.ts` now prefers `PLAYWRIGHT_BASE_URL` when you want to point at staging/production, and otherwise spins up its own dev server on `http://127.0.0.1:3100` with a dedicated SQLite database + `NEXTAUTH_URL` override so tests can run without touching whatever dev server (port 3000) you keep open for manual QA. (If you already have `pnpm dev` running, either stop it or set `PLAYWRIGHT_BASE_URL=http://127.0.0.1:3000` because Next.js only allows one dev instance per project at a time.)
 2. **Public site specs**
    - Home/posts/apps/contexts/search page assertions (hero text, tag clouds, pagination).
    - Link audit: `await expect(page.locator('a[href*="localhost"])).toHaveCount(0)` and custom reporter that fails when any anchor or script URL contains non-production hosts.
