@@ -192,6 +192,8 @@ These services are optional now that Prisma defaults to SQLite and the rate limi
 4. Verification artifact stored in `docs/verifications/` if applicable ✅
 5. Modernization plan updated when structural changes occur ✅
 
+6. For every feature or visible change, capture a representative screenshot of the updated UI **and** run the full test suite (per the "Run all the tests" guidance) before you declare the work complete. Attach or reference the screenshot so I can see the working experience.
+
 Keep this document current. Any contributor—human or AI—should be able to onboard by following the steps above without additional guidance.
 ## Documentation
 - Every Markdown file now lives under `docs/` and follows the `<category>/<kebab-case>.md` pattern noted in `docs/document-inventory.md`. When a new doc is added or an existing doc moves, update that inventory file so people can see the complete list without digging directories.

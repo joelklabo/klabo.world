@@ -31,44 +31,107 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
   const index = posts.findIndex((entry) => entry.slug === post.slug);
   const previous = posts[index - 1];
   const next = posts[index + 1];
+  const readingTime = Math.max(1, Math.round((post.body.raw.split(/\s+/).length ?? 0) / 200));
 
   return (
-    <article className="bg-gray-50 px-6 py-16 dark:bg-gray-950">
-      <div className="mx-auto max-w-3xl rounded-3xl border border-gray-200 bg-white p-8 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-        <p className="text-xs uppercase tracking-widest text-gray-500">
-          {new Date(post.publishDate ?? post.date).toLocaleDateString()}
-        </p>
-        <h1 className="mt-2 text-4xl font-bold">{post.title}</h1>
-        <p className="mt-3 text-lg text-gray-600 dark:text-gray-300">{post.summary}</p>
-        <div className="mt-4 flex flex-wrap gap-2">
-          {post.tags?.map((tag) => (
-            <Link
-              key={tag}
-              href={`/posts/tag/${encodeURIComponent(tag)}`}
-              className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-200"
-            >
-              {tag}
-            </Link>
-          ))}
-        </div>
-        <div className="prose prose-zinc mt-8 max-w-none dark:prose-invert">
-          <MDXContent code={post.body.code} />
-        </div>
-        <div className="mt-12 grid gap-4 border-t border-gray-200 pt-8 text-sm text-gray-600 dark:border-gray-800 dark:text-gray-300">
-          {previous && (
-            <Link href={`/posts/${previous.slug}`} className="rounded-2xl border border-gray-200 p-4 dark:border-gray-800">
-              <p className="text-xs uppercase tracking-widest text-gray-500">Previous</p>
-              <p className="font-semibold text-indigo-600">{previous.title}</p>
-            </Link>
-          )}
-          {next && (
-            <Link href={`/posts/${next.slug}`} className="rounded-2xl border border-gray-200 p-4 dark:border-gray-800">
-              <p className="text-xs uppercase tracking-widest text-gray-500">Next</p>
-              <p className="font-semibold text-indigo-600">{next.title}</p>
-            </Link>
-          )}
+    <div className="bg-slate-950 text-slate-100">
+      <div className="mx-auto max-w-6xl px-6 py-16">
+        <div className="grid gap-10 lg:grid-cols-[3fr_1fr]">
+          <section className="space-y-8">
+            <div className="rounded-3xl border border-slate-800/80 bg-slate-900/70 p-8 shadow-[0_20px_80px_rgba(2,6,23,0.7)]">
+              <Link
+                href="/posts"
+                className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.4em] text-slate-400 hover:text-white"
+              >
+                ← Back to posts
+              </Link>
+              <div className="mt-4 flex flex-col gap-2">
+                <p className="text-xs uppercase tracking-[0.4em] text-slate-500">Published</p>
+                <time className="text-base font-semibold text-white">
+                  {new Date(post.publishDate ?? post.date).toLocaleDateString(undefined, {
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })}
+                </time>
+              </div>
+              <h1 className="mt-6 text-4xl font-semibold leading-tight text-white md:text-5xl">{post.title}</h1>
+              <p className="mt-4 text-lg text-slate-300">{post.summary}</p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                {post.tags?.map((tag) => (
+                  <Link
+                    key={tag}
+                    href={`/posts/tag/${encodeURIComponent(tag)}`}
+                    className="rounded-full border border-slate-700/80 bg-slate-900/40 px-4 py-1 text-[11px] font-semibold uppercase tracking-[0.4em] text-slate-300 transition hover:border-indigo-400/60 hover:text-indigo-200"
+                  >
+                    {tag}
+                  </Link>
+                ))}
+              </div>
+              <div className="mt-6 flex flex-wrap gap-6 text-xs uppercase tracking-[0.4em] text-slate-500">
+                <span>{readingTime} min read</span>
+                <span>
+                  {previous ? 'Chronological' : 'Latest'} · {posts.length} post{posts.length === 1 ? '' : 's'}
+                </span>
+              </div>
+            </div>
+            <div className="rounded-3xl border border-slate-800/80 bg-gradient-to-br from-slate-900 to-slate-950/80 p-8 shadow-2xl shadow-black/60">
+              <div className="prose prose-slate max-w-none space-y-8 dark:prose-invert">
+                <MDXContent code={post.body.code} />
+              </div>
+            </div>
+            <div className="grid gap-4 text-sm text-slate-300 sm:grid-cols-2">
+              {previous && (
+                <Link
+                  href={`/posts/${previous.slug}`}
+                  className="rounded-3xl border border-slate-800/80 bg-slate-900/60 p-5 transition hover:border-indigo-500/80 hover:bg-slate-900/80"
+                >
+                  <p className="text-[11px] uppercase tracking-[0.4em] text-slate-500">Previous</p>
+                  <p className="mt-2 text-base font-semibold text-white">{previous.title}</p>
+                </Link>
+              )}
+              {next && (
+                <Link
+                  href={`/posts/${next.slug}`}
+                  className="rounded-3xl border border-slate-800/80 bg-slate-900/60 p-5 transition hover:border-indigo-500/80 hover:bg-slate-900/80"
+                >
+                  <p className="text-[11px] uppercase tracking-[0.4em] text-slate-500">Next</p>
+                  <p className="mt-2 text-base font-semibold text-white">{next.title}</p>
+                </Link>
+              )}
+            </div>
+          </section>
+          <aside className="space-y-6">
+            <div className="sticky top-20 space-y-4 rounded-3xl border border-slate-800/90 bg-slate-900/80 p-6 shadow-xl shadow-black/60">
+              <h2 className="text-xs font-semibold uppercase tracking-[0.4em] text-slate-500">Post Details</h2>
+              <p className="text-sm text-slate-300">{post.summary}</p>
+              <dl className="space-y-3 text-xs uppercase tracking-[0.4em] text-slate-400">
+                <div>
+                  <dt className="text-[10px] text-slate-500">Status</dt>
+                  <dd className="text-sm text-white">{post.isPublished ? 'Published' : 'Draft'}</dd>
+                </div>
+                <div>
+                  <dt className="text-[10px] text-slate-500">Reading time</dt>
+                  <dd className="text-sm text-white">{readingTime} mins</dd>
+                </div>
+              </dl>
+              <div>
+                <p className="text-[11px] uppercase tracking-[0.4em] text-slate-500">Quick tags</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {post.tags?.map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full border border-slate-700/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.4em] text-slate-300"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </aside>
         </div>
       </div>
-    </article>
+    </div>
   );
 }
