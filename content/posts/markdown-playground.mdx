@@ -1,0 +1,80 @@
+---
+title: "Markdown Playground"
+summary: "A showcase of headings, lists, images, quotes, tables, and code so we can tweak the markdown styling."
+date: 2026-01-04
+publishDate: 2026-01-04
+tags: [playground, design, markdown]
+---
+
+# Markdown PLAYGROUND
+
+## Rich typography & spacing
+
+Here is a paragraph with **bold text**, *italic emphasis*, and `inline code` to confirm everything feels sharp and readable. I can also [link to a resource](https://github.com/joelklabo) while keeping it in-context.
+
+### Subheading surprise
+
+> Blockquotes should stand out with padding, a border, and enough room to breathe.
+
+#### Nested details
+
+- Unordered list item with a description.
+- Another bullet with a **strong** word.
+- Third bullet containing a [link](https://example.com).
+
+1. First ordered item.
+2. Second item with `inline code`.
+3. Final item that mentions the table below.
+
+## Tables & imagery
+
+| Column | Description |
+| ------ | ----------- |
+| Feature | Dark blockquotes w/ gradient accents |
+| Code | Syntax highlighting + copy button |
+| Image | Rounded, click-to-zoom treatment |
+
+![Test illustration](https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1600&q=80)
+
+## Code sample carousel
+
+### TypeScript snippet
+
+```ts
+type MarkdownSection = {
+  title: string;
+  body: string;
+  tags: string[];
+};
+
+const featured: MarkdownSection[] = [
+  {
+    title: 'Navigation',
+    body: 'The highlight is the nav bar.',
+    tags: ['ux', 'next'],
+  },
+];
+
+console.log('Render complete', featured);
+```
+
+### Shell command
+
+```bash
+npm run lint
+npm run test
+```
+
+### JSON payload
+
+```json
+{
+  "status": "ready",
+  "elements": ["headings", "images", "code", "quotes"],
+  "published": true
+}
+```
+
+## Final thoughts
+
+Markdown should feel like a living document with breathing space, raised visuals, and interactive helpers such as copy buttons and clickable art. This playground lets us tune every element before landing it on the real posts.
