@@ -2,13 +2,11 @@
 
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { createDashboard, deleteDashboard, updateDashboard } from '@/lib/dashboardPersistence';
+import { createDashboard, deleteDashboard, updateDashboard, type DashboardInput } from '@/lib/dashboardPersistence';
 import { requireAdminSession } from '@/lib/adminSession';
 import { withSpan } from '@/lib/telemetry';
 
-type ExtractResult = Awaited<ReturnType<typeof extractDashboardInput>>;
-
-async function extractDashboardInput(formData: FormData): Promise<ExtractResult> {
+async function extractDashboardInput(formData: FormData): Promise<DashboardInput> {
   await requireAdminSession();
   const title = formData.get('title')?.toString().trim();
   const summary = formData.get('summary')?.toString().trim();
