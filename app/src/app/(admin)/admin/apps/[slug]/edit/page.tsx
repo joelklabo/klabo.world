@@ -38,8 +38,8 @@ export default async function EditAppPage({ params }: { params: Promise<{ slug: 
           ← Back to apps
         </Link>
       </div>
-      <form action={upsertAppAction} className="space-y-6">
-        <input type="hidden" name="slug" defaultValue={app.slug} />
+      <form action={upsertAppAction} className="space-y-6" data-testid="apps-edit-form">
+        <input type="hidden" name="slug" defaultValue={app.slug} data-testid="apps-edit-slug" />
         <div>
           <label htmlFor="name" className="block text-sm font-semibold text-gray-700">
             Name
@@ -51,6 +51,7 @@ export default async function EditAppPage({ params }: { params: Promise<{ slug: 
             defaultValue={app.name}
             required
             className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            data-testid="apps-edit-name"
           />
         </div>
         <div className="grid gap-6 md:grid-cols-2">
@@ -65,6 +66,7 @@ export default async function EditAppPage({ params }: { params: Promise<{ slug: 
               defaultValue={app.version}
               required
               className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              data-testid="apps-edit-version"
             />
           </div>
           <div>
@@ -78,6 +80,7 @@ export default async function EditAppPage({ params }: { params: Promise<{ slug: 
               defaultValue={app.publishDate.slice(0, 10)}
               required
               className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              data-testid="apps-edit-publish-date"
             />
           </div>
         </div>
@@ -92,6 +95,7 @@ export default async function EditAppPage({ params }: { params: Promise<{ slug: 
             defaultValue={app.fullDescription}
             required
             className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            data-testid="apps-edit-description"
           />
         </div>
         <div>
@@ -104,6 +108,7 @@ export default async function EditAppPage({ params }: { params: Promise<{ slug: 
             rows={6}
             defaultValue={app.features?.join('\n')}
             className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            data-testid="apps-edit-features"
           />
         </div>
         <div className="grid gap-6 md:grid-cols-2">
@@ -117,6 +122,7 @@ export default async function EditAppPage({ params }: { params: Promise<{ slug: 
               type="url"
               defaultValue={app.appStoreURL ?? ''}
               className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              data-testid="apps-edit-appstore"
             />
           </div>
           <div>
@@ -129,6 +135,7 @@ export default async function EditAppPage({ params }: { params: Promise<{ slug: 
               type="url"
               defaultValue={app.githubURL ?? ''}
               className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              data-testid="apps-edit-github"
             />
           </div>
         </div>
@@ -139,6 +146,8 @@ export default async function EditAppPage({ params }: { params: Promise<{ slug: 
             defaultValue={app.icon ?? ''}
             helperText="Ideal size 512x512. Upload new assets or reuse /app-icons."
             tone="purple"
+            inputTestId="apps-edit-icon"
+            uploadButtonTestId="apps-edit-icon-upload"
           />
           <ImageListUploadField
             name="screenshots"
@@ -146,6 +155,8 @@ export default async function EditAppPage({ params }: { params: Promise<{ slug: 
             defaultValue={app.screenshots?.join('\n') ?? ''}
             helperText="Uploads append to the textarea automatically."
             tone="purple"
+            textareaTestId="apps-edit-screenshots"
+            uploadButtonTestId="apps-edit-screenshot-upload"
           />
         </div>
         <div className="flex justify-between">
@@ -153,10 +164,11 @@ export default async function EditAppPage({ params }: { params: Promise<{ slug: 
             type="submit"
             formAction={deleteAction}
             className="rounded-full border border-red-200 px-5 py-2 text-sm font-semibold text-red-600 hover:bg-red-50"
+            data-testid="apps-edit-delete"
           >
             Delete app
           </button>
-          <button type="submit" className="rounded-full bg-purple-600 px-6 py-2 text-sm font-semibold text-white hover:bg-purple-500">
+          <button type="submit" className="rounded-full bg-purple-600 px-6 py-2 text-sm font-semibold text-white hover:bg-purple-500" data-testid="apps-edit-submit">
             Save changes
           </button>
         </div>
