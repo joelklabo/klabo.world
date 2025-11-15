@@ -31,6 +31,7 @@ WORKDIR /app
 COPY --from=builder /app/app/.next/standalone ./
 COPY --from=builder /app/app/.next/static ./app/.next/static
 COPY --from=builder /app/app/public ./app/public
+COPY --from=builder /app/app/.contentlayer ./app/.contentlayer
 COPY --from=builder /app/content ./content
 
 WORKDIR /app/app
