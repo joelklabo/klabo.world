@@ -25,7 +25,7 @@ export default async function NewAppPage() {
           ← Back to apps
         </Link>
       </div>
-      <form action={upsertAppAction} className="space-y-6">
+      <form action={upsertAppAction} className="space-y-6" data-testid="apps-new-form">
         <div className="grid gap-6 md:grid-cols-2">
           <div>
             <label htmlFor="name" className="block text-sm font-semibold text-gray-700">
@@ -38,6 +38,7 @@ export default async function NewAppPage() {
               required
               className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
               placeholder="ViceChips"
+              data-testid="apps-new-name"
             />
           </div>
           <div>
@@ -50,6 +51,7 @@ export default async function NewAppPage() {
               type="text"
               className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
               placeholder="vicechips"
+              data-testid="apps-new-slug"
             />
             <p className="mt-1 text-xs text-gray-500">If omitted we will slugify the name automatically.</p>
           </div>
@@ -65,6 +67,7 @@ export default async function NewAppPage() {
               type="text"
               required
               className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              data-testid="apps-new-version"
             />
           </div>
           <div>
@@ -77,6 +80,7 @@ export default async function NewAppPage() {
               type="date"
               required
               className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              data-testid="apps-new-publish-date"
             />
           </div>
         </div>
@@ -90,6 +94,7 @@ export default async function NewAppPage() {
             rows={5}
             required
             className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            data-testid="apps-new-description"
           />
         </div>
         <div>
@@ -102,6 +107,7 @@ export default async function NewAppPage() {
             rows={6}
             className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
             placeholder={'Chip Budget System\nRollover Support'}
+            data-testid="apps-new-features"
           />
         </div>
         <div className="grid gap-6 md:grid-cols-2">
@@ -114,6 +120,7 @@ export default async function NewAppPage() {
               name="appStoreURL"
               type="url"
               className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              data-testid="apps-new-appstore"
             />
           </div>
           <div>
@@ -125,6 +132,7 @@ export default async function NewAppPage() {
               name="githubURL"
               type="url"
               className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              data-testid="apps-new-github"
             />
           </div>
         </div>
@@ -135,17 +143,21 @@ export default async function NewAppPage() {
             placeholder="/uploads/app-icons/vicechips.png"
             helperText="Ideal size 512x512. Upload new assets or reuse an existing /app-icons path."
             tone="purple"
+            inputTestId="apps-new-icon"
+            uploadButtonTestId="apps-new-icon-upload"
           />
-          <ImageListUploadField
+        <ImageListUploadField
             name="screenshots"
             label="Screenshots (one per line)"
             placeholder="/uploads/screens/vicechips-dashboard.png"
             helperText="Upload screenshots and we will append the URLs to this list."
             tone="purple"
+            textareaTestId="apps-new-screenshots"
+            uploadButtonTestId="apps-new-screenshot-upload"
           />
         </div>
         <div className="flex justify-end">
-          <button type="submit" className="rounded-full bg-purple-600 px-6 py-2 text-sm font-semibold text-white hover:bg-purple-500">
+          <button type="submit" className="rounded-full bg-purple-600 px-6 py-2 text-sm font-semibold text-white hover:bg-purple-500" data-testid="apps-new-submit">
             Create app
           </button>
         </div>
