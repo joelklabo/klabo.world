@@ -40,8 +40,8 @@ export default async function EditContextPage({ params }: { params: Promise<{ sl
           ← Back to contexts
         </Link>
       </div>
-      <form action={upsertContextAction} className="space-y-6">
-        <input type="hidden" name="slug" defaultValue={context.slug} />
+      <form action={upsertContextAction} className="space-y-6" data-testid="contexts-edit-form">
+        <input type="hidden" name="slug" defaultValue={context.slug} data-testid="contexts-edit-slug" />
         <div className="grid gap-6 md:grid-cols-2">
           <div>
             <label htmlFor="title" className="block text-sm font-semibold text-gray-700">
@@ -54,6 +54,7 @@ export default async function EditContextPage({ params }: { params: Promise<{ sl
               defaultValue={context.title}
               required
               className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              data-testid="contexts-edit-title"
             />
           </div>
           <div>
@@ -67,6 +68,7 @@ export default async function EditContextPage({ params }: { params: Promise<{ sl
               rows={3}
               required
               className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              data-testid="contexts-edit-summary"
             />
           </div>
         </div>
@@ -80,6 +82,7 @@ export default async function EditContextPage({ params }: { params: Promise<{ sl
             rows={2}
             defaultValue={context.tags?.join(', ') ?? ''}
             className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            data-testid="contexts-edit-tags"
           />
         </div>
         <div className="grid gap-6 md:grid-cols-2">
@@ -93,6 +96,7 @@ export default async function EditContextPage({ params }: { params: Promise<{ sl
               type="date"
               defaultValue={createdDate}
               className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              data-testid="contexts-edit-created"
             />
           </div>
           <div>
@@ -105,6 +109,7 @@ export default async function EditContextPage({ params }: { params: Promise<{ sl
               type="date"
               defaultValue={updatedDate}
               className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              data-testid="contexts-edit-updated"
             />
           </div>
         </div>
@@ -118,6 +123,7 @@ export default async function EditContextPage({ params }: { params: Promise<{ sl
                 value="published"
                 defaultChecked={context.isPublished}
                 className="h-4 w-4 text-emerald-600"
+                data-testid="contexts-edit-status-published"
               />
               Published
             </label>
@@ -128,6 +134,7 @@ export default async function EditContextPage({ params }: { params: Promise<{ sl
                 value="draft"
                 defaultChecked={!context.isPublished}
                 className="h-4 w-4 text-emerald-600"
+                data-testid="contexts-edit-status-draft"
               />
               Draft
             </label>
@@ -139,17 +146,20 @@ export default async function EditContextPage({ params }: { params: Promise<{ sl
           defaultValue={context.body}
           helperText="Preview ensures tags, callouts, and code samples render correctly."
           tone="emerald"
+          textareaTestId="contexts-edit-content"
+          previewButtonTestId="contexts-edit-preview"
         />
-        <MarkdownUploadHelper />
+        <MarkdownUploadHelper buttonTestId="contexts-edit-upload" statusTestId="contexts-edit-upload-status" />
         <div className="flex items-center justify-between">
           <button
             type="submit"
             formAction={deleteAction}
             className="rounded-full border border-red-200 px-5 py-2 text-sm font-semibold text-red-600 hover:bg-red-50"
+            data-testid="contexts-edit-delete"
           >
             Delete context
           </button>
-          <button type="submit" className="rounded-full bg-emerald-600 px-6 py-2 text-sm font-semibold text-white hover:bg-emerald-500">
+          <button type="submit" className="rounded-full bg-emerald-600 px-6 py-2 text-sm font-semibold text-white hover:bg-emerald-500" data-testid="contexts-edit-submit">
             Save changes
           </button>
         </div>

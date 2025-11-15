@@ -26,7 +26,7 @@ export default async function NewContextPage() {
           ← Back to contexts
         </Link>
       </div>
-      <form action={upsertContextAction} className="space-y-6">
+      <form action={upsertContextAction} className="space-y-6" data-testid="contexts-new-form">
         <div className="grid gap-6 md:grid-cols-2">
           <div>
             <label htmlFor="title" className="block text-sm font-semibold text-gray-700">
@@ -38,6 +38,7 @@ export default async function NewContextPage() {
               type="text"
               required
               className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              data-testid="contexts-new-title"
             />
           </div>
           <div>
@@ -50,6 +51,7 @@ export default async function NewContextPage() {
               type="text"
               className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
               placeholder="bitcoin-agent"
+              data-testid="contexts-new-slug"
             />
           </div>
         </div>
@@ -63,6 +65,7 @@ export default async function NewContextPage() {
             rows={3}
             required
             className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            data-testid="contexts-new-summary"
           />
         </div>
         <div>
@@ -75,6 +78,7 @@ export default async function NewContextPage() {
             rows={2}
             className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
             placeholder="ai, agent, productivity"
+            data-testid="contexts-new-tags"
           />
         </div>
         <div className="grid gap-6 md:grid-cols-2">
@@ -88,6 +92,7 @@ export default async function NewContextPage() {
               type="date"
               defaultValue={today}
               className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              data-testid="contexts-new-created"
             />
           </div>
           <div>
@@ -100,6 +105,7 @@ export default async function NewContextPage() {
               type="date"
               defaultValue={today}
               className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              data-testid="contexts-new-updated"
             />
           </div>
         </div>
@@ -107,11 +113,11 @@ export default async function NewContextPage() {
           <p className="text-sm font-semibold text-gray-700">Status</p>
           <div className="mt-2 flex items-center gap-6 text-sm">
             <label className="inline-flex items-center gap-2">
-              <input type="radio" name="isPublished" value="published" defaultChecked className="h-4 w-4 text-emerald-600" />
+              <input type="radio" name="isPublished" value="published" defaultChecked className="h-4 w-4 text-emerald-600" data-testid="contexts-new-status-published" />
               Published
             </label>
             <label className="inline-flex items-center gap-2">
-              <input type="radio" name="isPublished" value="draft" className="h-4 w-4 text-emerald-600" />
+              <input type="radio" name="isPublished" value="draft" className="h-4 w-4 text-emerald-600" data-testid="contexts-new-status-draft" />
               Draft
             </label>
           </div>
@@ -123,10 +129,12 @@ export default async function NewContextPage() {
           placeholder={'## Overview\n\nDescribe how to use this context...'}
           helperText="Supports callouts, lists, and MDX shortcodes. Preview before publishing."
           tone="emerald"
+          textareaTestId="contexts-new-content"
+          previewButtonTestId="contexts-new-preview"
         />
-        <MarkdownUploadHelper />
+        <MarkdownUploadHelper buttonTestId="contexts-new-upload" statusTestId="contexts-new-upload-status" />
         <div className="flex justify-end">
-          <button type="submit" className="rounded-full bg-emerald-600 px-6 py-2 text-sm font-semibold text-white hover:bg-emerald-500">
+          <button type="submit" className="rounded-full bg-emerald-600 px-6 py-2 text-sm font-semibold text-white hover:bg-emerald-500" data-testid="contexts-new-submit">
             Create context
           </button>
         </div>
