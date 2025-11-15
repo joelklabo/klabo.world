@@ -11,6 +11,13 @@ const eslintConfig = defineConfig([
       import: importPlugin,
     },
     rules: importPlugin.flatConfigs.recommended.rules,
+    settings: {
+      'import/resolver': {
+        typescript: {
+          project: './tsconfig.json',
+        },
+      },
+    },
   },
   // Override default ignores of eslint-config-next.
   globalIgnores([

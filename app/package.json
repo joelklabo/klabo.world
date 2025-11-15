@@ -49,6 +49,7 @@
     "contentlayer": "0.3.4",
     "eslint": "^9",
     "eslint-config-next": "16.0.3",
+    "eslint-import-resolver-typescript": "3.6.1",
     "prisma": "^6.19.0",
     "tailwindcss": "^4",
     "typescript": "^5",
