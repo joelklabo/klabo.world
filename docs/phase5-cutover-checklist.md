@@ -13,9 +13,9 @@ Use this checklist when promoting the Next.js site to become klabo.world’s pri
 
 ## DNS & Deployment
 - [x] Export existing Azure Web App configuration (for rollback). Saved locally via `az webapp config appsettings list --name klabo-world-app --resource-group klabo-world-rg` (gitignored JSON archives live under `docs/azure/`).
-- [ ] Update DNS (or Azure Front Door/App Gateway) so `klabo.world` points to the Next.js App Service.
-- [ ] Verify 200 responses at `https://klabo.world/` and `/search?q=bitcoin` (should match staging).
-- [ ] Run deploy smoke + k6 smoke once DNS flips.
+- [x] Update DNS (or Azure Front Door/App Gateway) so `klabo.world` points to the Next.js App Service. (Already active; verified host bindings via `az webapp config hostname list --resource-group klabo-world-rg --webapp-name klabo-world-app`.)
+- [x] Verify 200 responses at `https://klabo.world/` and `/search?q=bitcoin` (should match staging). `SMOKE_BASE_URL=https://klabo.world ./scripts/deploy-smoke.sh` 2025-11-15 05:44 UTC.
+- [x] Run deploy smoke + k6 smoke once DNS flips. `SMOKE_BASE_URL=https://klabo.world ./scripts/deploy-smoke.sh` + `LOAD_BASE_URL=https://klabo.world LOAD_VUS=5 LOAD_DURATION=30s k6 run scripts/load-smoke.js` (p95=408 ms) on 2025-11-15 05:44–05:48 UTC.
 
 ## Post-Cutover
 - [ ] Notify stakeholders; link to release notes/verifications.

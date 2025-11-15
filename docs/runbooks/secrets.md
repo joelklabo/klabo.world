@@ -49,3 +49,26 @@ Add others (DB URLs, storage creds) if CI ever needs to run migrations or integr
 4. Verify functionality (admin login, uploads, etc.).
 
 Keep this runbook updated as we add more managed secrets or migrate services.
+
+### Rotating the GitHub Content Token
+The production admin UI writes posts/apps/contexts through the GitHub Content API. To rotate the PAT it uses:
+
+```bash
+# 1. Ensure gh-cli is logged in with a PAT that has repo scope.
+gh auth status
+
+# 2. Capture the token without printing it.
+NEW_GH_TOKEN=$(gh auth token)
+
+# 3. Update the App Service setting (no output so the token never hits logs).
+az webapp config appsettings set \
+  --resource-group klabo-world-rg \
+  --name klabo-world-app \
+  --settings GITHUB_TOKEN=$NEW_GH_TOKEN \
+  --output none
+
+# 4. Optionally update any other secret stores (Key Vault, 1Password, etc.).
+unset NEW_GH_TOKEN
+```
+
+> ℹ️ GitHub reserves the name `GITHUB_TOKEN` for the built-in Actions token, so you cannot create a repository secret with that name. Our deployment workflow uses the default Actions token for GHCR auth, so only the Azure App Service setting needs to change during rotation.

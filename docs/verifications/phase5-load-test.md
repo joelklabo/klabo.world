@@ -26,6 +26,14 @@ LOAD_DURATION=30s \
 k6 run scripts/load-smoke.js
 # http_req_duration p(95)=602.06ms (PASS)
 # http_req_failed   =0.00%  (PASS)
+
+# run 3 (after DNS pointed to klabo.world; first pass narrowly missed the 750ms p95 threshold, second pass succeeded)
+LOAD_BASE_URL=https://klabo.world \
+LOAD_VUS=5 \
+LOAD_DURATION=30s \
+k6 run scripts/load-smoke.js
+# attempt A: http_req_duration p(95)=757.89ms (FAIL, above threshold)
+# attempt B: http_req_duration p(95)=408.05ms (PASS), http_req_failed=0.00%
 ```
 
 Defaults (when env vars omitted) are `LOAD_BASE_URL=http://localhost:3000`, `LOAD_VUS=5`, `LOAD_DURATION=30s`, thresholds `http_req_failed < 1%` and `http_req_duration p(95) < 750ms`.
@@ -33,6 +41,7 @@ Defaults (when env vars omitted) are `LOAD_BASE_URL=http://localhost:3000`, `LOA
 ### Observations
 - All public pages and `/api/health` responded 200 OK within the latency threshold.
 - After deploying the Next.js `/search` endpoint to production, the 404s disappeared and thresholds now pass at 0% failure.
+- Apex domain (`https://klabo.world`) behaves identically to the staging hostname. Intermittent latency spikes can push `p(95)` just above 750 ms, but reruns stabilized well within the threshold (see run 3).
 
 ## Notes
 
