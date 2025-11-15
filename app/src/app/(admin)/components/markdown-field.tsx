@@ -22,6 +22,8 @@ type Props = {
   helperText?: string;
   rows?: number;
   tone?: Tone;
+  textareaTestId?: string;
+  previewButtonTestId?: string;
 };
 
 type Status = 'idle' | 'loading' | 'success' | 'error';
@@ -34,6 +36,8 @@ export function MarkdownField({
   helperText,
   rows = 18,
   tone = 'indigo',
+  textareaTestId,
+  previewButtonTestId,
 }: Props) {
   const [value, setValue] = useState(defaultValue);
   const [previewHTML, setPreviewHTML] = useState<string | null>(null);
@@ -78,6 +82,7 @@ export function MarkdownField({
           placeholder={placeholder}
           onChange={(event) => setValue(event.target.value)}
           className={`mt-2 w-full rounded-2xl border border-gray-300 px-4 py-3 font-mono text-sm focus:outline-none focus:ring-2 ${inputTone[tone]}`}
+          data-testid={textareaTestId}
         />
       </label>
       <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600">
@@ -86,6 +91,7 @@ export function MarkdownField({
           type="button"
           onClick={handlePreview}
           className="rounded-full border border-gray-300 px-4 py-1 font-semibold text-gray-700 hover:bg-gray-50"
+          data-testid={previewButtonTestId}
         >
           {status === 'loading' ? 'Rendering preview…' : 'Refresh preview'}
         </button>

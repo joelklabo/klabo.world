@@ -29,11 +29,22 @@ type Props = {
   helperText?: string;
   placeholder?: string;
   tone?: Tone;
+  inputTestId?: string;
+  uploadButtonTestId?: string;
 };
 
 type Status = 'idle' | 'uploading' | 'success' | 'error';
 
-export function ImageUploadField({ name, label, defaultValue = '', helperText, placeholder, tone = 'indigo' }: Props) {
+export function ImageUploadField({
+  name,
+  label,
+  defaultValue = '',
+  helperText,
+  placeholder,
+  tone = 'indigo',
+  inputTestId,
+  uploadButtonTestId,
+}: Props) {
   const [value, setValue] = useState(defaultValue);
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState<string | null>(null);
@@ -89,6 +100,7 @@ export function ImageUploadField({ name, label, defaultValue = '', helperText, p
           placeholder={placeholder}
           onChange={(event) => setValue(event.target.value)}
           className={`mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 ${inputTone[tone]}`}
+          data-testid={inputTestId}
         />
       </label>
       {helperText && <p className="mt-1 text-xs text-gray-500">{helperText}</p>}
@@ -97,6 +109,7 @@ export function ImageUploadField({ name, label, defaultValue = '', helperText, p
           type="button"
           onClick={onBrowseClick}
           className={`rounded-full border px-3 py-1 font-semibold hover:bg-gray-50 ${buttonTone[tone]}`}
+          data-testid={uploadButtonTestId}
         >
           Upload image
         </button>
