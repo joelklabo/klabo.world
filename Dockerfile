@@ -25,15 +25,15 @@ RUN NODE_ENV=production pnpm --filter app exec contentlayer build
 RUN NODE_ENV=production pnpm --filter app build
 
 FROM base AS runner
-WORKDIR /app
 ENV NODE_ENV=production
-ENV PORT=80
 
+WORKDIR /app
 COPY --from=builder /app/app/.next/standalone ./
-COPY --from=builder /app/app/.next/static ./.next/static
-COPY --from=builder /app/app/public ./public
+COPY --from=builder /app/app/.next/static ./app/.next/static
+COPY --from=builder /app/app/public ./app/public
 COPY --from=builder /app/content ./content
 
+WORKDIR /app/app
 EXPOSE 80
 
 CMD ["node", "server.js"]
