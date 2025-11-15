@@ -32,7 +32,6 @@ export function GlobalNavigation() {
   const pathname = usePathname();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
-  const [loading, setLoading] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const [error, setError] = useState<string | null>(null);
@@ -48,19 +47,12 @@ export function GlobalNavigation() {
   useEffect(() => {
     if (!hasQuery) {
       controllerRef.current?.abort();
-      setResults([]);
-      setHighlightedIndex(-1);
-      setError(null);
-      setLoading(false);
       return;
     }
 
     const controller = new AbortController();
     controllerRef.current?.abort();
     controllerRef.current = controller;
-
-    setLoading(true);
-    setError(null);
 
     fetch(`/api/search?q=${encodeURIComponent(query.trim())}`, {
       signal: controller.signal,
@@ -86,22 +78,22 @@ export function GlobalNavigation() {
         }
       })
       .finally(() => {
-        setLoading(false);
+        controllerRef.current = null;
       });
   }, [hasQuery, query]);
 
   useEffect(() => {
     const listener = (event: MouseEvent) => {
-      if (!navRef.current?.contains(event.target as Node)) {
-        setIsDropdownOpen(false);
-        setHighlightedIndex(-1);
-      }
-    };
-    document.addEventListener('mousedown', listener);
-    return () => document.removeEventListener('mousedown', listener);
-  }, []);
+    if (!navRef.current?.contains(event.target as Node)) {
+      setIsDropdownOpen(false);
+      setHighlightedIndex(-1);
+    }
+  };
+  document.addEventListener('mousedown', listener);
+  return () => document.removeEventListener('mousedown', listener);
+}, []);
 
-  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (!showDropdown && event.key !== 'Enter') {
       return;
     }
@@ -166,12 +158,14 @@ export function GlobalNavigation() {
 
   const focusedResult = highlightedIndex >= 0 && results[highlightedIndex];
 
+  const isSearching = hasQuery && results.length === 0 && error === null;
+
   const statusMessage = useMemo(() => {
-    if (loading) return 'Loading results…';
     if (error) return error;
+    if (isSearching) return 'Searching for the right page…';
     if (!results.length) return 'No matching pages found';
     return `${results.length} result${results.length === 1 ? '' : 's'}`;
-  }, [error, loading, results.length]);
+  }, [error, isSearching, results.length]);
 
   const handleSelectResult = (result: SearchResult) => {
     setIsDropdownOpen(false);
@@ -212,19 +206,35 @@ export function GlobalNavigation() {
           })}
         </nav>
         <div className="flex-1" ref={navRef}>
-          <label className="relative block">
+          <label
+            className="relative block"
+            role="combobox"
+            aria-expanded={showDropdown}
+            aria-controls="global-search-dropdown"
+          >
             <span className="sr-only">Search all pages</span>
             <input
               ref={inputRef}
-              type="search"
+                type="search"
               name="global-search"
               className="w-full rounded-full border border-gray-200 bg-white px-4 py-2 text-sm shadow-sm placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               placeholder="Search posts, apps, or contexts…"
-              value={query}
-              onChange={(event) => {
-                setQuery(event.target.value);
-                setIsDropdownOpen(true);
-              }}
+                value={query}
+                onChange={(event) => {
+                  const nextValue = event.target.value;
+                  setQuery(nextValue);
+                  const trimmed = nextValue.trim();
+                  if (trimmed.length >= 2) {
+                    setIsDropdownOpen(true);
+                  } else {
+                    controllerRef.current?.abort();
+                    setResults([]);
+                    setHighlightedIndex(-1);
+                    setError(null);
+                    setLoading(false);
+                    setIsDropdownOpen(false);
+                  }
+                }}
               onFocus={() => {
                 if (hasQuery) {
                   setIsDropdownOpen(true);
@@ -232,10 +242,6 @@ export function GlobalNavigation() {
               }}
               onKeyDown={handleKeyDown}
               data-testid="global-search-input"
-              aria-label="Search klabo.world posts, contexts, and apps"
-              aria-autocomplete="list"
-              aria-expanded={showDropdown}
-              aria-controls="global-search-dropdown"
             />
             {showDropdown && (
               <div
@@ -250,10 +256,10 @@ export function GlobalNavigation() {
                   <span>{statusMessage}</span>
                   <span>{focusedResult ? TYPE_LABELS[focusedResult.type] : ''}</span>
                 </div>
-                {loading && !results.length && (
+                {isSearching && (
                   <p className="text-sm text-gray-500">Looking for relevant pages…</p>
                 )}
-                {!loading && !results.length && !error && (
+                {!isSearching && !results.length && !error && (
                   <p className="text-sm text-gray-500">Try another keyword or hit enter to search the site.</p>
                 )}
                 {error && (
