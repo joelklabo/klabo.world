@@ -5,9 +5,10 @@ import { loadDashboardLogs } from '@/lib/dashboardLogs';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET(req: NextRequest, { params }: { params: { slug: string } }) {
+export async function GET(req: NextRequest, context: { params: Promise<{ slug: string }> }) {
+  const { slug } = await context.params;
   await requireAdminSession();
-  const dashboard = getDashboardBySlug(params.slug);
+  const dashboard = getDashboardBySlug(slug);
   if (!dashboard) {
     return NextResponse.json({ message: 'Dashboard not found' }, { status: 404 });
   }
