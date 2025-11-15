@@ -10,6 +10,11 @@ env:
   AZURE_RESOURCE_GROUP: klabo-world-rg
   AZURE_SLOT_NAME: staging
   IMAGE_NAME: klaboworld
+  ADMIN_EMAIL: admin@example.com
+  ADMIN_PASSWORD: change-me
+  NEXTAUTH_SECRET: test-secret
+  DATABASE_URL: file:../data/app.db
+  UPLOADS_DIR: ./tmp/uploads
 
 jobs:
   build-and-deploy:
@@ -35,6 +40,21 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --ignore-scripts
+
+      - name: Prepare uploads dir
+        run: mkdir -p tmp/uploads
+
+      - name: Prepare data dir
+        run: mkdir -p app/data
+
+      - name: Apply Prisma schema
+        run: pnpm --filter app exec prisma db push
+
+      - name: Generate Contentlayer artifacts
+        run: NODE_ENV=production pnpm --filter app exec contentlayer build
+
+      - name: Generate Prisma client
+        run: pnpm --filter app exec prisma generate
 
       - name: Lint
         run: pnpm turbo lint
