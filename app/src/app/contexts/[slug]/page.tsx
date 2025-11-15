@@ -9,8 +9,9 @@ export function generateStaticParams(): Params[] {
   return getContexts({ includeDrafts: true }).map((context) => ({ slug: context.slug }));
 }
 
-export function generateMetadata({ params }: { params: Params }): Metadata {
-  const context = getContextBySlug(params.slug);
+export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
+  const { slug } = await params;
+  const context = getContextBySlug(slug);
   if (!context) {
     return { title: 'Context not found • klabo.world' };
   }
@@ -20,8 +21,9 @@ export function generateMetadata({ params }: { params: Params }): Metadata {
   };
 }
 
-export default function ContextDetailPage({ params }: { params: Params }) {
-  const context = getContextBySlug(params.slug);
+export default async function ContextDetailPage({ params }: { params: Promise<Params> }) {
+  const { slug } = await params;
+  const context = getContextBySlug(slug);
   if (!context) {
     notFound();
   }
