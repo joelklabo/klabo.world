@@ -2,15 +2,30 @@
 
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { createDashboard, deleteDashboard, updateDashboard, type DashboardInput } from '@/lib/dashboardPersistence';
+import {
+  createDashboard,
+  deleteDashboard,
+  updateDashboard,
+  type DashboardInput,
+  type DashboardType,
+} from '@/lib/dashboardPersistence';
 import { requireAdminSession } from '@/lib/adminSession';
 import { withSpan } from '@/lib/telemetry';
+
+const PANEL_TYPES: DashboardType[] = ['chart', 'logs', 'embed', 'link'];
+
+function normalizePanelType(value: string | null): DashboardType {
+  const fallback: DashboardType = 'chart';
+  if (!value) return fallback;
+  const normalized = value.trim().toLowerCase();
+  return (PANEL_TYPES.find((type) => type === normalized) ?? fallback) as DashboardType;
+}
 
 async function extractDashboardInput(formData: FormData): Promise<DashboardInput> {
   await requireAdminSession();
   const title = formData.get('title')?.toString().trim();
   const summary = formData.get('summary')?.toString().trim();
-  const panelType = formData.get('panelType')?.toString().trim() ?? 'chart';
+  const panelType = normalizePanelType(formData.get('panelType')?.toString() ?? null);
   if (!title || !summary) {
     throw new Error('Title and summary are required');
   }
