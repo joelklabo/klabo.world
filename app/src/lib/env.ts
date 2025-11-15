@@ -1,14 +1,22 @@
 import { z } from 'zod';
 
+const optionalUrl = z.preprocess(
+  (value) => {
+    if (typeof value !== 'string') {
+      return value;
+    }
+    const trimmed = value.trim();
+    return trimmed === '' ? undefined : trimmed;
+  },
+  z.string().url().optional(),
+);
+
 const schema = z.object({
-  DATABASE_URL: z
-    .string()
-    .url()
-    .default('postgresql://klaboworld:klaboworld@localhost:5432/klaboworld'),
-  REDIS_URL: z.string().url().default('redis://localhost:6379'),
+  DATABASE_URL: z.string().default('file:./data/app.db'),
+  REDIS_URL: optionalUrl,
   ADMIN_EMAIL: z.string().email().optional(),
   ADMIN_PASSWORD: z.string().min(8).optional(),
-  UPLOADS_CONTAINER_URL: z.string().url().optional(),
+  UPLOADS_CONTAINER_URL: optionalUrl,
   UPLOADS_DIR: z.string().default('public/uploads'),
   NEXTAUTH_SECRET: z.string().default('dev-secret'),
   APPLICATIONINSIGHTS_CONNECTION_STRING: z.string().optional(),

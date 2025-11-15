@@ -6,6 +6,8 @@ import { MDXContent } from '@/components/mdx-content';
 
 type Params = { slug: string };
 
+export const dynamic = 'force-dynamic';
+
 export function generateStaticParams(): Params[] {
   return getPosts({ includeUnpublished: true }).map((post) => ({ slug: post.slug }));
 }

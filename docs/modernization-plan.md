@@ -254,7 +254,7 @@ To keep execution deterministic—and trivial for local dev—follow these order
 - **Container Registry**: `acrklaboworld` (Premium SKU for geo-replication if needed).
 - **App Service Plan (Linux)**: `asp-klaboworld` sized to handle Next.js SSR (initially P1v3).
 - **Web App for Containers**: `app-klaboworld`, with deployment slot `staging`.
-- **Azure Database for PostgreSQL Flexible Server**: `pg-klaboworld` (Zone-redundant, VNet integrated, automatic backups, PITR 7-30 days).
+- **Azure Database for PostgreSQL Flexible Server**: `pg-klaboworld` (Zone-redundant, VNet integrated, automatic backups, PITR 7-30 days). _Interim note: production currently runs on a SQLite file stored at `/home/site/wwwroot/data/app.db` until the managed Postgres instance is provisioned._
 - **Storage Account**: `stklaboworld` with Blob containers:
   - `public-assets` – static uploads exposed via CDN.
   - `draft-uploads` – private staging area for admin previews.

@@ -5,6 +5,8 @@ import { getContextBySlug, getContexts } from '@/lib/contexts';
 
 type Params = { slug: string };
 
+export const dynamic = 'force-dynamic';
+
 export function generateStaticParams(): Params[] {
   return getContexts({ includeDrafts: true }).map((context) => ({ slug: context.slug }));
 }

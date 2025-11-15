@@ -3,7 +3,7 @@
 This document supersedes every earlier set of instructions (CLAUDE.md, legacy README, etc.). Follow it exactly—local dev, CI, deployment, and AI workflows are designed around these steps and the modernization plan in `docs/modernization-plan.md`.
 
 ## Overview
-- **Stack**: Next.js 16 (App Router) + React 19, TypeScript 5, Tailwind 4, Contentlayer (file-first MDX), Prisma + PostgreSQL 17.6 (auth/rate-limit/state only), Redis (rate limiting), Azure Blob Storage (uploads), Azure App Service for Containers.
+- **Stack**: Next.js 16 (App Router) + React 19, TypeScript 5, Tailwind 4, Contentlayer (file-first MDX), Prisma (SQLite file at `app/data/app.db` by default with optional PostgreSQL), optional Redis (rate limiting), Azure Blob Storage (uploads), Azure App Service for Containers.
 - **Repo layout** (root):
   - `app/` – Next.js application (App Router). Uses shared configs from `@klaboworld/config`.
   - `packages/config` – shared ESLint + tsconfig presets.
@@ -26,7 +26,7 @@ Legacy Swift sources remain for reference but are no longer the system of record
 - tmux (for `just agent-shell` / `scripts/tmux-dev.sh` workflows).
 - Azure CLI 2.79.0+ for IaC/deploy scripts.
 - Run `./scripts/install-dev-tools.sh` after cloning (and whenever it changes) to install tmux and other shared CLI dependencies via Homebrew.
-- Bring up infrastructure services with `docker compose -f docker-compose.dev.yml up -d db redis azurite` for admin features and Playwright suites (this is baked into `just dev` and CI).
+- Bring up infrastructure services with `docker compose -f docker-compose.dev.yml up -d db redis azurite` only when you need Redis/Azurite or you override `DATABASE_URL` to Postgres. The default SQLite database lives in `app/data/`, so `just dev` works without Docker.
 - k6 CLI (`brew install k6`) for running `just load-test` / `k6 run scripts/load-smoke.js`.
 
 ## Reproducible Environment Commands
@@ -35,13 +35,13 @@ All commands assume repo root.
 | Command | Description |
 | --- | --- |
 | `just bootstrap` | Enables corepack, pins pnpm 10.22.0, installs workspace deps, writes envinfo to `docs/verifications/bootstrap.md`. |
-| `just dev` | Starts Postgres/Redis/Azurite via `docker compose -f docker-compose.dev.yml up -d ...` then runs `pnpm --filter app dev`. Always follow this by running `open http://localhost:3000` and `open http://localhost:3000/admin` so the user’s browser reflects the current session. |
+| `just dev` | Boots optional Postgres/Redis/Azurite via `docker compose -f docker-compose.dev.yml up -d ...` (skips automatically if Docker isn’t running) and runs `pnpm --filter app dev`. Always follow this by running `open http://localhost:3000` and `open http://localhost:3000/admin` so the user’s browser reflects the current session. |
 | `./scripts/tmux-dev.sh [--detach]` | Launches the tmux-based dev workflow (pane 0: Next dev server, pane 1: Vitest watch, pane 2: shell). Use `--detach` in automation; attach later with `tmux attach -t klabo-dev`. |
 | `just doctor` | Prints envinfo + docker-compose service status. Must be clean before starting work. |
 | `just lint` | Runs `pnpm turbo lint` (Next ESLint + package lint). |
 | `just test` | Runs `pnpm turbo test` (Vitest + Playwright, once implemented). |
 | `just watch` | Launches Vitest watch mode (TDD loop). |
-| `just db-reset` | Applies Prisma migrations and seeds against the local containerized Postgres + Redis. |
+| `just db-reset` | Applies Prisma migrations/seeds against whatever `DATABASE_URL` points to (SQLite by default). |
 | `just load-test` | Executes the short k6 smoke (`scripts/load-smoke.js`). |
 | `just agent-shell` | Spawns a tmux layout with dev server, vitest watcher, and Docker logs for human/AI pair work. |
 | `pnpm --filter @klaboworld/scripts run export-legacy` | Copies legacy `Resources/{Posts,Apps,Contexts}` into `content/` for Contentlayer. |
@@ -79,14 +79,15 @@ Use `pnpm` commands only via the workspace root; individual package scripts shou
 Copy `.env.example` → `.env` and set:
 
 ```
-DATABASE_URL=postgresql://klaboworld:klaboworld@localhost:5432/klaboworld
-REDIS_URL=redis://localhost:6379
+DATABASE_URL=file:./data/app.db
+REDIS_URL=
 UPLOADS_DIR=public/uploads
 UPLOADS_CONTAINER_URL=http://127.0.0.1:10000/devstoreaccount1/klaboworld
 AZURE_STORAGE_ACCOUNT=
 AZURE_STORAGE_KEY=
 AZURE_STORAGE_CONTAINER=uploads
 SITE_URL=https://klabo.world
+NEXTAUTH_URL=http://localhost:3000
 ADMIN_EMAIL=admin@example.com
 ADMIN_PASSWORD=change-me
 NEXTAUTH_SECRET=dev-secret
@@ -98,6 +99,8 @@ AUTO_OPEN_BROWSER=false
 
 `NEXTAUTH_SECRET` must be random in real deployments; the default only works for local dev.
 
+- `DATABASE_URL` defaults to the tracked SQLite file. Set it to `file:/home/site/wwwroot/data/app.db` in Azure or point it at Postgres when you explicitly run that service via Docker.
+- `REDIS_URL` is optional. Leave it blank to use the in-memory rate limiter; set it to `redis://localhost:6379` (from `docker-compose.dev.yml`) when you need distributed backoff.
 - `AUTO_OPEN_BROWSER` toggles whether `just dev` / `scripts/tmux-dev.sh` automatically run `open http://localhost:3000` and `/admin`; leave it `false` for headless CI or when SSH’d into remote hosts.
 - `APPLICATIONINSIGHTS_CONNECTION_STRING` enables OpenTelemetry → Azure Monitor. See `docs/runbooks/observability.md` for setup and verification commands.
 - `LOG_ANALYTICS_WORKSPACE_ID` / `LOG_ANALYTICS_SHARED_KEY` are required for the Log Analytics helper (`app/src/lib/logAnalytics.ts`). They’re safe to leave blank locally if you don’t need KQL queries.
@@ -112,7 +115,7 @@ AUTO_OPEN_BROWSER=false
 - `redis` (7.4) on 6379.
 - `azurite` on 10000 for blob emulation.
 
-Never point the Next.js app at system postgres/redis—always use the compose services so tests/dev are deterministic.
+These services are optional now that Prisma defaults to SQLite and the rate limiter falls back to memory. Start them only when you explicitly need Redis/Azurite or when you point `DATABASE_URL` at Postgres.
 
 ## Content Workflow
 - All posts/apps/contexts/dashboards live as MDX/JSON under `content/`. Admin server actions will commit via GitHub, so Git history is the single source of truth.
@@ -163,7 +166,7 @@ Never point the Next.js app at system postgres/redis—always use the compose se
   - `cd app && pnpm exec playwright install --with-deps` (once per machine to install browsers).
   - `cd app && pnpm exec playwright test --reporter=list` (local smoke suite).
   - `PLAYWRIGHT_BASE_URL=http://localhost:3000 pnpm exec playwright test tests/e2e/home-smoke.e2e.ts` for targeted runs.
-- Admin content workflow test (`tests/e2e/admin-content.e2e.ts`) requires Docker services plus env vars: `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `NEXTAUTH_SECRET`, `DATABASE_URL`, `REDIS_URL`, `UPLOADS_DIR`.
+- Admin content workflow test (`tests/e2e/admin-content.e2e.ts`) requires env vars: `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `NEXTAUTH_SECRET`, `DATABASE_URL`, `UPLOADS_DIR`. Start the Docker services only if you want Redis/Azurite; otherwise the default SQLite + in-memory limiter is sufficient.
 
 ## Observability & Telemetry
 - `APPLICATIONINSIGHTS_CONNECTION_STRING` enables the OpenTelemetry bootstrap defined in `app/instrumentation.ts`.

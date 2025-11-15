@@ -3,14 +3,14 @@
 This runbook documents how to manage klabo.world content (posts, apps, contexts, uploads) using the Next.js admin interface and supporting scripts. Treat it as the source of truth for day-to-day publishing tasks.
 
 ## Prerequisites
-- Local services running via `docker compose -f docker-compose.dev.yml up -d db redis azurite` (automated when you run `just dev`).
-- `.env` populated with at least `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `NEXTAUTH_SECRET`, `DATABASE_URL`, `REDIS_URL`, `UPLOADS_DIR` (defaults provided in `.env.example`).
+- Local services launched with `just dev`. Docker is optional—SQLite (`app/data/app.db`) and the in-memory rate limiter work without Postgres/Redis. Start `docker compose -f docker-compose.dev.yml up -d db redis azurite` only when you explicitly need Redis/Azurite or you have pointed `DATABASE_URL` at Postgres.
+- `.env` populated with at least `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `NEXTAUTH_SECRET`, `DATABASE_URL`, `UPLOADS_DIR` (defaults provided in `.env.example`).
 - Playwright browsers installed once locally: `cd app && pnpm exec playwright install --with-deps` (useful for smoke testing admin flows).
 - Optional Azure storage credentials (`AZURE_STORAGE_ACCOUNT`, `AZURE_STORAGE_KEY`, `AZURE_STORAGE_CONTAINER`) when you want uploads to land in Blob Storage instead of the local `public/uploads` directory.
 
 ## Starting the Admin Stack
 1. From the repo root, run `just dev` (or `./scripts/tmux-dev.sh` for the tmux workflow). This:
-   - Boots Postgres/Redis/Azurite containers.
+   - Boots Postgres/Redis/Azurite containers when Docker is available (Skipped otherwise).
    - Starts `pnpm --filter app dev`.
    - Optionally launches your browser at `http://localhost:3000` and `/admin` when `AUTO_OPEN_BROWSER=true`.
 2. Visit `http://localhost:3000/admin` and log in using the credentials defined in `.env` (defaults `admin@example.com / change-me`).

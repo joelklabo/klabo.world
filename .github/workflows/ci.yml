@@ -14,8 +14,7 @@ jobs:
       ADMIN_EMAIL: admin@example.com
       ADMIN_PASSWORD: change-me
       NEXTAUTH_SECRET: test-secret
-      DATABASE_URL: postgresql://klaboworld:klaboworld@localhost:5432/klaboworld
-      REDIS_URL: redis://localhost:6379
+      DATABASE_URL: file:./app/data/app.db
       UPLOADS_DIR: ./tmp/uploads
     steps:
       - uses: actions/checkout@v4
@@ -31,10 +30,8 @@ jobs:
         run: pnpm install --ignore-scripts
       - name: Prepare uploads dir
         run: mkdir -p tmp/uploads
-      - name: Start dev services
-        run: |
-          docker compose -f docker-compose.dev.yml up -d db redis azurite
-          pnpm exec wait-on tcp:localhost:5432 tcp:localhost:6379
+      - name: Prepare data dir
+        run: mkdir -p app/data
       - name: Apply Prisma schema
         run: pnpm --filter app exec prisma db push
       - name: Generate Contentlayer artifacts

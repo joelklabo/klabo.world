@@ -9,7 +9,7 @@ This repository now hosts the production klabo.world stack (Next.js + Contentlay
 ```bash
 just bootstrap          # installs toolchain + workspace deps
 cp .env.example .env    # customize DATABASE_URL/REDIS_URL/etc
-just dev                # spins up Postgres/Redis/Azurite + next dev server
+just dev                # runs the Next dev server (starts optional Docker infra too)
 ```
 
 ### Common Targets
@@ -17,16 +17,16 @@ just dev                # spins up Postgres/Redis/Azurite + next dev server
 | Command | Description |
 | --- | --- |
 | `just bootstrap` | Corepack enable + pnpm install + envinfo snapshot. |
-| `just dev` | Starts docker-compose services (`docker-compose.dev.yml`) and runs `pnpm --filter app dev`. |
+| `just dev` | Boots optional docker-compose services (`docker-compose.dev.yml`) and runs `pnpm --filter app dev`. |
 | `just lint` / `just test` | Run turborepo lint/test pipelines (ESLint + Vitest placeholder). |
-| `just db-reset` | Runs Prisma migrations + seeds against local Postgres. |
+| `just db-reset` | Runs Prisma migrations/seeds against whatever `DATABASE_URL` points to (SQLite by default). |
 | `just doctor` | Prints envinfo + docker status (kept under `docs/verifications/`). |
 | `just load-test` | Placeholder for k6 smoke tests. |
 | `just agent-shell` | Opens tmux layout for AI/human pair sessions. |
 | `pnpm --filter @klaboworld/scripts run export-legacy` | Copies legacy `Resources/{Posts,Apps,Contexts}` into `content/` for Contentlayer. |
 | `pnpm --filter @klaboworld/scripts run new-post -- --title "My Post"` | Scaffolds `content/posts/*.mdx` with front matter (same slug logic as the admin UI). |
 
-Docker Desktop (or compatible) must be running because Postgres/Redis/Azurite are managed via `docker-compose.dev.yml`.
+Docker Desktop (or compatible) is only required when you need the optional services from `docker-compose.dev.yml` (Redis for distributed rate limiting, Azurite for blob uploads, or Postgres if you override `DATABASE_URL`). The default SQLite database lives at `app/data/app.db`, so day-to-day development works even without Docker.
 
 ## Repository Structure
 
@@ -55,7 +55,7 @@ Docker Desktop (or compatible) must be running because Postgres/Redis/Azurite ar
 - **Runtime**: Node 24.11.1, PNPM 10.22.0
 - **Web**: Next.js 16 + React 19 + Tailwind 4
 - **Content**: Contentlayer 0.3.4 + MDX (file-first, GitHub-backed)
-- **Data**: Prisma 6.19.0 with PostgreSQL 17.6 (Dockerized locally)
+- **Data**: Prisma 6.19.0 (SQLite file by default; Postgres via `docker-compose` when needed)
 - **Cache**: Redis 7.4 (Dockerized)
 - **Testing**: Vitest 4.x (unit), Playwright 1.56 (smoke/e2e), k6 (load)
 - **Automation**: TurboRepo 2.6.1, GitHub Actions (`.github/workflows/ci.yml`)
@@ -65,8 +65,9 @@ Docker Desktop (or compatible) must be running because Postgres/Redis/Azurite ar
 Copy `.env.example` to `.env` and update as needed:
 
 ```
-DATABASE_URL=postgresql://klaboworld:klaboworld@localhost:5432/klaboworld
-REDIS_URL=redis://localhost:6379
+DATABASE_URL=file:./data/app.db
+# Optional: set to redis://... to enable distributed rate limiting
+REDIS_URL=
 UPLOADS_DIR=public/uploads
 UPLOADS_CONTAINER_URL=http://127.0.0.1:10000/devstoreaccount1/klaboworld
 AZURE_STORAGE_ACCOUNT=
@@ -87,6 +88,7 @@ AUTO_OPEN_BROWSER=false
 `just dev` reads `.env` automatically because Next.js loads it when starting the dev server.
 
 - `AUTO_OPEN_BROWSER=true` re-enables automatic `open http://localhost:3000` / `/admin` when dev scripts start. Leave `false` for headless/remote environments.
+- `DATABASE_URL` defaults to a SQLite file (`./data/app.db`). For Azure, set it to `file:/home/site/wwwroot/data/app.db` so the DB lives on the persistent volume.
 - `NEXTAUTH_URL` should match the domain hosting the app (e.g., `https://klabo.world`) so NextAuth doesn’t redirect users to `http://localhost:3000` in production.
 - `LOG_ANALYTICS_WORKSPACE_ID` + `LOG_ANALYTICS_SHARED_KEY` unlock admin dashboard charts/logs. Without them, panels gracefully show “No KQL configured.”
 
@@ -94,10 +96,10 @@ Run `./scripts/install-dev-tools.sh` once after cloning to install tmux (and oth
 
 ## Prisma & Database
 
-1. Start services: `docker compose -f docker-compose.dev.yml up -d db redis azurite` (handled by `just dev`).
-2. Create/inspect schema: edit `app/prisma/schema.prisma`.
-3. Apply schema locally: `cd app && pnpm prisma db push` (CI runs the same after spinning up Docker services).
-4. Reset DB: `just db-reset` (drops + re-seeds).
+1. The default connection string (`file:./data/app.db`) keeps a SQLite file inside `app/data/`. Prisma will create both the directory and database automatically the first time you run `pnpm --filter app exec prisma db push`.
+2. Edit `app/prisma/schema.prisma` to change models. Apply changes with `pnpm --filter app exec prisma db push` (CI runs the same command before lint/tests/build).
+3. Resetting the database is as simple as deleting `app/data/app.db` or running `just db-reset` (which also works if you point `DATABASE_URL` at Postgres).
+4. If you override `DATABASE_URL` to a Postgres instance, start the compose services via `docker compose -f docker-compose.dev.yml up -d db redis azurite` and update the env var accordingly.
 
 ## Contentlayer
 
@@ -148,7 +150,7 @@ Run `./scripts/install-dev-tools.sh` once after cloning to install tmux (and oth
 - `pnpm turbo test` runs Vitest unit specs across the workspace (`app/tests/**/*.spec.ts`).
 - Playwright smoke tests live in `app/tests/e2e`. Run them locally with `cd app && pnpm exec playwright test`. Set `PLAYWRIGHT_BASE_URL` to point at a running dev/prod server.
 - Install browsers (first run or after Playwright upgrades) with `cd app && pnpm exec playwright install --with-deps`.
-- Admin Playwright specs (e.g., `tests/e2e/admin-content.e2e.ts`) require Postgres + Redis; start them with `docker compose -f docker-compose.dev.yml up -d db redis azurite` and ensure `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `NEXTAUTH_SECRET`, `DATABASE_URL`, and `REDIS_URL` are set.
+- Admin Playwright specs (e.g., `tests/e2e/admin-content.e2e.ts`) only need a writable `DATABASE_URL` (the default SQLite file works) plus the usual auth env vars. Start the docker-compose services only if you want Redis/Azurite for parity.
 - CI (see `.github/workflows/ci.yml`) launches Docker services, installs browsers, starts a built Next.js server, and runs the Playwright suite headlessly after lint/unit stages.
 
 ## Deployment
@@ -187,7 +189,7 @@ Keep adding files here when stage gates require proof.
 ## Troubleshooting
 
 - **just not installed**: install via `brew install just` or vendor a local binary. All Make targets delegate to `just`, so it’s required for day-to-day work.
-- **Docker unavailable**: `just doctor` will warn. Without Docker you can still run Next.js/Contentlayer but Prisma migrations/rate limiting tests will fail.
+- **Docker unavailable**: `just doctor` will warn. Without Docker you can still run Next.js/Contentlayer because Prisma targets SQLite, but Redis/Azurite-dependent flows (distributed rate limiting, blob storage emulation) will be skipped.
 - **Contentlayer CLI Node 24 bug**: CLI prints `ERR_INVALID_ARG_TYPE` after successful builds. This is a known upstream issue; see modernization plan for mitigation steps.
 
 For deeper architectural details (stage gates, phasing, ops checklists), read `docs/modernization-plan.md` and `AGENTS.md`.

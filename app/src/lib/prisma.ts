@@ -1,6 +1,9 @@
 import { PrismaClient } from '@prisma/client';
+import { ensureDatabaseDirectory } from './ensureDatabaseDirectory';
 
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
+
+ensureDatabaseDirectory();
 
 export const prisma =
   globalForPrisma.prisma ??
