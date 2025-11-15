@@ -5,8 +5,8 @@ const adminPassword = process.env.ADMIN_PASSWORD ?? 'change-me';
 
 export async function loginAsAdmin(page: Page) {
   await page.goto('/admin');
-  await page.getByLabel('Email').fill(adminEmail);
-  await page.getByLabel('Password').fill(adminPassword);
-  await page.getByRole('button', { name: 'Sign in' }).click();
+  await page.getByTestId('admin-login-email').fill(adminEmail);
+  await page.getByTestId('admin-login-password').fill(adminPassword);
+  await page.getByTestId('admin-login-submit').click();
   await expect(page).toHaveURL(/\/admin$/);
 }

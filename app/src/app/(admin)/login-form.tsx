@@ -93,22 +93,48 @@ export function LoginForm({ initialError }: LoginFormProps) {
           </div>
         </div>
       )}
-      <form method="post" action="/api/auth/callback/credentials" className="flex flex-col gap-3 rounded border border-zinc-200 p-4">
+      <form
+        method="post"
+        action="/api/auth/callback/credentials"
+        className="flex flex-col gap-3 rounded border border-zinc-200 p-4"
+        data-testid="admin-login-form"
+      >
         <input type="hidden" name="csrfToken" value={csrfToken} readOnly />
         <input type="hidden" name="callbackUrl" value="/admin" readOnly />
         <label className="text-sm font-medium text-zinc-600" htmlFor="email">
           Email
         </label>
-        <input id="email" name="email" type="email" className="rounded border px-3 py-2" autoComplete="username" required />
+        <input
+          id="email"
+          name="email"
+          type="email"
+          className="rounded border px-3 py-2"
+          autoComplete="username"
+          required
+          data-testid="admin-login-email"
+        />
         <label className="text-sm font-medium text-zinc-600" htmlFor="password">
           Password
         </label>
-        <input id="password" name="password" type="password" className="rounded border px-3 py-2" autoComplete="current-password" required />
-        <button type="submit" className="rounded bg-black px-4 py-2 text-white disabled:opacity-60" disabled={!csrfToken || loadingToken}>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          className="rounded border px-3 py-2"
+          autoComplete="current-password"
+          required
+          data-testid="admin-login-password"
+        />
+        <button
+          type="submit"
+          className="rounded bg-black px-4 py-2 text-white disabled:opacity-60"
+          disabled={!csrfToken || loadingToken}
+          data-testid="admin-login-submit"
+        >
           {loadingToken ? 'Preparing…' : 'Sign in'}
         </button>
         {error && (
-          <p className="text-sm text-red-600" role="alert" aria-live="assertive">
+          <p className="text-sm text-red-600" role="alert" aria-live="assertive" data-testid="admin-login-error">
             {error}
           </p>
         )}
