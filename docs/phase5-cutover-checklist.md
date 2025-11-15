@@ -12,7 +12,7 @@ Use this checklist when promoting the Next.js site to become klabo.world’s pri
 - [x] Confirm GitHub Content API creds (`GITHUB_TOKEN`, owner, repo) configured on App Service so admin edits persist to repo (verified via `az webapp config appsettings list --name klabo-world-app --resource-group klabo-world-rg` on 2025-11-15).
 
 ## DNS & Deployment
-- [x] Export existing Azure Web App configuration (for rollback). Snapshot saved to `docs/azure/klabo-world-appsettings-2025-11-15.json`.
+- [x] Export existing Azure Web App configuration (for rollback). Saved locally via `az webapp config appsettings list --name klabo-world-app --resource-group klabo-world-rg` (gitignored JSON archives live under `docs/azure/`).
 - [ ] Update DNS (or Azure Front Door/App Gateway) so `klabo.world` points to the Next.js App Service.
 - [ ] Verify 200 responses at `https://klabo.world/` and `/search?q=bitcoin` (should match staging).
 - [ ] Run deploy smoke + k6 smoke once DNS flips.

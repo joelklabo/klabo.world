@@ -39,3 +39,6 @@ cookies.txt
 
 # Documentation drafts
 docs/drafts/
+
+# Sensitive Azure snapshots
+docs/azure/*.json
