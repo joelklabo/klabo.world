@@ -1,0 +1,19 @@
+---
+title: App Insights – Live Errors
+summary: Latest warnings/errors from traces and exceptions tables.
+panelType: logs
+tags:
+  - telemetry
+  - errors
+refreshIntervalSeconds: 60
+kqlQuery: |
+  union isfuzzy=true
+    (traces | extend SourceTable = "traces"),
+    (exceptions | extend SourceTable = "exceptions", message = tostring(details))
+  | where severityLevel >= 3
+  | project timestamp, message, severityLevel, operation_Name, SourceTable
+  | order by timestamp desc
+  | take 200
+---
+
+Keep this panel pinned to monitor live warnings/errors from Application Insights. Use the search box to filter by keyword or operation.

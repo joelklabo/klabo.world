@@ -35,10 +35,11 @@ Each task below must be completed in order. For every task, commit the changes, 
    - `/admin/dashboards/[slug]` now renders a live chart preview (with refresh badges + status messaging) for any chart panel with a KQL query.
    - ✔️ `pnpm --filter app lint` + `pnpm --filter app test` prior to commit and CI pass.
 
-7. **Live logs / error list panel**
-   - Add KQL query for warnings/errors.
-   - Implement polling endpoint + UI in dashboard view (filters, search).
-   - Commit/push/verify.
+7. **Live logs / error list panel** ✅ (2025-11-15)
+   - Added `content/dashboards/app-insights-live-logs.mdx` (panelType `logs`) with a union traces/exceptions KQL query.
+   - Implemented `loadDashboardLogs` + `/admin/dashboards/[slug]/logs` API to fetch/filter entries (search + severity).
+   - Created `DashboardLogsPanel` client component with polling + manual refresh + inline filters, surfaced inside `/admin/dashboards/[slug]`.
+   - ✔️ Validated via lint/tests + CI.
 
 8. **Dashboard entry management UX**
    - Polish forms (tags, description, notes Markdown).

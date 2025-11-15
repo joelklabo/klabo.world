@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { DashboardForm } from '@/app/(admin)/components/dashboard-form';
 import { DashboardChart } from '@/app/(admin)/components/dashboard-chart';
+import { DashboardLogsPanel } from '@/app/(admin)/components/dashboard-logs-panel';
 import { deleteDashboardAction, updateDashboardAction } from '../actions';
 import { getDashboardBySlug } from '@/lib/dashboards';
 import { loadDashboardChartState } from '@/lib/dashboardCharts';
@@ -17,8 +18,11 @@ export default async function DashboardDetailPage({ params }: PageProps) {
   if (!dashboard) {
     notFound();
   }
-  const chartState = await loadDashboardChartState(dashboard);
-  const showPanelPreview = chartState.status !== 'disabled';
+  const isChartPanel = dashboard.panelType === 'chart';
+  const isLogsPanel = dashboard.panelType === 'logs';
+  const chartState = isChartPanel ? await loadDashboardChartState(dashboard) : null;
+  const showChartPreview = Boolean(chartState && chartState.status !== 'disabled');
+  const showPanelPreview = showChartPreview || isLogsPanel;
 
   return (
     <div className="space-y-6">
@@ -39,7 +43,7 @@ export default async function DashboardDetailPage({ params }: PageProps) {
             <div>
               <p className="text-sm uppercase tracking-widest text-indigo-500">Panel preview</p>
               <h2 className="text-2xl font-semibold">{dashboard.title}</h2>
-              {chartState.status === 'success' && (
+              {chartState?.status === 'success' && (
                 <p className="text-xs text-gray-500">Last refreshed {new Date(chartState.refreshedAt).toUTCString()}</p>
               )}
             </div>
@@ -51,16 +55,24 @@ export default async function DashboardDetailPage({ params }: PageProps) {
           </div>
 
           <div className="mt-6">
-            {chartState.status === 'success' ? (
-              <DashboardChart data={chartState.points} chartType={dashboard.chartType} valueLabel={chartState.valueLabel} />
-            ) : chartState.status === 'error' ? (
-              <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-                Unable to load chart data: {chartState.message}
-              </div>
-            ) : chartState.status === 'empty' ? (
-              <div className="rounded-xl border border-dashed border-gray-200 px-4 py-6 text-center text-sm text-gray-500">
-                {chartState.reason}
-              </div>
+            {showChartPreview && chartState ? (
+              chartState.status === 'success' ? (
+                <DashboardChart data={chartState.points} chartType={dashboard.chartType} valueLabel={chartState.valueLabel} />
+              ) : chartState.status === 'error' ? (
+                <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                  Unable to load chart data: {chartState.message}
+                </div>
+              ) : chartState.status === 'empty' ? (
+                <div className="rounded-xl border border-dashed border-gray-200 px-4 py-6 text-center text-sm text-gray-500">
+                  {chartState.reason}
+                </div>
+              ) : (
+                <div className="rounded-xl border border-yellow-200 bg-yellow-50 px-4 py-6 text-center text-sm text-yellow-700">
+                  Panel preview unavailable.
+                </div>
+              )
+            ) : isLogsPanel ? (
+              <DashboardLogsPanel dashboardSlug={dashboard.slug} refreshIntervalSeconds={dashboard.refreshIntervalSeconds} />
             ) : (
               <div className="rounded-xl border border-yellow-200 bg-yellow-50 px-4 py-6 text-center text-sm text-yellow-700">
                 Panel preview unavailable.
