@@ -8,7 +8,29 @@ This guide explains how klabo.world emits telemetry via OpenTelemetry + Azure Mo
 - No traces/logs are exported when the connection string is missing, allowing silent local dev.
 
 ## Prerequisites
-- Azure Application Insights resource (classic workspace or workspace-based). Copy its **Connection String** from the Azure Portal.
+- Azure Application Insights resource (classic workspace or workspace-based). We provisioned `klabo-world-admin` in `westus` on 2025‑11‑15 using:
+  ```bash
+  az monitor app-insights component create \
+    --app klabo-world-admin \
+    --location westus \
+    --resource-group klabo-world-rg \
+    --application-type web
+  ```
+  Grab the connection string anytime with:
+  ```bash
+  az monitor app-insights component show \
+    --app klabo-world-admin \
+    --resource-group klabo-world-rg \
+    --query connectionString \
+    -o tsv
+  ```
+- Push the string into App Service (already done once, rerun anytime after rotation):
+  ```bash
+  az webapp config appsettings set \
+    --resource-group klabo-world-rg \
+    --name klabo-world-app \
+    --settings APPLICATIONINSIGHTS_CONNECTION_STRING="<string>"
+  ```
 - For local testing ensure Docker services are running (`just dev`) so admin workflows succeed.
 
 ## Enabling Telemetry

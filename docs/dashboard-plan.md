@@ -2,10 +2,10 @@
 
 Each task below must be completed in order. For every task, commit the changes, push to `main`, and wait for CI + deploy workflows on GitHub to finish successfully before starting the next task.
 
-1. **Provision Application Insights**
-   - Use `az monitor app-insights component create --app klabo-world-admin --location westus --resource-group klabo-world-rg --application-type web`.
-   - Capture the connection string and store it in App Service (`APPLICATIONINSIGHTS_CONNECTION_STRING`) and the local `.env`.
-   - Commit notes/updates (no code yet), push, verify CI.
+1. **Provision Application Insights** ✅ (2025-11-15)
+   - Created `klabo-world-admin` in `westus` via `az monitor app-insights component create ...`.
+   - Stored the connection string in App Service (`APPLICATIONINSIGHTS_CONNECTION_STRING`) and documented setup in the observability runbook (remember to add it to your local `.env` when needed).
+   - ✔️ Committed/pushed after documenting.
 
 2. **Instrument Next.js with new Insights key**
    - Update `app/instrumentation.ts` / env handling to ensure telemetry sends user/session IDs.
