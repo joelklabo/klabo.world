@@ -47,6 +47,7 @@ Each task below must be completed in order. For every task, commit the changes, 
    - Detail pages render live iframe/link previews so embed + CTA panels behave consistently with charts/logs.
    - ✔️ Lint/tests + CI enforced via `gh-commit-watch`.
 
-9. **Documentation & runbook updates**
-   - Update AGENTS.md, runbooks, and README with instructions for dashboards/App Insights.
-   - Commit/push/verify.
+9. **Documentation & runbook updates** ✅ (2025-11-15)
+   - README now documents `content/dashboards`, panel types, and `LOG_ANALYTICS_*` env requirements.
+   - `AGENTS.md` + `docs/runbooks/{admin-content,observability}.md` describe dashboard workflows, KQL prerequisites, and verification commands.
+   - ✔️ Changes landed via `gh-commit-watch`.

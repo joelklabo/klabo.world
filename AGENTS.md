@@ -9,7 +9,7 @@ This document supersedes every earlier set of instructions (CLAUDE.md, legacy RE
   - `packages/config` – shared ESLint + tsconfig presets.
   - `packages/scripts` – TypeScript CLIs (bootstrap/export/migration helpers).
   - `packages/ui` – placeholder for shared UI primitives (shadcn/ui integration).
-  - `content/{posts,apps,contexts}` – MDX + JSON source of truth (mirrors legacy `Resources/**`).
+  - `content/{posts,apps,contexts,dashboards}` – MDX/JSON source of truth (mirrors legacy `Resources/**` + new Observability dashboards).
   - `infra/` – Bicep entry point + modules (WIP) for Azure resources.
   - `docker-compose.dev.yml` – Postgres 17.6, Redis 7.4, Azurite.
   - `.devcontainer/` – reproducible VS Code/Devcontainer setup.
@@ -115,7 +115,7 @@ AUTO_OPEN_BROWSER=false
 Never point the Next.js app at system postgres/redis—always use the compose services so tests/dev are deterministic.
 
 ## Content Workflow
-- All posts/apps/contexts live as MDX/JSON under `content/`. Admin server actions will commit via GitHub, so Git history is the single source of truth.
+- All posts/apps/contexts/dashboards live as MDX/JSON under `content/`. Admin server actions will commit via GitHub, so Git history is the single source of truth.
 - Content parsing + typing uses Contentlayer (config coming in subsequent steps). When you add/edit files, run `pnpm contentlayer build` (wired into turbo tasks later).
 
 ## Admin UI & Upload Workflow
@@ -126,6 +126,12 @@ Never point the Next.js app at system postgres/redis—always use the compose se
 - Context editors also get a “Upload + copy URL” helper that copies the blob/local path straight to clipboard for Markdown embeds.
 - Production App Service must either (a) mount persistent storage to `UPLOADS_DIR` or (b) set the Azure storage env vars so uploads land in Blob Storage. Prefer option (b) for durability.
 - Posts + contexts also expose a “Refresh preview” action on their Markdown fields. This POSTs to `/admin/markdown-preview`, which compiles the MDX (front matter + GFM) via `@mdx-js/mdx` and returns sanitized HTML rendered inside the edit form. The preview pipeline is covered by Vitest (`app/tests/markdown-preview.spec.ts`) so no manual QA is required.
+- Dashboards live under `/admin/dashboards` and map 1:1 with `content/dashboards/*.mdx`.
+  - Panel types: `chart`, `logs`, `embed`, `link`. Server actions enforce requirements (charts/logs need `kqlQuery`, embeds need `iframeUrl`, links need `externalUrl`) and scrub unused fields before persisting.
+  - Chart panels call `runLogAnalyticsQuery` and render inline line/area/bar charts; log panels poll `/admin/dashboards/[slug]/logs` with live severity/search filters.
+  - Embed panels show an iframe preview of `iframeUrl`. Link panels render a CTA that opens `externalUrl` (hostname displayed for clarity).
+  - Notes/runbooks use the Markdown preview + upload helpers so every dashboard carries operational instructions beside the telemetry.
+  - Charts/logs require `LOG_ANALYTICS_WORKSPACE_ID` + `LOG_ANALYTICS_SHARED_KEY`. Leave them blank locally if you want dashboards to display “KQL missing” states without making API calls.
 
 ## tmux Dev Workflow
 - Launch the full dev environment (Next server + Vitest watcher + Docker logs + shell) with `./scripts/tmux-dev.sh` (pass `--detach` from automation so the script doesn’t grab the terminal).

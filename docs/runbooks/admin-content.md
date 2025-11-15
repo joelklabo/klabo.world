@@ -48,6 +48,23 @@ This runbook documents how to manage klabo.world content (posts, apps, contexts,
 5. Edit or delete via `/admin/contexts/[slug]/edit`.
 6. Playwright smoke: `app/tests/e2e/admin-contexts.e2e.ts`.
 
+## Monitoring Dashboards
+1. Navigate to **Dashboards** in the admin navigation to view existing panels or click **New dashboard** to add one.
+2. Each dashboard writes an MDX file under `content/dashboards/<slug>.mdx`. The front matter controls behavior:
+   - `panelType`: `chart`, `logs`, `embed`, or `link`.
+   - Optional fields: `chartType`, `kqlQuery`, `iframeUrl`, `externalUrl`, `refreshIntervalSeconds`, `tags`.
+   - Body text beneath `---` becomes the runbook/notes shown in the admin UI.
+3. Panel validation rules:
+   - `chart`/`logs` panels **must** include `kqlQuery`. The server action rejects submissions without it.
+   - `embed` panels require `iframeUrl` (https:// only).
+   - `link` panels require `externalUrl` (used to render the CTA button + hostname preview).
+4. Charts/logs call Azure Log Analytics via `runLogAnalyticsQuery`, so set `LOG_ANALYTICS_WORKSPACE_ID` and `LOG_ANALYTICS_SHARED_KEY` wherever you expect them to work (production mandatory, local optional). Panels gracefully render an empty state if those env vars are missing.
+5. The dashboard detail page renders:
+   - Live chart or log preview (with manual refresh + severity/search filters for logs).
+   - Embed iframe or link CTA when applicable.
+   - Full configuration form + Markdown notes (with preview + upload helpers).
+6. Delete buttons remove the MDX file (local or GitHub depending on environment). As with other admin actions, Playwright coverage belongs in `app/tests/e2e/admin-content.e2e.ts` until dedicated specs are added.
+
 ## Uploads Cheat Sheet
 - Local dev: files land under `public/uploads`. The helper auto-builds URLs like `/uploads/<uuid>.png` (immediately available because `public/` is statically served).
 - Azure production: set `AZURE_STORAGE_ACCOUNT`, `AZURE_STORAGE_KEY`, `AZURE_STORAGE_CONTAINER` (defaults to `uploads`). URLs will be full blob URLs.

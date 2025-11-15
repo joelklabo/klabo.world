@@ -69,3 +69,45 @@ Keep this runbook updated as we add logging/metrics/dashboards (e.g., when we wi
 - Set `LOG_ANALYTICS_WORKSPACE_ID` and `LOG_ANALYTICS_SHARED_KEY` (primary key) to unlock the helper at `app/src/lib/logAnalytics.ts`.
 - `runLogAnalyticsQuery(query, { timespan })` signs the request with the shared key and POSTs to `https://api.loganalytics.io/v1/workspaces/<workspace>/query`. Use it from server actions when you need KQL results (users/day, error lists, etc.).
 - Keep the shared key in App Service settings or Key Vault—never commit it. Local dev can omit it until you need live data.
+
+### Managing Log Analytics credentials
+1. List workspaces:
+   ```bash
+   az monitor log-analytics workspace list --resource-group klabo-world-rg -o table
+   ```
+2. Retrieve workspace ID + primary key:
+   ```bash
+   az monitor log-analytics workspace show \
+     --resource-group klabo-world-rg \
+     --workspace-name klabo-world-logs \
+     --query customerId -o tsv
+   az monitor log-analytics workspace get-shared-keys \
+     --resource-group klabo-world-rg \
+     --workspace-name klabo-world-logs \
+     --query primarySharedKey -o tsv
+   ```
+3. Populate `LOG_ANALYTICS_WORKSPACE_ID` / `LOG_ANALYTICS_SHARED_KEY` (App Service settings + `.env` for local dev). Restart the app after updating production settings.
+
+## Admin Dashboards
+- Dashboard definitions live at `content/dashboards/*.mdx`. Admin CRUD routes (`/admin/dashboards/*`) read/write those files locally or via GitHub depending on environment.
+- Panel types:
+  - **Chart**: runs the stored KQL via `runLogAnalyticsQuery` and plots a Recharts line/area/bar chart (auto-detected metrics + timestamps).
+  - **Logs**: hits `/admin/dashboards/[slug]/logs`, which proxies KQL results into a live list with severity badges, search, and auto-refresh intervals.
+  - **Embed**: renders the configured iframe (Grafana, Azure Portal, etc.).
+  - **Link**: shows a CTA button that opens `externalUrl` in a new tab (hostname shown on the button).
+- Notes/runbooks (MDX body) render on the right-hand metadata card so responders can follow remediation steps.
+- Validations:
+  - Charts/logs require `kqlQuery` + Log Analytics credentials.
+  - Embeds require `iframeUrl`.
+  - Links require `externalUrl`.
+  - The server action scrubs irrelevant fields before persisting to keep MDX tidy.
+- Refresh timing is controlled by `refreshIntervalSeconds` (minimum 15 seconds enforced for auto-polling in the logs panel).
+
+### Verifying Dashboards
+1. Ensure `LOG_ANALYTICS_WORKSPACE_ID` / `LOG_ANALYTICS_SHARED_KEY` and `APPLICATIONINSIGHTS_CONNECTION_STRING` are configured (local `.env` or App Service settings).
+2. Run the dev server (`just dev`) and visit `http://localhost:3000/admin/dashboards`. Confirm:
+   - Chart panels render without error banners.
+   - Logs panel lists entries and the manual **Refresh** button works.
+   - Embed/link panels show the iframe/CTA.
+3. If queries fail, inspect server logs for `Log Analytics query failed` errors—usually indicates expired shared keys or insufficient permissions.
+4. After updating dashboard MDX, run `pnpm contentlayer build` (or rely on Next dev’s watch mode) to refresh the runtime graph.

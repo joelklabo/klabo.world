@@ -41,7 +41,7 @@ Docker Desktop (or compatible) must be running because Postgres/Redis/Azurite ar
 │   ├── config/               # shared ESLint + tsconfig presets
 │   ├── scripts/              # TypeScript CLIs (create-admin/export-legacy)
 │   └── ui/                   # placeholder for shared UI primitives
-├── content/                  # MDX/JSON source of truth (posts/apps/contexts)
+├── content/                  # MDX/JSON dashboards/posts/apps/contexts
 ├── infra/                    # Bicep modules (Azure infra WIP)
 ├── docs/                     # Modernization plan, AGENTS, runbooks, verifications
 ├── docker-compose.dev.yml    # Postgres 17.6 + Redis 7.4 + Azurite
@@ -86,6 +86,7 @@ AUTO_OPEN_BROWSER=false
 `just dev` reads `.env` automatically because Next.js loads it when starting the dev server.
 
 - `AUTO_OPEN_BROWSER=true` re-enables automatic `open http://localhost:3000` / `/admin` when dev scripts start. Leave `false` for headless/remote environments.
+- `LOG_ANALYTICS_WORKSPACE_ID` + `LOG_ANALYTICS_SHARED_KEY` unlock admin dashboard charts/logs. Without them, panels gracefully show “No KQL configured.”
 
 Run `./scripts/install-dev-tools.sh` once after cloning to install tmux (and other CLI helpers) via Homebrew, then use `./scripts/tmux-dev.sh` to launch a tmux session with the dev server + test watcher running together.
 
@@ -98,7 +99,7 @@ Run `./scripts/install-dev-tools.sh` once after cloning to install tmux (and oth
 
 ## Contentlayer
 
-- Content lives under `content/{posts,apps,contexts}`.
+- Content lives under `content/{posts,apps,contexts,dashboards}`.
 - Build the content graph manually with `cd app && pnpm contentlayer build` (tracked logs in `docs/verifications/contentlayer-build.md`).
 - Next.js imports will be wired once Contentlayer stabilizes on Node 24; for now the UI renders placeholder copy.
 
@@ -109,6 +110,17 @@ Run `./scripts/install-dev-tools.sh` once after cloning to install tmux (and oth
 - In production, set `AZURE_STORAGE_ACCOUNT`, `AZURE_STORAGE_KEY`, and optionally `AZURE_STORAGE_CONTAINER` to write straight to Azure Blob Storage; the API returns the blob URL so you can paste it anywhere (Markdown, screenshot lists, etc.).
 - Context forms also surface a helper that uploads and copies the resulting URL to the clipboard for quick Markdown embedding.
 - Post/Context editors now provide a live Markdown Preview button that sends content to `/admin/markdown-preview`, compiles it with MDX (frontmatter + GFM), and renders the static HTML inside the form so you can verify formatting without manual QA.
+
+## Admin dashboards
+
+- Dashboard metadata lives under `content/dashboards/*.mdx` with front matter describing the panel (`panelType`, `chartType`, `kqlQuery`, `iframeUrl`, `externalUrl`, etc.). Notes/runbook text sits beneath the second `---`.
+- The admin UI exposes `/admin/dashboards`, `/admin/dashboards/new`, and `/admin/dashboards/[slug]` for CRUD. Panel types:
+  - `chart` – runs the provided KQL via `runLogAnalyticsQuery` and renders an inline Recharts line/area/bar chart.
+  - `logs` – streams filtered Log Analytics records with live search + severity filters.
+  - `embed` – displays the provided iframe URL (Grafana, Azure Portal, etc.).
+  - `link` – renders a CTA button that opens the external dashboard in a new tab.
+- Charts/logs require `LOG_ANALYTICS_WORKSPACE_ID` + `LOG_ANALYTICS_SHARED_KEY` in the environment. Embed/link panels require `iframeUrl`/`externalUrl` respectively; the server action enforces these invariants before writing MDX or calling GitHub.
+- Notes fields now use the Markdown preview + upload helpers so runbooks stay alongside the dashboard definition.
 
 ## Public APIs
 
@@ -126,6 +138,7 @@ Run `./scripts/install-dev-tools.sh` once after cloning to install tmux (and oth
 
 - `app/instrumentation.ts` wires `@opentelemetry/sdk-node` with the Azure Monitor exporter. Set `APPLICATIONINSIGHTS_CONNECTION_STRING` to enable telemetry (local or production).
 - Auto instrumentation handles routing, and admin server actions emit custom spans via `app/src/lib/telemetry.ts` (e.g., `admin.post.update`). Extend this helper if you need deeper attributes or events.
+- `Log Analytics` support is exposed through `LOG_ANALYTICS_WORKSPACE_ID` + `LOG_ANALYTICS_SHARED_KEY`. When set, admin dashboards can run KQL for charts/logs via `app/src/lib/logAnalytics.ts`; leaving them blank disables those panels locally.
 - No telemetry traffic is emitted when the connection string is absent, so local development stays quiet unless you opt in.
 
 ## Testing
