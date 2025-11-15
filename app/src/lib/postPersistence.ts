@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import slugify from 'slugify';
 import { env } from './env';
-import { fetchRepoFile, upsertRepoFile } from './github-service';
+import { deleteRepoFile, fetchRepoFile, upsertRepoFile } from './github-service';
 
 export type PostInput = {
   title: string;
@@ -112,4 +112,23 @@ export async function createPost(input: PostInput) {
     await writeLocalFile(slug, markdown);
   }
   return { slug };
+}
+
+export async function updatePost(slug: string, input: PostInput) {
+  const markdown = buildMarkdown(slug, input);
+  if (shouldUseGitHub()) {
+    await writeGitHubFile(slug, markdown);
+  } else {
+    await writeLocalFile(slug, markdown);
+  }
+}
+
+export async function deletePost(slug: string) {
+  if (shouldUseGitHub()) {
+    const relativePath = `${GITHUB_POSTS_DIR}/${slug}.mdx`;
+    const existing = await fetchRepoFile(relativePath);
+    await deleteRepoFile(relativePath, `chore: delete post ${slug}`, existing.sha);
+  } else {
+    await fs.unlink(path.join(POSTS_DIR, `${slug}.mdx`));
+  }
 }
