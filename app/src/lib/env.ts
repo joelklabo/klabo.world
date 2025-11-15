@@ -28,3 +28,9 @@ if (!parsed.success) {
 }
 
 export const env = parsed.data;
+
+for (const [key, value] of Object.entries(env)) {
+  if (typeof value === 'string' && !(key in process.env)) {
+    process.env[key] = value;
+  }
+}
