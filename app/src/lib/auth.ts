@@ -15,6 +15,17 @@ export async function ensureAdminSeeded(): Promise<void> {
         passwordHash: await bcrypt.hash(env.ADMIN_PASSWORD, 10),
       },
     });
+    return;
+  }
+
+  const matches = await bcrypt.compare(env.ADMIN_PASSWORD, existing.passwordHash);
+  if (!matches) {
+    await prisma.admin.update({
+      where: { email: env.ADMIN_EMAIL },
+      data: {
+        passwordHash: await bcrypt.hash(env.ADMIN_PASSWORD, 10),
+      },
+    });
   }
 }
 
