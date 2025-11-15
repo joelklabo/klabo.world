@@ -19,6 +19,10 @@ async function directoryExists(dir: string): Promise<boolean> {
   }
 }
 
+function isIgnorable(name: string): boolean {
+  return name.endsWith('.bak') || name.startsWith('.');
+}
+
 async function copyMarkdownFiles(srcDir: string, destDir: string) {
   const exists = await directoryExists(srcDir);
   if (!exists) {
@@ -28,14 +32,41 @@ async function copyMarkdownFiles(srcDir: string, destDir: string) {
   const entries = await fs.readdir(srcDir, { withFileTypes: true });
   await Promise.all(
     entries
-      .filter((entry) => entry.isFile())
+      .filter((entry) => entry.isFile() && !isIgnorable(entry.name))
       .map(async (entry) => {
+        const ext = path.extname(entry.name).toLowerCase();
+        if (!['.md', '.mdx'].includes(ext)) {
+          return;
+        }
         const srcPath = path.join(srcDir, entry.name);
-        const baseName = entry.name.replace(/\.(md|mdx|json)$/i, '');
+        const baseName = path.basename(entry.name, ext);
         const destPath = path.join(destDir, `${baseName}.mdx`);
         const content = await fs.readFile(srcPath, 'utf8');
         await fs.writeFile(destPath, content, 'utf8');
         console.info(`[export-legacy] wrote ${destPath}`);
+      })
+  );
+}
+
+async function copyRawFiles(srcDir: string, destDir: string, allowedExts: string[]) {
+  const exists = await directoryExists(srcDir);
+  if (!exists) {
+    console.warn(`[export-legacy] skipping missing directory ${srcDir}`);
+    return;
+  }
+  const entries = await fs.readdir(srcDir, { withFileTypes: true });
+  await Promise.all(
+    entries
+      .filter((entry) => entry.isFile() && !isIgnorable(entry.name))
+      .map(async (entry) => {
+        const ext = path.extname(entry.name).toLowerCase();
+        if (!allowedExts.includes(ext)) {
+          return;
+        }
+        const srcPath = path.join(srcDir, entry.name);
+        const destPath = path.join(destDir, entry.name);
+        await fs.copyFile(srcPath, destPath);
+        console.info(`[export-legacy] copied ${destPath}`);
       })
   );
 }
@@ -49,7 +80,7 @@ export async function exportLegacyContent(): Promise<void> {
   await ensureDirs();
   await copyMarkdownFiles(path.join(LEGACY_ROOT, 'Posts'), DEST_POSTS);
   await copyMarkdownFiles(path.join(LEGACY_ROOT, 'Contexts'), DEST_CONTEXTS);
-  await copyMarkdownFiles(path.join(LEGACY_ROOT, 'Apps'), DEST_APPS);
+  await copyRawFiles(path.join(LEGACY_ROOT, 'Apps'), DEST_APPS, ['.json']);
 }
 
 if (require.main === module) {

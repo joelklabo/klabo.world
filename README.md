@@ -4,9 +4,10 @@ This repository now hosts the in-progress modernization of klabo.world. The lega
 
 ## Quick Start
 
+> Install [mise](https://mise.jdx.dev/) first—`just bootstrap` calls `mise install` to provision Node 24.11.1 and pnpm 10.22.0 automatically.
+
 ```bash
-# Ensure Node 24.11.1 + pnpm 10.22.0 (use .nvmrc/.tool-versions)
-just bootstrap          # pins pnpm + installs workspaces
+just bootstrap          # installs toolchain + workspace deps
 cp .env.example .env    # customize DATABASE_URL/REDIS_URL/etc
 just dev                # spins up Postgres/Redis/Azurite + next dev server
 ```

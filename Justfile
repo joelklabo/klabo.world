@@ -2,6 +2,7 @@ set shell := ["/bin/bash", "-c"]
 
 # Helper to ensure corepack + pnpm versions match .tool-versions
 bootstrap:
+	mise install
 	corepack enable
 	corepack prepare pnpm@10.22.0 --activate
 	npm config set fund false

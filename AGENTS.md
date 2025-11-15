@@ -20,6 +20,7 @@ Legacy Swift sources remain for reference but are no longer the system of record
 
 ## Prerequisites
 - macOS/Linux with Docker Desktop or Nerdctl.
+- [mise](https://mise.jdx.dev/) CLI (`brew install mise`). `just bootstrap` calls `mise install` to provision Node 24.11.1/pnpm 10.22.0 automatically.
 - Node.js **24.11.1** (enforced via `.nvmrc` / `.tool-versions`).
 - PNPM **10.22.0** via Corepack (run `just bootstrap`).
 - tmux (for `just agent-shell`).
