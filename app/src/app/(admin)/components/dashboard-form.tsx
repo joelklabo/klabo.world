@@ -124,22 +124,22 @@ export function DashboardForm({ action, submitLabel, dashboard, includeSlugField
             name="iframeUrl"
             placeholder="https://portal.azure.com/..."
             defaultValue={dashboard?.iframeUrl ?? ''}
-          className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
-        <p className="mt-1 text-xs text-gray-500">Provide secure https:// URLs only. Required when “Embed” panel type is selected.</p>
-      </div>
-      <div>
-        <Label htmlFor="externalUrl">External link</Label>
-        <input
-          type="url"
+            className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+          <p className="mt-1 text-xs text-gray-500">Provide secure https:// URLs only. Required when “Embed” panel type is selected.</p>
+        </div>
+        <div>
+          <Label htmlFor="externalUrl">External link</Label>
+          <input
+            type="url"
             id="externalUrl"
             name="externalUrl"
             placeholder="https://appsmith.com/apps/..."
-          defaultValue={dashboard?.externalUrl ?? ''}
-          className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
-        <p className="mt-1 text-xs text-gray-500">Used for “Link” panels to launch full dashboards in a new tab.</p>
-      </div>
+            defaultValue={dashboard?.externalUrl ?? ''}
+            className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+          <p className="mt-1 text-xs text-gray-500">Used for “Link” panels to launch full dashboards in a new tab.</p>
+        </div>
       </div>
 
       <div>
