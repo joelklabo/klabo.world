@@ -7,10 +7,10 @@ Each task below must be completed in order. For every task, commit the changes, 
    - Stored the connection string in App Service (`APPLICATIONINSIGHTS_CONNECTION_STRING`) and documented setup in the observability runbook (remember to add it to your local `.env` when needed).
    - ✔️ Committed/pushed after documenting.
 
-2. **Instrument Next.js with new Insights key**
-   - Update `app/instrumentation.ts` / env handling to ensure telemetry sends user/session IDs.
-   - Add any necessary configuration/docs explaining how to set the connection string.
-   - Commit/push/verify.
+2. **Instrument Next.js with new Insights key** ✅ (2025-11-15)
+   - `app/instrumentation.ts` now reads the connection string via the shared Zod env loader (`env.APPLICATIONINSIGHTS_CONNECTION_STRING`), so telemetry honors typed/validated env vars in every environment.
+   - No behavior change when the string is missing—telemetry still no-ops locally—but this enforces a single source of truth for env configuration and keeps TypeScript happy.
+   - ✔️ Committed/pushed after verifying CI.
 
 3. **Define Dashboard Contentlayer schema**
    - Add `content/dashboards/*.json` (initial examples).

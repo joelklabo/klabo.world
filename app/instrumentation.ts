@@ -1,8 +1,9 @@
 import { AzureMonitorTraceExporter } from '@azure/monitor-opentelemetry-exporter';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 import { NodeSDK } from '@opentelemetry/sdk-node';
+import { env } from './src/lib/env';
 
-const connectionString = process.env.APPLICATIONINSIGHTS_CONNECTION_STRING;
+const connectionString = env.APPLICATIONINSIGHTS_CONNECTION_STRING;
 
 export async function register() {
   if (!connectionString) {
