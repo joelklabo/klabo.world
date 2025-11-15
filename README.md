@@ -90,6 +90,7 @@ AUTO_OPEN_BROWSER=false
 - `AUTO_OPEN_BROWSER=true` re-enables automatic `open http://localhost:3000` / `/admin` when dev scripts start. Leave `false` for headless/remote environments.
 - `DATABASE_URL` defaults to a SQLite file (`../data/app.db` relative to `app/prisma`). For Azure, set it to `file:/home/site/wwwroot/data/app.db` so the DB lives on the persistent volume.
 - `NEXTAUTH_URL` should match the domain hosting the app (e.g., `https://klabo.world`) so NextAuth doesn’t redirect users to `http://localhost:3000` in production.
+- `ADMIN_PASSWORD` may be set to plain text for local development or to a bcrypt hash (recommended for production). When a hash is supplied we store it verbatim so you never have to keep the clear-text password in App Service settings.
 - `LOG_ANALYTICS_WORKSPACE_ID` + `LOG_ANALYTICS_SHARED_KEY` unlock admin dashboard charts/logs. Without them, panels gracefully show “No KQL configured.”
 
 Run `./scripts/install-dev-tools.sh` once after cloning to install tmux (and other CLI helpers) via Homebrew, then use `./scripts/tmux-dev.sh` to launch a tmux session with the dev server + test watcher running together.

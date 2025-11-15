@@ -101,6 +101,7 @@ AUTO_OPEN_BROWSER=false
 
 - `DATABASE_URL` defaults to the tracked SQLite file (`file:../data/app.db` resolves to `app/data/app.db`). Set it to `file:/home/site/wwwroot/data/app.db` in Azure or point it at Postgres when you explicitly run that service via Docker.
 - `REDIS_URL` is optional. Leave it blank to use the in-memory rate limiter; set it to `redis://localhost:6379` (from `docker-compose.dev.yml`) when you need distributed backoff.
+- `ADMIN_PASSWORD` accepts either plain text (dev) or a bcrypt hash (prod). When you set a hash we store it verbatim, so you never need to keep the clear-text string in Azure settings.
 - `AUTO_OPEN_BROWSER` toggles whether `just dev` / `scripts/tmux-dev.sh` automatically run `open http://localhost:3000` and `/admin`; leave it `false` for headless CI or when SSH’d into remote hosts.
 - `APPLICATIONINSIGHTS_CONNECTION_STRING` enables OpenTelemetry → Azure Monitor. See `docs/runbooks/observability.md` for setup and verification commands.
 - `LOG_ANALYTICS_WORKSPACE_ID` / `LOG_ANALYTICS_SHARED_KEY` are required for the Log Analytics helper (`app/src/lib/logAnalytics.ts`). They’re safe to leave blank locally if you don’t need KQL queries.

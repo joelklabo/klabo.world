@@ -12,7 +12,7 @@ This document describes how we manage secrets across local development, CI, and 
 ## Required Secrets
 | Key | Purpose | Default / Fallback |
 | --- | --- | --- |
-| `ADMIN_PASSWORD` | bcrypt hash for the admin user (generated via `pnpm --filter app exec prisma db seed` or `hash-password` script). | Local default `change-me` provided but **replace in prod**. |
+| `ADMIN_PASSWORD` | Plain text (dev) or bcrypt hash (prod) for the admin user (use `hash-password` script to generate hashes). | Local default `change-me` provided but **replace in prod**. |
 | `NEXTAUTH_SECRET` | Session/JWT encryption for NextAuth. | Auto-generated string for prod; local default `dev-secret`. |
 | `DATABASE_URL` | Prisma connection string. | Local default `file:./data/app.db`; set to `file:/home/site/wwwroot/data/app.db` (or Postgres) in Azure. |
 | `REDIS_URL` | Rate limiter store. | Leave blank for in-memory; set to `redis://localhost:6379` when running the docker-compose service. |
