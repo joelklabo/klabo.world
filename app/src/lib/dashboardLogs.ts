@@ -101,36 +101,37 @@ export async function loadDashboardLogs(dashboard: Dashboard, options: LogOption
     const operationIndex = table.columns.findIndex((column) => column.name.toLowerCase().includes('operation'));
     const categoryIndex = table.columns.findIndex((column) => column.name.toLowerCase().includes('category'));
 
-    const rawEntries: DashboardLogEntry[] = table.rows
-      .map((row, index) => {
-        const rawTimestamp = row[timestampIndex];
-        if (!rawTimestamp) {
-          return null;
-        }
-        const date = new Date(rawTimestamp as string);
-        if (Number.isNaN(date.getTime())) {
-          return null;
-        }
-        const message = row[messageIndex];
-        if (typeof message !== 'string') {
-          return null;
-        }
+    const rawEntries: DashboardLogEntry[] = table.rows.flatMap((row, index) => {
+      const rawTimestamp = row[timestampIndex];
+      if (!rawTimestamp) {
+        return [];
+      }
+      const date = new Date(rawTimestamp as string);
+      if (Number.isNaN(date.getTime())) {
+        return [];
+      }
+      const message = row[messageIndex];
+      if (typeof message !== 'string') {
+        return [];
+      }
 
-        const severity = severityIndex >= 0 ? normalizeSeverity(row[severityIndex]) : undefined;
-        const operationName =
-          operationIndex >= 0 && typeof row[operationIndex] === 'string' ? (row[operationIndex] as string) : undefined;
-        const category = categoryIndex >= 0 && typeof row[categoryIndex] === 'string' ? (row[categoryIndex] as string) : undefined;
+      const severity = severityIndex >= 0 ? normalizeSeverity(row[severityIndex]) : undefined;
+      const operationName =
+        operationIndex >= 0 && typeof row[operationIndex] === 'string' ? (row[operationIndex] as string) : undefined;
+      const category =
+        categoryIndex >= 0 && typeof row[categoryIndex] === 'string' ? (row[categoryIndex] as string) : undefined;
 
-        return {
+      return [
+        {
           id: `${date.toISOString()}-${index}`,
           timestamp: date.toISOString(),
           message: message.trim(),
           severity,
           operationName,
           category,
-        };
-      })
-      .filter((entry): entry is DashboardLogEntry => Boolean(entry));
+        },
+      ];
+    });
 
     if (rawEntries.length === 0) {
       return { status: 'empty', reason: 'Query returned no parsable log entries.' };
