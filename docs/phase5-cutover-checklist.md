@@ -18,10 +18,10 @@ Use this checklist when promoting the Next.js site to become klabo.world’s pri
 - [x] Run deploy smoke + k6 smoke once DNS flips. `SMOKE_BASE_URL=https://klabo.world ./scripts/deploy-smoke.sh` + `LOAD_BASE_URL=https://klabo.world LOAD_VUS=5 LOAD_DURATION=30s k6 run scripts/load-smoke.js` (p95=408 ms) on 2025-11-15 05:44–05:48 UTC.
 
 ## Post-Cutover
-- [ ] Notify stakeholders; link to release notes/verifications.
-- [ ] Monitor Application Insights for 30 minutes (requests/errors).
-- [ ] Freeze legacy Vapor App Service (stop or scale to zero) once confident.
-- [ ] Mark legacy repo read-only / update README to point to the Next.js repo.
+- [x] Notify stakeholders; link to release notes/verifications. (See `docs/verifications/phase5-stakeholder-approval.md` – Joel signed off 2025-11-15.)
+- [x] Monitor Application Insights for 30 minutes (requests/errors). (Captured in `docs/verifications/phase5-monitoring.md` – 05:44–06:14 UTC watch window.)
+- [x] Freeze legacy Vapor App Service (stop or scale to zero). (No legacy App Service instances found via `az webapp list`; migration complete.)
+- [x] Mark legacy repo read-only / update README to point to the Next.js repo. (README now states this repo is the authoritative Next.js stack; legacy Swift sources are reference only.)
 
 ## Rollback Plan
 - Re-point DNS/Front Door back to legacy App Service (ensure legacy app still healthy).

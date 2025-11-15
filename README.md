@@ -1,6 +1,6 @@
 # klabo.world (Next.js Monorepo)
 
-This repository now hosts the in-progress modernization of klabo.world. The legacy Vapor app remains for reference, but the source of truth is the new Next.js + Contentlayer + Prisma stack described below.
+This repository now hosts the production klabo.world stack (Next.js + Contentlayer + Prisma). The legacy Swift/Vapor sources are kept for historical reference only—deployment, content, and tooling all run from the Next.js app described below.
 
 ## Quick Start
 
