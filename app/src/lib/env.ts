@@ -16,6 +16,7 @@ const schema = z.object({
   GITHUB_OWNER: z.string().default('joelklabo'),
   GITHUB_REPO: z.string().default('KlaboWorld'),
   SITE_URL: z.string().url().default('https://klabo.world'),
+  NEXTAUTH_URL: z.string().url().default('https://klabo.world'),
   LOG_ANALYTICS_WORKSPACE_ID: z.string().optional(),
   LOG_ANALYTICS_SHARED_KEY: z.string().optional(),
 });

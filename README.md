@@ -73,6 +73,7 @@ AZURE_STORAGE_ACCOUNT=
 AZURE_STORAGE_KEY=
 AZURE_STORAGE_CONTAINER=uploads
 SITE_URL=https://klabo.world
+NEXTAUTH_URL=http://localhost:3000
 ADMIN_EMAIL=admin@example.com
 ADMIN_PASSWORD=change-me
 NEXTAUTH_SECRET=dev-secret
@@ -86,6 +87,7 @@ AUTO_OPEN_BROWSER=false
 `just dev` reads `.env` automatically because Next.js loads it when starting the dev server.
 
 - `AUTO_OPEN_BROWSER=true` re-enables automatic `open http://localhost:3000` / `/admin` when dev scripts start. Leave `false` for headless/remote environments.
+- `NEXTAUTH_URL` should match the domain hosting the app (e.g., `https://klabo.world`) so NextAuth doesn’t redirect users to `http://localhost:3000` in production.
 - `LOG_ANALYTICS_WORKSPACE_ID` + `LOG_ANALYTICS_SHARED_KEY` unlock admin dashboard charts/logs. Without them, panels gracefully show “No KQL configured.”
 
 Run `./scripts/install-dev-tools.sh` once after cloning to install tmux (and other CLI helpers) via Homebrew, then use `./scripts/tmux-dev.sh` to launch a tmux session with the dev server + test watcher running together.
