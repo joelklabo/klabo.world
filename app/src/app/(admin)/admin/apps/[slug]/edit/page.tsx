@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { getAppsForAdmin, getEditableAppBySlug } from '@/lib/apps';
+import { getEditableAppBySlug } from '@/lib/apps';
 import { requireAdminSession } from '@/lib/adminSession';
 import { ImageUploadField } from '@/app/(admin)/components/image-upload-field';
 import { ImageListUploadField } from '@/app/(admin)/components/image-list-upload-field';
