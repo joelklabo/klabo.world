@@ -157,6 +157,8 @@ Run `./scripts/install-dev-tools.sh` once after cloning to install tmux (and oth
 ## Deployment
 
 - `scripts/deploy-smoke.sh` runs a multi-endpoint health check (/, /posts, /apps, /contexts, /api/health). The Azure deploy workflow executes it automatically after pushing the container, and you can run it manually with `SMOKE_BASE_URL=https://your-app scripts/deploy-smoke.sh`.
+- Azure resources are defined in [`infra/`](infra/README.md). Provision them with Bicep (`az deployment sub create --template-file infra/main.bicep --parameters @infra/envs/prod.json`) before wiring up the GitHub Actions deployment.
+- `pnpm --filter @klaboworld/scripts run deploy` builds/pushes the Docker image, runs Prisma migrations (when `DATABASE_URL` is provided), updates the staging slot, and swaps it into production. The `Build, Test, and Deploy to Azure` workflow uses the same script; it expects Azure federated-credential secrets (`AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID`) plus `DATABASE_URL` (when using Postgres) to be present in the repo.
 
 ## CI / CD
 

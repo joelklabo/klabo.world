@@ -1,0 +1,53 @@
+{
+  "resourceGroupName": {
+    "value": "rg-klaboworld-prod"
+  },
+  "location": {
+    "value": "westus3"
+  },
+  "vnetName": {
+    "value": "vnet-klaboworld"
+  },
+  "storageAccountName": {
+    "value": "stklaboworld"
+  },
+  "keyVaultName": {
+    "value": "kv-klaboworld"
+  },
+  "keyVaultAccessObjectIds": {
+    "value": []
+  },
+  "acrName": {
+    "value": "acrklaboworld"
+  },
+  "redisName": {
+    "value": "redis-klaboworld"
+  },
+  "postgresServerName": {
+    "value": "pg-klaboworld"
+  },
+  "postgresAdminLogin": {
+    "value": "klaboadmin"
+  },
+  "postgresAdminPassword": {
+    "value": "ChangeMeNow!123"
+  },
+  "appServicePlanName": {
+    "value": "asp-klaboworld"
+  },
+  "webAppName": {
+    "value": "klabo-world-app"
+  },
+  "containerImage": {
+    "value": "klaboworld/web:latest"
+  },
+  "siteUrl": {
+    "value": "https://klabo.world"
+  },
+  "cdnProfileName": {
+    "value": "cdn-klaboworld"
+  },
+  "cdnEndpointName": {
+    "value": "klaboworld-assets"
+  }
+}
