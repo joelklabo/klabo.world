@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { getApps } from '@/lib/apps';
 import { getContexts } from '@/lib/contexts';
+import { getDashboards } from '@/lib/dashboards';
 import { getRecentPosts } from '@/lib/posts';
 import { getPostTagCloud } from '@/lib/tagCloud';
 
@@ -20,12 +21,14 @@ export default function Home() {
   const recentPosts = getRecentPosts(3);
   const apps = getApps();
   const contexts = getContexts();
+  const dashboards = getDashboards();
   const tagCloud = getPostTagCloud(15);
 
   const stats = [
     { label: 'Articles', value: recentPosts.length },
     { label: 'Apps', value: apps.length },
     { label: 'Contexts', value: contexts.length },
+    { label: 'Dashboards', value: dashboards.length },
   ];
 
   return (
@@ -198,6 +201,52 @@ export default function Home() {
                   <div className="flex flex-wrap gap-2">
                     {context.tags?.map((tag) => (
                       <span key={tag} className="rounded-full border border-emerald-700/70 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-emerald-100">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {dashboards.length > 0 && (
+        <section className="bg-gradient-to-br from-slate-900 via-slate-900 to-black px-6 py-16">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-8 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+              <div>
+                <p className="text-sm uppercase tracking-widest text-cyan-300">Dashboards</p>
+                <h2 className="text-3xl font-semibold text-white">Telemetry & Observability</h2>
+              </div>
+              <Link
+                href="/admin/dashboards"
+                className="text-sm font-semibold text-cyan-200 transition hover:text-cyan-100"
+              >
+                View all dashboards →
+              </Link>
+            </div>
+            <div className="grid gap-6 md:grid-cols-3">
+              {dashboards.slice(0, 3).map((dashboard) => (
+                <Link
+                  key={dashboard._id}
+                  href={`/admin/dashboards/${dashboard.slug}`}
+                  className="flex flex-col gap-3 rounded-3xl border border-slate-800/80 bg-slate-950/60 p-6 shadow-xl shadow-black/60 transition hover:-translate-y-1 hover:border-cyan-500/70"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm uppercase tracking-[0.4em] text-slate-400">{dashboard.panelType}</p>
+                    {dashboard.refreshIntervalSeconds ? (
+                      <span className="rounded-full border border-cyan-500/60 px-3 py-0.5 text-[11px] font-semibold uppercase tracking-[0.3em] text-cyan-100">
+                        {dashboard.refreshIntervalSeconds / 60}m refresh
+                      </span>
+                    ) : null}
+                  </div>
+                  <h3 className="text-2xl font-semibold text-white">{dashboard.title}</h3>
+                  <p className="text-sm text-slate-300 line-clamp-3">{dashboard.summary}</p>
+                  <div className="mt-auto flex flex-wrap gap-2">
+                    {dashboard.tags?.map((tag) => (
+                      <span key={tag} className="rounded-full border border-cyan-500/50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-cyan-100">
                         {tag}
                       </span>
                     ))}
