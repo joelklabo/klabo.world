@@ -58,6 +58,7 @@ All commands assume repo root.
   - As soon as the tmux window launches, detach (`Ctrl-b d` unless remapped) so you can continue working; the session keeps polling `gh run` and prints status summaries every minute until both workflows finish.
   - Reattach later with `tmux attach -t gh-commit-watch-<timestamp>` or simply run `gh-commit-watch --help` for session naming options.
   - Never skip this flow—every commit should go through `gh-commit-watch` so we catch CI failures immediately.
+  - **Before starting ANY new task**, reattach (or run `gh run list --limit 5`) to confirm the previous CI passes. If it failed, fix it *before* doing more work.
 
 ## Azure / GitHub CLI Quick Reference
 
