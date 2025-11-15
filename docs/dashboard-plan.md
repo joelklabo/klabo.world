@@ -18,15 +18,16 @@ Each task below must be completed in order. For every task, commit the changes, 
    - Implemented `dashboardPersistence.ts` mirroring the posts helper so admin CRUD can write MDX files locally or via GitHub.
    - ✔️ Committed/pushed after CI passed.
 
-4. **Admin routes scaffolding**
-   - Add `/admin/dashboards` index, `/admin/dashboards/new`, `/admin/dashboards/[slug]`.
-   - Implement server actions for create/update/delete (using persistence helper).
-   - Commit/push/verify.
+4. **Admin routes scaffolding** ✅ (2025-11-15)
+   - Added `/admin/dashboards`, `/admin/dashboards/new`, and `/admin/dashboards/[slug]` with the shared `DashboardForm`.
+   - Implemented server actions (create/update/delete) calling `dashboardPersistence` and wrapped them with telemetry + `requireAdminSession`.
+   - Updated the admin layout navigation and added basic field validation (title + summary required, tags parsing, numeric refresh intervals).
+   - ✔️ Committed/pushed after lint + CI.
 
-5. **Log Analytics query helper**
-   - Add server-side utility to call Log Analytics REST API (users per day, logs).
-   - Store workspace ID/shared key in env (document requirements).
-   - Commit/push/verify.
+5. **Log Analytics query helper** ✅ (2025-11-15)
+   - Added `LOG_ANALYTICS_WORKSPACE_ID`/`LOG_ANALYTICS_SHARED_KEY` env vars (documented in `.env.example`).
+   - Implemented `app/src/lib/logAnalytics.ts` which signs requests with the shared key and exposes `runLogAnalyticsQuery`.
+   - ✔️ Committed/pushed after lint + CI.
 
 6. **Users-per-day chart**
    - Add KQL query (requests → unique users per day).

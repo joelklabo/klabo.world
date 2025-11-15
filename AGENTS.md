@@ -91,6 +91,8 @@ ADMIN_EMAIL=admin@example.com
 ADMIN_PASSWORD=change-me
 NEXTAUTH_SECRET=dev-secret
 APPLICATIONINSIGHTS_CONNECTION_STRING=
+LOG_ANALYTICS_WORKSPACE_ID=
+LOG_ANALYTICS_SHARED_KEY=
 AUTO_OPEN_BROWSER=false
 ```
 
@@ -98,6 +100,7 @@ AUTO_OPEN_BROWSER=false
 
 - `AUTO_OPEN_BROWSER` toggles whether `just dev` / `scripts/tmux-dev.sh` automatically run `open http://localhost:3000` and `/admin`; leave it `false` for headless CI or when SSH’d into remote hosts.
 - `APPLICATIONINSIGHTS_CONNECTION_STRING` enables OpenTelemetry → Azure Monitor. See `docs/runbooks/observability.md` for setup and verification commands.
+- `LOG_ANALYTICS_WORKSPACE_ID` / `LOG_ANALYTICS_SHARED_KEY` are required for the Log Analytics helper (`app/src/lib/logAnalytics.ts`). They’re safe to leave blank locally if you don’t need KQL queries.
 
 ## Dev Containers & Remote Environments
 - Open the repo in VS Code and choose **“Reopen in Container”** to get Node 24.11.1 + Docker-in-Docker automatically.

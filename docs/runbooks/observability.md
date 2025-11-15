@@ -64,3 +64,8 @@ This guide explains how klabo.world emits telemetry via OpenTelemetry + Azure Mo
 - **Excess noise**: disable telemetry locally by removing/blanking the connection string; the instrumentation file bails out early.
 
 Keep this runbook updated as we add logging/metrics/dashboards (e.g., when we wire in structured logging or Application Insights dashboards).
+
+## Log Analytics Queries
+- Set `LOG_ANALYTICS_WORKSPACE_ID` and `LOG_ANALYTICS_SHARED_KEY` (primary key) to unlock the helper at `app/src/lib/logAnalytics.ts`.
+- `runLogAnalyticsQuery(query, { timespan })` signs the request with the shared key and POSTs to `https://api.loganalytics.io/v1/workspaces/<workspace>/query`. Use it from server actions when you need KQL results (users/day, error lists, etc.).
+- Keep the shared key in App Service settings or Key Vault—never commit it. Local dev can omit it until you need live data.
