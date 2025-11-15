@@ -41,6 +41,17 @@ All commands assume repo root.
 | `just agent-shell` | Spawns a tmux layout with dev server, vitest watcher, and Docker logs for human/AI pair work. |
 | `pnpm --filter @klaboworld/scripts run export-legacy` | Copies legacy `Resources/{Posts,Apps,Contexts}` into `content/` for Contentlayer. |
 
+## Azure / GitHub CLI Quick Reference
+
+- `az account show` – verify Azure subscription context before touching resources.
+- `az webapp list --query "[].{name:name, resourceGroup:resourceGroup}"` – enumerate deployed App Services.
+- `az webapp log tail --name <app> --resource-group <rg>` – stream container stdout/stderr for debugging boot issues.
+- `az webapp config appsettings list --name <app> --resource-group <rg>` – inspect current environment variables (PORT, DB URLs, etc.).
+- `az webapp config appsettings set --name <app> --resource-group <rg> --settings KEY=value` – update App Service env vars (e.g., to define `PORT`).
+- `gh run list --limit N` – view recent GitHub Actions runs.
+- `gh run watch <run-id>` – tail a CI/CD run in real time.
+- `gh run rerun <run-id>` – re-trigger a failed workflow with the same inputs/secrets.
+
 Use `pnpm` commands only via the workspace root; individual package scripts should not be run with npm/yarn.
 
 ## Environment Variables
