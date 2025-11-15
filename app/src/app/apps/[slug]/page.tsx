@@ -9,8 +9,9 @@ export function generateStaticParams(): Params[] {
   return getApps().map((app) => ({ slug: app.slug }));
 }
 
-export function generateMetadata({ params }: { params: Params }): Metadata {
-  const app = getAppBySlug(params.slug);
+export async function generateMetadata({ params }: { params: Params | Promise<Params> }): Promise<Metadata> {
+  const resolvedParams = await Promise.resolve(params);
+  const app = getAppBySlug(resolvedParams.slug);
   if (!app) {
     return { title: 'App not found • klabo.world' };
   }
@@ -20,8 +21,9 @@ export function generateMetadata({ params }: { params: Params }): Metadata {
   };
 }
 
-export default function AppDetailPage({ params }: { params: Params }) {
-  const app = getAppBySlug(params.slug);
+export default async function AppDetailPage({ params }: { params: Params | Promise<Params> }) {
+  const resolvedParams = await Promise.resolve(params);
+  const app = getAppBySlug(resolvedParams.slug);
   if (!app) {
     notFound();
   }

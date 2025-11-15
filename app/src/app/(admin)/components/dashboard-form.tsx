@@ -47,12 +47,21 @@ export function DashboardForm({ action, submitLabel, dashboard, includeSlugField
           required
           defaultValue={dashboard?.title ?? ''}
           className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          data-testid="dashboard-title"
         />
       </div>
 
       <div>
         <Label htmlFor="summary">Summary</Label>
-        <TextArea id="summary" name="summary" rows={3} required defaultValue={dashboard?.summary ?? ''} placeholder="Explain what this panel tracks." />
+        <TextArea
+          id="summary"
+          name="summary"
+          rows={3}
+          required
+          defaultValue={dashboard?.summary ?? ''}
+          placeholder="Explain what this panel tracks."
+          data-testid="dashboard-summary-input"
+        />
         <p className="mt-1 text-xs text-gray-500">Shown in the dashboards table and metadata sidebar.</p>
       </div>
 
@@ -61,15 +70,16 @@ export function DashboardForm({ action, submitLabel, dashboard, includeSlugField
           <Label htmlFor="panelType">Panel type</Label>
           <select
             id="panelType"
-            name="panelType"
-            required
-            defaultValue={dashboard?.panelType ?? 'chart'}
-            className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          >
-            {panelTypeOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
+          name="panelType"
+          required
+          defaultValue={dashboard?.panelType ?? 'chart'}
+          className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          data-testid="dashboard-panel-type"
+        >
+          {panelTypeOptions.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
             ))}
           </select>
           <p className="mt-1 text-xs text-gray-500">
@@ -80,26 +90,28 @@ export function DashboardForm({ action, submitLabel, dashboard, includeSlugField
           <Label htmlFor="chartType">Chart type (optional)</Label>
           <input
             type="text"
-            id="chartType"
-            name="chartType"
-            placeholder="line, bar, area..."
-            defaultValue={dashboard?.chartType ?? ''}
-            className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
-        <div>
-          <Label htmlFor="refreshIntervalSeconds">Refresh interval (seconds)</Label>
+          id="chartType"
+          name="chartType"
+          placeholder="line, bar, area..."
+          defaultValue={dashboard?.chartType ?? ''}
+          className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          data-testid="dashboard-chart-type"
+        />
+      </div>
+      <div>
+        <Label htmlFor="refreshIntervalSeconds">Refresh interval (seconds)</Label>
           <input
             type="number"
             min={0}
             step={15}
-            id="refreshIntervalSeconds"
-            name="refreshIntervalSeconds"
-            placeholder="300"
-            defaultValue={dashboard?.refreshIntervalSeconds ?? ''}
-            className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
+          id="refreshIntervalSeconds"
+          name="refreshIntervalSeconds"
+          placeholder="300"
+          defaultValue={dashboard?.refreshIntervalSeconds ?? ''}
+          className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          data-testid="dashboard-refresh-interval"
+        />
+      </div>
       </div>
 
       <div>
@@ -111,6 +123,7 @@ export function DashboardForm({ action, submitLabel, dashboard, includeSlugField
           placeholder="telemetry,errors"
           defaultValue={dashboard?.tags?.join(', ') ?? ''}
           className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          data-testid="dashboard-tags"
         />
         <p className="mt-1 text-xs text-gray-500">Used for quick filtering. Example: telemetry,prod,errors.</p>
       </div>
@@ -120,24 +133,26 @@ export function DashboardForm({ action, submitLabel, dashboard, includeSlugField
           <Label htmlFor="iframeUrl">Iframe URL (for embeds)</Label>
           <input
             type="url"
-            id="iframeUrl"
-            name="iframeUrl"
-            placeholder="https://portal.azure.com/..."
-            defaultValue={dashboard?.iframeUrl ?? ''}
-            className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
+          id="iframeUrl"
+          name="iframeUrl"
+          placeholder="https://portal.azure.com/..."
+          defaultValue={dashboard?.iframeUrl ?? ''}
+          className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          data-testid="dashboard-iframe-url"
+        />
           <p className="mt-1 text-xs text-gray-500">Provide secure https:// URLs only. Required when “Embed” panel type is selected.</p>
         </div>
         <div>
           <Label htmlFor="externalUrl">External link</Label>
           <input
             type="url"
-            id="externalUrl"
-            name="externalUrl"
-            placeholder="https://appsmith.com/apps/..."
-            defaultValue={dashboard?.externalUrl ?? ''}
-            className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
+          id="externalUrl"
+          name="externalUrl"
+          placeholder="https://appsmith.com/apps/..."
+          defaultValue={dashboard?.externalUrl ?? ''}
+          className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          data-testid="dashboard-external-url"
+        />
           <p className="mt-1 text-xs text-gray-500">Used for “Link” panels to launch full dashboards in a new tab.</p>
         </div>
       </div>
@@ -150,6 +165,7 @@ export function DashboardForm({ action, submitLabel, dashboard, includeSlugField
           rows={6}
           placeholder="requests | summarize ..."
           defaultValue={dashboard?.kqlQuery ?? ''}
+          data-testid="dashboard-kql"
         />
         <p className="mt-1 text-xs text-gray-500">Required for chart + log panels. We run this via Log Analytics with the configured workspace.</p>
       </div>
@@ -162,12 +178,18 @@ export function DashboardForm({ action, submitLabel, dashboard, includeSlugField
           placeholder="Explain how to use this panel, escalation runbooks, and handy commands."
           helperText="Supports Markdown + GFM. Use the preview to render Leaf-friendly HTML."
           rows={14}
+          textareaTestId="dashboard-notes"
+          previewButtonTestId="dashboard-notes-preview"
         />
         <MarkdownUploadHelper />
       </div>
 
       <div>
-        <button type="submit" className="rounded-full bg-indigo-600 px-6 py-2 text-sm font-semibold text-white hover:bg-indigo-500">
+        <button
+          type="submit"
+          className="rounded-full bg-indigo-600 px-6 py-2 text-sm font-semibold text-white hover:bg-indigo-500"
+          data-testid="dashboard-submit"
+        >
           {submitLabel}
         </button>
       </div>

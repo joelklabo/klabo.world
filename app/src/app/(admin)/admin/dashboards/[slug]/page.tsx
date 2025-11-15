@@ -21,11 +21,12 @@ function getHostname(url?: string | null) {
 }
 
 type PageProps = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
 export default async function DashboardDetailPage({ params }: PageProps) {
-  const dashboard = getDashboardBySlug(params.slug);
+  const { slug } = await params;
+  const dashboard = getDashboardBySlug(slug);
   if (!dashboard) {
     notFound();
   }
@@ -44,8 +45,12 @@ export default async function DashboardDetailPage({ params }: PageProps) {
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm uppercase tracking-widest text-indigo-500">Dashboard</p>
-          <h1 className="text-3xl font-bold">{dashboard.title}</h1>
-          <p className="text-sm text-gray-500">{dashboard.summary}</p>
+          <h1 className="text-3xl font-bold" data-testid="dashboard-title">
+            {dashboard.title}
+          </h1>
+          <p className="text-sm text-gray-500" data-testid="dashboard-summary-text">
+            {dashboard.summary}
+          </p>
         </div>
         <Link href="/admin/dashboards" className="text-sm font-semibold text-gray-500 hover:text-gray-700">
           ← Back to dashboards

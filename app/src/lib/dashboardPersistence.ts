@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import path from 'node:path';
 import slugify from 'slugify';
 import { env } from './env';
@@ -24,7 +25,7 @@ const POSSIBLE_CONTENT_DIRS = [
   path.resolve(process.cwd(), '../content'),
 ];
 
-const CONTENT_DIR = POSSIBLE_CONTENT_DIRS.find((dir) => dir) ?? POSSIBLE_CONTENT_DIRS[0];
+const CONTENT_DIR = POSSIBLE_CONTENT_DIRS.find((dir) => existsSync(dir)) ?? POSSIBLE_CONTENT_DIRS[0];
 const DASHBOARDS_DIR = path.join(CONTENT_DIR, 'dashboards');
 const GITHUB_DASHBOARD_DIR = 'content/dashboards';
 

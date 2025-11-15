@@ -49,8 +49,21 @@ export async function upsertContextAction(formData: FormData) {
   redirect('/admin/contexts');
 }
 
-export async function deleteContextAction(slug: string) {
+type DeleteContextInput = string | FormData;
+
+function resolveSlugFromArgument(arg: DeleteContextInput) {
+  if (typeof arg === 'string') {
+    return arg.trim();
+  }
+  return arg.get('slug')?.toString().trim();
+}
+
+export async function deleteContextAction(arg: DeleteContextInput) {
   await requireAdminSession();
+  const slug = resolveSlugFromArgument(arg);
+  if (!slug) {
+    throw new Error('Missing context slug');
+  }
   await withSpan('admin.context.delete', async (span) => {
     span.setAttributes({ 'context.slug': slug });
     await deleteContext(slug);

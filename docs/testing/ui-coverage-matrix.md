@@ -13,7 +13,7 @@
 | Admin posts CRUD | compose/edit/delete, markdown preview, GitHub writes | ⚠️ create/delete only | Manual: check preview + publish date guard | GitHub token (prod) or local FS |
 | Admin apps CRUD | create/update apps, icon uploads | ❌ | Manual: verify screenshot ordering, store links | Uploads dir + JSON fixtures |
 | Admin contexts CRUD | create/update contexts, tags, publish toggle | ❌ | Manual: context tags reorder, raw API preview | Uploads dir + MDX fixture |
-| Admin dashboards | create/update chart/log/embed/link panels | ⚠️ create only | Manual: test KQL errors, log filtering | Log Analytics creds |
+| Admin dashboards | create/update chart/log/embed/link panels | ✅ (`admin-dashboards.e2e.ts`) | Manual: test KQL errors, log filtering | Log Analytics creds |
 | Upload image helper | `/admin/upload-image` local + Azure | ⚠️ local coverage only | Manual: upload to staging blob, confirm CDN URL | Uploads dir / Azure Storage |
 | Markdown preview | `/admin/markdown-preview` for posts/contexts | ✅ unit (Vitest) only | Manual: compare preview vs. published | Down/markdown fixtures |
 | Public APIs | `/rss.xml`, `/feed.json`, `/api/contexts*`, `/api/search` | ⚠️ only unit tests | Manual: curl APIs in staging | Content data |

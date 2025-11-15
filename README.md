@@ -196,3 +196,7 @@ Keep adding files here when stage gates require proof.
 - **Contentlayer CLI Node 24 bug**: CLI prints `ERR_INVALID_ARG_TYPE` after successful builds. This is a known upstream issue; see modernization plan for mitigation steps.
 
 For deeper architectural details (stage gates, phasing, ops checklists), read `docs/modernization-plan.md` and `AGENTS.md`.
+## Documentation
+- All non-code documentation now lives under `docs/` in subdirectories that reflect their purpose (e.g., `docs/azure`, `docs/deployment`, `docs/plans`, `docs/testing`).
+- Each file follows a `<category>/<kebab-case>.md` naming convention so the directory tree stays predictable.
+- The latest inventory is maintained in `docs/document-inventory.md`; update it whenever a document is added, moved, or retired.

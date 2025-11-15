@@ -193,3 +193,17 @@ These services are optional now that Prisma defaults to SQLite and the rate limi
 5. Modernization plan updated when structural changes occur ✅
 
 Keep this document current. Any contributor—human or AI—should be able to onboard by following the steps above without additional guidance.
+## Documentation
+- Every Markdown file now lives under `docs/` and follows the `<category>/<kebab-case>.md` pattern noted in `docs/document-inventory.md`. When a new doc is added or an existing doc moves, update that inventory file so people can see the complete list without digging directories.
+- Outdated legacy instructions such as `CLAUDE.md` and the root copies of the Azure/deployment/security guides have been removed in favor of the consolidated versions in `docs/azure`, `docs/deployment`, and `docs/security`.
+- Refer to `docs/document-inventory.md` for a categorized table of every preserved doc; update it whenever you add, retire, or rename documentation.
+
+## Modernization Plan
+- Track overall progress via `docs/plans/modernization-roadmap.md`. Each phase references the deeper plans: `docs/plans/modernization.md`, `docs/plans/dashboard.md`, `docs/plans/feature-parity.md`, and `docs/plans/overview.md` so you can jump directly into the phase you are executing.
+- Use `docs/plans/feature-parity-progress.md` to see the detailed checklist for Phase 0–4 of the feature parity work; update it as tasks move from “pending” to “in progress” to “done.”
+- Ensure every phase concludes with verification notes under `docs/verifications/` and the phase section in `docs/plans/modernization-roadmap.md` is updated to note completion or blockers.
+
+## Outstanding work
+- Review the items listed under `docs/plans/` (modernization, dashboard, feature-parity, overview) to determine the current next task; these are still the most up-to-date roadmaps for completing the migration.
+- Validate the Playwright/Vitest coverage described in `docs/testing/*` whenever you touch UI flows.
+- Keep the runbooks under `docs/runbooks/` accurate after every major change; if a runbook becomes obsolete, mark it as such in `docs/document-inventory.md` and archive the content to `docs/experimental/`.
