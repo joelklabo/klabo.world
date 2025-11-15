@@ -79,7 +79,7 @@ Use `pnpm` commands only via the workspace root; individual package scripts shou
 Copy `.env.example` → `.env` and set:
 
 ```
-DATABASE_URL=file:./data/app.db
+DATABASE_URL=file:../data/app.db
 REDIS_URL=
 UPLOADS_DIR=public/uploads
 UPLOADS_CONTAINER_URL=http://127.0.0.1:10000/devstoreaccount1/klaboworld
@@ -99,7 +99,7 @@ AUTO_OPEN_BROWSER=false
 
 `NEXTAUTH_SECRET` must be random in real deployments; the default only works for local dev.
 
-- `DATABASE_URL` defaults to the tracked SQLite file. Set it to `file:/home/site/wwwroot/data/app.db` in Azure or point it at Postgres when you explicitly run that service via Docker.
+- `DATABASE_URL` defaults to the tracked SQLite file (`file:../data/app.db` resolves to `app/data/app.db`). Set it to `file:/home/site/wwwroot/data/app.db` in Azure or point it at Postgres when you explicitly run that service via Docker.
 - `REDIS_URL` is optional. Leave it blank to use the in-memory rate limiter; set it to `redis://localhost:6379` (from `docker-compose.dev.yml`) when you need distributed backoff.
 - `AUTO_OPEN_BROWSER` toggles whether `just dev` / `scripts/tmux-dev.sh` automatically run `open http://localhost:3000` and `/admin`; leave it `false` for headless CI or when SSH’d into remote hosts.
 - `APPLICATIONINSIGHTS_CONNECTION_STRING` enables OpenTelemetry → Azure Monitor. See `docs/runbooks/observability.md` for setup and verification commands.

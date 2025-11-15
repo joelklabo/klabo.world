@@ -65,7 +65,7 @@ Docker Desktop (or compatible) is only required when you need the optional servi
 Copy `.env.example` to `.env` and update as needed:
 
 ```
-DATABASE_URL=file:./data/app.db
+DATABASE_URL=file:../data/app.db
 # Optional: set to redis://... to enable distributed rate limiting
 REDIS_URL=
 UPLOADS_DIR=public/uploads
@@ -88,7 +88,7 @@ AUTO_OPEN_BROWSER=false
 `just dev` reads `.env` automatically because Next.js loads it when starting the dev server.
 
 - `AUTO_OPEN_BROWSER=true` re-enables automatic `open http://localhost:3000` / `/admin` when dev scripts start. Leave `false` for headless/remote environments.
-- `DATABASE_URL` defaults to a SQLite file (`./data/app.db`). For Azure, set it to `file:/home/site/wwwroot/data/app.db` so the DB lives on the persistent volume.
+- `DATABASE_URL` defaults to a SQLite file (`../data/app.db` relative to `app/prisma`). For Azure, set it to `file:/home/site/wwwroot/data/app.db` so the DB lives on the persistent volume.
 - `NEXTAUTH_URL` should match the domain hosting the app (e.g., `https://klabo.world`) so NextAuth doesn’t redirect users to `http://localhost:3000` in production.
 - `LOG_ANALYTICS_WORKSPACE_ID` + `LOG_ANALYTICS_SHARED_KEY` unlock admin dashboard charts/logs. Without them, panels gracefully show “No KQL configured.”
 
@@ -96,7 +96,7 @@ Run `./scripts/install-dev-tools.sh` once after cloning to install tmux (and oth
 
 ## Prisma & Database
 
-1. The default connection string (`file:./data/app.db`) keeps a SQLite file inside `app/data/`. Prisma will create both the directory and database automatically the first time you run `pnpm --filter app exec prisma db push`.
+1. The default connection string (`file:../data/app.db`) keeps a SQLite file inside `app/data/`. Prisma will create both the directory and database automatically the first time you run `pnpm --filter app exec prisma db push`.
 2. Edit `app/prisma/schema.prisma` to change models. Apply changes with `pnpm --filter app exec prisma db push` (CI runs the same command before lint/tests/build).
 3. Resetting the database is as simple as deleting `app/data/app.db` or running `just db-reset` (which also works if you point `DATABASE_URL` at Postgres).
 4. If you override `DATABASE_URL` to a Postgres instance, start the compose services via `docker compose -f docker-compose.dev.yml up -d db redis azurite` and update the env var accordingly.
