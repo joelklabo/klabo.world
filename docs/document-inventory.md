@@ -31,7 +31,9 @@ This file is the single source of truth for every Markdown document that should 
 ### docs/plans
 - `dashboard.md` – The observability dashboard roadmap.
 - `feature-parity.md` – Plans for matching the legacy Swift feature set.
+- `feature-parity-progress.md` – Checklists that map the remaining Phase 0–4 feature parity tasks to current work, including the new Markdown/post view baseline.
 - `modernization.md` – High-level modernization plan that maps the migration phases.
+- `modernization-roadmap.md` – Phase-by-phase roadmap updates that capture current progress and blockers for the modernization effort.
 - `overview.md` – Current iteration of the implementation plan keeping work scoped.
 
 ### docs/runbooks

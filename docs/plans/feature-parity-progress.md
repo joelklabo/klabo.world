@@ -9,12 +9,13 @@ This tracking doc augments `docs/plans/feature-parity.md` by breaking the remain
 | Lock Node/PNPM + env reproducibility | Already addressed via `just bootstrap` and the inventory doc. | ✅ |
 | Content migration scaffolding | `packages/scripts/src/export-legacy.ts` now parses front matter and enforces required keys before exporting files, providing greater confidence that the migrated MDX files match the legacy metadata. Export command verified in `docs/verifications/legacy-export.md`. | ✅ |
 
-## Phase 1 – Front-of-site parity
+## Phase 1 – Front-of-site parity
 | Task | Notes | Status |
 | --- | --- | --- |
 | Contentlayer schema expansion | `app/contentlayer.config.ts` defines all legacy fields plus dashboards and verification ensured via `pnpm --filter @klaboworld/scripts run verify-contentlayer` documented in `docs/verifications/contentlayer-schema.md`. | ✅ |
 | Pages & routing | Public routes now have a Playwright smoke suite (`tests/e2e/pages-parity.e2e.ts`) that loads `/`, `/posts`, two post slugs, `/apps`, `/apps/vicechips`, `/contexts`, `/contexts/ios-development-best-practices`, and `/search?q=Claude`; see `docs/verifications/phase1-pages.md`. | ✅ |
 | Styling + layout | Tailwind tokens and utilities (`tailwind.config.js`, `tailwind.input.css`, `globals.css`) now replicate the legacy fonts/colors/tag pills/skeleton/highlight styles; verification recorded in `docs/verifications/phase1-styling.md`. | ✅ |
+| Post detail polish | `/posts/[slug]` now uses an elevated hero + sidebar plus the `@/components/mdx-components` helpers to render rich typography, code blocks (with copy buttons), and clickable imagery; validated via `content/posts/markdown-playground.mdx` and the live post view. | ✅ |
 | Testing | Vitest and Playwright suites now run together (`pnpm vitest run` + `pnpm --filter app exec playwright test ...`); verification recorded in `docs/verifications/phase1-testing.md`. | ✅ |
 
 ## Phase 2 – Admin & Auth parity
