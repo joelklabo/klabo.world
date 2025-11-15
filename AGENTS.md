@@ -50,7 +50,14 @@ All commands assume repo root.
 ### Dev Workflow & Browser Mirroring
 - `scripts/tmux-dev.sh [--detach]` (also invoked by `just agent-shell`) now provisions Docker services, launches a tmux session with four panes: top-left `pnpm --filter app dev`, top-right `docker compose -f docker-compose.dev.yml logs -f db redis azurite`, bottom-left `pnpm vitest --watch`, bottom-right interactive shell. Keep this running during development to continuously stream server + infra logs alongside your TDD loop.
 - Browser mirroring lives in `scripts/maybe-open-dev-browser.sh`. The script reads `.env` (if present) and checks `AUTO_OPEN_BROWSER` (default `false`). When set to `true`, it launches both `DEV_SERVER_URL` (default `http://localhost:3000`) and `ADMIN_SERVER_URL` (default `http://localhost:3000/admin`) via `open`/`xdg-open` so the user’s browser reflects the current dev server session. `just dev` and `scripts/tmux-dev.sh` call this helper automatically—set `AUTO_OPEN_BROWSER=true` whenever the user asks to follow along in real time.
-- Use `./scripts/commit-push-watch.sh "commit message"` to stage/commit/push everything and automatically launch a tmux session (`ci-watch-<sha>`) that runs `watch-workflows.sh` for both pipelines, printing a status update every minute until they finish. Attach with `tmux attach -t ci-watch-XXXX`.
+- **Commit workflow:** Always use the globally installed `gh-commit-watch` helper so CI is tracked automatically even when you detach and keep working.
+  ```bash
+  gh-commit-watch -m "feat: new dashboard schema" -w "ci|Build, Test, and Deploy to Azure"
+  ```
+  - It stages all changes, commits with your message, pushes `HEAD`, and ensures the process runs inside a tmux session (auto-creates one if needed).
+  - As soon as the tmux window launches, detach (`Ctrl-b d` unless remapped) so you can continue working; the session keeps polling `gh run` and prints status summaries every minute until both workflows finish.
+  - Reattach later with `tmux attach -t gh-commit-watch-<timestamp>` or simply run `gh-commit-watch --help` for session naming options.
+  - Never skip this flow—every commit should go through `gh-commit-watch` so we catch CI failures immediately.
 
 ## Azure / GitHub CLI Quick Reference
 
