@@ -12,6 +12,7 @@ bootstrap:
 alias dev := run-dev
 run-dev:
 	docker compose -f docker-compose.dev.yml up -d db redis azurite
+	./scripts/maybe-open-dev-browser.sh &
 	PNPM_HOME=${PNPM_HOME:-$HOME/.local/share/pnpm} pnpm --filter app dev
 
 # Test suites
@@ -36,7 +37,7 @@ doctor:
 
 # Load testing shortcut
 load-test:
-	pnpm k6 run scripts/load-smoke.js
+	k6 run scripts/load-smoke.js
 
 # AI agent friendly tmux session stub
 agent-shell:

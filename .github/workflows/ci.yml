@@ -10,6 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    env:
+      ADMIN_EMAIL: admin@example.com
+      ADMIN_PASSWORD: change-me
+      NEXTAUTH_SECRET: test-secret
+      DATABASE_URL: postgresql://klaboworld:klaboworld@localhost:5432/klaboworld
+      REDIS_URL: redis://localhost:6379
+      UPLOADS_DIR: ./tmp/uploads
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v3
@@ -22,6 +29,14 @@ jobs:
       - run: corepack enable
       - name: Install dependencies
         run: pnpm install --ignore-scripts
+      - name: Prepare uploads dir
+        run: mkdir -p tmp/uploads
+      - name: Start dev services
+        run: |
+          docker compose -f docker-compose.dev.yml up -d db redis azurite
+          pnpm exec wait-on tcp:localhost:5432 tcp:localhost:6379
+      - name: Apply Prisma schema
+        run: pnpm --filter app exec prisma db push
       - name: Generate Contentlayer artifacts
         run: NODE_ENV=production pnpm --filter app exec contentlayer build
       - name: Generate Prisma client
@@ -32,3 +47,21 @@ jobs:
         run: pnpm vitest run
       - name: Build Next.js app
         run: pnpm --filter app build
+      - name: Install Playwright browsers
+        run: pnpm --filter app exec playwright install --with-deps
+      - name: Playwright smoke tests
+        run: |
+          pnpm --filter app start --hostname 127.0.0.1 --port 3000 > /tmp/next.log 2>&1 &
+          NEXT_PID=$!
+          trap "kill $NEXT_PID" EXIT
+          npx wait-on http://127.0.0.1:3000
+          PLAYWRIGHT_BASE_URL="http://127.0.0.1:3000" pnpm --filter app exec playwright test --reporter=dot
+      - name: Upload Playwright artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-artifacts
+          path: |
+            app/test-results
+            /tmp/next.log
+          if-no-files-found: ignore

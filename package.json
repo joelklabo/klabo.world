@@ -19,15 +19,18 @@
     "@azure/monitor-opentelemetry-exporter": "1.0.0-beta.32",
     "@opentelemetry/auto-instrumentations-node": "0.54.0",
     "@opentelemetry/sdk-node": "0.208.0",
+    "@playwright/test": "^1.56.1",
     "@types/node": "20.19.25",
     "contentlayer": "0.3.4",
     "import-in-the-middle": "^2.0.0",
+    "playwright": "^1.56.1",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "require-in-the-middle": "^8.0.1",
     "turbo": "2.6.1",
     "typescript": "5.9.3",
-    "vitest": "4.0.9"
+    "vitest": "4.0.9",
+    "wait-on": "^7.0.1"
   },
   "repository": {
     "type": "git",

@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import path from 'node:path';
 import slugify from 'slugify';
 import { env } from './env';
@@ -13,7 +14,13 @@ export type PostInput = {
   publishDate?: string | null;
 };
 
-const POSTS_DIR = path.join(process.cwd(), 'content/posts');
+const POSSIBLE_CONTENT_DIRS = [
+  path.resolve(process.cwd(), 'content'),
+  path.resolve(process.cwd(), '../content'),
+];
+
+const CONTENT_DIR = POSSIBLE_CONTENT_DIRS.find((dir) => existsSync(dir)) ?? POSSIBLE_CONTENT_DIRS[0];
+const POSTS_DIR = path.join(CONTENT_DIR, 'posts');
 const GITHUB_POSTS_DIR = 'content/posts';
 
 function shouldUseGitHub(): boolean {
@@ -131,4 +138,8 @@ export async function deletePost(slug: string) {
   } else {
     await fs.unlink(path.join(POSTS_DIR, `${slug}.mdx`));
   }
+}
+
+export function getPostsDirectory() {
+  return POSTS_DIR;
 }

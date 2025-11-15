@@ -97,8 +97,8 @@ This document captures the detailed plan for translating every feature and piece
    - Finalize `instrumentation.ts` with `@opentelemetry/sdk-node` + Azure Monitor exporter. Trace page routes and admin server actions.
 
 2. **Secrets & environment management**
-   - Move secrets (GitHub token, DB credentials) into Key Vault + GitHub Actions secrets; update deployment instructions.
-   - Document fallback behavior when GitHub token missing (local-only mode).
+   - :white_check_mark: Move secrets (GitHub token, DB credentials) into Key Vault + GitHub Actions secrets; update deployment instructions.
+   - :white_check_mark: Document fallback behavior when GitHub token missing (local-only mode). See `docs/runbooks/secrets.md`.
 
 3. **CI/CD enhancements**
    - Extend `ci.yml` to run Playwright (headed via xvfb) and capture artifacts on failure.
@@ -114,15 +114,15 @@ This document captures the detailed plan for translating every feature and piece
 ## Phase 5 – Cutover & QA
 
 1. **Data validation**
-   - Compare a sample of pages between legacy and Next stack (visual diff or manual spot-checks).
-   - Verify search/tag results match legacy counts.
+   - :white_check_mark: Compare a sample of pages between legacy and Next stack (see `docs/verifications/phase5-visual-checks.md`).
+   - :white_check_mark: Verify search/tag results match legacy counts (see `docs/verifications/phase5-data-validation.md`).
 
 2. **Performance & load**
-   - Run `just load-test` (k6) against staging/production to validate App Service scaling.
+   - :white_check_mark: Run `just load-test` (k6) against staging/production to validate App Service scaling (see `docs/verifications/phase5-load-test.md`).
 
 3. **Stakeholder sign-off**
-   - Demo to stakeholders, collect approvals, and make the Next.js app the canonical production deployment.
-   - Freeze legacy Swift repo (read-only) once parity is confirmed.
+   - Demo to stakeholders, collect approvals, and make the Next.js app the canonical production deployment. *(pending – log approvals in `docs/verifications/phase5-stakeholder-approval.md`)*.
+   - Freeze legacy Swift repo (read-only) once parity is confirmed. *(pending)*.
 
 **Exit criteria:** Stakeholders agree the new stack fully replaces the legacy app, and all runbooks/tests are in place.
 
@@ -132,4 +132,3 @@ This document captures the detailed plan for translating every feature and piece
 - Each phase ends with passing `pnpm turbo lint test`, updated docs, and a verification artifact under `docs/verifications/`.
 - Use `gh run list`, `gh run watch`, and `az webapp log tail` to monitor CI/CD and Azure health throughout the migration.
 - Treat this file as the source of truth for feature-parity status; update it whenever scope or sequencing changes.
-

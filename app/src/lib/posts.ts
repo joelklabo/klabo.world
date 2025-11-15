@@ -1,4 +1,8 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import matter from 'gray-matter';
 import { allPosts, type Post } from 'contentlayer/generated';
+import { getPostsDirectory } from './postPersistence';
 
 function getPublishDate(post: Post): Date {
   return new Date(post.publishDate ?? post.date);
@@ -31,4 +35,109 @@ export function getPostTagCounts(): Record<string, number> {
     });
     return acc;
   }, {});
+}
+
+export type AdminPostSummary = {
+  slug: string;
+  title: string;
+  summary: string;
+  tags?: string[];
+  date: string;
+  publishDate?: string | null;
+};
+
+function getAdminPublishDate(post: AdminPostSummary): Date {
+  return new Date(post.publishDate ?? post.date);
+}
+
+export type EditablePost = AdminPostSummary & {
+  featuredImage?: string | null;
+  body: string;
+};
+
+async function readDiskPosts(exclude: Set<string>): Promise<AdminPostSummary[]> {
+  const postsDir = getPostsDirectory();
+  try {
+    const files = await fs.readdir(postsDir);
+    const entries: AdminPostSummary[] = [];
+    for (const file of files) {
+      if (!file.endsWith('.mdx')) continue;
+      const slug = path.basename(file, '.mdx');
+      if (exclude.has(slug)) continue;
+      const raw = await fs.readFile(path.join(postsDir, file), 'utf8');
+      const parsed = matter(raw);
+      const data = parsed.data as Record<string, unknown>;
+      const title = typeof data.title === 'string' ? data.title : slug;
+      const summary = typeof data.summary === 'string' ? data.summary : '';
+      const tags = Array.isArray(data.tags) ? data.tags.map((tag) => String(tag)) : undefined;
+      const date = typeof data.date === 'string' ? data.date : new Date().toISOString().slice(0, 10);
+      const publishDate = typeof data.publishDate === 'string' ? data.publishDate : null;
+      entries.push({ slug, title, summary, tags, date, publishDate });
+    }
+    return entries;
+  } catch (error) {
+    if ((error as { code?: string }).code === 'ENOENT') {
+      return [];
+    }
+    throw error;
+  }
+}
+
+export async function getPostsForAdmin(): Promise<AdminPostSummary[]> {
+  const basePosts = getPosts({ includeUnpublished: true }).map<AdminPostSummary>((post) => ({
+    slug: post.slug,
+    title: post.title,
+    summary: post.summary,
+    tags: post.tags,
+    date: post.date,
+    publishDate: post.publishDate ?? null,
+  }));
+  const existing = new Set(basePosts.map((post) => post.slug));
+  const diskPosts = await readDiskPosts(existing);
+  return [...basePosts, ...diskPosts].sort(
+    (a, b) => getAdminPublishDate(b).getTime() - getAdminPublishDate(a).getTime(),
+  );
+}
+
+export async function getEditablePostBySlug(slug: string): Promise<EditablePost | undefined> {
+  const contentlayerPost = getPostBySlug(slug);
+  if (contentlayerPost) {
+    return {
+      slug: contentlayerPost.slug,
+      title: contentlayerPost.title,
+      summary: contentlayerPost.summary,
+      tags: contentlayerPost.tags,
+      date: contentlayerPost.date,
+      publishDate: contentlayerPost.publishDate ?? null,
+      featuredImage: contentlayerPost.featuredImage ?? null,
+      body: contentlayerPost.body.raw,
+    };
+  }
+  const filePath = path.join(getPostsDirectory(), `${slug}.mdx`);
+  try {
+    const raw = await fs.readFile(filePath, 'utf8');
+    const parsed = matter(raw);
+    const data = parsed.data as Record<string, unknown>;
+    const title = typeof data.title === 'string' ? data.title : slug;
+    const summary = typeof data.summary === 'string' ? data.summary : '';
+    const tags = Array.isArray(data.tags) ? data.tags.map((tag) => String(tag)) : undefined;
+    const date = typeof data.date === 'string' ? data.date : new Date().toISOString().slice(0, 10);
+    const publishDate = typeof data.publishDate === 'string' ? data.publishDate : null;
+    const featuredImage = typeof data.featuredImage === 'string' ? data.featuredImage : null;
+    return {
+      slug,
+      title,
+      summary,
+      tags,
+      date,
+      publishDate,
+      featuredImage,
+      body: parsed.content.trim(),
+    };
+  } catch (error) {
+    if ((error as { code?: string }).code === 'ENOENT') {
+      return undefined;
+    }
+    throw error;
+  }
 }

@@ -10,16 +10,18 @@ export function generateStaticParams(): Params[] {
   return getPosts({ includeUnpublished: true }).map((post) => ({ slug: post.slug }));
 }
 
-export function generateMetadata({ params }: { params: Params }): Metadata {
-  const post = getPostBySlug(params.slug);
+export async function generateMetadata({ params }: { params: Params | Promise<Params> }): Promise<Metadata> {
+  const resolvedParams = await Promise.resolve(params as Params);
+  const post = getPostBySlug(resolvedParams.slug);
   if (!post) {
     return { title: 'Post not found' };
   }
   return { title: `${post.title} • klabo.world`, description: post.summary };
 }
 
-export default function PostPage({ params }: { params: Params }) {
-  const post = getPostBySlug(params.slug);
+export default async function PostPage({ params }: { params: Params | Promise<Params> }) {
+  const resolvedParams = await Promise.resolve(params as Params);
+  const post = getPostBySlug(resolvedParams.slug);
   if (!post) {
     notFound();
   }

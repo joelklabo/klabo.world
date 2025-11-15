@@ -2,7 +2,8 @@ import Link from 'next/link';
 import type { Route } from 'next';
 import { getApps } from '@/lib/apps';
 import { getContexts } from '@/lib/contexts';
-import { getPostTagCounts, getRecentPosts } from '@/lib/posts';
+import { getRecentPosts } from '@/lib/posts';
+import { getPostTagCloud } from '@/lib/tagCloud';
 
 const heroLinks: { href: Route; label: string }[] = [
   { href: '/posts', label: 'Read Articles' },
@@ -14,9 +15,7 @@ export default function Home() {
   const recentPosts = getRecentPosts(3);
   const apps = getApps();
   const contexts = getContexts();
-  const tagCloud = Object.entries(getPostTagCounts())
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 15);
+  const tagCloud = getPostTagCloud(15);
 
   return (
     <div className="bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100">
@@ -158,7 +157,7 @@ export default function Home() {
             <p className="text-sm uppercase tracking-widest text-gray-500">Popular Topics</p>
             <h2 className="mt-2 text-2xl font-semibold">Tag Cloud</h2>
             <div className="mt-6 flex flex-wrap justify-center gap-3">
-              {tagCloud.map(([tag, count]) => (
+              {tagCloud.map(({ tag, count }) => (
                 <Link
                   key={tag}
                   href={`/posts/tag/${encodeURIComponent(tag)}`}

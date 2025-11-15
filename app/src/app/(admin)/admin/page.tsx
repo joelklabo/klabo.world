@@ -2,19 +2,24 @@ import Link from 'next/link';
 import type { Route } from 'next';
 import { auth } from '@/lib/nextAuth';
 import { LoginForm } from '../login-form';
-import { getPosts } from '@/lib/posts';
+import { getPostsForAdmin } from '@/lib/posts';
 
 export const dynamic = 'force-dynamic';
 
-export default async function AdminLanding() {
+type AdminSearchParams = {
+  error?: string;
+};
+
+export default async function AdminLanding({ searchParams }: { searchParams?: AdminSearchParams | Promise<AdminSearchParams> }) {
   const session = await auth();
-  const posts = session?.user ? getPosts({ includeUnpublished: true }) : [];
+  const resolvedSearchParams = searchParams ? await Promise.resolve(searchParams as AdminSearchParams) : undefined;
+  const posts = session?.user ? await getPostsForAdmin() : [];
 
   if (!session?.user) {
     return (
       <div className="mx-auto max-w-md px-6 py-16">
         <h1 className="mb-6 text-3xl font-semibold">Admin Login</h1>
-        <LoginForm />
+        <LoginForm initialError={resolvedSearchParams?.error} />
       </div>
     );
   }
@@ -42,7 +47,7 @@ export default async function AdminLanding() {
           </thead>
           <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
             {posts.map((post) => (
-              <tr key={post._id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+              <tr key={post.slug} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
                 <td className="px-6 py-4 font-medium text-gray-900 dark:text-gray-100">{post.title}</td>
                 <td className="px-6 py-4 text-gray-600 dark:text-gray-300">
                   {new Date(post.publishDate ?? post.date).toLocaleDateString()}
