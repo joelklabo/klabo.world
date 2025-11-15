@@ -23,6 +23,9 @@ const computedFields: ComputedFields = {
       if (doc._raw.flattenedPath.startsWith('contexts/')) {
         return `/contexts/${doc._raw.flattenedPath.replace(/^contexts\//, '')}`;
       }
+      if (doc._raw.flattenedPath.startsWith('dashboards/')) {
+        return `/admin/dashboards/${doc._raw.flattenedPath.replace(/^dashboards\//, '')}`;
+      }
       return `/${doc._raw.flattenedPath}`;
     },
   },
@@ -77,10 +80,28 @@ export const ContextDoc = defineDocumentType(() => ({
   computedFields,
 }));
 
+export const DashboardDoc = defineDocumentType(() => ({
+  name: 'DashboardDoc',
+  filePathPattern: `dashboards/**/*.mdx`,
+  contentType: 'mdx',
+  fields: {
+    title: { type: 'string', required: true },
+    summary: { type: 'string', required: true },
+    panelType: { type: 'string', required: true, default: 'chart' },
+    tags: { type: 'list', of: { type: 'string' }, required: false },
+    chartType: { type: 'string', required: false },
+    kqlQuery: { type: 'string', required: false },
+    iframeUrl: { type: 'string', required: false },
+    externalUrl: { type: 'string', required: false },
+    refreshIntervalSeconds: { type: 'number', required: false },
+  },
+  computedFields,
+}));
+
 export default makeSource({
   contentDirPath: '../content',
   contentDirExclude: ['README.md'],
-  documentTypes: [Post, AppDoc, ContextDoc],
+  documentTypes: [Post, AppDoc, ContextDoc, DashboardDoc],
   disableImportAliasWarning: true,
   mdx: {
     mdxOptions: (opts) => {

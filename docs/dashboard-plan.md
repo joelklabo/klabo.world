@@ -12,11 +12,11 @@ Each task below must be completed in order. For every task, commit the changes, 
    - No behavior change when the string is missing—telemetry still no-ops locally—but this enforces a single source of truth for env configuration and keeps TypeScript happy.
    - ✔️ Committed/pushed after verifying CI.
 
-3. **Define Dashboard Contentlayer schema**
-   - Add `content/dashboards/*.json` (initial examples).
-   - Create Contentlayer types + data loader.
-   - Implement `dashboardPersistence.ts` for GitHub/local writes.
-   - Commit/push/verify.
+3. **Define Dashboard Contentlayer schema** ✅ (2025-11-15)
+   - Added `content/dashboards/*.mdx` (front matter + Markdown notes) with an App Insights example.
+   - Contentlayer now exposes `DashboardDoc`, and helper utilities (`app/src/lib/dashboards.ts`) load/sort dashboard entries.
+   - Implemented `dashboardPersistence.ts` mirroring the posts helper so admin CRUD can write MDX files locally or via GitHub.
+   - ✔️ Committed/pushed after CI passed.
 
 4. **Admin routes scaffolding**
    - Add `/admin/dashboards` index, `/admin/dashboards/new`, `/admin/dashboards/[slug]`.

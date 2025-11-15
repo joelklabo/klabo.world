@@ -1,0 +1,16 @@
+---
+title: App Insights – Daily Users
+summary: Unique users per day pulled from Application Insights requests table.
+panelType: chart
+tags:
+  - telemetry
+  - traffic
+chartType: line
+refreshIntervalSeconds: 300
+kqlQuery: |
+  requests
+  | summarize users=dcount(user_Id) by bin(timestamp, 1d)
+  | order by timestamp asc
+---
+
+Use this panel to ensure daily active usage trends stay healthy. Once the admin UI renders charts, this entry will display a line chart of unique users per day with a 5-minute refresh interval.
