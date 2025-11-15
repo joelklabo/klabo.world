@@ -1,5 +1,7 @@
 import { type DashboardDoc } from 'contentlayer/generated';
 import { TextareaHTMLAttributes } from 'react';
+import { MarkdownField } from './markdown-field';
+import { MarkdownUploadHelper } from './upload-helper';
 
 type DashboardFormProps = {
   action: (formData: FormData) => Promise<void>;
@@ -9,10 +11,10 @@ type DashboardFormProps = {
 };
 
 const panelTypeOptions = [
-  { value: 'chart', label: 'Chart' },
-  { value: 'logs', label: 'Logs' },
-  { value: 'embed', label: 'Embed (iframe)' },
-  { value: 'link', label: 'External Link' },
+  { value: 'chart', label: 'Chart – render KQL as a line/area/bar chart' },
+  { value: 'logs', label: 'Logs – live feed of warnings/errors (KQL)' },
+  { value: 'embed', label: 'Embed – show an iframe (Grafana, Azure, etc.)' },
+  { value: 'link', label: 'External Link – CTA button to another dashboard' },
 ];
 
 function Label({ htmlFor, children }: { htmlFor: string; children: React.ReactNode }) {
@@ -50,7 +52,8 @@ export function DashboardForm({ action, submitLabel, dashboard, includeSlugField
 
       <div>
         <Label htmlFor="summary">Summary</Label>
-        <TextArea id="summary" name="summary" rows={3} required defaultValue={dashboard?.summary ?? ''} />
+        <TextArea id="summary" name="summary" rows={3} required defaultValue={dashboard?.summary ?? ''} placeholder="Explain what this panel tracks." />
+        <p className="mt-1 text-xs text-gray-500">Shown in the dashboards table and metadata sidebar.</p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
@@ -69,6 +72,9 @@ export function DashboardForm({ action, submitLabel, dashboard, includeSlugField
               </option>
             ))}
           </select>
+          <p className="mt-1 text-xs text-gray-500">
+            Charts/logs require a KQL query; embed panels expect an iframe URL; links show a CTA that opens in a new tab.
+          </p>
         </div>
         <div>
           <Label htmlFor="chartType">Chart type (optional)</Label>
@@ -106,6 +112,7 @@ export function DashboardForm({ action, submitLabel, dashboard, includeSlugField
           defaultValue={dashboard?.tags?.join(', ') ?? ''}
           className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
+        <p className="mt-1 text-xs text-gray-500">Used for quick filtering. Example: telemetry,prod,errors.</p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
@@ -117,30 +124,46 @@ export function DashboardForm({ action, submitLabel, dashboard, includeSlugField
             name="iframeUrl"
             placeholder="https://portal.azure.com/..."
             defaultValue={dashboard?.iframeUrl ?? ''}
-            className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
-        <div>
-          <Label htmlFor="externalUrl">External link</Label>
-          <input
-            type="url"
+          className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+        <p className="mt-1 text-xs text-gray-500">Provide secure https:// URLs only. Required when “Embed” panel type is selected.</p>
+      </div>
+      <div>
+        <Label htmlFor="externalUrl">External link</Label>
+        <input
+          type="url"
             id="externalUrl"
             name="externalUrl"
             placeholder="https://appsmith.com/apps/..."
-            defaultValue={dashboard?.externalUrl ?? ''}
-            className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
+          defaultValue={dashboard?.externalUrl ?? ''}
+          className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+        <p className="mt-1 text-xs text-gray-500">Used for “Link” panels to launch full dashboards in a new tab.</p>
+      </div>
       </div>
 
       <div>
         <Label htmlFor="kqlQuery">KQL query (for App Insights)</Label>
-        <TextArea id="kqlQuery" name="kqlQuery" rows={6} placeholder="requests | summarize ..." defaultValue={dashboard?.kqlQuery ?? ''} />
+        <TextArea
+          id="kqlQuery"
+          name="kqlQuery"
+          rows={6}
+          placeholder="requests | summarize ..."
+          defaultValue={dashboard?.kqlQuery ?? ''}
+        />
+        <p className="mt-1 text-xs text-gray-500">Required for chart + log panels. We run this via Log Analytics with the configured workspace.</p>
       </div>
 
-      <div>
-        <Label htmlFor="notes">Notes / runbook</Label>
-        <TextArea id="notes" name="notes" rows={6} placeholder="Explain how to use this dashboard." defaultValue={dashboard?.body?.raw ?? ''} />
+      <div className="space-y-4">
+        <MarkdownField
+          name="notes"
+          label="Notes / runbook"
+          defaultValue={dashboard?.body?.raw ?? ''}
+          placeholder="Explain how to use this panel, escalation runbooks, and handy commands."
+          helperText="Supports Markdown + GFM. Use the preview to render Leaf-friendly HTML."
+          rows={14}
+        />
+        <MarkdownUploadHelper />
       </div>
 
       <div>

@@ -21,6 +21,32 @@ function normalizePanelType(value: string | null): DashboardType {
   return (PANEL_TYPES.find((type) => type === normalized) ?? fallback) as DashboardType;
 }
 
+function enforcePanelRequirements(input: DashboardInput) {
+  if ((input.panelType === 'chart' || input.panelType === 'logs') && !input.kqlQuery) {
+    throw new Error('KQL query is required for chart/log panels.');
+  }
+  if (input.panelType === 'embed' && !input.iframeUrl) {
+    throw new Error('Iframe URL is required for embed panels.');
+  }
+  if (input.panelType === 'link' && !input.externalUrl) {
+    throw new Error('External URL is required for link panels.');
+  }
+}
+
+function sanitizeByPanelType(input: DashboardInput): DashboardInput {
+  const next: DashboardInput = { ...input };
+  if (next.panelType !== 'embed') {
+    next.iframeUrl = null;
+  }
+  if (next.panelType !== 'link') {
+    next.externalUrl = null;
+  }
+  if (next.panelType !== 'chart' && next.panelType !== 'logs') {
+    next.kqlQuery = null;
+  }
+  return next;
+}
+
 async function extractDashboardInput(formData: FormData): Promise<DashboardInput> {
   await requireAdminSession();
   const title = formData.get('title')?.toString().trim();
@@ -29,21 +55,24 @@ async function extractDashboardInput(formData: FormData): Promise<DashboardInput
   if (!title || !summary) {
     throw new Error('Title and summary are required');
   }
-  const tags =
-    formData
-      .get('tags')
-      ?.toString()
-      .split(',')
-      .map((tag) => tag.trim())
-      .filter(Boolean) ?? [];
+  const tags = Array.from(
+    new Set(
+      formData
+        .get('tags')
+        ?.toString()
+        .split(',')
+        .map((tag) => tag.trim())
+        .filter(Boolean) ?? [],
+    ),
+  );
   const chartType = formData.get('chartType')?.toString().trim() || null;
   const kqlQuery = formData.get('kqlQuery')?.toString().trim() || null;
   const iframeUrl = formData.get('iframeUrl')?.toString().trim() || null;
   const externalUrl = formData.get('externalUrl')?.toString().trim() || null;
   const refreshRaw = formData.get('refreshIntervalSeconds')?.toString().trim();
-  const refreshIntervalSeconds = refreshRaw ? Number(refreshRaw) || null : null;
-  const notes = formData.get('notes')?.toString() ?? null;
-  return {
+  const refreshIntervalSeconds = refreshRaw ? Math.max(Number(refreshRaw) || 0, 0) : null;
+  const notes = formData.get('notes')?.toString().trim() || null;
+  const input: DashboardInput = {
     title,
     summary,
     panelType,
@@ -55,6 +84,8 @@ async function extractDashboardInput(formData: FormData): Promise<DashboardInput
     refreshIntervalSeconds,
     notes,
   };
+  enforcePanelRequirements(input);
+  return sanitizeByPanelType(input);
 }
 
 export async function createDashboardAction(formData: FormData) {

@@ -41,10 +41,11 @@ Each task below must be completed in order. For every task, commit the changes, 
    - Created `DashboardLogsPanel` client component with polling + manual refresh + inline filters, surfaced inside `/admin/dashboards/[slug]`.
    - ✔️ Validated via lint/tests + CI.
 
-8. **Dashboard entry management UX**
-   - Polish forms (tags, description, notes Markdown).
-   - Add embed/link support (iframe vs. external link).
-   - Commit/push/verify.
+8. **Dashboard entry management UX** ✅ (2025-11-15)
+   - Dashboard form now includes helper text, Markdown previews/uploads for notes, and explicit guidance for tags + panel types.
+   - Server actions validate panel-type requirements (charts/logs require KQL, embeds require iframe URLs, links require external URLs) and clear irrelevant fields.
+   - Detail pages render live iframe/link previews so embed + CTA panels behave consistently with charts/logs.
+   - ✔️ Lint/tests + CI enforced via `gh-commit-watch`.
 
 9. **Documentation & runbook updates**
    - Update AGENTS.md, runbooks, and README with instructions for dashboards/App Insights.

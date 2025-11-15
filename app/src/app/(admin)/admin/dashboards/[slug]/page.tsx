@@ -9,6 +9,17 @@ import { loadDashboardChartState } from '@/lib/dashboardCharts';
 
 export const dynamic = 'force-dynamic';
 
+function getHostname(url?: string | null) {
+  if (!url) {
+    return 'dashboard';
+  }
+  try {
+    return new URL(url).hostname;
+  } catch {
+    return url.replace(/^https?:\/\//, '');
+  }
+}
+
 type PageProps = {
   params: { slug: string };
 };
@@ -20,9 +31,13 @@ export default async function DashboardDetailPage({ params }: PageProps) {
   }
   const isChartPanel = dashboard.panelType === 'chart';
   const isLogsPanel = dashboard.panelType === 'logs';
+  const isEmbedPanel = dashboard.panelType === 'embed';
+  const isLinkPanel = dashboard.panelType === 'link';
   const chartState = isChartPanel ? await loadDashboardChartState(dashboard) : null;
   const showChartPreview = Boolean(chartState && chartState.status !== 'disabled');
-  const showPanelPreview = showChartPreview || isLogsPanel;
+  const embedUrl = isEmbedPanel ? dashboard.iframeUrl : null;
+  const linkUrl = isLinkPanel ? dashboard.externalUrl : null;
+  const showPanelPreview = showChartPreview || isLogsPanel || Boolean(embedUrl) || Boolean(linkUrl);
 
   return (
     <div className="space-y-6">
@@ -73,6 +88,31 @@ export default async function DashboardDetailPage({ params }: PageProps) {
               )
             ) : isLogsPanel ? (
               <DashboardLogsPanel dashboardSlug={dashboard.slug} refreshIntervalSeconds={dashboard.refreshIntervalSeconds} />
+            ) : embedUrl ? (
+              <div className="space-y-4">
+                <iframe
+                  src={embedUrl}
+                  title={dashboard.title}
+                  className="h-[420px] w-full rounded-2xl border border-gray-100"
+                  allowFullScreen
+                />
+                <p className="text-xs text-gray-500">
+                  Embedded iframe. Update the URL or switch panel types below if you need to point at a different dashboard.
+                </p>
+              </div>
+            ) : linkUrl ? (
+              <div className="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-6 text-sm text-indigo-900">
+                <p className="font-semibold text-indigo-900">External dashboard</p>
+                <p className="mt-2 text-indigo-800">This panel renders as a CTA button that opens the dashboard in a new tab.</p>
+                <a
+                  href={linkUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-4 inline-flex items-center rounded-full bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-500"
+                >
+                  Open {getHostname(linkUrl)}
+                </a>
+              </div>
             ) : (
               <div className="rounded-xl border border-yellow-200 bg-yellow-50 px-4 py-6 text-center text-sm text-yellow-700">
                 Panel preview unavailable.
