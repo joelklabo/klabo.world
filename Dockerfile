@@ -21,8 +21,8 @@ COPY . .
 COPY --from=deps /app/node_modules ./node_modules
 RUN pnpm install --frozen-lockfile --unsafe-perm
 RUN pnpm --filter app exec prisma generate
-RUN pnpm --filter app exec contentlayer build
-RUN pnpm --filter app build
+RUN NODE_ENV=production pnpm --filter app exec contentlayer build
+RUN NODE_ENV=production pnpm --filter app build
 
 FROM base AS runner
 WORKDIR /app
