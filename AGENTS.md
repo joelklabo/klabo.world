@@ -41,6 +41,7 @@ All commands assume repo root.
 | `just load-test` | Executes the short k6 smoke (`scripts/load-smoke.js`). |
 | `just agent-shell` | Spawns a tmux layout with dev server, vitest watcher, and Docker logs for human/AI pair work. |
 | `pnpm --filter @klaboworld/scripts run export-legacy` | Copies legacy `Resources/{Posts,Apps,Contexts}` into `content/` for Contentlayer. |
+| `pnpm --filter @klaboworld/scripts run new-post -- --title "My Post"` | CLI helper that scaffolds `content/posts/*.mdx` with front matter matching the admin compose flow. |
 
 ## Azure / GitHub CLI Quick Reference
 

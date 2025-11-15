@@ -24,6 +24,7 @@ just dev                # spins up Postgres/Redis/Azurite + next dev server
 | `just load-test` | Placeholder for k6 smoke tests. |
 | `just agent-shell` | Opens tmux layout for AI/human pair sessions. |
 | `pnpm --filter @klaboworld/scripts run export-legacy` | Copies legacy `Resources/{Posts,Apps,Contexts}` into `content/` for Contentlayer. |
+| `pnpm --filter @klaboworld/scripts run new-post -- --title "My Post"` | Scaffolds `content/posts/*.mdx` with front matter (same slug logic as the admin UI). |
 
 Docker Desktop (or compatible) must be running because Postgres/Redis/Azurite are managed via `docker-compose.dev.yml`.
 
