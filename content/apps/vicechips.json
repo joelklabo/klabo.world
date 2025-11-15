@@ -1,0 +1,23 @@
+{
+  "appStoreURL" : "",
+  "features" : [
+    "Chip Budget System - Allocate monthly 'chips' for each habit",
+    "Rollover Support - Unused chips carry over to the next month",
+    "CloudKit Sync - Automatic sync across all your devices via iCloud",
+    "Comprehensive Statistics - Track streaks, averages, and usage patterns",
+    "Home Screen Widgets - Quick access widget for tracking on the go",
+    "Calendar View - Visual representation of daily usage",
+    "Multiple Charts - Budget utilization, daily averages, monthly trends",
+    "Achievement Badges - Gamification to encourage positive habits",
+    "Personal Records - Track your best streaks and milestones",
+    "Dark Mode Support - Multiple app icon variants"
+  ],
+  "fullDescription" : "ViceChips is a modern iOS habit tracking app built with Swift 6 and SwiftUI, featuring a unique 'chip budget' system for managing personal habits. Unlike traditional habit trackers, ViceChips uses a gamified approach where you allocate a monthly budget of 'chips' to each habit, helping you maintain balance and moderation. With comprehensive statistics, beautiful charts, and CloudKit sync, ViceChips makes it easy to track your progress and build better habits over time.",
+  "githubURL" : "https://github.com/joelklabo/ViceChips",
+  "icon" : "/app-icons/vicechips-icon.png",
+  "name" : "ViceChips",
+  "publishDate" : "2025-01-09T08:00:00Z",
+  "screenshots" : [],
+  "slug" : "vicechips",
+  "version" : "1.0"
+}

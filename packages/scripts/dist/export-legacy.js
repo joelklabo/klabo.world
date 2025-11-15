@@ -1,9 +1,12 @@
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
-const LEGACY_ROOT = path.resolve('Resources');
-const DEST_POSTS = path.resolve('content/posts');
-const DEST_APPS = path.resolve('content/apps');
-const DEST_CONTEXTS = path.resolve('content/contexts');
+import { fileURLToPath, pathToFileURL } from 'node:url';
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const REPO_ROOT = path.resolve(__dirname, '..', '..', '..');
+const LEGACY_ROOT = path.join(REPO_ROOT, 'Resources');
+const DEST_POSTS = path.join(REPO_ROOT, 'content/posts');
+const DEST_APPS = path.join(REPO_ROOT, 'content/apps');
+const DEST_CONTEXTS = path.join(REPO_ROOT, 'content/contexts');
 async function ensureDirs() {
     await Promise.all([DEST_POSTS, DEST_APPS, DEST_CONTEXTS].map((dir) => fs.mkdir(dir, { recursive: true })));
 }
@@ -72,7 +75,14 @@ export async function exportLegacyContent() {
     await copyMarkdownFiles(path.join(LEGACY_ROOT, 'Contexts'), DEST_CONTEXTS);
     await copyRawFiles(path.join(LEGACY_ROOT, 'Apps'), DEST_APPS, ['.json']);
 }
-if (require.main === module) {
+const invokedDirectly = (() => {
+    if (process.argv[1]) {
+        const entryUrl = pathToFileURL(process.argv[1]).href;
+        return import.meta.url === entryUrl;
+    }
+    return false;
+})();
+if (invokedDirectly) {
     exportLegacyContent().catch((err) => {
         console.error('[export-legacy] failed', err);
         process.exitCode = 1;

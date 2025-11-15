@@ -8,8 +8,8 @@
     "lint": "echo \"(scripts lint placeholder)\"",
     "export-legacy": "ts-node --esm src/export-legacy.ts"
   },
-  "dependencies": {},
   "devDependencies": {
-    "@klaboworld/config": "workspace:*"
+    "@klaboworld/config": "workspace:*",
+    "ts-node": "^10.9.2"
   }
 }

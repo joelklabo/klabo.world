@@ -9,7 +9,22 @@ const isDev = process.env.NODE_ENV !== 'production';
 const computedFields: ComputedFields = {
   slug: {
     type: 'string',
-    resolve: (doc: { _raw: { flattenedPath: string } }) => doc._raw.flattenedPath.replace(/^.+\//, ''),
+    resolve: (doc) => doc._raw.flattenedPath.replace(/^.+\//, ''),
+  },
+  url: {
+    type: 'string',
+    resolve: (doc) => {
+      if (doc._raw.flattenedPath.startsWith('posts/')) {
+        return `/posts/${doc._raw.flattenedPath.replace(/^posts\//, '')}`;
+      }
+      if (doc._raw.flattenedPath.startsWith('apps/')) {
+        return `/apps/${doc._raw.flattenedPath.replace(/^apps\//, '')}`;
+      }
+      if (doc._raw.flattenedPath.startsWith('contexts/')) {
+        return `/contexts/${doc._raw.flattenedPath.replace(/^contexts\//, '')}`;
+      }
+      return `/${doc._raw.flattenedPath}`;
+    },
   },
 };
 
@@ -30,15 +45,19 @@ export const Post = defineDocumentType(() => ({
 
 export const AppDoc = defineDocumentType(() => ({
   name: 'AppDoc',
-  filePathPattern: `apps/**/*.mdx`,
-  contentType: 'mdx',
+  filePathPattern: `apps/**/*.json`,
+  contentType: 'data',
   fields: {
     name: { type: 'string', required: true },
-    summary: { type: 'string', required: true },
+    slug: { type: 'string', required: true },
+    version: { type: 'string', required: true },
     publishDate: { type: 'date', required: true },
     icon: { type: 'string', required: false },
-    storeUrl: { type: 'string', required: false },
-    githubUrl: { type: 'string', required: false },
+    screenshots: { type: 'list', of: { type: 'string' }, required: false },
+    features: { type: 'list', of: { type: 'string' }, required: false },
+    fullDescription: { type: 'string', required: true },
+    appStoreURL: { type: 'string', required: false },
+    githubURL: { type: 'string', required: false },
   },
   computedFields,
 }));
