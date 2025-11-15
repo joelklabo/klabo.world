@@ -50,6 +50,7 @@ All commands assume repo root.
 ### Dev Workflow & Browser Mirroring
 - `scripts/tmux-dev.sh [--detach]` (also invoked by `just agent-shell`) now provisions Docker services, launches a tmux session with four panes: top-left `pnpm --filter app dev`, top-right `docker compose -f docker-compose.dev.yml logs -f db redis azurite`, bottom-left `pnpm vitest --watch`, bottom-right interactive shell. Keep this running during development to continuously stream server + infra logs alongside your TDD loop.
 - Browser mirroring lives in `scripts/maybe-open-dev-browser.sh`. The script reads `.env` (if present) and checks `AUTO_OPEN_BROWSER` (default `false`). When set to `true`, it launches both `DEV_SERVER_URL` (default `http://localhost:3000`) and `ADMIN_SERVER_URL` (default `http://localhost:3000/admin`) via `open`/`xdg-open` so the user’s browser reflects the current dev server session. `just dev` and `scripts/tmux-dev.sh` call this helper automatically—set `AUTO_OPEN_BROWSER=true` whenever the user asks to follow along in real time.
+- After every push, run `./scripts/watch-workflows.sh "ci|Build, Test, and Deploy to Azure"` to block until both workflows finish (the script polls for the current HEAD SHA so you never miss the newly-triggered runs).
 
 ## Azure / GitHub CLI Quick Reference
 
