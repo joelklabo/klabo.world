@@ -56,13 +56,21 @@ function CodeBlock({ children }: { children: ReactNode }) {
         {({ className, style, tokens, getLineProps, getTokenProps }) => (
           <pre className="overflow-x-auto rounded-xl" aria-label={`Code snippet (${language})`}>
             <code className={className} style={{ ...style, paddingTop: '1.5rem' }}>
-              {tokens.map((line, lineIndex) => (
-                <div key={`line-${lineIndex}`} {...getLineProps({ line, key: lineIndex })} className="flex">
-                  {line.map((token, tokenIndex) => (
-                    <span key={`token-${tokenIndex}`} {...getTokenProps({ token, key: tokenIndex })} />
-                  ))}
-                </div>
-              ))}
+              {tokens.map((line, lineIndex) => {
+                const lineProps = getLineProps({ line, key: lineIndex });
+                const { key: lineKey, ...lineRest } = lineProps;
+                void lineKey;
+                return (
+                  <div key={`line-${lineIndex}`} {...lineRest} className="flex">
+                    {line.map((token, tokenIndex) => {
+                      const tokenProps = getTokenProps({ token, key: tokenIndex });
+                      const { key: tokenKey, ...tokenRest } = tokenProps;
+                      void tokenKey;
+                      return <span key={`token-${lineIndex}-${tokenIndex}`} {...tokenRest} />;
+                    })}
+                  </div>
+                );
+              })}
             </code>
           </pre>
         )}
