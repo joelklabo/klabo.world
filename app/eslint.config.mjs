@@ -17,6 +17,7 @@ const eslintConfig = defineConfig([
           project: './tsconfig.json',
         },
       },
+      'import/core-modules': ['contentlayer/generated'],
     },
   },
   // Override default ignores of eslint-config-next.
