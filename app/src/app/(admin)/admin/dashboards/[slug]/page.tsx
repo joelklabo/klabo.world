@@ -1,8 +1,10 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { DashboardForm } from '@/app/(admin)/components/dashboard-form';
+import { DashboardChart } from '@/app/(admin)/components/dashboard-chart';
 import { deleteDashboardAction, updateDashboardAction } from '../actions';
 import { getDashboardBySlug } from '@/lib/dashboards';
+import { loadDashboardChartState } from '@/lib/dashboardCharts';
 
 export const dynamic = 'force-dynamic';
 
@@ -10,11 +12,13 @@ type PageProps = {
   params: { slug: string };
 };
 
-export default function DashboardDetailPage({ params }: PageProps) {
+export default async function DashboardDetailPage({ params }: PageProps) {
   const dashboard = getDashboardBySlug(params.slug);
   if (!dashboard) {
     notFound();
   }
+  const chartState = await loadDashboardChartState(dashboard);
+  const showPanelPreview = chartState.status !== 'disabled';
 
   return (
     <div className="space-y-6">
@@ -28,6 +32,43 @@ export default function DashboardDetailPage({ params }: PageProps) {
           ← Back to dashboards
         </Link>
       </div>
+
+      {showPanelPreview && (
+        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-sm uppercase tracking-widest text-indigo-500">Panel preview</p>
+              <h2 className="text-2xl font-semibold">{dashboard.title}</h2>
+              {chartState.status === 'success' && (
+                <p className="text-xs text-gray-500">Last refreshed {new Date(chartState.refreshedAt).toUTCString()}</p>
+              )}
+            </div>
+            {dashboard.refreshIntervalSeconds && (
+              <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600">
+                Refreshes ~ every {dashboard.refreshIntervalSeconds}s
+              </span>
+            )}
+          </div>
+
+          <div className="mt-6">
+            {chartState.status === 'success' ? (
+              <DashboardChart data={chartState.points} chartType={dashboard.chartType} valueLabel={chartState.valueLabel} />
+            ) : chartState.status === 'error' ? (
+              <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                Unable to load chart data: {chartState.message}
+              </div>
+            ) : chartState.status === 'empty' ? (
+              <div className="rounded-xl border border-dashed border-gray-200 px-4 py-6 text-center text-sm text-gray-500">
+                {chartState.reason}
+              </div>
+            ) : (
+              <div className="rounded-xl border border-yellow-200 bg-yellow-50 px-4 py-6 text-center text-sm text-yellow-700">
+                Panel preview unavailable.
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm lg:col-span-2">

@@ -29,11 +29,11 @@ Each task below must be completed in order. For every task, commit the changes, 
    - Implemented `app/src/lib/logAnalytics.ts` which signs requests with the shared key and exposes `runLogAnalyticsQuery`.
    - ✔️ Committed/pushed after lint + CI.
 
-6. **Users-per-day chart**
-   - Add KQL query (requests → unique users per day).
-   - Build chart component (e.g., Recharts).
-   - Wire `/admin/dashboards/[slug]` to render chart data from the query helper.
-   - Commit/push/verify.
+6. **Users-per-day chart** ✅ (2025-11-15)
+   - Added `recharts` + a reusable `DashboardChart` client component.
+   - Implemented `loadDashboardChartState` to run KQL via `runLogAnalyticsQuery`, normalize series data, and surface friendly error states.
+   - `/admin/dashboards/[slug]` now renders a live chart preview (with refresh badges + status messaging) for any chart panel with a KQL query.
+   - ✔️ `pnpm --filter app lint` + `pnpm --filter app test` prior to commit and CI pass.
 
 7. **Live logs / error list panel**
    - Add KQL query for warnings/errors.
