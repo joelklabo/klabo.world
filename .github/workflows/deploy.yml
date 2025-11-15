@@ -79,20 +79,24 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Azure login
-        uses: azure/login@v2
+      - name: Build and push container image
+        uses: docker/build-push-action@v6
         with:
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          context: .
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+            ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest
 
-      - name: Deploy via CLI
+      - name: Deploy container to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          slot-name: ${{ env.AZURE_SLOT_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          images: ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+      - name: Smoke test deployment
         env:
-          CONTAINER_REGISTRY: ghcr.io/${{ github.repository_owner }}
-          IMAGE_NAME: ${{ env.IMAGE_NAME }}
-          IMAGE_TAG: ${{ github.sha }}
-          IMAGE_LATEST_TAG: latest
-          AZURE_WEBAPP_NAME: ${{ env.AZURE_WEBAPP_NAME }}
-          AZURE_RESOURCE_GROUP: ${{ env.AZURE_RESOURCE_GROUP }}
-          AZURE_SLOT_NAME: ${{ env.AZURE_SLOT_NAME }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
           SMOKE_BASE_URL: https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net
-        run: pnpm --filter @klaboworld/scripts run deploy
+        run: ./scripts/deploy-smoke.sh
