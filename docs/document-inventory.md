@@ -33,6 +33,7 @@ This file is the single source of truth for every Markdown document that should 
 
 ### docs/guides
 - `coding-partners.md` – Pairing guidelines and rules of engagement for people collaborating in this repository.
+- `onboarding.md` – Comprehensive developer onboarding guide covering setup, workflow, and first contributions.
 
 ### docs/integration
 - `github.md` – GitHub-specific workflows such as how the `@klaboworld/scripts` CLI interacts with the repo.
