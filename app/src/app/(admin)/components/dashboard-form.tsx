@@ -1,7 +1,10 @@
 import { type DashboardDoc } from 'contentlayer/generated';
-import { TextareaHTMLAttributes } from 'react';
 import { MarkdownField } from './markdown-field';
 import { MarkdownUploadHelper } from './upload-helper';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 
 type DashboardFormProps = {
   action: (formData: FormData) => Promise<void>;
@@ -17,43 +20,25 @@ const panelTypeOptions = [
   { value: 'link', label: 'External Link – CTA button to another dashboard' },
 ];
 
-function Label({ htmlFor, children }: { htmlFor: string; children: React.ReactNode }) {
-  return (
-    <label htmlFor={htmlFor} className="block text-sm font-semibold text-gray-700">
-      {children}
-    </label>
-  );
-}
-
-function TextArea(props: TextareaHTMLAttributes<HTMLTextAreaElement>) {
-  return (
-    <textarea
-      {...props}
-      className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-    />
-  );
-}
-
 export function DashboardForm({ action, submitLabel, dashboard, includeSlugField = false }: DashboardFormProps) {
   return (
     <form action={action} className="space-y-6">
       {includeSlugField && dashboard && <input type="hidden" name="slug" value={dashboard.slug} />}
-      <div>
+      <div className="space-y-2">
         <Label htmlFor="title">Title</Label>
-        <input
+        <Input
           type="text"
           id="title"
           name="title"
           required
           defaultValue={dashboard?.title ?? ''}
-          className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           data-testid="dashboard-title"
         />
       </div>
 
-      <div>
+      <div className="space-y-2">
         <Label htmlFor="summary">Summary</Label>
-        <TextArea
+        <Textarea
           id="summary"
           name="summary"
           rows={3}
@@ -62,18 +47,18 @@ export function DashboardForm({ action, submitLabel, dashboard, includeSlugField
           placeholder="Explain what this panel tracks."
           data-testid="dashboard-summary-input"
         />
-        <p className="mt-1 text-xs text-gray-500">Shown in the dashboards table and metadata sidebar.</p>
+        <p className="text-xs text-muted-foreground">Shown in the dashboards table and metadata sidebar.</p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
-        <div>
+        <div className="space-y-2">
           <Label htmlFor="panelType">Panel type</Label>
           <select
             id="panelType"
           name="panelType"
           required
           defaultValue={dashboard?.panelType ?? 'chart'}
-          className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
           data-testid="dashboard-panel-type"
         >
           {panelTypeOptions.map((option) => (
@@ -82,25 +67,24 @@ export function DashboardForm({ action, submitLabel, dashboard, includeSlugField
             </option>
             ))}
           </select>
-          <p className="mt-1 text-xs text-gray-500">
+          <p className="text-xs text-muted-foreground">
             Charts/logs require a KQL query; embed panels expect an iframe URL; links show a CTA that opens in a new tab.
           </p>
         </div>
-        <div>
+        <div className="space-y-2">
           <Label htmlFor="chartType">Chart type (optional)</Label>
-          <input
+          <Input
             type="text"
           id="chartType"
           name="chartType"
           placeholder="line, bar, area..."
           defaultValue={dashboard?.chartType ?? ''}
-          className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           data-testid="dashboard-chart-type"
         />
       </div>
-      <div>
+      <div className="space-y-2">
         <Label htmlFor="refreshIntervalSeconds">Refresh interval (seconds)</Label>
-          <input
+          <Input
             type="number"
             min={0}
             step={15}
@@ -108,30 +92,28 @@ export function DashboardForm({ action, submitLabel, dashboard, includeSlugField
           name="refreshIntervalSeconds"
           placeholder="300"
           defaultValue={dashboard?.refreshIntervalSeconds ?? ''}
-          className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           data-testid="dashboard-refresh-interval"
         />
       </div>
       </div>
 
-      <div>
+      <div className="space-y-2">
         <Label htmlFor="tags">Tags (comma separated)</Label>
-        <input
+        <Input
           type="text"
           id="tags"
           name="tags"
           placeholder="telemetry,errors"
           defaultValue={dashboard?.tags?.join(', ') ?? ''}
-          className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           data-testid="dashboard-tags"
         />
-        <p className="mt-1 text-xs text-gray-500">Used for quick filtering. Example: telemetry,prod,errors.</p>
+        <p className="text-xs text-muted-foreground">Used for quick filtering. Example: telemetry,prod,errors.</p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <div>
+        <div className="space-y-2">
           <Label htmlFor="iframeUrl">Iframe URL (for embeds)</Label>
-          <input
+          <Input
             type="url"
           id="iframeUrl"
           name="iframeUrl"

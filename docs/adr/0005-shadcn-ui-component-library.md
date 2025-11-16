@@ -85,7 +85,8 @@ We adopted **shadcn/ui** as our component library approach, copying components i
 **Component Refactoring Progress:**
 - ✅ `/admin/compose` - Refactored to use Input, Textarea, Label, Button
 - ✅ `/admin/contexts/new` - Refactored to use Input, Textarea, Label, Button
-- ✅ `/admin/apps/new` - Refactored to use Input, Textarea, Label, Button
+- ✅ `/admin/apps/new` - Refactored to use Input, Textarea, Label, Button  
+- ✅ `dashboard-form.tsx` - Shared form component refactored
 
 **Remaining Components to Add** (as needed):
 - Dialog/Modal - For confirmations and popups
