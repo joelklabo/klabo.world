@@ -46,8 +46,8 @@ The goal is to have a fast, reliable, and efficient CI/CD pipeline that enables 
 The goal is to have a comprehensive and up-to-date set of documentation that makes it easy for new and existing team members to understand and contribute to the project.
 
 -   **[x] Task 3.1: Documentation Audit:** Conduct a thorough audit of all existing documentation (READMEs, AGENTS.md, runbooks, etc.) to identify outdated or inaccurate information. (Completed audit of `README.md` and `AGENTS.md`, and updated `docs/document-inventory.md`.)
--   **[ ] Task 3.2: Update and Consolidate Documentation:** Update all documentation to reflect the current state of the project. Consolidate duplicated information and create a single source of truth where possible.
--   **[ ] Task 3.3: Create Architectural Decision Records (ADRs):** Document key architectural decisions using a lightweight ADR format. This will provide historical context for why the system is built the way it is.
+-   **[x] Task 3.2: Update and Consolidate Documentation:** Update all documentation to reflect the current state of the project. Consolidate duplicated information and create a single source of truth where possible. (README and AGENTS now document Phase 4.1 observability completion, monitoring stack, and toolchain updates.)
+-   **[ ] Task 3.3: Create Architectural Decision Records (ADRs):** Document key architectural decisions using a lightweight ADR format. This will provide historical context for why the system is built the way it is. **IN PROGRESS**
 -   **[ ] Task 3.4: Document the Onboarding Process:** Create a detailed onboarding guide for new developers that walks them through setting up their local development environment and making their first contribution.
 
 ## 4. Platform Expandability

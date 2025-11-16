@@ -9,6 +9,15 @@ This file is the single source of truth for every Markdown document that should 
 
 ## Inventory by directory
 
+### docs/adr
+- `0001-use-nextjs-app-router.md` – Decision to adopt Next.js 16 App Router over Pages Router or alternative frameworks.
+- `0002-sqlite-default-postgres-optional.md` – SQLite as default database with optional PostgreSQL for scalability.
+- `0003-azure-monitor-observability.md` – Azure Monitor + Application Insights for observability and telemetry.
+- `0004-contentlayer-file-first-content.md` – Contentlayer for type-safe, file-first content management.
+- `0005-shadcn-ui-component-library.md` – shadcn/ui copy-paste component library approach.
+- `0006-monorepo-pnpm-turborepo.md` – Monorepo structure with PNPM workspaces and TurboRepo.
+- `0007-renovate-dependency-updates.md` – Renovate for automated dependency updates with auto-merge.
+
 ### docs/azure
 - `auth-setup.md` – Azure CLI authorization setup guidance used by the deployment scripts.
 - `authentication-upgrade.md` – Notes about migrating the legacy Swift admin authentication service into the Next.js stack.
