@@ -1,6 +1,6 @@
 # AGENTS – klabo.world Next Stack (Source of Truth)
 
-This document supersedes every earlier set of instructions (CLAUDE.md, legacy README, etc.). Follow it exactly—local dev, CI, deployment, and AI workflows are designed around these steps and the modernization plan in `docs/plans/modernization.md`.
+This document supersedes every earlier set of instructions (CLAUDE.md, legacy README, etc.). Follow it exactly—local dev, CI, deployment, and AI workflows are designed around these steps and the Phase 4 stability plan in `docs/plans/phase-4-stability.md`.
 
 ## Overview
 - **Stack**: Next.js 16 (App Router) + React 19, TypeScript 5, Tailwind 4, Contentlayer (file-first MDX), Prisma (SQLite file at `app/data/app.db` by default with optional PostgreSQL), optional Redis (rate limiting), Azure Blob Storage (uploads), Azure App Service for Containers.
@@ -170,15 +170,17 @@ These services are optional now that Prisma defaults to SQLite and the rate limi
 - Admin content workflow test (`tests/e2e/admin-content.e2e.ts`) requires env vars: `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `NEXTAUTH_SECRET`, `DATABASE_URL`, `UPLOADS_DIR`. Start the Docker services only if you want Redis/Azurite; otherwise the default SQLite + in-memory limiter is sufficient.
 
 ## Observability & Telemetry
-- `APPLICATIONINSIGHTS_CONNECTION_STRING` enables the OpenTelemetry bootstrap defined in `app/instrumentation.ts`.
-- We use `@opentelemetry/sdk-node` with `@azure/monitor-opentelemetry-exporter` plus `getNodeAutoInstrumentations()`, and admin server actions wrap persistence logic with `withSpan` (`app/src/lib/telemetry.ts`).
-- Add attributes/events inside those helpers when you need more detail. If the env var is unset, instrumentation no-ops (safe for local dev).
-- `scripts/deploy-smoke.sh` hits `/`, `/posts`, `/apps`, `/contexts`, `/api/health` and is invoked automatically in the Azure deploy workflow; run it manually with `SMOKE_BASE_URL=https://your-app ./scripts/deploy-smoke.sh` for quick checks.
+- **Server-side**: `APPLICATIONINSIGHTS_CONNECTION_STRING` enables the OpenTelemetry bootstrap defined in `app/instrumentation.ts`. We use `@opentelemetry/sdk-node` with `@azure/monitor-opentelemetry-exporter` plus `getNodeAutoInstrumentations()` to automatically trace HTTP requests, database queries, and external calls.
+- **Client-side**: `NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING` enables Real User Monitoring (RUM) via the `ApplicationInsights` component in the root layout, tracking page views, performance metrics, and user interactions.
+- **Structured Logging**: The `logger` utility (`app/src/lib/logger.ts`) provides `info`, `warn`, `error`, and `debug` methods with automatic OpenTelemetry trace context correlation. Logs flow to Application Insights when configured, otherwise fallback to console.
+- **SLOs & Alerting**: Service Level Objectives are defined in `docs/observability/slos.md` (page load <500ms, API <300ms, error rate <0.1%). Azure Monitor alerts configured in `infra/modules/monitoring.bicep` email the team when thresholds are breached.
+- **Dashboards**: Admin KQL-powered dashboards live in `content/dashboards/*.mdx`. The health-and-performance dashboard provides real-time visibility into request rates, latency, and errors.
+- **Deployment smoke tests**: `scripts/deploy-smoke.sh` hits `/`, `/posts`, `/apps`, `/contexts`, `/api/health` and is invoked automatically in the Azure deploy workflow; run it manually with `SMOKE_BASE_URL=https://your-app ./scripts/deploy-smoke.sh` for quick checks.
 
 ## AI/Automation Guidance
 - MCP resources will expose: `package.json`, `turbo.json`, `infra/main.bicep`, Prisma schema, Contentlayer schema, latest CI logs. Scripts in `packages/scripts` will emit machine-readable summaries for agents.
 - Run `scripts/agent-context.sh` before asking an AI helper to operate—this prints commands, environment vars, and open tasks.
-- Always update `AGENTS.md` + `docs/modernization-plan.md` if you change workflows, commands, or directory structure.
+- Always update `AGENTS.md` + `docs/plans/phase-4-stability.md` if you change workflows, commands, or directory structure.
 - Detailed runbooks live under `docs/runbooks/`. Start with `docs/runbooks/admin-content.md` for a step-by-step guide to composing posts/apps/contexts, upload behavior, and Playwright verification commands.
 
 ## Deployment Snapshot (future integration)

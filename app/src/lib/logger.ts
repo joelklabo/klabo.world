@@ -1,13 +1,9 @@
 import { SeverityLevel } from '@microsoft/applicationinsights-web';
 import { trace } from '@opentelemetry/api';
 
-// Server-side logging - for client-side, see ApplicationInsights.tsx component
-let appInsights: unknown;
-const connectionString = process.env.APPLICATIONINSIGHTS_CONNECTION_STRING;
-if (connectionString && typeof window === 'undefined') {
-  // For server-side, we rely on the instrumentation.ts setup via OpenTelemetry
-  // This logger provides structured console fallback
-}
+// Server-side structured logger with OpenTelemetry trace correlation
+// For client-side RUM, see ApplicationInsights.tsx component
+// For server-side telemetry, see instrumentation.ts OpenTelemetry setup
 
 type LogProperties = Record<string, unknown>;
 
@@ -27,28 +23,13 @@ function log(
     spanId,
   };
 
-  if (appInsights) {
-    if (error) {
-      appInsights.defaultClient.trackException({
-        exception: error,
-        severityLevel: severity,
-        properties: mergedProperties,
-      });
-    } else {
-      appInsights.defaultClient.trackTrace({
-        message,
-        severityLevel: severity,
-        properties: mergedProperties,
-      });
-    }
+  // Log to console with trace context - OpenTelemetry instrumentation
+  // will collect and send to Application Insights automatically
+  const logMessage = `[${SeverityLevel[severity]}] ${message}`;
+  if (error) {
+    console.error(logMessage, mergedProperties, error);
   } else {
-    // Fallback to console logging if Application Insights is not initialized
-    const logMessage = `[${SeverityLevel[severity]}] ${message}`;
-    if (error) {
-      console.error(logMessage, mergedProperties, error);
-    } else {
-      console.log(logMessage, mergedProperties);
-    }
+    console.log(logMessage, mergedProperties);
   }
 }
 

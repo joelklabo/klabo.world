@@ -1,6 +1,6 @@
 # klabo.world (Next.js Monorepo)
 
-This repository now hosts the production klabo.world stack (Next.js + Contentlayer + Prisma). The legacy Swift/Vapor sources are kept for historical reference only—deployment, content, and tooling all run from the Next.js app described below.
+This repository hosts the production klabo.world stack (Next.js + Contentlayer + Prisma + Azure Monitor). The legacy Swift/Vapor sources are kept for historical reference only—deployment, content, and tooling all run from the Next.js app described below.
 
 ## Quick Start
 
@@ -8,7 +8,7 @@ This repository now hosts the production klabo.world stack (Next.js + Contentlay
 
 ```bash
 just bootstrap          # installs toolchain + workspace deps
-cp .env.example .env    # customize DATABASE_URL/REDIS_URL/etc
+cp .env.example .env    # customize DATABASE_URL/REDIS_URL/APPLICATIONINSIGHTS_CONNECTION_STRING/etc
 just dev                # runs the Next dev server (starts optional Docker infra too)
 ```
 
@@ -18,11 +18,12 @@ just dev                # runs the Next dev server (starts optional Docker infra
 | --- | --- |
 | `just bootstrap` | Corepack enable + pnpm install + envinfo snapshot. |
 | `just dev` | Boots optional docker-compose services (`docker-compose.dev.yml`) and runs `pnpm --filter app dev`. |
-| `just lint` / `just test` | Run turborepo lint/test pipelines (ESLint + Vitest placeholder). |
+| `just lint` / `just test` | Run turborepo lint/test pipelines (ESLint + Vitest + Playwright). |
+| `just watch` | Launches Vitest in watch mode for TDD. |
 | `just db-reset` | Runs Prisma migrations/seeds against whatever `DATABASE_URL` points to (SQLite by default). |
 | `just doctor` | Prints envinfo + docker status (kept under `docs/verifications/`). |
-| `just load-test` | Placeholder for k6 smoke tests. |
-| `just agent-shell` | Opens tmux layout for AI/human pair sessions. |
+| `just load-test` | Runs k6 smoke tests against the dev server. |
+| `just agent-shell` | Opens tmux layout for AI/human pair sessions (dev server + vitest + docker logs + shell). |
 | `pnpm --filter @klaboworld/scripts run export-legacy` | Copies legacy `Resources/{Posts,Apps,Contexts}` into `content/` for Contentlayer. |
 | `pnpm --filter @klaboworld/scripts run new-post -- --title "My Post"` | Scaffolds `content/posts/*.mdx` with front matter (same slug logic as the admin UI). |
 
@@ -52,13 +53,14 @@ Docker Desktop (or compatible) is only required when you need the optional servi
 
 ## Toolchain
 
-- **Runtime**: Node 24.11.1, PNPM 10.22.0
-- **Web**: Next.js 16 + React 19 + Tailwind 4
+- **Runtime**: Node 24.11.1, PNPM 10.22.0 (via mise)
+- **Web**: Next.js 16 + React 19 + Tailwind 4 + shadcn/ui (in progress)
 - **Content**: Contentlayer 0.3.4 + MDX (file-first, GitHub-backed)
 - **Data**: Prisma 6.19.0 (SQLite file by default; Postgres via `docker-compose` when needed)
-- **Cache**: Redis 7.4 (Dockerized)
+- **Cache**: Redis 7.4 (optional, Dockerized, for distributed rate limiting)
+- **Observability**: OpenTelemetry + Azure Monitor Application Insights + Log Analytics
 - **Testing**: Vitest 4.x (unit), Playwright 1.56 (smoke/e2e), k6 (load)
-- **Automation**: TurboRepo 2.6.1, GitHub Actions (`.github/workflows/ci.yml`)
+- **Automation**: TurboRepo 2.6.1, Renovate (auto-dependency updates), GitHub Actions (`.github/workflows/ci.yml`)
 
 ## Environment Variables
 
@@ -78,10 +80,11 @@ NEXTAUTH_URL=http://localhost:3000
 ADMIN_EMAIL=admin@example.com
 ADMIN_PASSWORD=change-me
 NEXTAUTH_SECRET=dev-secret
+# Observability (Phase 4 - optional for local dev)
 APPLICATIONINSIGHTS_CONNECTION_STRING=
 LOG_ANALYTICS_WORKSPACE_ID=
 LOG_ANALYTICS_SHARED_KEY=
-GITHUB_TOKEN=...
+NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING=
 AUTO_OPEN_BROWSER=false
 ```
 
@@ -126,6 +129,22 @@ Run `./scripts/install-dev-tools.sh` once after cloning to install tmux (and oth
   - `link` – renders a CTA button that opens the external dashboard in a new tab.
 - Charts/logs require `LOG_ANALYTICS_WORKSPACE_ID` + `LOG_ANALYTICS_SHARED_KEY` in the environment. Embed/link panels require `iframeUrl`/`externalUrl` respectively; the server action enforces these invariants before writing MDX or calling GitHub.
 - Notes fields now use the Markdown preview + upload helpers so runbooks stay alongside the dashboard definition.
+
+## Observability & Monitoring
+
+The platform includes comprehensive observability powered by Azure Monitor:
+
+- **OpenTelemetry**: Server-side instrumentation via `app/instrumentation.ts` automatically traces requests, database queries, and external calls. Exports to Azure Monitor Application Insights when `APPLICATIONINSIGHTS_CONNECTION_STRING` is set.
+- **Client-side RUM**: The `ApplicationInsights` component (rendered in the root layout) tracks page views, performance metrics, and user interactions when `NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING` is configured.
+- **Structured Logging**: The `logger` utility in `app/src/lib/logger.ts` provides `info`, `warn`, `error`, and `debug` methods with automatic trace context correlation. Logs go to Application Insights when configured, otherwise fallback to console.
+- **Service Level Objectives (SLOs)**: Defined in `docs/observability/slos.md`:
+  - Page load time: <500ms (95th percentile)
+  - API response time: <300ms (95th percentile)
+  - Error rate: <0.1%
+- **Alerting**: Azure Monitor alerts configured in `infra/modules/monitoring.bicep` trigger email notifications when SLOs are breached.
+- **Dashboards**: The health-and-performance dashboard (`content/dashboards/health-and-performance.mdx`) visualizes request rates, durations, and p95 latency using KQL queries against Log Analytics.
+
+See `docs/observability/slos.md` and `docs/deployment/staging-strategy.md` for detailed monitoring and deployment practices.
 
 ## Public APIs
 
