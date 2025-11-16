@@ -2,6 +2,10 @@ import { requireAdminSession } from '@/lib/adminSession';
 import { ImageUploadField } from '@/app/(admin)/components/image-upload-field';
 import { MarkdownField } from '@/app/(admin)/components/markdown-field';
 import { createPostAction } from '../posts/actions';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,59 +20,47 @@ export default async function ComposePage() {
         <p className="mt-2 text-sm text-gray-500">Write Markdown posts with tags, publish dates, and featured images.</p>
       </div>
       <form action={createPostAction} className="space-y-6" data-testid="compose-post-form">
-        <div>
-          <label htmlFor="title" className="block text-sm font-semibold text-gray-700">
-            Title
-          </label>
-          <input
+        <div className="space-y-2">
+          <Label htmlFor="title">Title</Label>
+          <Input
             id="title"
             name="title"
             type="text"
             required
-            className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             placeholder="e.g. Agentically Engineering Past Procrastination"
             data-testid="compose-title"
           />
         </div>
-        <div>
-          <label htmlFor="summary" className="block text-sm font-semibold text-gray-700">
-            Summary
-          </label>
-          <textarea
+        <div className="space-y-2">
+          <Label htmlFor="summary">Summary</Label>
+          <Textarea
             id="summary"
             name="summary"
             required
             rows={3}
-            className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             data-testid="compose-summary"
           />
         </div>
         <div className="grid gap-6 md:grid-cols-2">
-          <div>
-            <label htmlFor="tags" className="block text-sm font-semibold text-gray-700">
-              Tags (comma-separated)
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="tags">Tags (comma-separated)</Label>
+            <Input
               id="tags"
               name="tags"
               type="text"
               placeholder="bitcoin, lightning"
-              className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               data-testid="compose-tags"
             />
           </div>
-          <div>
-            <label htmlFor="publishDate" className="block text-sm font-semibold text-gray-700">
-              Publish date
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="publishDate">Publish date</Label>
+            <Input
               id="publishDate"
               name="publishDate"
               type="date"
-              className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               data-testid="compose-publish-date"
             />
-            <p className="mt-1 text-xs text-gray-500">Leave blank to publish immediately.</p>
+            <p className="text-xs text-muted-foreground">Leave blank to publish immediately.</p>
           </div>
         </div>
         <ImageUploadField
@@ -88,20 +80,19 @@ export default async function ComposePage() {
           textareaTestId="compose-content"
         />
         <div className="flex justify-end gap-3">
-          <button
+          <Button
             type="reset"
-            className="rounded-full border border-gray-300 px-5 py-2 text-sm font-semibold text-gray-600 hover:border-gray-400"
+            variant="outline"
             data-testid="compose-reset"
           >
             Reset
-          </button>
-          <button
+          </Button>
+          <Button
             type="submit"
-            className="rounded-full bg-indigo-600 px-6 py-2 text-sm font-semibold text-white hover:bg-indigo-500"
             data-testid="compose-submit"
           >
             Publish post
-          </button>
+          </Button>
         </div>
       </form>
     </div>

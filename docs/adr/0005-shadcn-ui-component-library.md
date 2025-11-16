@@ -38,6 +38,11 @@ We adopted **shadcn/ui** as our component library approach, copying components i
 **Components Added So Far:**
 - `button.tsx` - Button primitive with variants
 - `card.tsx` - Card container with header/content/footer
+- `input.tsx` - Text input with consistent styling and validation states
+- `textarea.tsx` - Multiline text input
+- `label.tsx` - Form labels with proper accessibility
+- `select.tsx` - Dropdown select with proper keyboard navigation
+- `form.tsx` - Form context with react-hook-form integration
 
 **Integration:**
 - `app/components.json` configures shadcn/ui settings
@@ -77,12 +82,14 @@ We adopted **shadcn/ui** as our component library approach, copying components i
 
 ## Next Steps
 
+**Component Refactoring Progress:**
+- ✅ `/admin/compose` - Refactored to use Input, Textarea, Label, Button
+
 **Remaining Components to Add** (as needed):
-- Form elements (input, textarea, select, checkbox, radio)
-- Dialog/Modal
-- Dropdown Menu
-- Tabs
-- Toast notifications
-- Table
-- Badge
-- Avatar
+- Dialog/Modal - For confirmations and popups
+- Dropdown Menu - For action menus
+- Tabs - For organizing dashboard content
+- Toast notifications - For success/error messages
+- Table - For data listings
+- Badge - For tags and status
+- Avatar - For user profiles
