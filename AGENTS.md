@@ -1,6 +1,6 @@
 # AGENTS – klabo.world Next Stack (Source of Truth)
 
-This document supersedes every earlier set of instructions (CLAUDE.md, legacy README, etc.). Follow it exactly—local dev, CI, deployment, and AI workflows are designed around these steps and the modernization plan in `docs/modernization-plan.md`.
+This document supersedes every earlier set of instructions (CLAUDE.md, legacy README, etc.). Follow it exactly—local dev, CI, deployment, and AI workflows are designed around these steps and the modernization plan in `docs/plans/modernization.md`.
 
 ## Overview
 - **Stack**: Next.js 16 (App Router) + React 19, TypeScript 5, Tailwind 4, Contentlayer (file-first MDX), Prisma (SQLite file at `app/data/app.db` by default with optional PostgreSQL), optional Redis (rate limiting), Azure Blob Storage (uploads), Azure App Service for Containers.
@@ -50,14 +50,14 @@ All commands assume repo root.
 ### Dev Workflow & Browser Mirroring
 - `scripts/tmux-dev.sh [--detach]` (also invoked by `just agent-shell`) now provisions Docker services, launches a tmux session with four panes: top-left `pnpm --filter app dev`, top-right `docker compose -f docker-compose.dev.yml logs -f db redis azurite`, bottom-left `pnpm vitest --watch`, bottom-right interactive shell. Keep this running during development to continuously stream server + infra logs alongside your TDD loop.
 - Browser mirroring lives in `scripts/maybe-open-dev-browser.sh`. The script reads `.env` (if present) and checks `AUTO_OPEN_BROWSER` (default `false`). When set to `true`, it launches both `DEV_SERVER_URL` (default `http://localhost:3000`) and `ADMIN_SERVER_URL` (default `http://localhost:3000/admin`) via `open`/`xdg-open` so the user’s browser reflects the current dev server session. `just dev` and `scripts/tmux-dev.sh` call this helper automatically—set `AUTO_OPEN_BROWSER=true` whenever the user asks to follow along in real time.
-- **Commit workflow:** Always use the globally installed `gh-commit-watch` helper so CI is tracked automatically even when you detach and keep working.
+- **Commit workflow:** Always use the globally installed `commit-push-watch.sh` helper so CI is tracked automatically even when you detach and keep working.
   ```bash
-  gh-commit-watch -m "feat: new dashboard schema" -w "ci|Build, Test, and Deploy to Azure"
+  commit-push-watch.sh -m "feat: new dashboard schema" -w "ci|Build, Test, and Deploy to Azure"
   ```
   - It stages all changes, commits with your message, pushes `HEAD`, and ensures the process runs inside a tmux session (auto-creates one if needed).
   - As soon as the tmux window launches, detach (`Ctrl-b d` unless remapped) so you can continue working; the session keeps polling `gh run` and prints status summaries every minute until both workflows finish.
-  - Reattach later with `tmux attach -t gh-commit-watch-<timestamp>` or simply run `gh-commit-watch --help` for session naming options.
-  - Never skip this flow—every commit should go through `gh-commit-watch` so we catch CI failures immediately.
+  - Reattach later with `tmux attach -t commit-push-watch.sh-<timestamp>` or simply run `commit-push-watch.sh --help` for session naming options.
+  - Never skip this flow—every commit should go through `commit-push-watch.sh` so we catch CI failures immediately.
   - **Before starting ANY new task**, reattach (or run `gh run list --limit 5`) to confirm the previous CI passes. If it failed, fix it *before* doing more work.
 
 ## Azure / GitHub CLI Quick Reference
@@ -177,7 +177,7 @@ These services are optional now that Prisma defaults to SQLite and the rate limi
 
 ## AI/Automation Guidance
 - MCP resources will expose: `package.json`, `turbo.json`, `infra/main.bicep`, Prisma schema, Contentlayer schema, latest CI logs. Scripts in `packages/scripts` will emit machine-readable summaries for agents.
-- Run `scripts/agent-context.sh` (to be added) before asking an AI helper to operate—this prints commands, environment vars, and open tasks.
+- Run `scripts/agent-context.sh` before asking an AI helper to operate—this prints commands, environment vars, and open tasks.
 - Always update `AGENTS.md` + `docs/modernization-plan.md` if you change workflows, commands, or directory structure.
 - Detailed runbooks live under `docs/runbooks/`. Start with `docs/runbooks/admin-content.md` for a step-by-step guide to composing posts/apps/contexts, upload behavior, and Playwright verification commands.
 
@@ -201,7 +201,7 @@ Keep this document current. Any contributor—human or AI—should be able to on
 - Refer to `docs/document-inventory.md` for a categorized table of every preserved doc; update it whenever you add, retire, or rename documentation.
 
 ## Modernization Plan
-- Track overall progress via `docs/plans/modernization-roadmap.md`. Each phase references the deeper plans: `docs/plans/modernization.md`, `docs/plans/dashboard.md`, `docs/plans/feature-parity.md`, and `docs/plans/overview.md` so you can jump directly into the phase you are executing.
+- Track overall progress via `docs/plans/modernization-roadmap.md`. Each phase references the deeper plans: `docs/plans/modernization.md`, `docs/plans/dashboard.md`, `docs/plans/feature-parity.md`, and `docs/plans/phase-4-stability.md` so you can jump directly into the phase you are executing. The legacy Vapor plan is now located at `docs/plans/vapor-legacy-plan.md`.
 - Use `docs/plans/feature-parity-progress.md` to see the detailed checklist for Phase 0–4 of the feature parity work; update it as tasks move from “pending” to “in progress” to “done.”
 - Ensure every phase concludes with verification notes under `docs/verifications/` and the phase section in `docs/plans/modernization-roadmap.md` is updated to note completion or blockers.
 

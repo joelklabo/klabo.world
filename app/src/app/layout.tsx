@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { GlobalNavigation } from './components/global-navigation';
+import ApplicationInsightsConnection from './components/ApplicationInsights';
 
 export const metadata: Metadata = {
   title: {
@@ -32,6 +33,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}>
         <GlobalNavigation />
         <main className="min-h-screen">{children}</main>
+        <ApplicationInsightsConnection />
       </body>
     </html>
   );

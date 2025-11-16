@@ -4,6 +4,7 @@ import { ClipboardDocumentIcon, ClipboardDocumentCheckIcon } from '@heroicons/re
 import Highlight, { defaultProps, type Language } from 'prism-react-renderer';
 import theme from 'prism-react-renderer/themes/nightOwl';
 import Link from 'next/link';
+import type { Route } from 'next';
 import React, { useState, type ReactNode } from 'react';
 
 const baseCodeStyles =
@@ -113,7 +114,7 @@ function ProseImage(props: { src?: string | null; alt?: string; title?: string }
   }
   return (
     <figure className="group relative my-10">
-      <Link href={src} target="_blank" rel="noreferrer" className="pointer-events-auto">
+      <Link href={src as Route} target="_blank" rel="noreferrer" className="pointer-events-auto">
         <div className="relative overflow-hidden rounded-[32px] border border-white/10 bg-gradient-to-b from-slate-900 via-slate-950 to-black shadow-2xl shadow-black/60 transition hover:-translate-y-1.5 hover:shadow-[0_30px_50px_rgba(2,6,23,0.75)]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={src} alt={alt ?? 'Illustration'} title={title} className="w-full object-cover transition duration-300 group-hover:scale-105" />

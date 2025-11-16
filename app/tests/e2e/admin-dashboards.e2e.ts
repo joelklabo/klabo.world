@@ -34,7 +34,7 @@ test('admin can create, view, and delete a link dashboard panel', async ({ page 
     } catch {
       return false;
     }
-  }, { timeout: 15000, interval: 250 }).toBe(true);
+  }, { timeout: 15000, intervals: [250] }).toBe(true);
 
   execSync('pnpm --filter app exec contentlayer build', { cwd: repoRoot, stdio: 'inherit' });
   await page.goto(`/admin/dashboards/${slug}`);
@@ -54,7 +54,7 @@ test('admin can create, view, and delete a link dashboard panel', async ({ page 
           return true;
         }
       },
-      { timeout: 15000, interval: 250 },
+      { timeout: 15000, intervals: [250] },
     )
     .toBe(true);
 });

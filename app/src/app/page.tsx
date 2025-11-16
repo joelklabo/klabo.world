@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import type { Route } from 'next';
 import { getApps } from '@/lib/apps';
 import { getContexts } from '@/lib/contexts';
 import { getDashboards } from '@/lib/dashboards';
@@ -50,7 +51,7 @@ export default function Home() {
               {heroLinks.map((link) => (
                 <Link
                   key={link.href}
-                  href={link.href}
+                  href={link.href as Route}
                   className="rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-indigo-500/30 transition hover:translate-y-0.5"
                 >
                   {link.label}
@@ -70,7 +71,7 @@ export default function Home() {
             {heroHighlights.map((highlight) => (
               <Link
                 key={highlight.label}
-                href={highlight.link}
+                href={highlight.link as Route}
                 className="group rounded-2xl border border-white/5 bg-gradient-to-r from-white/5 to-transparent p-4 transition hover:border-white/30 hover:bg-white/10"
               >
                 <p className="text-xs font-semibold uppercase tracking-[0.4em] text-slate-300">{highlight.label}</p>

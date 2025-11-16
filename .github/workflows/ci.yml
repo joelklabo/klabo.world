@@ -44,6 +44,13 @@ jobs:
         run: pnpm vitest run
       - name: Build Next.js app
         run: pnpm --filter app build
+      - name: Cache Playwright browsers
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/playwright.config.ts') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
       - name: Install Playwright browsers
         run: pnpm --filter app exec playwright install --with-deps
       - name: Playwright smoke tests (headed via Xvfb)
@@ -52,7 +59,7 @@ jobs:
           NEXT_PID=$!
           trap "kill $NEXT_PID" EXIT
           npx wait-on http://127.0.0.1:3000
-          PLAYWRIGHT_BASE_URL="http://127.0.0.1:3000" xvfb-run --auto-servernum pnpm --filter app exec playwright test --reporter=dot --headed
+          PLAYWRIGHT_BASE_URL="http://127.0.0.1:3000" pnpm --filter app exec playwright test --reporter=dot
       - name: Upload Playwright artifacts
         if: failure()
         uses: actions/upload-artifact@v4

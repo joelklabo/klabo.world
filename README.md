@@ -195,7 +195,7 @@ Keep adding files here when stage gates require proof.
 - **Docker unavailable**: `just doctor` will warn. Without Docker you can still run Next.js/Contentlayer because Prisma targets SQLite, but Redis/Azurite-dependent flows (distributed rate limiting, blob storage emulation) will be skipped.
 - **Contentlayer CLI Node 24 bug**: CLI prints `ERR_INVALID_ARG_TYPE` after successful builds. This is a known upstream issue; see modernization plan for mitigation steps.
 
-For deeper architectural details (stage gates, phasing, ops checklists), read `docs/modernization-plan.md` and `AGENTS.md`.
+For deeper architectural details (stage gates, phasing, ops checklists), read `docs/plans/modernization.md` and `AGENTS.md`.
 ## Documentation
 - All non-code documentation now lives under `docs/` in subdirectories that reflect their purpose (e.g., `docs/azure`, `docs/deployment`, `docs/plans`, `docs/testing`).
 - Each file follows a `<category>/<kebab-case>.md` naming convention so the directory tree stays predictable.

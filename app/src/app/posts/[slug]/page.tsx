@@ -107,8 +107,8 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
               <p className="text-sm text-slate-300">{post.summary}</p>
               <dl className="space-y-3 text-xs uppercase tracking-[0.4em] text-slate-400">
                 <div>
-                  <dt className="text-[10px] text-slate-500">Status</dt>
-                  <dd className="text-sm text-white">{post.isPublished ? 'Published' : 'Draft'}</dd>
+                  <dt className="text-[10px] text-slate-500">Published</dt>
+                  <dd className="text-sm text-white">{new Date(post.date).toLocaleDateString()}</dd>
                 </div>
                 <div>
                   <dt className="text-[10px] text-slate-500">Reading time</dt>

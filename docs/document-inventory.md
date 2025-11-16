@@ -29,12 +29,13 @@ This file is the single source of truth for every Markdown document that should 
 - `github.md` – GitHub-specific workflows such as how the `@klaboworld/scripts` CLI interacts with the repo.
 
 ### docs/plans
-- `dashboard.md` – The observability dashboard roadmap.
-- `feature-parity.md` – Plans for matching the legacy Swift feature set.
-- `feature-parity-progress.md` – Checklists that map the remaining Phase 0–4 feature parity tasks to current work, including the new Markdown/post view baseline.
-- `modernization.md` – High-level modernization plan that maps the migration phases.
-- `modernization-roadmap.md` – Phase-by-phase roadmap updates that capture current progress and blockers for the modernization effort.
-- `overview.md` – Current iteration of the implementation plan keeping work scoped.
+- `phase-4-stability.md` – Plan for the "Continuing Overview & Stability" phase, focusing on hardening the platform, improving developer experience, and ensuring long-term health.
+
+### docs/observability
+- `slos.md` – Defines Service Level Objectives (SLOs) for key user journeys, including page load time, API response time, and error rates.
+
+### docs/deployment
+- `staging-strategy.md` – Outlines the strategy and process for utilizing the staging environment to ensure safe and reliable deployments to production.
 
 ### docs/runbooks
 - `admin-content.md`, `deployment.md`, `observability.md`, `rollback.md`, `secrets.md`, `db-recovery.md` – Established runbooks for run/ops and emergencies.
@@ -59,6 +60,9 @@ This file is the single source of truth for every Markdown document that should 
 - `phase2-ui.md` – Admin layout/components review vs. the legacy Leaf templates.
 - `phase2-integration.md` – Combined Playwright integration job covering pages + admin flows.
 - `phase3-apis.md` – Public contexts/gist/health/search/tags API proof for Phase 3 parity.
+
+## Configuration Files
+- `.github/renovate.json` – Configuration for Renovate to automate dependency updates, including auto-merging for minor and patch updates.
 
 ## Notes on cleaned documents
 - Removed `CLAUDE.md` because `AGENTS.md` now encapsulates the working instructions.

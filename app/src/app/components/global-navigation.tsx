@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import type { Route } from 'next';
 import { usePathname, useRouter } from 'next/navigation';
 import { KeyboardEvent, useEffect, useMemo, useRef, useState } from 'react';
 
@@ -119,13 +120,13 @@ const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
       event.preventDefault();
       if (highlightedIndex >= 0 && results[highlightedIndex]) {
         const target = results[highlightedIndex];
-        router.push(target.url);
+        router.push(target.url as Route);
         setIsDropdownOpen(false);
         setHighlightedIndex(-1);
         inputRef.current?.blur();
         return;
       }
-      router.push(`/search?q=${encodeURIComponent(query.trim())}`);
+      router.push(`/search?q=${encodeURIComponent(query.trim())}` as Route);
       setIsDropdownOpen(false);
     } else if (event.key === 'Escape') {
       setIsDropdownOpen(false);
@@ -141,7 +142,7 @@ const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
             {NAV_ITEMS.map((item) => (
               <Link
                 key={item.href}
-                href={item.href}
+                href={item.href as Route}
                 onClick={() => setMobileMenuOpen(false)}
                 className={`block rounded-lg px-3 py-2 text-sm font-semibold ${
                   pathname === item.href ? 'bg-gray-100 text-gray-900' : 'text-gray-500 hover:text-gray-900'
@@ -170,7 +171,7 @@ const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
   const handleSelectResult = (result: SearchResult) => {
     setIsDropdownOpen(false);
     setHighlightedIndex(-1);
-    router.push(result.url);
+    router.push(result.url as Route);
   };
 
   return (
@@ -196,7 +197,7 @@ const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
             return (
               <Link
                 key={item.href}
-                href={item.href}
+                href={item.href as Route}
                 className={`transition-colors hover:text-gray-900 ${isActive ? 'text-gray-900' : ''}`}
                 data-testid={`global-nav-${item.label.toLowerCase()}`}
               >
@@ -231,7 +232,6 @@ const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
                     setResults([]);
                     setHighlightedIndex(-1);
                     setError(null);
-                    setLoading(false);
                     setIsDropdownOpen(false);
                   }
                 }}

@@ -1,0 +1,21 @@
+---
+title: Health and Performance
+summary: High-level overview of application health and performance metrics.
+panelType: chart
+tags:
+  - telemetry
+  - performance
+  - health
+chartType: line
+refreshIntervalSeconds: 300
+kqlQuery: |
+  requests
+  | summarize
+      request_count=count(),
+      avg_duration=avg(duration),
+      p95_duration=percentile(duration, 95)
+    by bin(timestamp, 1h)
+  | order by timestamp asc
+---
+
+This dashboard provides a high-level overview of the application's health and performance. It shows the request rate, average request duration, and the 95th percentile of request duration over time.
