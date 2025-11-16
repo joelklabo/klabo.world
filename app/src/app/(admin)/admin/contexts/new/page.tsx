@@ -4,6 +4,10 @@ import { requireAdminSession } from '@/lib/adminSession';
 import { MarkdownUploadHelper } from '@/app/(admin)/components/upload-helper';
 import { MarkdownField } from '@/app/(admin)/components/markdown-field';
 import { upsertContextAction } from '../actions';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
@@ -28,90 +32,72 @@ export default async function NewContextPage() {
       </div>
       <form action={upsertContextAction} className="space-y-6" data-testid="contexts-new-form">
         <div className="grid gap-6 md:grid-cols-2">
-          <div>
-            <label htmlFor="title" className="block text-sm font-semibold text-gray-700">
-              Title
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="title">Title</Label>
+            <Input
               id="title"
               name="title"
               type="text"
               required
-              className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
               data-testid="contexts-new-title"
             />
           </div>
-          <div>
-            <label htmlFor="slug" className="block text-sm font-semibold text-gray-700">
-              Slug (optional)
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="slug">Slug (optional)</Label>
+            <Input
               id="slug"
               name="slug"
               type="text"
-              className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
               placeholder="bitcoin-agent"
               data-testid="contexts-new-slug"
             />
           </div>
         </div>
-        <div>
-          <label htmlFor="summary" className="block text-sm font-semibold text-gray-700">
-            Summary
-          </label>
-          <textarea
+        <div className="space-y-2">
+          <Label htmlFor="summary">Summary</Label>
+          <Textarea
             id="summary"
             name="summary"
             rows={3}
             required
-            className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
             data-testid="contexts-new-summary"
           />
         </div>
-        <div>
-          <label htmlFor="tags" className="block text-sm font-semibold text-gray-700">
-            Tags (comma or newline separated)
-          </label>
-          <textarea
+        <div className="space-y-2">
+          <Label htmlFor="tags">Tags (comma or newline separated)</Label>
+          <Textarea
             id="tags"
             name="tags"
             rows={2}
-            className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
             placeholder="ai, agent, productivity"
             data-testid="contexts-new-tags"
           />
         </div>
         <div className="grid gap-6 md:grid-cols-2">
-          <div>
-            <label htmlFor="createdDate" className="block text-sm font-semibold text-gray-700">
-              Created date
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="createdDate">Created date</Label>
+            <Input
               id="createdDate"
               name="createdDate"
               type="date"
               defaultValue={today}
-              className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
               data-testid="contexts-new-created"
             />
           </div>
-          <div>
-            <label htmlFor="updatedDate" className="block text-sm font-semibold text-gray-700">
-              Updated date
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="updatedDate">Updated date</Label>
+            <Input
               id="updatedDate"
               name="updatedDate"
               type="date"
               defaultValue={today}
-              className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
               data-testid="contexts-new-updated"
             />
           </div>
         </div>
-        <div>
-          <p className="text-sm font-semibold text-gray-700">Status</p>
-          <div className="mt-2 flex items-center gap-6 text-sm">
+        <div className="space-y-2">
+          <Label>Status</Label>
+          <div className="flex items-center gap-6 text-sm">
             <label className="inline-flex items-center gap-2">
               <input type="radio" name="isPublished" value="published" defaultChecked className="h-4 w-4 text-emerald-600" data-testid="contexts-new-status-published" />
               Published
@@ -134,9 +120,9 @@ export default async function NewContextPage() {
         />
         <MarkdownUploadHelper buttonTestId="contexts-new-upload" statusTestId="contexts-new-upload-status" />
         <div className="flex justify-end">
-          <button type="submit" className="rounded-full bg-emerald-600 px-6 py-2 text-sm font-semibold text-white hover:bg-emerald-500" data-testid="contexts-new-submit">
+          <Button type="submit" data-testid="contexts-new-submit">
             Create context
-          </button>
+          </Button>
         </div>
       </form>
     </div>

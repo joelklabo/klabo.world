@@ -4,6 +4,10 @@ import { requireAdminSession } from '@/lib/adminSession';
 import { ImageUploadField } from '@/app/(admin)/components/image-upload-field';
 import { ImageListUploadField } from '@/app/(admin)/components/image-list-upload-field';
 import { upsertAppAction } from '../[slug]/actions';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
@@ -27,111 +31,87 @@ export default async function NewAppPage() {
       </div>
       <form action={upsertAppAction} className="space-y-6" data-testid="apps-new-form">
         <div className="grid gap-6 md:grid-cols-2">
-          <div>
-            <label htmlFor="name" className="block text-sm font-semibold text-gray-700">
-              Name
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="name">Name</Label>
+            <Input
               id="name"
               name="name"
               type="text"
               required
-              className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
               placeholder="ViceChips"
               data-testid="apps-new-name"
             />
           </div>
-          <div>
-            <label htmlFor="slug" className="block text-sm font-semibold text-gray-700">
-              Slug (optional)
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="slug">Slug (optional)</Label>
+            <Input
               id="slug"
               name="slug"
               type="text"
-              className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
               placeholder="vicechips"
               data-testid="apps-new-slug"
             />
-            <p className="mt-1 text-xs text-gray-500">If omitted we will slugify the name automatically.</p>
+            <p className="text-xs text-muted-foreground">If omitted we will slugify the name automatically.</p>
           </div>
         </div>
         <div className="grid gap-6 md:grid-cols-2">
-          <div>
-            <label htmlFor="version" className="block text-sm font-semibold text-gray-700">
-              Version
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="version">Version</Label>
+            <Input
               id="version"
               name="version"
               type="text"
               required
-              className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
               data-testid="apps-new-version"
             />
           </div>
-          <div>
-            <label htmlFor="publishDate" className="block text-sm font-semibold text-gray-700">
-              Publish date
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="publishDate">Publish date</Label>
+            <Input
               id="publishDate"
               name="publishDate"
               type="date"
               required
-              className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
               data-testid="apps-new-publish-date"
             />
           </div>
         </div>
-        <div>
-          <label htmlFor="fullDescription" className="block text-sm font-semibold text-gray-700">
-            Description
-          </label>
-          <textarea
+        <div className="space-y-2">
+          <Label htmlFor="fullDescription">Description</Label>
+          <Textarea
             id="fullDescription"
             name="fullDescription"
             rows={5}
             required
-            className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
             data-testid="apps-new-description"
           />
         </div>
-        <div>
-          <label htmlFor="features" className="block text-sm font-semibold text-gray-700">
-            Features (one per line)
-          </label>
-          <textarea
+        <div className="space-y-2">
+          <Label htmlFor="features">Features (one per line)</Label>
+          <Textarea
             id="features"
             name="features"
             rows={6}
-            className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
             placeholder={'Chip Budget System\nRollover Support'}
             data-testid="apps-new-features"
           />
         </div>
         <div className="grid gap-6 md:grid-cols-2">
-          <div>
-            <label htmlFor="appStoreURL" className="block text-sm font-semibold text-gray-700">
-              App Store URL
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="appStoreURL">App Store URL</Label>
+            <Input
               id="appStoreURL"
               name="appStoreURL"
               type="url"
-              className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
               data-testid="apps-new-appstore"
             />
           </div>
-          <div>
-            <label htmlFor="githubURL" className="block text-sm font-semibold text-gray-700">
-              GitHub URL
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="githubURL">GitHub URL</Label>
+            <Input
               id="githubURL"
               name="githubURL"
               type="url"
-              className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
               data-testid="apps-new-github"
             />
           </div>
@@ -157,9 +137,9 @@ export default async function NewAppPage() {
           />
         </div>
         <div className="flex justify-end">
-          <button type="submit" className="rounded-full bg-purple-600 px-6 py-2 text-sm font-semibold text-white hover:bg-purple-500" data-testid="apps-new-submit">
+          <Button type="submit" data-testid="apps-new-submit">
             Create app
-          </button>
+          </Button>
         </div>
       </form>
     </div>
