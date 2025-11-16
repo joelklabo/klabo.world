@@ -54,7 +54,7 @@ The goal is to have a comprehensive and up-to-date set of documentation that mak
 
 The goal is to make the platform more extensible and easier to build upon in the future.
 
--   **[ ] Task 4.1: Component Library Refinement:** Review the existing component library and identify opportunities to create more reusable and flexible components. (Identified `shadcn/ui` integration as an outstanding task.)
+-   **[ ] Task 4.1: Component Library Refinement:** Review the existing component library and identify opportunities to create more reusable and flexible components. (Identified `shadcn/ui` integration as an outstanding task. Button and Card components added; remaining components to add as needed: Form, Input, Textarea, Select, Dialog, Dropdown, Tabs, Toast, Table, Badge, Avatar.) **NEXT**
 -   **[ ] Task 4.2: API Layer Design:** Design a clear and consistent API layer for future features. This may involve adopting a technology like tRPC or GraphQL to provide a more structured way of defining and consuming APIs.
 -   **[ ] Task 4.3: Feature Flagging System:** Implement a feature flagging system to allow for the safe and gradual rollout of new features.
 -   **[ ] Task 4.4: Modular Monorepo:** Explore ways to further modularize the monorepo to better isolate features and improve build times.
