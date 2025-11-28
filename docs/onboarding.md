@@ -396,7 +396,7 @@ See [deployment documentation](/docs/deployment/checklist.md) for details.
 
 1. ✅ Complete this onboarding guide
 2. ✅ Run `just dev` and explore http://localhost:3000
-3. ✅ Read the [Phase 4 Plan](/docs/plans/phase-4-stability.md)
+3. ✅ Review the active beads issues (`bd list`) starting with `klabo.world-fh9` (Phase 4) and its open dependencies.
 4. ✅ Pick a `good first issue` and make your first PR!
 5. ✅ Join the team discussions and ask questions
 

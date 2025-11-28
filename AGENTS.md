@@ -1,6 +1,6 @@
 # AGENTS – klabo.world Next Stack (Source of Truth)
 
-This document supersedes every earlier set of instructions (CLAUDE.md, legacy README, etc.). Follow it exactly—local dev, CI, deployment, and AI workflows are designed around these steps and the Phase 4 stability plan in `docs/plans/phase-4-stability.md`.
+This document supersedes every earlier set of instructions (CLAUDE.md, legacy README, etc.). Follow it exactly—local dev, CI, deployment, and AI workflows are designed around these steps and the beads backlog (Phase 4 epic `klabo.world-fh9`).
 
 ## Overview
 - **Stack**: Next.js 16 (App Router) + React 19, TypeScript 5, Tailwind 4, Contentlayer (file-first MDX), Prisma (SQLite file at `app/data/app.db` by default with optional PostgreSQL), optional Redis (rate limiting), Azure Blob Storage (uploads), Azure App Service for Containers.
@@ -17,6 +17,13 @@ This document supersedes every earlier set of instructions (CLAUDE.md, legacy RE
   - `docs/verifications/` – evidence artifacts for each stage gate (store envinfo, doctor output, etc.).
 
 Legacy Swift sources remain for reference but are no longer the system of record.
+
+## Issue Tracking (Beads)
+- Beads (`bd`) is the canonical tracker. The current umbrella epic is `klabo.world-fh9` with active work under `klabo.world-gfu` + its dependencies.
+- Basic commands: `bd list` (all issues), `bd ready` (unblocked work), `bd show <id>` (details), `bd dep tree <id>` (dependency graph), `bd close <id> --reason "<text>"` (finish), `bd create "title" --labels "<labels>" --description "<desc>"` (add work).
+- Add blockers with `bd dep add <issue> <blocks-id>` and prefer labels like `phase-4` or feature areas so queries stay fast.
+- Commit the `.beads/` directory with code changes; keep issue status in sync with PRs/commits. Run `bd sync` if you need to push/pull issue updates with git remotes.
+- Legacy roadmap docs under `docs/plans/` are retired; always rely on beads for current and historical planning context.
 
 ## Prerequisites
 - macOS/Linux with Docker Desktop or Nerdctl.
@@ -180,7 +187,7 @@ These services are optional now that Prisma defaults to SQLite and the rate limi
 ## AI/Automation Guidance
 - MCP resources will expose: `package.json`, `turbo.json`, `infra/main.bicep`, Prisma schema, Contentlayer schema, latest CI logs. Scripts in `packages/scripts` will emit machine-readable summaries for agents.
 - Run `scripts/agent-context.sh` before asking an AI helper to operate—this prints commands, environment vars, and open tasks.
-- Always update `AGENTS.md` + `docs/plans/phase-4-stability.md` if you change workflows, commands, or directory structure.
+- Always update `AGENTS.md` and the beads backlog (update/close existing issues or create new ones) if you change workflows, commands, or directory structure.
 - Detailed runbooks live under `docs/runbooks/`. Start with `docs/runbooks/admin-content.md` for a step-by-step guide to composing posts/apps/contexts, upload behavior, and Playwright verification commands.
 
 ## Deployment Snapshot (future integration)
@@ -192,7 +199,7 @@ These services are optional now that Prisma defaults to SQLite and the rate limi
 2. `pnpm turbo lint test` ✅
 3. Docs updated (README/AGENTS/runbooks) ✅
 4. Verification artifact stored in `docs/verifications/` if applicable ✅
-5. Modernization plan updated when structural changes occur ✅
+5. Beads issues updated/closed with links to PRs and notes when structural changes occur ✅
 
 6. For every feature or visible change, capture a representative screenshot of the updated UI **and** run the full test suite (per the "Run all the tests" guidance) before you declare the work complete. Attach or reference the screenshot so I can see the working experience.
 
@@ -202,12 +209,13 @@ Keep this document current. Any contributor—human or AI—should be able to on
 - Outdated legacy instructions such as `CLAUDE.md` and the root copies of the Azure/deployment/security guides have been removed in favor of the consolidated versions in `docs/azure`, `docs/deployment`, and `docs/security`.
 - Refer to `docs/document-inventory.md` for a categorized table of every preserved doc; update it whenever you add, retire, or rename documentation.
 
-## Modernization Plan
-- Track overall progress via `docs/plans/modernization-roadmap.md`. Each phase references the deeper plans: `docs/plans/modernization.md`, `docs/plans/dashboard.md`, `docs/plans/feature-parity.md`, and `docs/plans/phase-4-stability.md` so you can jump directly into the phase you are executing. The legacy Vapor plan is now located at `docs/plans/vapor-legacy-plan.md`.
-- Use `docs/plans/feature-parity-progress.md` to see the detailed checklist for Phase 0–4 of the feature parity work; update it as tasks move from “pending” to “in progress” to “done.”
-- Ensure every phase concludes with verification notes under `docs/verifications/` and the phase section in `docs/plans/modernization-roadmap.md` is updated to note completion or blockers.
+## Backlog & Roadmap
+- Roadmap and day-to-day work now live entirely in beads. Start at `klabo.world-fh9` (Phase 4 umbrella) and follow dependencies (`bd dep tree klabo.world-fh9`) to find active items like `klabo.world-gfu` and its blockers.
+- Record new discoveries as beads issues with labels for feature area and priority; close items with rationale and link to related PRs.
+- Historical plan Markdown files were removed; use beads history for prior decisions and sequencing.
+- Continue to store verification artifacts under `docs/verifications/` when finishing milestones or large changes.
 
 ## Outstanding work
-- Review the items listed under `docs/plans/` (modernization, dashboard, feature-parity, overview) to determine the current next task; these are still the most up-to-date roadmaps for completing the migration.
+- Pull your next task from `bd ready` or the open blockers under `klabo.world-gfu` (API layer, feature flags, modular monorepo).
 - Validate the Playwright/Vitest coverage described in `docs/testing/*` whenever you touch UI flows.
 - Keep the runbooks under `docs/runbooks/` accurate after every major change; if a runbook becomes obsolete, mark it as such in `docs/document-inventory.md` and archive the content to `docs/experimental/`.

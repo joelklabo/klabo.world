@@ -39,6 +39,12 @@ pnpm-debug.log
 azure_logs*.zip
 cookies.txt
 
+# Beads runtime artifacts (keep .beads/issues.jsonl, config, metadata tracked)
+.beads/beads.db*
+.beads/bd.sock
+.beads/daemon.*
+.beads/*.log
+
 # Documentation drafts
 docs/drafts/
 

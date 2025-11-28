@@ -39,7 +39,7 @@ This file is the single source of truth for every Markdown document that should 
 - `github.md` – GitHub-specific workflows such as how the `@klaboworld/scripts` CLI interacts with the repo.
 
 ### docs/plans
-- `phase-4-stability.md` – Plan for the "Continuing Overview & Stability" phase, focusing on hardening the platform, improving developer experience, and ensuring long-term health.
+- (deprecated) Plans are now tracked as beads issues (see `klabo.world-fh9` + children). No Markdown plan files remain; keep this directory reserved for any future exports or archived snapshots.
 
 ### docs/observability
 - `slos.md` – Defines Service Level Objectives (SLOs) for key user journeys, including page load time, API response time, and error rates.
