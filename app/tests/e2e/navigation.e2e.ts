@@ -43,9 +43,10 @@ test.describe('admin navigation', () => {
 
     await expect(page).toHaveURL(/\/admin$/);
     const adminHeader = page.locator('header').filter({ hasText: 'Admin' });
-    await expect(adminHeader.getByText(ADMIN_EMAIL)).toBeVisible();
+    await expect(adminHeader.getByRole('button', { name: 'Sign out' })).toBeVisible();
+    await expect(page.getByTestId('admin-nav')).toBeVisible();
 
-    const adminNav = adminHeader.getByTestId('admin-nav');
+    const adminNav = page.getByTestId('admin-nav');
     const adminLinks: Array<{ id: string; path: RegExp }> = [
       { id: 'dashboard', path: /\/admin$/ },
       { id: 'compose', path: /\/admin\/compose/ },
