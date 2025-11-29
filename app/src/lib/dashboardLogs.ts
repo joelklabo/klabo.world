@@ -1,5 +1,4 @@
 import { type Dashboard } from './dashboards';
-import { env } from './env';
 import { hasAnalyticsConfig, runLogAnalyticsQuery } from './logAnalytics';
 
 const TEXT_COLUMN_TYPES = new Set(['string', 'guid']);

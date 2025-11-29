@@ -1,12 +1,23 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { Dashboard } from '../src/lib/dashboards';
 
-type MinimalDashboard = {
-  panelType: 'chart' | 'logs';
-  kqlQuery?: string;
+const chartDashboard: Dashboard = {
+  slug: 'test-chart',
+  title: 'Test Chart',
+  summary: '',
+  panelType: 'chart',
+  kqlQuery: 'requests | take 1',
+  body: { raw: '' },
 };
 
-const chartDashboard: MinimalDashboard = { panelType: 'chart', kqlQuery: 'requests | take 1' } as const;
-const logsDashboard: MinimalDashboard = { panelType: 'logs', kqlQuery: 'requests | take 1' } as const;
+const logsDashboard: Dashboard = {
+  slug: 'test-logs',
+  title: 'Test Logs',
+  summary: '',
+  panelType: 'logs',
+  kqlQuery: 'requests | take 1',
+  body: { raw: '' },
+};
 
 function resetEnv() {
   delete process.env.LOG_ANALYTICS_WORKSPACE_ID;
@@ -33,7 +44,7 @@ describe('dashboard analytics config', () => {
     vi.stubGlobal('fetch', vi.fn());
     const { loadDashboardChartState } = await import('../src/lib/dashboardCharts');
 
-    const state = await loadDashboardChartState(chartDashboard as any);
+    const state = await loadDashboardChartState(chartDashboard);
 
     expect(state.status).toBe('disabled');
     expect('reason' in state ? state.reason : '').toMatch(/Log Analytics not configured/i);
@@ -62,7 +73,7 @@ describe('dashboard analytics config', () => {
     vi.stubGlobal('fetch', fetchMock);
 
     const { loadDashboardChartState } = await import('../src/lib/dashboardCharts');
-    const state = await loadDashboardChartState(chartDashboard as any);
+    const state = await loadDashboardChartState(chartDashboard);
 
     expect(state.status).toBe('success');
     expect(state.points[0]?.value).toBe(7);
@@ -93,7 +104,7 @@ describe('dashboard analytics config', () => {
     vi.stubGlobal('fetch', fetchMock);
 
     const { loadDashboardLogs } = await import('../src/lib/dashboardLogs');
-    const state = await loadDashboardLogs(logsDashboard as any);
+    const state = await loadDashboardLogs(logsDashboard);
 
     expect(state.status).toBe('success');
     expect(state.entries[0]?.message).toBe('hello world');

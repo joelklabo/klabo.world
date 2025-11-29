@@ -1,5 +1,4 @@
 import { type Dashboard } from './dashboards';
-import { env } from './env';
 import { hasAnalyticsConfig, runLogAnalyticsQuery } from './logAnalytics';
 
 const NUMBER_COLUMN_TYPES = new Set(['long', 'real', 'double', 'decimal', 'int', 'number']);
