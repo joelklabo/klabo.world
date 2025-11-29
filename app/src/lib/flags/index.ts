@@ -1,17 +1,17 @@
 import { performance } from 'node:perf_hooks';
 import { createClient, type RedisClientType } from 'redis';
+import {
+  type FlagAdapter,
+  type FlagAdapterResult,
+  type FlagDefinition,
+  type FlagEvaluation,
+  type FlagEvaluationContext,
+  type FlagSource,
+  type FlagValue,
+} from '@klaboworld/types';
 import { env } from '../env';
 import { logger } from '../logger';
 import { flagRegistry, validateRegistry } from './registry';
-import {
-  FlagAdapter,
-  FlagAdapterResult,
-  FlagDefinition,
-  FlagEvaluation,
-  FlagEvaluationContext,
-  FlagSource,
-  FlagValue,
-} from './types';
 
 type RedisLike = Pick<RedisClientType, 'get' | 'mGet' | 'keys' | 'isOpen' | 'connect'>;
 

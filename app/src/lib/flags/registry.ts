@@ -1,6 +1,6 @@
 import { z } from 'zod';
+import { type FlagDefinition } from '@klaboworld/types';
 import registryData from './registry.json';
-import { FlagDefinition } from './types';
 
 const flagSchema = z.object({
   key: z.string().min(1),

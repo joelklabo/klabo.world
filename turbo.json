@@ -1,8 +1,13 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": [
+    ".env",
+    ".env.local",
+    "pnpm-lock.yaml"
+  ],
   "tasks": {
     "lint": {
-      "dependsOn": [],
+      "dependsOn": ["^lint"],
       "outputs": []
     },
     "test": {
@@ -11,7 +16,15 @@
     },
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", "build/**", ".next/**"]
+      "outputs": ["dist/**", "build/**", ".next/**", "app/.contentlayer/generated/**"]
+    },
+    "build#app": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "app/.contentlayer/generated/**"]
+    },
+    "build#pkg": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", "build/**"]
     }
   }
 }
