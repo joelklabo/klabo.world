@@ -1,6 +1,6 @@
 import { type Dashboard } from './dashboards';
 import { env } from './env';
-import { runLogAnalyticsQuery } from './logAnalytics';
+import { hasAnalyticsConfig, runLogAnalyticsQuery } from './logAnalytics';
 
 const TEXT_COLUMN_TYPES = new Set(['string', 'guid']);
 const SEVERITY_NUMERIC_MAP: Record<number, string> = {
@@ -76,8 +76,8 @@ export async function loadDashboardLogs(dashboard: Dashboard, options: LogOption
     return { status: 'disabled', reason: 'No KQL query configured yet.' };
   }
 
-  if (!env.LOG_ANALYTICS_WORKSPACE_ID || !env.LOG_ANALYTICS_SHARED_KEY) {
-    return { status: 'disabled', reason: 'Log Analytics not configured (set LOG_ANALYTICS_WORKSPACE_ID/LOG_ANALYTICS_SHARED_KEY).' };
+  if (!hasAnalyticsConfig()) {
+    return { status: 'disabled', reason: 'Log Analytics not configured (set LOG_ANALYTICS_* or APPINSIGHTS_* env vars).' };
   }
 
   try {

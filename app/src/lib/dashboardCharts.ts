@@ -1,6 +1,6 @@
 import { type Dashboard } from './dashboards';
 import { env } from './env';
-import { runLogAnalyticsQuery } from './logAnalytics';
+import { hasAnalyticsConfig, runLogAnalyticsQuery } from './logAnalytics';
 
 const NUMBER_COLUMN_TYPES = new Set(['long', 'real', 'double', 'decimal', 'int', 'number']);
 
@@ -41,8 +41,8 @@ export async function loadDashboardChartState(dashboard: Dashboard): Promise<Das
     return { status: 'disabled', reason: 'No KQL query configured yet.' };
   }
 
-  if (!env.LOG_ANALYTICS_WORKSPACE_ID || !env.LOG_ANALYTICS_SHARED_KEY) {
-    return { status: 'disabled', reason: 'Log Analytics not configured (set LOG_ANALYTICS_WORKSPACE_ID/LOG_ANALYTICS_SHARED_KEY).' };
+  if (!hasAnalyticsConfig()) {
+    return { status: 'disabled', reason: 'Log Analytics not configured (set LOG_ANALYTICS_* or APPINSIGHTS_* env vars).' };
   }
 
   try {
