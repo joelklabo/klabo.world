@@ -9,16 +9,20 @@ export function generateStaticParams(): Params[] {
   return Object.keys(getPostTagCounts()).map((tag) => ({ tag }));
 }
 
-export function generateMetadata({ params }: { params: Params }): Metadata {
-  const posts = getPosts().filter((post) => post.tags?.includes(params.tag));
+export async function generateMetadata({ params }: { params: Params | Promise<Params> }): Promise<Metadata> {
+  const { tag: rawTag } = await Promise.resolve(params);
+  const tag = decodeURIComponent(rawTag);
+  const posts = getPosts().filter((post) => post.tags?.includes(tag));
   if (posts.length === 0) {
     return { title: 'Tag not found • klabo.world' };
   }
-  return { title: `${params.tag} posts • klabo.world` };
+  return { title: `${tag} posts • klabo.world` };
 }
 
-export default function PostTagPage({ params }: { params: Params }) {
-  const posts = getPosts().filter((post) => post.tags?.includes(params.tag));
+export default async function PostTagPage({ params }: { params: Params | Promise<Params> }) {
+  const { tag: rawTag } = await Promise.resolve(params);
+  const tag = decodeURIComponent(rawTag);
+  const posts = getPosts().filter((post) => post.tags?.includes(tag));
   if (posts.length === 0) {
     notFound();
   }
@@ -28,7 +32,7 @@ export default function PostTagPage({ params }: { params: Params }) {
       <div className="mx-auto max-w-4xl">
         <div className="mb-10">
           <p className="text-sm uppercase tracking-widest text-indigo-500">Tag</p>
-          <h1 className="mt-2 text-4xl font-bold">{params.tag}</h1>
+          <h1 className="mt-2 text-4xl font-bold">{tag}</h1>
           <Link href="/posts/tags" className="text-sm font-semibold text-indigo-600 hover:text-indigo-400">
             ← Back to all tags
           </Link>

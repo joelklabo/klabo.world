@@ -11,19 +11,23 @@ export function generateStaticParams(): Params[] {
   return Array.from(tags).map((tag) => ({ tag }));
 }
 
-export function generateMetadata({ params }: { params: Params }): Metadata {
-  const tagContexts = getContexts().filter((context) => context.tags?.includes(params.tag));
+export async function generateMetadata({ params }: { params: Params | Promise<Params> }): Promise<Metadata> {
+  const { tag: rawTag } = await Promise.resolve(params);
+  const tag = decodeURIComponent(rawTag);
+  const tagContexts = getContexts().filter((context) => context.tags?.includes(tag));
   if (tagContexts.length === 0) {
     return { title: 'Context tag not found • klabo.world' };
   }
   return {
-    title: `${params.tag} contexts • klabo.world`,
-    description: `Contexts covering ${params.tag}`,
+    title: `${tag} contexts • klabo.world`,
+    description: `Contexts covering ${tag}`,
   };
 }
 
-export default function ContextTagPage({ params }: { params: Params }) {
-  const contexts = getContexts().filter((context) => context.tags?.includes(params.tag));
+export default async function ContextTagPage({ params }: { params: Params | Promise<Params> }) {
+  const { tag: rawTag } = await Promise.resolve(params);
+  const tag = decodeURIComponent(rawTag);
+  const contexts = getContexts().filter((context) => context.tags?.includes(tag));
   if (contexts.length === 0) {
     notFound();
   }
@@ -33,7 +37,7 @@ export default function ContextTagPage({ params }: { params: Params }) {
       <div className="mx-auto max-w-4xl">
         <div className="mb-10">
           <p className="text-sm uppercase tracking-widest text-gray-500">Context Tag</p>
-          <h1 className="mt-2 text-4xl font-bold">{params.tag}</h1>
+          <h1 className="mt-2 text-4xl font-bold">{tag}</h1>
           <Link href="/contexts" className="text-sm font-semibold text-emerald-600 hover:text-emerald-400">
             ← Back to all contexts
           </Link>
