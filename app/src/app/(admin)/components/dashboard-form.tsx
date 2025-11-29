@@ -2,8 +2,8 @@ import { type DashboardDoc } from 'contentlayer/generated';
 import { MarkdownField } from './markdown-field';
 import { MarkdownUploadHelper } from './upload-helper';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@klaboworld/ui';
 
 type DashboardFormProps = {
   action: (formData: FormData) => Promise<void>;
