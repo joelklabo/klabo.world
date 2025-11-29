@@ -1,10 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import slugify from 'slugify';
-import {
-  resolveContentDir,
-  resolveContentSubdir,
-} from '@klaboworld/core/server/contentPaths';
+import { resolveContentSubdir } from '@klaboworld/core/server/contentPaths';
 import { deleteRepoFile, fetchRepoFile, upsertRepoFile } from '@klaboworld/core/server/github';
 import { env } from './env';
 
