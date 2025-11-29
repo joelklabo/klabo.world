@@ -5,11 +5,11 @@ import { auth } from '@/lib/nextAuth';
 import { SignOutButton } from './signout-button';
 
 const navLinks = [
-  { href: '/admin', label: 'Dashboard' },
-  { href: '/admin/compose', label: 'Compose' },
-  { href: '/admin/apps', label: 'Apps' },
-  { href: '/admin/contexts', label: 'Contexts' },
-  { href: '/admin/dashboards', label: 'Dashboards' },
+  { href: '/admin', label: 'Dashboard', id: 'dashboard' },
+  { href: '/admin/compose', label: 'Compose', id: 'compose' },
+  { href: '/admin/apps', label: 'Apps', id: 'apps' },
+  { href: '/admin/contexts', label: 'Contexts', id: 'contexts' },
+  { href: '/admin/dashboards', label: 'Dashboards', id: 'dashboards' },
 ];
 
 export default async function AdminLayout({ children }: { children: ReactNode }) {
@@ -24,9 +24,14 @@ export default async function AdminLayout({ children }: { children: ReactNode })
               Admin
             </Link>
             {session?.user && (
-              <nav className="flex gap-3 text-sm text-gray-600 dark:text-gray-300">
+              <nav className="flex gap-3 text-sm text-gray-600 dark:text-gray-300" data-testid="admin-nav">
                 {navLinks.map((link) => (
-                  <Link key={link.href} href={link.href as Route} className="rounded-full px-3 py-1 hover:bg-gray-100 dark:hover:bg-gray-800">
+                  <Link
+                    key={link.href}
+                    href={link.href as Route}
+                    className="rounded-full px-3 py-1 hover:bg-gray-100 dark:hover:bg-gray-800"
+                    data-testid={`admin-nav-${link.id}`}
+                  >
                     {link.label}
                   </Link>
                 ))}

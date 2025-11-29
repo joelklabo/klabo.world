@@ -41,6 +41,9 @@ export default defineConfig({
           DATABASE_URL: defaultDatabaseUrl,
           NEXTAUTH_URL: defaultBaseUrl,
           SITE_URL: defaultBaseUrl,
+          ADMIN_EMAIL: process.env.ADMIN_EMAIL ?? 'admin@example.com',
+          ADMIN_PASSWORD: process.env.ADMIN_PASSWORD ?? 'change-me',
+          NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET ?? 'test-secret',
         },
       },
 });
