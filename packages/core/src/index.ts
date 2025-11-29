@@ -12,3 +12,4 @@ export {
   type GitHubFileParams,
 } from './github';
 export { writeLocalUpload, writeBlobUpload, buildFilename, type UploadConfig, type UploadResult } from './uploads';
+export { resolveContentDir, resolveContentSubdir } from './contentPaths';
