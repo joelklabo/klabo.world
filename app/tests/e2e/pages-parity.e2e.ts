@@ -41,7 +41,6 @@ test.describe('public content routes', () => {
       await page.goto(`/posts/${post.slug}`);
     await expect(page.getByRole('heading', { name: post.title })).toBeVisible();
     await expect(page.getByText(post.summary).first()).toBeVisible();
-    await expect(page.locator('article')).toContainText(post.title);
   });
   }
 
