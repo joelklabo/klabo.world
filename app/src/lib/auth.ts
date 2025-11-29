@@ -15,45 +15,18 @@ export async function ensureAdminSeeded(): Promise<void> {
 
   const adminPassword = env.ADMIN_PASSWORD;
   const envProvidesHash = isBcryptHash(adminPassword);
-  let cachedHash: string | null = envProvidesHash ? adminPassword : null;
-  const resolveHash = async (): Promise<string> => {
-    if (cachedHash) {
-      return cachedHash;
-    }
-    cachedHash = await bcrypt.hash(adminPassword, 10);
-    return cachedHash;
-  };
+  const passwordHash = envProvidesHash ? adminPassword : await bcrypt.hash(adminPassword, 10);
 
-  const existing = await prisma.admin.findUnique({ where: { email: env.ADMIN_EMAIL } });
-  if (!existing) {
-    await prisma.admin.create({
-      data: {
-        email: env.ADMIN_EMAIL,
-        passwordHash: await resolveHash(),
-      },
-    });
-    return;
-  }
-
-  if (envProvidesHash) {
-    if (existing.passwordHash !== adminPassword) {
-      await prisma.admin.update({
-        where: { email: env.ADMIN_EMAIL },
-        data: { passwordHash: adminPassword },
-      });
-    }
-    return;
-  }
-
-  const matches = await bcrypt.compare(adminPassword, existing.passwordHash);
-  if (!matches) {
-    await prisma.admin.update({
-      where: { email: env.ADMIN_EMAIL },
-      data: {
-        passwordHash: await resolveHash(),
-      },
-    });
-  }
+  await prisma.admin.upsert({
+    where: { email: env.ADMIN_EMAIL },
+    create: {
+      email: env.ADMIN_EMAIL,
+      passwordHash,
+    },
+    update: {
+      passwordHash,
+    },
+  });
 }
 
 export async function verifyAdminCredentials(email: string, password: string): Promise<boolean> {
