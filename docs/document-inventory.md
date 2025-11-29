@@ -52,6 +52,7 @@ This file is the single source of truth for every Markdown document that should 
 ### docs/runbooks
 - `admin-content.md`, `deployment.md`, `observability.md`, `rollback.md`, `secrets.md`, `db-recovery.md` – Established runbooks for run/ops and emergencies.
 - `feature-flags.md` – Guidance for implementing provider-agnostic feature flags with in-memory, Redis, and hosted-provider adapters.
+- `build-modularity.md` – Plan to modularize the monorepo build graph, add remote caching, and reduce cold/warm build times.
 
 ### docs/security
 - `migration.md` – Security migration notes that were previously tracked at the repository root.
