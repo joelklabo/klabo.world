@@ -3,7 +3,7 @@ import { MarkdownField } from './markdown-field';
 import { MarkdownUploadHelper } from './upload-helper';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@klaboworld/ui';
+import { Button, Textarea } from '@klaboworld/ui';
 
 type DashboardFormProps = {
   action: (formData: FormData) => Promise<void>;
@@ -166,13 +166,9 @@ export function DashboardForm({ action, submitLabel, dashboard, includeSlugField
       </div>
 
       <div>
-        <button
-          type="submit"
-          className="rounded-full bg-indigo-600 px-6 py-2 text-sm font-semibold text-white hover:bg-indigo-500"
-          data-testid="dashboard-submit"
-        >
+        <Button type="submit" data-testid="dashboard-submit">
           {submitLabel}
-        </button>
+        </Button>
       </div>
     </form>
   );

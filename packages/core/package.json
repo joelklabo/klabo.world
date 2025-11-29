@@ -6,6 +6,9 @@
   "exports": {
     ".": "./src/index.ts"
   },
+  "devDependencies": {
+    "@types/node": "^20"
+  },
   "dependencies": {
     "@azure/storage-blob": "^12.29.1",
     "@mdx-js/mdx": "^3.0.0",
