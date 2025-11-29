@@ -25,6 +25,22 @@
     "build#pkg": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**", "build/**"]
+    },
+    "lint#app": {
+      "dependsOn": ["^lint"],
+      "outputs": []
+    },
+    "lint#pkg": {
+      "dependsOn": ["^lint"],
+      "outputs": []
+    },
+    "test#app": {
+      "dependsOn": ["lint#app"],
+      "outputs": []
+    },
+    "test#pkg": {
+      "dependsOn": ["lint#pkg"],
+      "outputs": []
     }
   }
 }
