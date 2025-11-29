@@ -2,13 +2,31 @@
 
 import { ClipboardDocumentIcon, ClipboardDocumentCheckIcon } from '@heroicons/react/24/outline';
 import Highlight, { defaultProps, type Language } from 'prism-react-renderer';
-import theme from 'prism-react-renderer/themes/nightOwl';
 import Link from 'next/link';
 import type { Route } from 'next';
 import React, { useState, type ReactNode } from 'react';
 
+const warmPrismTheme = {
+  plain: {
+    color: '#E8EDF6',
+    backgroundColor: '#0f172a',
+  },
+  styles: [
+    { types: ['comment', 'prolog', 'doctype', 'cdata'], style: { color: '#8BA0BE' } },
+    { types: ['punctuation'], style: { color: '#8BA0BE' } },
+    { types: ['property', 'tag', 'boolean', 'number', 'constant', 'symbol'], style: { color: '#F4B563' } },
+    { types: ['attr-name', 'string', 'char', 'builtin', 'inserted'], style: { color: '#F28CA6' } },
+    { types: ['operator', 'entity', 'url', 'variable'], style: { color: '#A6E3FF' } },
+    { types: ['keyword'], style: { color: '#F4B563', fontWeight: 600 } },
+    { types: ['function', 'class-name'], style: { color: '#7AD7F0' } },
+    { types: ['deleted'], style: { color: '#F16B6B' } },
+    { types: ['italic'], style: { fontStyle: 'italic' } },
+    { types: ['bold'], style: { fontWeight: 'bold' } },
+  ],
+};
+
 const baseCodeStyles =
-  'relative mt-4 rounded-2xl border border-slate-800/70 bg-slate-950/80 p-4 shadow-[0_20px_45px_rgba(2,6,23,0.85)] text-sm leading-relaxed';
+  'relative mt-4 rounded-2xl border border-[#1e293b] bg-gradient-to-b from-[#0b1223] to-[#0d1428] p-4 shadow-[0_20px_60px_rgba(11,18,35,0.65)] text-sm leading-relaxed';
 
 function CodeBlock({ children }: { children: ReactNode }) {
   const child = Array.isArray(children) ? children[0] : children;
@@ -33,13 +51,13 @@ function CodeBlock({ children }: { children: ReactNode }) {
 
   return (
     <div className={`${baseCodeStyles} relative`}>
-      <div className="absolute left-3 top-3 rounded-full border border-white/10 bg-slate-900/70 px-3 py-1 text-[11px] tracking-[0.6em] text-slate-400">
+      <div className="absolute left-3 top-3 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.35em] text-amber-100/90">
         {language.toUpperCase()}
       </div>
       <button
         type="button"
         onClick={handleCopy}
-        className="absolute right-3 top-3 flex items-center gap-1 rounded-full border border-white/10 bg-slate-900/80 px-3 py-1 text-[11px] uppercase tracking-[0.4em] text-slate-100 transition hover:border-white/30"
+        className="absolute right-3 top-3 flex items-center gap-1 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.3em] text-slate-100 transition hover:border-amber-200/60 hover:text-amber-100"
       >
         {copied ? (
           <>
@@ -53,9 +71,9 @@ function CodeBlock({ children }: { children: ReactNode }) {
           </>
         )}
       </button>
-      <Highlight {...defaultProps} code={trimmedCode} language={language} theme={theme}>
+      <Highlight {...defaultProps} code={trimmedCode} language={language} theme={warmPrismTheme as const}>
         {({ className, style, tokens, getLineProps, getTokenProps }) => (
-          <pre className="mt-10 overflow-x-auto rounded-xl" aria-label={`Code snippet (${language})`}>
+          <pre className="mt-10 overflow-x-auto rounded-xl bg-transparent" aria-label={`Code snippet (${language})`}>
             <code className={className} style={{ ...style, paddingTop: '0.5rem' }}>
               {tokens.map((line, lineIndex) => {
                 const lineProps = getLineProps({ line, key: lineIndex });
@@ -82,7 +100,10 @@ function CodeBlock({ children }: { children: ReactNode }) {
 
 function InlineCode(props: { children: ReactNode }) {
   return (
-    <code className="rounded bg-slate-800 px-1 py-0.5 font-mono text-xs font-semibold tracking-wide text-indigo-100" {...props} />
+    <code
+      className="rounded-md border border-amber-200/30 bg-amber-100/10 px-1.5 py-0.5 font-mono text-[13px] font-semibold leading-6 text-amber-100 shadow-inner shadow-amber-200/10"
+      {...props}
+    />
   );
 }
 
@@ -138,7 +159,7 @@ function ProseImage(props: { src?: string | null; alt?: string; title?: string }
 
 function BlockQuote(props: { children: ReactNode }) {
   return (
-    <blockquote className="rounded-2xl border border-cyan-500/40 bg-cyan-500/5 p-5 text-base italic leading-relaxed text-cyan-100 before:content-['“']">
+    <blockquote className="rounded-2xl border-l-4 border-amber-300/80 bg-amber-100/5 p-5 text-base leading-relaxed text-slate-100 shadow-[0_14px_32px_rgba(15,23,42,0.4)]">
       {props.children}
     </blockquote>
   );
@@ -151,21 +172,21 @@ const components = {
   img: ProseImage,
   blockquote: BlockQuote,
   table: (props: { children: ReactNode }) => (
-    <div className="relative overflow-hidden rounded-2xl border border-white/5 bg-slate-900/60 shadow-xl shadow-black/40">
-      <table className="min-w-full divide-y divide-slate-800 bg-slate-950/80" {...props} />
+    <div className="relative overflow-hidden rounded-2xl border border-white/5 bg-slate-900/60 shadow-xl shadow-black/30">
+      <table className="min-w-full divide-y divide-slate-800 bg-slate-950/60" {...props} />
     </div>
   ),
   thead: (props: { children: ReactNode }) => (
-    <thead className="bg-slate-900/70 text-xs uppercase tracking-[0.3em] text-slate-300" {...props} />
+    <thead className="bg-slate-900/80 text-xs uppercase tracking-[0.28em] text-amber-100/80" {...props} />
   ),
   th: (props: { children: ReactNode }) => (
-    <th className="border-b border-slate-800 px-4 py-3 text-left font-semibold text-sm" {...props} />
+    <th className="border-b border-slate-800 px-4 py-3 text-left text-sm font-semibold text-slate-100" {...props} />
   ),
   td: (props: { children: ReactNode }) => (
     <td className="border-b border-slate-900 px-4 py-3 text-sm text-slate-200" {...props} />
   ),
   ul: (props: { children: ReactNode }) => (
-    <ul className="space-y-2 pl-5 text-sm text-slate-200" {...props} />
+    <ul className="space-y-2 pl-5 text-sm text-slate-200 marker:text-amber-200/80" {...props} />
   ),
   ol: (props: { children: ReactNode }) => (
     <ol className="space-y-2 pl-5 text-sm text-slate-200" {...props} />
