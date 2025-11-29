@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import type { Route } from 'next';
 import { usePathname, useRouter } from 'next/navigation';
-import { KeyboardEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { KeyboardEvent, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 
 const NAV_ITEMS = [
   { label: 'Home', href: '/' },
@@ -37,6 +37,7 @@ export function GlobalNavigation() {
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const [error, setError] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [dropdownStyle, setDropdownStyle] = useState<{ left: number; top: number; width: number } | null>(null);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const navRef = useRef<HTMLDivElement>(null);
@@ -44,6 +45,14 @@ export function GlobalNavigation() {
 
   const hasQuery = query.trim().length >= 2;
   const showDropdown = hasQuery && isDropdownOpen;
+
+  const updateDropdownPosition = () => {
+    const el = inputRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const gutter = 8;
+    setDropdownStyle({ left: rect.left, top: rect.bottom + gutter, width: rect.width });
+  };
 
   useEffect(() => {
     if (!hasQuery) {
@@ -82,6 +91,18 @@ export function GlobalNavigation() {
         controllerRef.current = null;
       });
   }, [hasQuery, query]);
+
+  useLayoutEffect(() => {
+    if (!showDropdown) return;
+    updateDropdownPosition();
+    const handle = () => updateDropdownPosition();
+    window.addEventListener('resize', handle);
+    window.addEventListener('scroll', handle, true);
+    return () => {
+      window.removeEventListener('resize', handle);
+      window.removeEventListener('scroll', handle, true);
+    };
+  }, [showDropdown]);
 
   useEffect(() => {
     const listener = (event: MouseEvent) => {
@@ -247,7 +268,8 @@ const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
               <div
                 id="global-search-dropdown"
                 role="listbox"
-                className="absolute left-0 right-0 top-full z-50 mt-2 max-h-72 overflow-auto rounded-2xl border border-gray-200 bg-white p-3 shadow-lg shadow-black/10"
+                style={dropdownStyle ?? undefined}
+                className="fixed z-[120] max-h-72 overflow-auto rounded-2xl border border-gray-200 bg-white p-3 shadow-xl shadow-black/15"
                 aria-live="polite"
                 aria-label="Search suggestions"
                 data-testid="global-search-results"

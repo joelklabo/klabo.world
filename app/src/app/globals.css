@@ -100,6 +100,27 @@ body {
     font-size: 0.95em;
   }
 
+  .prose img,
+  .prose picture img,
+  .prose video,
+  .prose figure img {
+    @apply w-full max-w-full rounded-2xl border border-slate-800/60 shadow-xl;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    background: rgba(15, 23, 42, 0.5);
+    max-height: 75vh;
+    object-fit: contain;
+  }
+
+  .prose figure {
+    @apply space-y-2;
+  }
+
+  .prose figcaption {
+    @apply text-center text-sm text-slate-400;
+  }
+
   .prose ul li:before {
     background-color: rgba(99, 102, 241, 0.8);
   }
