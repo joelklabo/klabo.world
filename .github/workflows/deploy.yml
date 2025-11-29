@@ -6,6 +6,8 @@ on:
   workflow_dispatch:
 
 env:
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN || '' }}
+  TURBO_TEAM: ${{ secrets.TURBO_TEAM || '' }}
   AZURE_WEBAPP_NAME: klabo-world-app
   AZURE_RESOURCE_GROUP: klabo-world-rg
   AZURE_SLOT_NAME: staging
@@ -46,6 +48,14 @@ jobs:
             ${{ runner.os }}-turbo-
 
       - run: corepack enable
+
+      - name: Turbo cache mode
+        run: |
+          if [ -n "${TURBO_TOKEN:-}" ] && [ -n "${TURBO_TEAM:-}" ]; then
+            echo "Turbo remote cache enabled for team '${TURBO_TEAM}'."
+          else
+            echo "Turbo remote cache not configured (set TURBO_TOKEN and TURBO_TEAM secrets to enable)."
+          fi
 
       - name: Install dependencies
         run: pnpm install --ignore-scripts
@@ -95,6 +105,8 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           push: true
           tags: |
             ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}

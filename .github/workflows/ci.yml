@@ -11,6 +11,8 @@ jobs:
     permissions:
       contents: read
     env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN || '' }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM || '' }}
       ADMIN_EMAIL: admin@example.com
       ADMIN_PASSWORD: change-me
       NEXTAUTH_SECRET: test-secret
@@ -32,6 +34,13 @@ jobs:
           key: ${{ runner.os }}-turbo-${{ hashFiles('pnpm-lock.yaml', 'turbo.json') }}
           restore-keys: |
             ${{ runner.os }}-turbo-
+      - name: Turbo cache mode
+        run: |
+          if [ -n "${TURBO_TOKEN:-}" ] && [ -n "${TURBO_TEAM:-}" ]; then
+            echo "Turbo remote cache enabled for team '${TURBO_TEAM}'."
+          else
+            echo "Turbo remote cache not configured (set TURBO_TOKEN and TURBO_TEAM secrets to enable)."
+          fi
       - run: corepack enable
       - name: Install dependencies
         run: pnpm install --ignore-scripts
