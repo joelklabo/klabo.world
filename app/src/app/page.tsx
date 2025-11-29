@@ -117,12 +117,13 @@ export default function Home() {
                 <p className="text-sm text-slate-300">{post.summary}</p>
                 <div className="mt-auto flex flex-wrap gap-2">
                   {post.tags?.map((tag) => (
-                    <span
+                    <Link
                       key={tag}
-                      className="rounded-full border border-slate-800/70 px-3 py-1 text-xs font-medium uppercase tracking-widest text-slate-200"
+                      href={`/posts/tag/${encodeURIComponent(tag)}`}
+                      className="rounded-full border border-slate-800/70 px-3 py-1 text-xs font-medium uppercase tracking-widest text-slate-200 hover:border-indigo-400 hover:text-indigo-200"
                     >
                       {tag}
-                    </span>
+                    </Link>
                   ))}
                 </div>
               </article>
@@ -189,24 +190,36 @@ export default function Home() {
             </div>
             <div className="grid gap-6 md:grid-cols-2">
               {contexts.slice(0, 4).map((context) => (
-                <Link
+                <article
                   key={context._id}
-                  href={`/contexts/${context.slug}`}
                   className="flex flex-col gap-4 rounded-3xl border border-slate-800/80 bg-slate-900/60 p-6 shadow-lg shadow-black/40 transition hover:-translate-y-1 hover:border-emerald-400/70"
                 >
                   <p className="text-xs uppercase tracking-[0.4em] text-slate-400">
                     Updated {new Date(context.updatedDate ?? context.createdDate).toLocaleDateString()}
                   </p>
-                  <h3 className="text-2xl font-semibold text-white">{context.title}</h3>
+                  <h3 className="text-2xl font-semibold text-white">
+                    <Link href={`/contexts/${context.slug}`} className="hover:text-emerald-200">
+                      {context.title}
+                    </Link>
+                  </h3>
                   <p className="text-sm text-slate-300">{context.summary}</p>
                   <div className="flex flex-wrap gap-2">
                     {context.tags?.map((tag) => (
-                      <span key={tag} className="rounded-full border border-emerald-700/70 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-emerald-100">
+                      <Link
+                        key={tag}
+                        href={`/contexts/tag/${encodeURIComponent(tag)}`}
+                        className="rounded-full border border-emerald-700/70 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-emerald-100 hover:border-emerald-300 hover:text-emerald-50"
+                      >
                         {tag}
-                      </span>
+                      </Link>
                     ))}
                   </div>
-                </Link>
+                  <div>
+                    <Link href={`/contexts/${context.slug}`} className="text-sm font-semibold text-emerald-200 hover:text-emerald-100">
+                      View context →
+                    </Link>
+                  </div>
+                </article>
               ))}
             </div>
           </div>

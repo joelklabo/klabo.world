@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
 import { MDXContent } from '@/components/mdx-content';
 import { getContextBySlug, getContexts } from '@/lib/contexts';
 
@@ -40,9 +41,13 @@ export default async function ContextDetailPage({ params }: { params: Promise<Pa
         <p className="mt-3 text-lg text-gray-600 dark:text-gray-300">{context.summary}</p>
         <div className="mt-4 flex flex-wrap gap-2">
           {context.tags?.map((tag) => (
-            <span key={tag} className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-100">
+            <Link
+              key={tag}
+              href={`/contexts/tag/${encodeURIComponent(tag)}`}
+              className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 transition hover:bg-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-100 dark:hover:bg-emerald-800/60"
+            >
               {tag}
-            </span>
+            </Link>
           ))}
         </div>
         <div className="prose prose-zinc mt-8 dark:prose-invert">

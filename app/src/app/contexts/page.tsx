@@ -24,24 +24,31 @@ export default function ContextsPage() {
 
         <div className="grid gap-6 md:grid-cols-2">
           {contexts.map((context) => (
-            <Link
+            <article
               key={context._id}
-              href={`/contexts/${context.slug}`}
               className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:border-gray-800 dark:bg-gray-900"
             >
               <p className="text-xs uppercase tracking-widest text-gray-500">
                 Updated {new Date(context.updatedDate ?? context.createdDate).toLocaleDateString()}
               </p>
-              <h2 className="mt-3 text-2xl font-semibold">{context.title}</h2>
+              <h2 className="mt-3 text-2xl font-semibold">
+                <Link href={`/contexts/${context.slug}`} className="hover:text-emerald-600 dark:hover:text-emerald-300">
+                  {context.title}
+                </Link>
+              </h2>
               <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{context.summary}</p>
               <div className="mt-4 flex flex-wrap gap-2">
                 {context.tags?.map((tag) => (
-                  <span key={tag} className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-200">
+                  <Link
+                    key={tag}
+                    href={`/contexts/tag/${encodeURIComponent(tag)}`}
+                    className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 transition hover:bg-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-200 dark:hover:bg-emerald-800/50"
+                  >
                     {tag}
-                  </span>
+                  </Link>
                 ))}
               </div>
-            </Link>
+            </article>
           ))}
         </div>
 
