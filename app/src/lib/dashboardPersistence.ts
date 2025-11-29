@@ -23,6 +23,11 @@ export type DashboardInput = {
 const CONTENT_DIR = resolveContentDir();
 const DASHBOARDS_DIR = resolveContentSubdir('dashboards');
 const GITHUB_DASHBOARD_DIR = 'content/dashboards';
+const githubConfig = {
+  token: env.GITHUB_TOKEN ?? '',
+  owner: env.GITHUB_OWNER,
+  repo: env.GITHUB_REPO,
+};
 
 function shouldUseGitHub(): boolean {
   return process.env.NODE_ENV === 'production' && Boolean(env.GITHUB_TOKEN);
@@ -105,14 +110,14 @@ async function writeGitHubFile(slug: string, content: string) {
   const relativePath = `${GITHUB_DASHBOARD_DIR}/${slug}.mdx`;
   let sha: string | undefined;
   try {
-    const existing = await fetchRepoFile(relativePath);
+    const existing = await fetchRepoFile(githubConfig, relativePath);
     sha = existing.sha;
   } catch (error) {
     if ((error as { status?: number }).status !== 404) {
       throw error;
     }
   }
-  await upsertRepoFile({
+  await upsertRepoFile(githubConfig, {
     path: relativePath,
     message: `chore: update dashboard ${slug}`,
     content,
@@ -144,8 +149,8 @@ export async function updateDashboard(slug: string, input: DashboardInput) {
 export async function deleteDashboard(slug: string) {
   if (shouldUseGitHub()) {
     const relativePath = `${GITHUB_DASHBOARD_DIR}/${slug}.mdx`;
-    const existing = await fetchRepoFile(relativePath);
-    await deleteRepoFile(relativePath, `chore: delete dashboard ${slug}`, existing.sha);
+    const existing = await fetchRepoFile(githubConfig, relativePath);
+    await deleteRepoFile(githubConfig, relativePath, `chore: delete dashboard ${slug}`, existing.sha);
   } else {
     await fs.unlink(path.join(DASHBOARDS_DIR, `${slug}.mdx`));
   }

@@ -24,6 +24,11 @@ export type AppInput = {
 const CONTENT_DIR = resolveContentDir();
 const APPS_DIR = resolveContentSubdir('apps');
 const GITHUB_APPS_DIR = 'content/apps';
+const githubConfig = {
+  token: env.GITHUB_TOKEN ?? '',
+  owner: env.GITHUB_OWNER,
+  repo: env.GITHUB_REPO,
+};
 
 function shouldUseGitHub(): boolean {
   return process.env.NODE_ENV === 'production' && Boolean(env.GITHUB_TOKEN);
@@ -42,14 +47,14 @@ async function writeGitHubFile(slug: string, content: string) {
   const relativePath = `${GITHUB_APPS_DIR}/${slug}.json`;
   let sha: string | undefined;
   try {
-    const existing = await fetchRepoFile(relativePath);
+    const existing = await fetchRepoFile(githubConfig, relativePath);
     sha = existing.sha;
   } catch (error: unknown) {
     if (typeof error !== 'object' || error === null || (error as { status?: number }).status !== 404) {
       throw error;
     }
   }
-  await upsertRepoFile({
+  await upsertRepoFile(githubConfig, {
     path: relativePath,
     message: `chore: update app ${slug}`,
     content,
@@ -75,8 +80,8 @@ export async function deleteApp(slug: string) {
   const normalizedSlug = sanitizeSlug(slug);
   if (shouldUseGitHub()) {
     const relativePath = `${GITHUB_APPS_DIR}/${normalizedSlug}.json`;
-    const existing = await fetchRepoFile(relativePath);
-    await deleteRepoFile(relativePath, `chore: delete app ${normalizedSlug}`, existing.sha);
+    const existing = await fetchRepoFile(githubConfig, relativePath);
+    await deleteRepoFile(githubConfig, relativePath, `chore: delete app ${normalizedSlug}`, existing.sha);
   } else {
     await fs.unlink(path.join(APPS_DIR, `${normalizedSlug}.json`));
   }

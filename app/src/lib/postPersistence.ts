@@ -17,6 +17,11 @@ export type PostInput = {
 const CONTENT_DIR = resolveContentDir();
 const POSTS_DIR = resolveContentSubdir('posts');
 const GITHUB_POSTS_DIR = 'content/posts';
+const githubConfig = {
+  token: env.GITHUB_TOKEN ?? '',
+  owner: env.GITHUB_OWNER,
+  repo: env.GITHUB_REPO,
+};
 
 function shouldUseGitHub(): boolean {
   return process.env.NODE_ENV === 'production' && Boolean(env.GITHUB_TOKEN);
@@ -89,14 +94,14 @@ async function writeGitHubFile(slug: string, content: string) {
   const relativePath = `${GITHUB_POSTS_DIR}/${slug}.mdx`;
   let sha: string | undefined;
   try {
-    const existing = await fetchRepoFile(relativePath);
+    const existing = await fetchRepoFile(githubConfig, relativePath);
     sha = existing.sha;
   } catch (error: unknown) {
     if (typeof error !== 'object' || error === null || (error as { status?: number }).status !== 404) {
       throw error;
     }
   }
-  await upsertRepoFile({
+  await upsertRepoFile(githubConfig, {
     path: relativePath,
     message: `chore: update post ${slug}`,
     content,
@@ -128,8 +133,8 @@ export async function updatePost(slug: string, input: PostInput) {
 export async function deletePost(slug: string) {
   if (shouldUseGitHub()) {
     const relativePath = `${GITHUB_POSTS_DIR}/${slug}.mdx`;
-    const existing = await fetchRepoFile(relativePath);
-    await deleteRepoFile(relativePath, `chore: delete post ${slug}`, existing.sha);
+    const existing = await fetchRepoFile(githubConfig, relativePath);
+    await deleteRepoFile(githubConfig, relativePath, `chore: delete post ${slug}`, existing.sha);
   } else {
     await fs.unlink(path.join(POSTS_DIR, `${slug}.mdx`));
   }

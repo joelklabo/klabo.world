@@ -19,6 +19,11 @@ export type ContextInput = {
 const CONTENT_DIR = resolveContentDir();
 const CONTEXT_DIR = resolveContentSubdir('contexts');
 const GITHUB_CONTEXT_DIR = 'content/contexts';
+const githubConfig = {
+  token: env.GITHUB_TOKEN ?? '',
+  owner: env.GITHUB_OWNER,
+  repo: env.GITHUB_REPO,
+};
 
 function shouldUseGitHub(): boolean {
   return process.env.NODE_ENV === 'production' && Boolean(env.GITHUB_TOKEN);
@@ -52,14 +57,14 @@ async function writeGitHubFile(slug: string, content: string) {
   const relativePath = `${GITHUB_CONTEXT_DIR}/${slug}.mdx`;
   let sha: string | undefined;
   try {
-    const existing = await fetchRepoFile(relativePath);
+    const existing = await fetchRepoFile(githubConfig, relativePath);
     sha = existing.sha;
   } catch (error: unknown) {
     if (typeof error !== 'object' || error === null || (error as { status?: number }).status !== 404) {
       throw error;
     }
   }
-  await upsertRepoFile({
+  await upsertRepoFile(githubConfig, {
     path: relativePath,
     message: `chore: update context ${slug}`,
     content,
@@ -81,8 +86,8 @@ export async function deleteContext(slug: string) {
   const normalized = normalizeSlug(slug);
   if (shouldUseGitHub()) {
     const relativePath = `${GITHUB_CONTEXT_DIR}/${normalized}.mdx`;
-    const existing = await fetchRepoFile(relativePath);
-    await deleteRepoFile(relativePath, `chore: delete context ${normalized}`, existing.sha);
+    const existing = await fetchRepoFile(githubConfig, relativePath);
+    await deleteRepoFile(githubConfig, relativePath, `chore: delete context ${normalized}`, existing.sha);
   } else {
     await fs.unlink(path.join(CONTEXT_DIR, `${normalized}.mdx`));
   }
