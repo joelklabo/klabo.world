@@ -21,7 +21,6 @@ export type AppInput = {
   appStoreURL?: string;
 };
 
-const CONTENT_DIR = resolveContentDir();
 const APPS_DIR = resolveContentSubdir('apps');
 const GITHUB_APPS_DIR = 'content/apps';
 const githubConfig = {

@@ -1,9 +1,4 @@
-import {
-  createGitHubClient,
-  deleteRepoFile as coreDelete,
-  fetchRepoFile as coreFetch,
-  upsertRepoFile as coreUpsert,
-} from '@klaboworld/core/server/github';
+import { deleteRepoFile as coreDelete, fetchRepoFile as coreFetch, upsertRepoFile as coreUpsert } from '@klaboworld/core/server/github';
 import { env } from './env';
 
 const config = {

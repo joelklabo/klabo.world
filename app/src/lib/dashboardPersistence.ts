@@ -20,7 +20,6 @@ export type DashboardInput = {
   notes?: string | null;
 };
 
-const CONTENT_DIR = resolveContentDir();
 const DASHBOARDS_DIR = resolveContentSubdir('dashboards');
 const GITHUB_DASHBOARD_DIR = 'content/dashboards';
 const githubConfig = {

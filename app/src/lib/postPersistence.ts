@@ -14,7 +14,6 @@ export type PostInput = {
   publishDate?: string | null;
 };
 
-const CONTENT_DIR = resolveContentDir();
 const POSTS_DIR = resolveContentSubdir('posts');
 const GITHUB_POSTS_DIR = 'content/posts';
 const githubConfig = {

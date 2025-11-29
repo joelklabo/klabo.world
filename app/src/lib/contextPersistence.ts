@@ -16,7 +16,6 @@ export type ContextInput = {
   isPublished: boolean;
 };
 
-const CONTENT_DIR = resolveContentDir();
 const CONTEXT_DIR = resolveContentSubdir('contexts');
 const GITHUB_CONTEXT_DIR = 'content/contexts';
 const githubConfig = {
