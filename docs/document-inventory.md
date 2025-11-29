@@ -18,6 +18,7 @@ This file is the single source of truth for every Markdown document that should 
 - `0006-monorepo-pnpm-turborepo.md` – Monorepo structure with PNPM workspaces and TurboRepo.
 - `0007-renovate-dependency-updates.md` – Renovate for automated dependency updates with auto-merge.
 - `0008-api-layer.md` – Decision to use tRPC for internal/admin APIs while keeping REST for public surfaces, plus migration plan.
+- `0009-monorepo-modularization.md` – Strategy to modularize the monorepo, tune the Turbo build graph, and set measurable build targets.
 
 ### docs/azure
 - `auth-setup.md` – Azure CLI authorization setup guidance used by the deployment scripts.
