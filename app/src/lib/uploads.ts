@@ -1,7 +1,7 @@
 import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { uploadBuffer } from './blob-service';
+import { buildFilename, writeBlobUpload, writeLocalUpload } from '@klaboworld/core';
 import { env } from './env';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
@@ -14,7 +14,7 @@ const MIME_EXTENSION: Record<string, string> = {
   'image/webp': 'webp',
 };
 
-const AZURE_CONFIGURED = Boolean(process.env.AZURE_STORAGE_ACCOUNT && process.env.AZURE_STORAGE_KEY);
+const AZURE_CONFIGURED = Boolean(env.AZURE_STORAGE_ACCOUNT && env.AZURE_STORAGE_KEY);
 
 function resolveUploadsDir() {
   return path.isAbsolute(env.UPLOADS_DIR) ? env.UPLOADS_DIR : path.join(process.cwd(), env.UPLOADS_DIR);
@@ -47,17 +47,32 @@ export async function handleImageUpload(file: File) {
   const mime = getMimeType(file);
   assertValidFile(file);
   const extension = MIME_EXTENSION[mime];
-  const filename = `${crypto.randomUUID()}.${extension}`;
+  const filename = buildFilename(`${crypto.randomUUID()}.${extension}`);
   const arrayBuffer = await file.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
 
   if (AZURE_CONFIGURED) {
-    const url = await uploadBuffer(filename, buffer, mime);
-    return { url, filename, storage: 'azure' as const };
+    const result = await writeBlobUpload(
+      {
+        uploadsDir: env.UPLOADS_DIR,
+        uploadsContainerUrl: env.UPLOADS_CONTAINER_URL,
+        accountName: env.AZURE_STORAGE_ACCOUNT,
+        accountKey: env.AZURE_STORAGE_KEY,
+        container: env.AZURE_STORAGE_CONTAINER ?? 'uploads',
+      },
+      filename,
+      buffer,
+      mime,
+    );
+    return { url: result.url, filename: result.filename, storage: 'azure' as const };
   }
 
   const uploadsDir = resolveUploadsDir();
   await fs.mkdir(uploadsDir, { recursive: true });
-  await fs.writeFile(path.join(uploadsDir, filename), buffer);
-  return { url: buildLocalUrl(filename), filename, storage: 'local' as const };
+  const result = await writeLocalUpload(
+    { uploadsDir, uploadsContainerUrl: env.UPLOADS_CONTAINER_URL },
+    filename,
+    buffer,
+  );
+  return { url: buildLocalUrl(result.filename), filename: result.filename, storage: 'local' as const };
 }
