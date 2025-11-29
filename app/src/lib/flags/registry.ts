@@ -5,7 +5,7 @@ import { FlagDefinition } from './types';
 const flagSchema = z.object({
   key: z.string().min(1),
   type: z.enum(['boolean', 'string', 'number', 'json']),
-  defaultValue: z.union([z.boolean(), z.string(), z.number(), z.record(z.any())]),
+  defaultValue: z.union([z.boolean(), z.string(), z.number(), z.record(z.string(), z.any())]),
   description: z.string().optional(),
   owner: z.string().min(1),
   expiry: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),

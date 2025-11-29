@@ -141,7 +141,7 @@ export function DashboardForm({ action, submitLabel, dashboard, includeSlugField
 
       <div>
         <Label htmlFor="kqlQuery">KQL query (for App Insights)</Label>
-        <TextArea
+        <Textarea
           id="kqlQuery"
           name="kqlQuery"
           rows={6}

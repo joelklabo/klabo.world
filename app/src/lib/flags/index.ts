@@ -85,9 +85,14 @@ class RedisFlagAdapter implements FlagAdapter {
     const results: Record<string, FlagAdapterResult> = {};
     keys.forEach((k, idx) => {
       const keyWithoutPrefix = k.replace(REDIS_PREFIX, '');
-      const parsed = values[idx] ? safelyParse(values[idx] as string) : null;
+      const raw = values[idx];
+      if (raw === null) {
+        return;
+      }
+      const parsed = safelyParse(raw as string);
+      const value = (parsed ?? raw) as FlagValue;
       results[keyWithoutPrefix] = {
-        value: parsed ?? values[idx],
+        value,
         source: 'redis',
       };
     });
@@ -157,8 +162,13 @@ function activeAdapters(redisClient: RedisLike | null): FlagAdapter[] {
   return adapters;
 }
 
-const redisClient = env.REDIS_URL
-  ? createClient({ url: env.REDIS_URL, socket: { reconnectStrategy: 'exponential' } })
+const redisClient: RedisLike | null = env.REDIS_URL
+  ? (createClient({
+      url: env.REDIS_URL,
+      socket: {
+        reconnectStrategy: (retries) => Math.min(1000, retries * 100),
+      },
+    }) as unknown as RedisLike)
   : null;
 
 const adapters = activeAdapters(redisClient);
