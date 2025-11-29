@@ -3,6 +3,7 @@ import { getPublishedContextBySlug, toContextMetadata } from '@/lib/contexts';
 import { renderMarkdownPreview } from '@/lib/markdownPreview';
 
 export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 type Params = {
   slug: string;

@@ -3,6 +3,8 @@ import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentation
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { env } from './src/lib/env';
 
+export const runtime = 'nodejs';
+
 const connectionString = env.APPLICATIONINSIGHTS_CONNECTION_STRING;
 
 export async function register() {
