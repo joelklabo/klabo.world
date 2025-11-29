@@ -67,6 +67,7 @@ All commands assume repo root.
   - Never skip this flow—every commit should go through `commit-push-watch.sh` so we catch CI failures immediately.
   - **Before starting ANY new task**, reattach (or run `gh run list --limit 5`) to confirm the previous CI passes. If it failed, fix it *before* doing more work.
   - **When closing a beads issue, commit immediately** (using the helper above) so the issue closure, code, and CI status stay aligned.
+- **Turbo remote cache:** Set `TURBO_TEAM` and `TURBO_TOKEN` in your shell/CI to enable Turbo’s remote caching; leave them unset for local-only caching.
 
 ## Azure / GitHub CLI Quick Reference
 
