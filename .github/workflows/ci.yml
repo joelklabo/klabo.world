@@ -38,6 +38,8 @@ jobs:
         run: NODE_ENV=production pnpm --filter app exec contentlayer build
       - name: Generate Prisma client
         run: pnpm --filter app exec prisma generate
+      - name: Feature flag metadata check
+        run: pnpm flags:check
       - name: Lint
         run: pnpm turbo lint
       - name: Unit tests
