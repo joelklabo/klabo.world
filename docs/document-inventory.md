@@ -59,6 +59,7 @@ This file is the single source of truth for every Markdown document that should 
 
 ### docs/testing
 - `ui-testing-plan.md`, `ui-coverage-matrix.md` – Playwright/Vitest strategy and coverage matrix.
+- `navigation-inventory.md` – Source of truth for public/admin nav routes, test IDs, and the Playwright spec that covers them.
 
 ### docs/vapor
 - Several Vapor-specific tutorials (`index.md`, `folder-structure.md`, `controllers.md`, etc.) preserved for reference but not actively maintained.
