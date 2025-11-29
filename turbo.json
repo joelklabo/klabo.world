@@ -3,7 +3,7 @@
   "globalDependencies": [
     "pnpm-lock.yaml"
   ],
-  "pipeline": {
+  "tasks": {
     "lint": {
       "dependsOn": ["^lint"],
       "outputs": []
