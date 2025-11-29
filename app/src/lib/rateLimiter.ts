@@ -1,4 +1,4 @@
-import { createRateLimiter } from '@klaboworld/core';
+import { createRateLimiter } from '@klaboworld/core/server/rateLimiter';
 import { env } from './env';
 
 export const rateLimiter = createRateLimiter({

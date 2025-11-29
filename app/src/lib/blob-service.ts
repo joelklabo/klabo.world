@@ -1,4 +1,4 @@
-import { createBlobContainerClient, uploadBuffer as coreUploadBuffer } from '@klaboworld/core';
+import { createBlobContainerClient, uploadBuffer as coreUploadBuffer } from '@klaboworld/core/server/blob';
 
 const accountName = process.env.AZURE_STORAGE_ACCOUNT;
 const accountKey = process.env.AZURE_STORAGE_KEY;

@@ -1,7 +1,7 @@
 import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { buildFilename, writeBlobUpload, writeLocalUpload } from '@klaboworld/core';
+import { buildFilename, writeBlobUpload, writeLocalUpload } from '@klaboworld/core/server/uploads';
 import { env } from './env';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB

@@ -4,10 +4,8 @@ import slugify from 'slugify';
 import {
   resolveContentDir,
   resolveContentSubdir,
-  deleteRepoFile,
-  fetchRepoFile,
-  upsertRepoFile,
-} from '@klaboworld/core';
+} from '@klaboworld/core/server/contentPaths';
+import { deleteRepoFile, fetchRepoFile, upsertRepoFile } from '@klaboworld/core/server/github';
 import { env } from './env';
 
 export type AppInput = {
