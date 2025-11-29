@@ -42,10 +42,10 @@ test.describe('admin navigation', () => {
     await Promise.all([page.waitForNavigation(), page.getByTestId('admin-login-submit').click()]);
 
     await expect(page).toHaveURL(/\/admin$/);
-    await expect(page.getByTestId('admin-nav')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Sign out' })).toBeVisible({ timeout: 10000 });
-
     const adminNav = page.getByTestId('admin-nav');
+    await expect(adminNav.getByTestId('admin-nav-dashboard')).toBeVisible({ timeout: 10000 });
+
     const adminLinks: Array<{ id: string; path: RegExp }> = [
       { id: 'dashboard', path: /\/admin$/ },
       { id: 'compose', path: /\/admin\/compose/ },
