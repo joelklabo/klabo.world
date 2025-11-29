@@ -30,6 +30,8 @@ app/.contentlayer/
 app/data/
 !app/data/.gitkeep
 pnpm-debug.log
+.next/
+app/.next/
 
 # Temporary files
 *.tmp
