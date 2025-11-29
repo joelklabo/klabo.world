@@ -17,6 +17,7 @@ This file is the single source of truth for every Markdown document that should 
 - `0005-shadcn-ui-component-library.md` – shadcn/ui copy-paste component library approach.
 - `0006-monorepo-pnpm-turborepo.md` – Monorepo structure with PNPM workspaces and TurboRepo.
 - `0007-renovate-dependency-updates.md` – Renovate for automated dependency updates with auto-merge.
+- `0008-api-layer.md` – Decision to use tRPC for internal/admin APIs while keeping REST for public surfaces, plus migration plan.
 
 ### docs/azure
 - `auth-setup.md` – Azure CLI authorization setup guidance used by the deployment scripts.
@@ -49,6 +50,7 @@ This file is the single source of truth for every Markdown document that should 
 
 ### docs/runbooks
 - `admin-content.md`, `deployment.md`, `observability.md`, `rollback.md`, `secrets.md`, `db-recovery.md` – Established runbooks for run/ops and emergencies.
+- `feature-flags.md` – Guidance for implementing provider-agnostic feature flags with in-memory, Redis, and hosted-provider adapters.
 
 ### docs/security
 - `migration.md` – Security migration notes that were previously tracked at the repository root.

@@ -13,7 +13,8 @@
     "dev": "just dev",
     "lint": "just lint",
     "test": "just test",
-    "doctor": "just doctor"
+    "doctor": "just doctor",
+    "flags:check": "node scripts/list-expired-flags.js"
   },
   "devDependencies": {
     "@azure/monitor-opentelemetry-exporter": "1.0.0-beta.32",

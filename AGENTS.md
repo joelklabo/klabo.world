@@ -66,6 +66,7 @@ All commands assume repo root.
   - Reattach later with `tmux attach -t commit-push-watch.sh-<timestamp>` or simply run `commit-push-watch.sh --help` for session naming options.
   - Never skip this flow—every commit should go through `commit-push-watch.sh` so we catch CI failures immediately.
   - **Before starting ANY new task**, reattach (or run `gh run list --limit 5`) to confirm the previous CI passes. If it failed, fix it *before* doing more work.
+  - **When closing a beads issue, commit immediately** (using the helper above) so the issue closure, code, and CI status stay aligned.
 
 ## Azure / GitHub CLI Quick Reference
 
