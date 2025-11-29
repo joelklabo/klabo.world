@@ -1,12 +1,12 @@
 "use client";
 
 import { ClipboardDocumentIcon, ClipboardDocumentCheckIcon } from '@heroicons/react/24/outline';
-import Highlight, { defaultProps, type Language } from 'prism-react-renderer';
+import Highlight, { defaultProps, type Language, type PrismTheme } from 'prism-react-renderer';
 import Link from 'next/link';
 import type { Route } from 'next';
 import React, { useState, type ReactNode } from 'react';
 
-const warmPrismTheme = {
+const warmPrismTheme: PrismTheme = {
   plain: {
     color: '#E8EDF6',
     backgroundColor: '#0f172a',
@@ -17,11 +17,11 @@ const warmPrismTheme = {
     { types: ['property', 'tag', 'boolean', 'number', 'constant', 'symbol'], style: { color: '#F4B563' } },
     { types: ['attr-name', 'string', 'char', 'builtin', 'inserted'], style: { color: '#F28CA6' } },
     { types: ['operator', 'entity', 'url', 'variable'], style: { color: '#A6E3FF' } },
-    { types: ['keyword'], style: { color: '#F4B563', fontWeight: 600 } },
+    { types: ['keyword'], style: { color: '#F4B563', fontWeight: '700' } },
     { types: ['function', 'class-name'], style: { color: '#7AD7F0' } },
     { types: ['deleted'], style: { color: '#F16B6B' } },
     { types: ['italic'], style: { fontStyle: 'italic' } },
-    { types: ['bold'], style: { fontWeight: 'bold' } },
+    { types: ['bold'], style: { fontWeight: '700' } },
   ],
 };
 
@@ -71,7 +71,7 @@ function CodeBlock({ children }: { children: ReactNode }) {
           </>
         )}
       </button>
-      <Highlight {...defaultProps} code={trimmedCode} language={language} theme={warmPrismTheme as const}>
+      <Highlight {...defaultProps} code={trimmedCode} language={language} theme={warmPrismTheme}>
         {({ className, style, tokens, getLineProps, getTokenProps }) => (
           <pre className="mt-10 overflow-x-auto rounded-xl bg-transparent" aria-label={`Code snippet (${language})`}>
             <code className={className} style={{ ...style, paddingTop: '0.5rem' }}>
