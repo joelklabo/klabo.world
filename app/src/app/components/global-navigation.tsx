@@ -247,7 +247,7 @@ const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
               <div
                 id="global-search-dropdown"
                 role="listbox"
-                className="mt-2 max-h-72 overflow-auto rounded-2xl border border-gray-200 bg-white p-3 shadow-lg shadow-black/5"
+                className="absolute left-0 right-0 top-full z-50 mt-2 max-h-72 overflow-auto rounded-2xl border border-gray-200 bg-white p-3 shadow-lg shadow-black/10"
                 aria-live="polite"
                 aria-label="Search suggestions"
                 data-testid="global-search-results"

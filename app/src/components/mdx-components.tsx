@@ -117,7 +117,13 @@ function ProseImage(props: { src?: string | null; alt?: string; title?: string }
       <Link href={src as Route} target="_blank" rel="noreferrer" className="pointer-events-auto">
         <div className="relative overflow-hidden rounded-[32px] border border-white/10 bg-gradient-to-b from-slate-900 via-slate-950 to-black shadow-2xl shadow-black/60 transition hover:-translate-y-1.5 hover:shadow-[0_30px_50px_rgba(2,6,23,0.75)]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={src} alt={alt ?? 'Illustration'} title={title} className="w-full object-cover transition duration-300 group-hover:scale-105" />
+          <img
+            src={src}
+            alt={alt ?? 'Illustration'}
+            title={title}
+            loading="lazy"
+            className="w-full max-h-[70vh] object-contain transition duration-300 group-hover:scale-105 md:max-h-[80vh]"
+          />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/50 opacity-0 transition group-hover:opacity-100" />
         </div>
       </Link>
