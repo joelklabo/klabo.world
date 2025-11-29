@@ -1,9 +1,14 @@
 import fs from 'node:fs/promises';
-import { existsSync } from 'node:fs';
 import path from 'node:path';
 import slugify from 'slugify';
+import {
+  resolveContentDir,
+  resolveContentSubdir,
+  deleteRepoFile,
+  fetchRepoFile,
+  upsertRepoFile,
+} from '@klaboworld/core';
 import { env } from './env';
-import { deleteRepoFile, fetchRepoFile, upsertRepoFile } from './github-service';
 
 export type PostInput = {
   title: string;
@@ -14,13 +19,8 @@ export type PostInput = {
   publishDate?: string | null;
 };
 
-const POSSIBLE_CONTENT_DIRS = [
-  path.resolve(process.cwd(), 'content'),
-  path.resolve(process.cwd(), '../content'),
-];
-
-const CONTENT_DIR = POSSIBLE_CONTENT_DIRS.find((dir) => existsSync(dir)) ?? POSSIBLE_CONTENT_DIRS[0];
-const POSTS_DIR = path.join(CONTENT_DIR, 'posts');
+const CONTENT_DIR = resolveContentDir();
+const POSTS_DIR = resolveContentSubdir('posts');
 const GITHUB_POSTS_DIR = 'content/posts';
 
 function shouldUseGitHub(): boolean {
