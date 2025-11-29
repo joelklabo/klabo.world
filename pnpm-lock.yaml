@@ -280,6 +280,16 @@ importers:
       zod:
         specifier: ^4.1.12
         version: 4.1.12
+    devDependencies:
+      '@types/node':
+        specifier: ^20
+        version: 20.19.25
+      '@types/react':
+        specifier: ^19
+        version: 19.2.5
+      '@types/react-dom':
+        specifier: ^19
+        version: 19.2.3(@types/react@19.2.5)
 
   packages/scripts:
     dependencies:
@@ -304,6 +314,13 @@ importers:
       react-dom:
         specifier: 19.x
         version: 19.2.0(react@19.2.0)
+    devDependencies:
+      '@types/react':
+        specifier: ^19
+        version: 19.2.5
+      '@types/react-dom':
+        specifier: ^19
+        version: 19.2.3(@types/react@19.2.5)
 
 packages:
 
