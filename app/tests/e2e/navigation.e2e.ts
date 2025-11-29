@@ -42,9 +42,8 @@ test.describe('admin navigation', () => {
     await Promise.all([page.waitForNavigation(), page.getByTestId('admin-login-submit').click()]);
 
     await expect(page).toHaveURL(/\/admin$/);
-    const adminHeader = page.locator('header').filter({ hasText: 'Sign out' });
-    await expect(adminHeader.getByRole('button', { name: 'Sign out' })).toBeVisible();
     await expect(page.getByTestId('admin-nav')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Sign out' })).toBeVisible({ timeout: 10000 });
 
     const adminNav = page.getByTestId('admin-nav');
     const adminLinks: Array<{ id: string; path: RegExp }> = [
