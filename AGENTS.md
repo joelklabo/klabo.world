@@ -221,3 +221,11 @@ Keep this document current. Any contributor—human or AI—should be able to on
 - Pull your next task from `bd ready` or the open blockers under `klabo.world-gfu` (API layer, feature flags, modular monorepo).
 - Validate the Playwright/Vitest coverage described in `docs/testing/*` whenever you touch UI flows.
 - Keep the runbooks under `docs/runbooks/` accurate after every major change; if a runbook becomes obsolete, mark it as such in `docs/document-inventory.md` and archive the content to `docs/experimental/`.
+
+## Beads usage (bd)
+- Generate the repo-specific guide: `bd onboard --output .beads/BD_GUIDE.md` (commit it).
+- Initialize in repo root: `bd init --team` (protected main) or `bd init --contributor` (fork); then run `bd doctor`.
+- Status mapping expected by the UI: open(`open|ready|todo|backlog`), in progress(`in_progress|doing|wip`), blocked(`blocked`), closed(`closed|done|resolved`), other(anything else). Set `bd update <id> --status in_progress` when work starts.
+- Daemon/merge driver: accept prompts; manage with `bd daemons health|killall`. Data lives in `.beads/`—commit it with code.
+- If the viewer shows zero projects, run `bd doctor` then `bd daemons killall`, and reload.
+- When you close an issue that had code changes, make a commit and push at the time of closure (one commit per closed issue).
