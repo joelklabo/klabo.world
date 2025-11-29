@@ -2,8 +2,7 @@ import { requireAdminSession } from '@/lib/adminSession';
 import { ImageUploadField } from '@/app/(admin)/components/image-upload-field';
 import { MarkdownField } from '@/app/(admin)/components/markdown-field';
 import { createPostAction } from '../posts/actions';
-import { Input } from '@/components/ui/input';
-import { Button, Textarea } from '@klaboworld/ui';
+import { Button, Input, Textarea } from '@klaboworld/ui';
 import { Label } from '@/components/ui/label';
 
 export const dynamic = 'force-dynamic';
