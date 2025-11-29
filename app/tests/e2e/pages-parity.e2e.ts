@@ -23,10 +23,10 @@ const contextRoutes = [
 test.describe('public content routes', () => {
   test('home page renders hero and sections', async ({ page }) => {
     await page.goto('/');
-    await expect(page.locator('h1')).toHaveText('Bitcoin, Lightning, Nostr & Agentic Engineering');
+    await expect(page.getByRole('heading', { name: 'Bitcoin, Lightning, Nostr & Agentic Engineering' })).toBeVisible();
     await expect(page.getByRole('link', { name: 'Read Articles' })).toHaveAttribute('href', '/posts');
-    await expect(page.getByText('Projects & Tools')).toBeVisible();
-    await expect(page.getByText('AI & MCP Context Library')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Recent Articles' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Projects & Experiments' })).toBeVisible();
   });
 
   test('posts index shows known articles', async ({ page }) => {
@@ -40,7 +40,7 @@ test.describe('public content routes', () => {
     test(`post ${post.slug} renders title and summary`, async ({ page }) => {
       await page.goto(`/posts/${post.slug}`);
     await expect(page.getByRole('heading', { name: post.title })).toBeVisible();
-    await expect(page.getByText(post.summary)).toBeVisible();
+    await expect(page.getByText(post.summary).first()).toBeVisible();
     await expect(page.locator('article')).toContainText(post.title);
   });
   }

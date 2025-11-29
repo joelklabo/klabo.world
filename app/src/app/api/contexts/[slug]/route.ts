@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getPublishedContextBySlug, toContextMetadata } from '@/lib/contexts';
+import { getEditableContextBySlug, getPublishedContextBySlug, toAdminContextMetadata, toContextMetadata } from '@/lib/contexts';
 import { renderMarkdownPreview } from '@/lib/markdownPreview';
 
 export const dynamic = 'force-dynamic';
@@ -15,15 +15,20 @@ type RouteContext = {
 
 export async function GET(_request: NextRequest, context: RouteContext) {
   const params = await context.params;
-  const contextEntry = getPublishedContextBySlug(params.slug);
-  if (!contextEntry) {
+  const contentlayerContext = getPublishedContextBySlug(params.slug);
+  const diskContext = contentlayerContext ? undefined : await getEditableContextBySlug(params.slug);
+
+  const isPublishedDiskContext = diskContext && diskContext.isPublished !== false;
+  if (!contentlayerContext && !isPublishedDiskContext) {
     return NextResponse.json({ error: 'Context not found' }, { status: 404 });
   }
-  const metadata = toContextMetadata(contextEntry);
-  const htmlContent = await renderMarkdownPreview(contextEntry.body.raw);
+
+  const metadata = contentlayerContext ? toContextMetadata(contentlayerContext) : toAdminContextMetadata(diskContext!);
+  const rawBody = contentlayerContext ? contentlayerContext.body.raw : diskContext!.body;
+  const htmlContent = await renderMarkdownPreview(rawBody);
   return NextResponse.json({
     metadata,
-    content: contextEntry.body.raw,
+    content: rawBody,
     htmlContent,
   });
 }

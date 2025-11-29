@@ -1,14 +1,14 @@
-import { type DashboardDoc } from 'contentlayer/generated';
 import { MarkdownField } from './markdown-field';
 import { MarkdownUploadHelper } from './upload-helper';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button, Textarea } from '@klaboworld/ui';
+import { type Dashboard } from '@/lib/dashboards';
 
 type DashboardFormProps = {
   action: (formData: FormData) => Promise<void>;
   submitLabel: string;
-  dashboard?: DashboardDoc;
+  dashboard?: Dashboard;
   includeSlugField?: boolean;
 };
 

@@ -231,7 +231,7 @@ export default function Home() {
             <div className="grid gap-6 md:grid-cols-3">
               {dashboards.slice(0, 3).map((dashboard) => (
                 <Link
-                  key={dashboard._id}
+                  key={dashboard.slug}
                   href={`/admin/dashboards/${dashboard.slug}`}
                   className="flex flex-col gap-3 rounded-3xl border border-slate-800/80 bg-slate-950/60 p-6 shadow-xl shadow-black/60 transition hover:-translate-y-1 hover:border-cyan-500/70"
                 >

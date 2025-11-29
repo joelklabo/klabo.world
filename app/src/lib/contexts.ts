@@ -56,6 +56,20 @@ export function toContextMetadata(context: ContextDoc): ContextMetadataDTO {
   };
 }
 
+export function toAdminContextMetadata(context: AdminContext): ContextMetadataDTO {
+  const createdISO = new Date(context.createdDate).toISOString();
+  const updatedISO = new Date(context.updatedDate ?? context.createdDate).toISOString();
+  return {
+    title: context.title,
+    summary: context.summary,
+    tags: context.tags ?? [],
+    slug: context.slug,
+    createdDate: createdISO,
+    updatedDate: updatedISO,
+    isPublished: context.isPublished !== false,
+  };
+}
+
 export function getPublishedContextBySlug(slug: string): ContextDoc | undefined {
   const context = getContextBySlug(slug);
   if (!context || !isPublished(context)) {
