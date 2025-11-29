@@ -1,4 +1,5 @@
 import { type Dashboard } from './dashboards';
+import { env } from './env';
 import { runLogAnalyticsQuery } from './logAnalytics';
 
 const TEXT_COLUMN_TYPES = new Set(['string', 'guid']);
@@ -73,6 +74,10 @@ export async function loadDashboardLogs(dashboard: Dashboard, options: LogOption
 
   if (!dashboard.kqlQuery) {
     return { status: 'disabled', reason: 'No KQL query configured yet.' };
+  }
+
+  if (!env.LOG_ANALYTICS_WORKSPACE_ID || !env.LOG_ANALYTICS_SHARED_KEY) {
+    return { status: 'disabled', reason: 'Log Analytics not configured (set LOG_ANALYTICS_WORKSPACE_ID/LOG_ANALYTICS_SHARED_KEY).' };
   }
 
   try {
