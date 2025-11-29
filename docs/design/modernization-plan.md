@@ -1,0 +1,55 @@
+# Design Modernization & Simplification Plan
+
+Goal: refresh klabo.world so it feels warm, colorful, and playful while keeping content legible, code-focused, and fast. This is a north-star plan for Phase 5 UI work.
+
+## Direction
+- **Tone**: optimistic, tinkerer energy; fewer harsh blacks—lean into deep navy + warm amber/coral accents; generous rounding and soft shadows.
+- **Typography**: switch to a distinctive sans + mono pair.
+  - Primary: **Manrope** (700/600/400) for headings and nav; rounded geometry fits playful direction.
+  - Body: Manrope 400/500; tighten letter spacing slightly.
+  - Code: **JetBrains Mono** (or Geist Mono if we keep vendor parity) at 0.95em with toned-down background.
+- **Iconography**: prefer stroked icons (Lucide) with 1.75px stroke; keep minimal.
+
+## Color System (OKLCH targets)
+- Base canvas: Deep navy `oklch(0.16, 0.04, 260)`
+- Surface: `oklch(0.24, 0.03, 250)`
+- Primary accent: Warm amber `oklch(0.72, 0.16, 80)` for CTAs, tags, links.
+- Secondary: Coral/pink `oklch(0.68, 0.14, 35)` for hover/active and charts.
+- Success: `oklch(0.72, 0.13, 150)`; Warning: `oklch(0.72, 0.14, 80)`; Danger: `oklch(0.62, 0.20, 25)`.
+- Muted text: `oklch(0.72, 0.02, 260)`; Borders: `oklch(0.32, 0.02, 260)`.
+- Gradients: pair accent → secondary on hero backgrounds; subtle radial glows behind cards.
+
+## Layout & Components
+- **Header**: keep sticky but reduce height; add tinted glass blur; hover states with underlines instead of bolding.
+- **Search**: new floating dropdown already landed; follow-up to add subtle shadow + max-width 720px and keyboard chip hints.
+- **Cards**: 18px radius, 1px translucent border, shadow only on hover; consistent padding scale (12/16/20/28).
+- **Buttons**: primary = amber filled; secondary = outline with coral hover fill; pill shape with 12px radius.
+- **Tags/Chips**: smaller uppercase text, background `accent/10`, border `accent/30`; ensure focus ring.
+- **Tables/Lists**: zebra with low-contrast banding, compact header.
+- **Admin**: reuse same tokens; avoid separate theme.
+
+## Markdown & Code
+- Adopt a Prism theme derived from the accent palette (background `oklch(0.14,0.04,260)`, strings coral, keywords amber, comments slate).
+- Images: bounded (already shipped), add drop shadow + caption style; center code blocks with consistent max-width.
+- Blockquotes: left rule in amber, softer background.
+
+## Motion
+- Entrance: 120–160ms fade/slide-up for cards and search results.
+- Hover: micro-translate 2–3px, shadow lift; reduce everywhere else.
+- Skeletons: shimmer using accent gradient.
+
+## Accessibility & Guardrails
+- Contrast: maintain WCAG AA on body text (≥4.5:1) and AA Large on headings/CTA (≥3:1). Keep amber on navy at ≥3.2:1; coral reserved for hover.
+- Focus: 2px outline using accent + 50% opacity overlay; never drop focus rings.
+- Typography scale: base 16px; heading ratio 1.25; max line length 68–74ch on articles.
+
+## Implementation Steps (qzx)
+1) Add design tokens to `globals.css` (OKLCH values above) and wire Tailwind theme variables.
+2) Swap fonts to Manrope + JetBrains Mono via next/font with self-hosted woff2.
+3) Update layout primitives (header, buttons, cards, tags) to the new tokens.
+4) Apply markdown/code theme and refine prose spacing; add gradient hero on posts/home.
+5) Add motion primitives (utility classes) and audit focus states.
+
+## Deliverables
+- Tokenized CSS variables, font setup, updated component styles, and refreshed markdown/code theme across posts/contexts/admin.
+- Visual QA checklist + screenshots for home, post detail, contexts, admin dashboard, and search.

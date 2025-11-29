@@ -63,6 +63,9 @@ This file is the single source of truth for every Markdown document that should 
 ### docs/vapor
 - Several Vapor-specific tutorials (`index.md`, `folder-structure.md`, `controllers.md`, etc.) preserved for reference but not actively maintained.
 
+### docs/design
+- `modernization-plan.md` – UI direction, color/typography tokens, and implementation steps for the warm/playful site refresh.
+
 ### docs/verifications
 - Phase-by-phase verification artifacts (`phase0-inventory.md` through `phase5-monitoring.md`, `bootstrap.md`, etc.) that capture test evidence for each milestone.
 - `phase1-pages.md` – Playwright smoke suite for `/`, `/posts`, `/apps`, `/contexts`, and search link parity.
