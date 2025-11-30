@@ -1,0 +1,44 @@
+diff --git a/lib/advanced/Cli.js b/lib/advanced/Cli.js
+index b6946ca4ac6b2dd5d78598dfdef6caca7fcf5e33..4a1ca6a4e02d140d95e5dd7bddf1cbc51c7f0911 100644
+--- a/lib/advanced/Cli.js
++++ b/lib/advanced/Cli.js
+@@ -229,7 +229,9 @@ class Cli {
+         return exitCode;
+     }
+     async runExit(input, context) {
+-        process.exitCode = await this.run(input, context);
++        const code = await this.run(input, context);
++        const normalized = typeof code === 'number' ? code : code == null ? 0 : Number(code) || 0;
++        process.exitCode = normalized;
+     }
+     suggest(input, partial) {
+         const { suggest } = this.builder.compile();
+diff --git a/lib/advanced/Cli.mjs b/lib/advanced/Cli.mjs
+index a1ca69103b95aa6f69fef3027552ffbdc383ed37..388c3a094e6c3b6e0b15d54d757acd4cd69dbcc6 100644
+--- a/lib/advanced/Cli.mjs
++++ b/lib/advanced/Cli.mjs
+@@ -223,14 +223,16 @@ class Cli {
+             return 1;
+         }
+         return exitCode;
+-    }
+-    async runExit(input, context) {
+-        process.exitCode = await this.run(input, context);
+-    }
+-    suggest(input, partial) {
+-        const { suggest } = this.builder.compile();
+-        return suggest(input, partial);
+-    }
++  }
++  async runExit(input, context) {
++    const code = await this.run(input, context);
++    const normalized = typeof code === "number" ? code : code == null ? 0 : Number(code) || 0;
++    process.exitCode = normalized;
++  }
++  suggest(input, partial) {
++    const { suggest } = this.builder.compile();
++    return suggest(input, partial);
++  }
+     definitions({ colored = false } = {}) {
+         const data = [];
+         for (const [commandClass, { index }] of this.registrations) {
