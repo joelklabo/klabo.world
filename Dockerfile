@@ -13,6 +13,7 @@ COPY app/package.json app/package.json
 COPY packages/config/package.json packages/config/package.json
 COPY packages/scripts/package.json packages/scripts/package.json
 COPY packages/ui/package.json packages/ui/package.json
+COPY patches ./patches
 RUN pnpm install --frozen-lockfile --unsafe-perm
 
 FROM base AS builder
