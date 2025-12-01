@@ -1,6 +1,34 @@
-# AGENTS – klabo.world Next Stack (Source of Truth)
+# YOUR JOB:
 
-This document supersedes every earlier set of instructions (CLAUDE.md, legacy README, etc.). Follow it exactly—local dev, CI, deployment, and AI workflows are designed around these steps and the beads backlog (Phase 4 epic `klabo.world-fh9`).
+1. Ask `bd ready` what to do
+2. Mark the issue `in_progress`
+3. Work on it
+4. Check your work, run tests
+5. Mark it as 'done'
+6. Create new issues or epics for any necessary work, or improvements, you came across in your work.
+7. Commit
+8. Push
+9. GO BACK TO 1!
+
+# IMPORTANT:
+
+- NEVER ask which issue you should pick next, use your best judgement and pick one.
+- ALWAYS create new issues/epics if you come across something in the course of your work that should be fixed or improved.
+- NEVER give me a summary, or a status report. Just do "Your Job" (See above)
+
+# NOTE:
+- If you ever see this error, run `bd doctor` for next steps:
+    "⚠️  WARNING: JSONL file hash mismatch detected (bd-160)
+     This indicates JSONL and export hashes are out of sync.
+     Clearing export hashes to force full re-export."
+
+# VALID STOP REASONS:
+- stop reasons: `bd ready` (no tasks), unrecoverable error after retries.
+
+# INVALID STOP REASONS:
+- "just reporting progress", "task looks hard", "I've used a lot of tokens", "status update".
+
+
 
 ## Overview
 - **Stack**: Next.js 16 (App Router) + React 19, TypeScript 5, Tailwind 4, Contentlayer (file-first MDX), Prisma (SQLite file at `app/data/app.db` by default with optional PostgreSQL), optional Redis (rate limiting), Azure Blob Storage (uploads), Azure App Service for Containers.
@@ -16,21 +44,12 @@ This document supersedes every earlier set of instructions (CLAUDE.md, legacy RE
   - `Justfile` – canonical command surface; Makefile will eventually forward to it.
   - `docs/verifications/` – evidence artifacts for each stage gate (store envinfo, doctor output, etc.).
 
-Legacy Swift sources remain for reference but are no longer the system of record.
-
-## Issue Tracking (Beads)
-- Beads (`bd`) is the canonical tracker. The current umbrella epic is `klabo.world-fh9` with active work under `klabo.world-gfu` + its dependencies.
-- Basic commands: `bd list` (all issues), `bd ready` (unblocked work), `bd show <id>` (details), `bd dep tree <id>` (dependency graph), `bd close <id> --reason "<text>"` (finish), `bd create "title" --labels "<labels>" --description "<desc>"` (add work).
-- Add blockers with `bd dep add <issue> <blocks-id>` and prefer labels like `phase-4` or feature areas so queries stay fast.
-- Commit the `.beads/` directory with code changes; keep issue status in sync with PRs/commits. Run `bd sync` if you need to push/pull issue updates with git remotes.
-- Legacy roadmap docs under `docs/plans/` are retired; always rely on beads for current and historical planning context.
 
 ## Prerequisites
 - macOS/Linux with Docker Desktop or Nerdctl.
 - [mise](https://mise.jdx.dev/) CLI (`brew install mise`). `just bootstrap` calls `mise install` to provision Node 24.11.1/pnpm 10.22.0 automatically.
 - Node.js **24.11.1** (enforced via `.nvmrc` / `.tool-versions`).
 - PNPM **10.22.0** via Corepack (run `just bootstrap`).
-- tmux (for `just agent-shell` / `scripts/tmux-dev.sh` workflows).
 - Azure CLI 2.79.0+ for IaC/deploy scripts.
 - Run `./scripts/install-dev-tools.sh` after cloning (and whenever it changes) to install tmux and other shared CLI dependencies via Homebrew.
 - Bring up infrastructure services with `docker compose -f docker-compose.dev.yml up -d db redis azurite` only when you need Redis/Azurite or you override `DATABASE_URL` to Postgres. The default SQLite database lives in `app/data/`, so `just dev` works without Docker.
@@ -152,15 +171,6 @@ These services are optional now that Prisma defaults to SQLite and the rate limi
   - Notes/runbooks use the Markdown preview + upload helpers so every dashboard carries operational instructions beside the telemetry.
   - Charts/logs require `LOG_ANALYTICS_WORKSPACE_ID` + `LOG_ANALYTICS_SHARED_KEY`. Leave them blank locally if you want dashboards to display “KQL missing” states without making API calls.
 
-## tmux Dev Workflow
-- Launch the full dev environment (Next server + Vitest watcher + Docker logs + shell) with `./scripts/tmux-dev.sh` (pass `--detach` from automation so the script doesn’t grab the terminal).
-- The script creates/attaches to a `klabo-dev` tmux session:
-  - Pane 0: `pnpm --filter app dev` (Next.js dev server on port 3000).
-  - Pane 1: `pnpm vitest --config vitest.config.ts --watch` for TDD.
-  - Pane 2: `docker compose -f docker-compose.dev.yml logs -f db redis azurite` (keeps infra + blob emulator output beside the server logs).
-  - Pane 3: interactive shell for curls, git, Tailwind rebuilds, etc.
-- If the session already exists, the script simply attaches; use `tmux attach -t klabo-dev` to re-enter later.
-- Browser mirroring is handled by `scripts/maybe-open-dev-browser.sh`. Leave `AUTO_OPEN_BROWSER=false` when working headless; set it to `true` to make the helper open `DEV_SERVER_URL` + `/admin` in the user’s browser whenever `tmux-dev.sh` or `just dev` runs.
 
 ## Public APIs
 - `GET /api/contexts` – published contexts metadata (title/summary/tags/dates).
@@ -193,8 +203,6 @@ These services are optional now that Prisma defaults to SQLite and the rate limi
 - **Deployment smoke tests**: `scripts/deploy-smoke.sh` hits `/`, `/posts`, `/apps`, `/contexts`, `/api/health` and is invoked automatically in the Azure deploy workflow; run it manually with `SMOKE_BASE_URL=https://your-app ./scripts/deploy-smoke.sh` for quick checks.
 
 ## AI/Automation Guidance
-- MCP resources will expose: `package.json`, `turbo.json`, `infra/main.bicep`, Prisma schema, Contentlayer schema, latest CI logs. Scripts in `packages/scripts` will emit machine-readable summaries for agents.
-- Run `scripts/agent-context.sh` before asking an AI helper to operate—this prints commands, environment vars, and open tasks.
 - Always update `AGENTS.md` and the beads backlog (update/close existing issues or create new ones) if you change workflows, commands, or directory structure.
 - Detailed runbooks live under `docs/runbooks/`. Start with `docs/runbooks/admin-content.md` for a step-by-step guide to composing posts/apps/contexts, upload behavior, and Playwright verification commands.
 
@@ -202,36 +210,11 @@ These services are optional now that Prisma defaults to SQLite and the rate limi
 - `infra/main.bicep` provisions RG, ACR, App Service Plan, Containers, Azure Database for PostgreSQL Flexible Server (17.6), Redis, Blob Storage, Key Vault, Private DNS.
 - CI pipelines (to be added) run pnpm bootstrap → lint/test → Next build → Docker build/push → slot deploy → smoke tests.
 
-## Definition of Done (per task)
-1. Code + tests ✅
-2. `pnpm turbo lint test` ✅
-3. Docs updated (README/AGENTS/runbooks) ✅
-4. Verification artifact stored in `docs/verifications/` if applicable ✅
-5. Beads issues updated/closed with links to PRs and notes when structural changes occur ✅
 
-6. For every feature or visible change, capture a representative screenshot of the updated UI **and** run the full test suite (per the "Run all the tests" guidance) before you declare the work complete. Attach or reference the screenshot so I can see the working experience.
+
 
 Keep this document current. Any contributor—human or AI—should be able to onboard by following the steps above without additional guidance.
 ## Documentation
 - Every Markdown file now lives under `docs/` and follows the `<category>/<kebab-case>.md` pattern noted in `docs/document-inventory.md`. When a new doc is added or an existing doc moves, update that inventory file so people can see the complete list without digging directories.
 - Outdated legacy instructions such as `CLAUDE.md` and the root copies of the Azure/deployment/security guides have been removed in favor of the consolidated versions in `docs/azure`, `docs/deployment`, and `docs/security`.
 - Refer to `docs/document-inventory.md` for a categorized table of every preserved doc; update it whenever you add, retire, or rename documentation.
-
-## Backlog & Roadmap
-- Roadmap and day-to-day work now live entirely in beads. Start at `klabo.world-fh9` (Phase 4 umbrella) and follow dependencies (`bd dep tree klabo.world-fh9`) to find active items like `klabo.world-gfu` and its blockers.
-- Record new discoveries as beads issues with labels for feature area and priority; close items with rationale and link to related PRs.
-- Historical plan Markdown files were removed; use beads history for prior decisions and sequencing.
-- Continue to store verification artifacts under `docs/verifications/` when finishing milestones or large changes.
-
-## Outstanding work
-- Pull your next task from `bd ready` or the open blockers under `klabo.world-gfu` (API layer, feature flags, modular monorepo).
-- Validate the Playwright/Vitest coverage described in `docs/testing/*` whenever you touch UI flows.
-- Keep the runbooks under `docs/runbooks/` accurate after every major change; if a runbook becomes obsolete, mark it as such in `docs/document-inventory.md` and archive the content to `docs/experimental/`.
-
-## Beads usage (bd)
-- Generate the repo-specific guide: `bd onboard --output .beads/BD_GUIDE.md` (commit it).
-- Initialize in repo root: `bd init --team` (protected main) or `bd init --contributor` (fork); then run `bd doctor`.
-- Status mapping expected by the UI: open(`open|ready|todo|backlog`), in progress(`in_progress|doing|wip`), blocked(`blocked`), closed(`closed|done|resolved`), other(anything else). Set `bd update <id> --status in_progress` when work starts.
-- Daemon/merge driver: accept prompts; manage with `bd daemons health|killall`. Data lives in `.beads/`—commit it with code.
-- If the viewer shows zero projects, run `bd doctor` then `bd daemons killall`, and reload.
-- When you close an issue that had code changes, make a commit and push at the time of closure (one commit per closed issue).
