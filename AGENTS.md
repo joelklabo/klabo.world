@@ -30,7 +30,7 @@
 
 ## Quick Context
 - Stack: Next.js 16 (App Router) + React 19, TypeScript 5, Tailwind 4, Contentlayer MDX, Prisma (SQLite default; Postgres optional), optional Redis, Azure Blob Storage, Azure App Service containers.
-- Repo layout (root): `app/` (Next app), `packages/{config,scripts,ui}`, `content/{posts,apps,contexts,dashboards}`, `infra/` (Bicep), `docs/`, `docker-compose.dev.yml`, `Justfile`, `.devcontainer/`.
+- Layout: `app/` (Next app), `packages/{config,scripts,ui}`, `content/{posts,apps,contexts,dashboards}`, `infra/` (Bicep), `docs/`, `docker-compose.dev.yml`, `Justfile`, `.devcontainer/`.
 
 ## Prereqs
 - macOS/Linux, Git, [mise](https://mise.jdx.dev/) (installs Node 24.11.1 + pnpm 10.22.0 via `just bootstrap`).
@@ -69,8 +69,9 @@
 - Playwright: `cd app && pnpm exec playwright install --with-deps` (first run), then `pnpm exec playwright test` (set `PLAYWRIGHT_BASE_URL` as needed). Admin e2e needs `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `NEXTAUTH_SECRET`, `DATABASE_URL`, `UPLOADS_DIR`.
 
 ## Docs & Runbooks
-- Inventory: `docs/document-inventory.md` (keep updated). Key runbooks: `docs/runbooks/admin-content.md`, `docs/runbooks/deployment.md`, `docs/runbooks/observability.md`, `docs/runbooks/feature-flags.md`, `docs/runbooks/build-modularity.md`.
-- Design direction: `docs/design/modernization-plan.md`. Build perf plan: `docs/runbooks/build-modularity.md`. Legacy Vapor references are read-only under `docs/vapor/`.
+- Inventory: `docs/document-inventory.md`. Onboarding: `docs/guides/onboarding.md`. Pairing: `docs/guides/coding-partners.md`.
+- Key runbooks: `docs/runbooks/admin-content.md`, `docs/runbooks/deployment.md`, `docs/runbooks/observability.md`, `docs/runbooks/feature-flags.md`, `docs/runbooks/rollback.md`, `docs/runbooks/db-recovery.md`.
+- Design direction: `docs/design/modernization-plan.md`. Infra layout: `docs/infra/README.md`. Legacy Vapor references live under `docs/vapor/` (reference only).
 
 ## Deploy/Telemetry Quick Hits
 - `scripts/deploy-smoke.sh` runs the multi-endpoint smoke; CI calls it post-deploy. Azure wiring details live in `docs/azure/deployment-guide.md` and `docs/deployment/staging-strategy.md`.
