@@ -39,5 +39,5 @@
 
 /* Search result highlighting */
 mark {
-  @apply bg-yellow-400/30 text-yellow-200;
+  @apply bg-amber-300/25 text-amber-100;
 }
