@@ -2,8 +2,29 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 // nostr-tools is dynamically imported when needed so builds work without it.
-type Relay = any;
-type Sub = any;
+
+type RelayPublisher = {
+  on: (event: 'ok' | 'failed', cb: (reason?: string) => void) => void;
+};
+
+type RelaySubscription = {
+  on: (event: 'event', cb: (ev: NostrEvent) => void) => void;
+  unsub: () => void;
+};
+
+type Relay = {
+  connect: () => Promise<void> | void;
+  close: () => void;
+  publish: (event: NostrEvent) => RelayPublisher;
+  sub: (filters: Array<Record<string, unknown>>) => RelaySubscription;
+};
+
+type NostrSigner = {
+  getPublicKey: () => Promise<string>;
+  signEvent: (event: NostrEvent) => Promise<NostrEvent>;
+};
+
+type NostrWindow = Window & { nostr?: NostrSigner };
 
 const DEFAULT_RELAYS = ['wss://relay.damus.io', 'wss://relay.snort.social'];
 const MIN_MSAT = 1000;
@@ -86,7 +107,7 @@ async function connectRelays(urls: string[]): Promise<Relay[]> {
   let relayInit: ((url: string) => Relay) | null = null;
   try {
     const mod = await import('nostr-tools');
-    relayInit = (mod as any).relayInit;
+    relayInit = (mod as { relayInit?: (url: string) => Relay }).relayInit ?? null;
   } catch (err) {
     console.warn('nostr-tools not available, skipping relay connections', err);
     return [];
@@ -110,6 +131,7 @@ async function connectRelays(urls: string[]): Promise<Relay[]> {
 function useRelayConnections(relays: string[]) {
   const [connections, setConnections] = useState<Relay[]>([]);
   const [ready, setReady] = useState(false);
+  const relayKey = useMemo(() => relays.join('|'), [relays]);
 
   useEffect(() => {
     let closed = false;
@@ -129,7 +151,7 @@ function useRelayConnections(relays: string[]) {
       closed = true;
       active.forEach((relay) => relay.close());
     };
-  }, [relays.join('|')]);
+  }, [relayKey, relays]);
 
   return { connections, ready } as const;
 }
@@ -139,7 +161,7 @@ async function publishToRelays(relays: Relay[], event: NostrEvent) {
     relays.map(
       (relay) =>
         new Promise<void>((resolve, reject) => {
-          const pub = relay.publish(event as any);
+          const pub = relay.publish(event);
           const timer = setTimeout(() => reject(new Error('publish timeout')), 7000);
           pub.on('ok', () => {
             clearTimeout(timer);
@@ -184,7 +206,6 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 export function NostrstackActionBar({
   slug,
   title,
-  summary,
   canonicalUrl,
   lightningAddress,
   nostrPubkey,
@@ -231,37 +252,40 @@ export function NostrstackActionBar({
       setTipError(formatError(error));
       setTipState('error');
     }
-  }, [lightning, baseUrl, host, copyInvoice]);
+  }, [lightning, baseUrl, host, copyInvoice, mockMode]);
 
   const handleShare = useCallback(async () => {
     const note = `${title}\n${canonicalUrl}${lightningAddress ? `\n⚡️ ${lightningAddress}` : ''}`;
     setShareError(null);
 
     // Prefer Nostr share when signer is available
-    if (typeof window !== 'undefined' && (window as any).nostr && connections.length) {
-      setShareState('posting');
-      try {
-        const pubkey = await (window as any).nostr.getPublicKey();
-        const unsigned: NostrEvent = {
-          kind: 1,
-          created_at: Math.floor(Date.now() / 1000),
+    if (typeof window !== 'undefined') {
+      const signer = (window as NostrWindow).nostr;
+      if (signer && connections.length) {
+        setShareState('posting');
+        try {
+          const pubkey = await signer.getPublicKey();
+          const unsigned: NostrEvent = {
+            kind: 1,
+            created_at: Math.floor(Date.now() / 1000),
           tags: [
             ['t', slug],
             ['r', canonicalUrl],
             ...(nostrPubkey ? [['p', nostrPubkey]] : []),
           ],
-          content: note,
-          pubkey,
-        };
-        const signed = await (window as any).nostr.signEvent(unsigned);
-        await publishToRelays(connections, signed);
-        setShareState('copied');
-        await copyText(note);
-        return;
-      } catch (error) {
+            content: note,
+            pubkey,
+          };
+          const signed = await signer.signEvent(unsigned);
+          await publishToRelays(connections, signed);
+          setShareState('copied');
+          await copyText(note);
+          return;
+        } catch (error) {
         setShareError(formatError(error));
         setShareState('error');
         return;
+      }
       }
     }
 
@@ -349,10 +373,10 @@ export function NostrstackComments({ threadId, relays, canonicalUrl }: CommentsP
 
   useEffect(() => {
     if (!connections.length) return;
-    const subs: Sub[] = [];
-    const filters = [{ kinds: [1], '#t': [threadId] }];
+    const subs: RelaySubscription[] = [];
+    const filters: Array<{ kinds: number[]; '#t': string[] }> = [{ kinds: [1], '#t': [threadId] }];
     connections.forEach((relay) => {
-      const sub = relay.sub(filters as any);
+      const sub = relay.sub(filters);
       sub.on('event', (ev: NostrEvent) => {
         if (ev?.id && seenIds.current.has(ev.id)) return;
         if (ev?.id) seenIds.current.add(ev.id);
@@ -369,13 +393,14 @@ export function NostrstackComments({ threadId, relays, canonicalUrl }: CommentsP
     e.preventDefault();
     setError(null);
     if (!content.trim()) return;
-    if (!(window as any).nostr) {
+    const signer = (window as NostrWindow).nostr;
+    if (!signer) {
       setError('Nostr signer (NIP-07) required to post.');
       return;
     }
     try {
       setPosting(true);
-      const pubkey = await (window as any).nostr.getPublicKey();
+      const pubkey = await signer.getPublicKey();
       const unsigned: NostrEvent = {
         kind: 1,
         created_at: Math.floor(Date.now() / 1000),
@@ -386,7 +411,7 @@ export function NostrstackComments({ threadId, relays, canonicalUrl }: CommentsP
         content: content.trim(),
         pubkey,
       };
-      const signed = await (window as any).nostr.signEvent(unsigned);
+      const signed = await signer.signEvent(unsigned);
       await publishToRelays(connections, signed);
       if (signed.id) seenIds.current.add(signed.id);
       setEvents((prev) => [...prev, signed]);
