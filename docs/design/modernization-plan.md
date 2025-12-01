@@ -38,6 +38,10 @@ Goal: refresh klabo.world so it feels warm, colorful, and playful while keeping 
 - Hover: micro-translate 2–3px, shadow lift; reduce everywhere else.
 - Skeletons: shimmer using accent gradient.
 
+## Status (2025-12-01)
+- Completed: OKLCH tokens and warm palette in `globals.css`; Manrope + JetBrains Mono swapped in; header/nav, cards, prose, and motion/focus utilities refreshed.
+- Pending: polish the header search dropdown (shadow, 720px max width, shortcut chips) and restyle the `/search` page to match the warm theme; capture final visual QA once search updates land.
+
 ## Accessibility & Guardrails
 - Contrast: maintain WCAG AA on body text (≥4.5:1) and AA Large on headings/CTA (≥3:1). Keep amber on navy at ≥3.2:1; coral reserved for hover.
 - Focus: 2px outline using accent + 50% opacity overlay; never drop focus rings.
