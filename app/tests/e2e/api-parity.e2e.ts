@@ -54,7 +54,7 @@ test.describe('Phase 3 public APIs', () => {
 
     const gist = await request.get(gistUrl);
     if (!gist.ok()) {
-      test.skip(`gist proxy unavailable: ${gist.status()} ${await gist.text()}`);
+      test.skip(true, `gist proxy unavailable: ${gist.status()} ${await gist.text()}`);
     }
     const gistJson = await gist.json();
     expect(typeof gistJson.content).toBe('string');
