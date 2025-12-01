@@ -11,5 +11,5 @@ Date: 2025-11-15
 - Supplemental check: `az webapp log tail --name klabo-world-app --resource-group klabo-world-rg` (captured at 05:50 UTC) showed clean Next.js startup logs and no Prisma/runtime errors aside from the known OpenSSL warning (tracked separately).
 
 ## Notes
-- Continue watching the Prisma OpenSSL warning; it is present at container boot but does not affect request handling. File a follow-up to add OpenSSL 3.0 libs to the Docker image.
+- The Prisma OpenSSL warning observed at boot is addressed as of 2025-12-01 by installing OpenSSL 3.0 libs in the Docker image (see Dockerfile base stage).
 - With Application Insights quiet and smoke/k6 runs succeeding, the site is considered stable enough to decommission the legacy Vapor deployment.

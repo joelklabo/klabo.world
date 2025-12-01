@@ -4,6 +4,9 @@ ARG NODE_VERSION=24.11.1
 FROM node:${NODE_VERSION}-slim AS base
 ENV PNPM_HOME="/root/.local/share/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends ca-certificates openssl libssl3 \
+  && rm -rf /var/lib/apt/lists/*
 RUN corepack enable
 
 FROM base AS deps
