@@ -13,7 +13,7 @@
     },
     "prisma:generate": {
       "cache": true,
-      "outputs": ["app/node_modules/.prisma/client/**"],
+      "outputs": ["app/node_modules/@prisma/client/**"],
       "inputs": ["app/prisma/schema.prisma"],
       "dependsOn": []
     },
