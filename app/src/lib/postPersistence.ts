@@ -12,6 +12,10 @@ export type PostInput = {
   body: string;
   featuredImage?: string | null;
   publishDate?: string | null;
+   lightningAddress?: string | null;
+   nostrPubkey?: string | null;
+   nostrRelays?: string[];
+   nostrstackEnabled?: boolean | null;
 };
 
 const POSTS_DIR = resolveContentSubdir('posts');
@@ -75,6 +79,19 @@ function buildMarkdown(slug: string, input: PostInput) {
   if (input.featuredImage) {
     lines.push(`featuredImage: ${JSON.stringify(input.featuredImage)}`);
   }
+   if (input.lightningAddress) {
+     lines.push(`lightningAddress: ${JSON.stringify(input.lightningAddress)}`);
+   }
+   if (input.nostrPubkey) {
+     lines.push(`nostrPubkey: ${JSON.stringify(input.nostrPubkey)}`);
+   }
+   const relaysValue = toFrontMatterValue(input.nostrRelays);
+   if (relaysValue) {
+     lines.push(`nostrRelays:${relaysValue}`);
+   }
+   if (input.nostrstackEnabled === false) {
+     lines.push('nostrstackEnabled: false');
+   }
   lines.push('---');
   lines.push('');
   lines.push(input.body.trim());

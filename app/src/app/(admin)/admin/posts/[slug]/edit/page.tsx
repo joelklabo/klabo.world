@@ -93,6 +93,62 @@ export default async function EditPostPage({ params }: { params: Promise<Params>
             />
           </div>
         </div>
+        <div className="space-y-3 rounded-2xl border border-gray-200 bg-white/70 p-4 shadow-sm">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-500">nostrstack</p>
+            <p className="text-sm text-gray-600">Optional metadata for tips, Nostr share, and comments.</p>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            <div>
+              <label htmlFor="lightningAddress" className="block text-sm font-semibold text-gray-700">
+                Lightning address
+              </label>
+              <input
+                id="lightningAddress"
+                name="lightningAddress"
+                type="email"
+                defaultValue={post.lightningAddress ?? ''}
+                placeholder="joel@nostrstack.lol"
+                className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+            <div>
+              <label htmlFor="nostrPubkey" className="block text-sm font-semibold text-gray-700">
+                Nostr pubkey (npub or hex)
+              </label>
+              <input
+                id="nostrPubkey"
+                name="nostrPubkey"
+                type="text"
+                defaultValue={post.nostrPubkey ?? ''}
+                placeholder="npub1..."
+                className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+          </div>
+          <div>
+            <label htmlFor="nostrRelays" className="block text-sm font-semibold text-gray-700">
+              Nostr relays (comma separated)
+            </label>
+            <textarea
+              id="nostrRelays"
+              name="nostrRelays"
+              rows={2}
+              defaultValue={post.nostrRelays?.join(', ') ?? ''}
+              placeholder="wss://relay.damus.io, wss://relay.snort.social"
+              className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+          <label className="flex items-center gap-2 text-sm text-gray-700">
+            <input
+              type="checkbox"
+              name="nostrstackEnabled"
+              defaultChecked={post.nostrstackEnabled !== false}
+              className="h-4 w-4 rounded border-gray-300"
+            />
+            Enable nostrstack widgets for this post
+          </label>
+        </div>
         <ImageUploadField
           name="featuredImage"
           label="Featured image path"

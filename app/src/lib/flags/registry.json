@@ -8,5 +8,15 @@
     "expiry": "2026-03-31",
     "issue": "klabw-2e0",
     "killSeverity": "high"
+  },
+  {
+    "key": "nostrstack-post-widgets",
+    "type": "boolean",
+    "defaultValue": true,
+    "description": "Enable nostrstack tip/share/comments widgets on blog posts.",
+    "owner": "platform",
+    "expiry": "2026-06-30",
+    "issue": "lightning-y95.3",
+    "killSeverity": "medium"
   }
 ]

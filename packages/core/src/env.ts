@@ -34,6 +34,16 @@ const schema = z.object({
   APPINSIGHTS_APP_ID: z.string().optional(),
   APPINSIGHTS_API_KEY: z.string().optional(),
   NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING: z.string().optional(),
+  NOSTRSTACK_BASE_URL: optionalUrl,
+  NOSTRSTACK_HOST: z.string().optional(),
+  NOSTRSTACK_LN_ADDRESS: z.string().optional(),
+  NOSTRSTACK_NOSTR_PUBKEY: z.string().optional(),
+  NOSTRSTACK_RELAYS: z.string().optional(),
+  NEXT_PUBLIC_NOSTRSTACK_BASE_URL: optionalUrl,
+  NEXT_PUBLIC_NOSTRSTACK_HOST: z.string().optional(),
+  NEXT_PUBLIC_NOSTRSTACK_RELAYS: z.string().optional(),
+  NEXT_PUBLIC_NOSTRSTACK_PUBKEY: z.string().optional(),
+  NEXT_PUBLIC_NOSTRSTACK_LN_ADDRESS: z.string().optional(),
 });
 
 export type Env = z.infer<typeof schema>;

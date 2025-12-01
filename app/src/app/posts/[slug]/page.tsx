@@ -1,10 +1,36 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import type { Metadata } from 'next';
 import { getPostBySlug, getPosts } from '@/lib/posts';
 import { MDXContent } from '@/components/mdx-content';
+import { env } from '@/lib/env';
+import { getFlag } from '@/lib/flags';
+
+const NostrstackActionBar = dynamic(() => import('@/components/nostrstack-widgets').then((m) => m.NostrstackActionBar), {
+  ssr: false,
+});
+
+const NostrstackComments = dynamic(() => import('@/components/nostrstack-widgets').then((m) => m.NostrstackComments), {
+  ssr: false,
+});
 
 type Params = { slug: string };
+
+function parseLightningAddress(value?: string | null) {
+  if (!value) return null;
+  const [username, domain] = value.split('@');
+  if (!username || !domain) return null;
+  return { username, domain };
+}
+
+function parseRelayList(raw?: string | null): string[] {
+  if (!raw) return [];
+  return raw
+    .split(/[,\n]/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
 
 export const dynamic = 'force-dynamic';
 
@@ -32,6 +58,20 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
   const previous = posts[index - 1];
   const next = posts[index + 1];
   const readingTime = Math.max(1, Math.round((post.body.raw.split(/\s+/).length ?? 0) / 200));
+  const siteUrl = env.SITE_URL.replace(/\/$/, '');
+  const canonicalUrl = `${siteUrl}/posts/${post.slug}`;
+  const lightningAddress =
+    post.lightningAddress ?? env.NOSTRSTACK_LN_ADDRESS ?? env.NEXT_PUBLIC_NOSTRSTACK_LN_ADDRESS ?? null;
+  const nostrPubkey = post.nostrPubkey ?? env.NOSTRSTACK_NOSTR_PUBKEY ?? env.NEXT_PUBLIC_NOSTRSTACK_PUBKEY ?? null;
+  const nostrRelays =
+    post.nostrRelays ??
+    parseRelayList(env.NOSTRSTACK_RELAYS ?? env.NEXT_PUBLIC_NOSTRSTACK_RELAYS ?? '');
+  const flag = await getFlag('nostrstack-post-widgets');
+  const flagEnabled = flag.value === true || flag.value === 'on';
+  const widgetsEnabled = flagEnabled && post.nostrstackEnabled !== false;
+  const nostrstackBaseUrl = env.NOSTRSTACK_BASE_URL ?? env.NEXT_PUBLIC_NOSTRSTACK_BASE_URL ?? '';
+  const nostrstackHost = env.NOSTRSTACK_HOST ?? env.NEXT_PUBLIC_NOSTRSTACK_HOST ?? parseLightningAddress(lightningAddress)?.domain;
+  const threadId = `post-${post.slug}`;
 
   return (
     <div className="bg-gradient-to-b from-[#0b1020] via-[#0d1428] to-[#0c1326] text-slate-100">
@@ -75,11 +115,27 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
                 </span>
               </div>
             </div>
+            {widgetsEnabled && (
+              <NostrstackActionBar
+                slug={post.slug}
+                title={post.title}
+                summary={post.summary}
+                canonicalUrl={canonicalUrl}
+                lightningAddress={lightningAddress}
+                nostrPubkey={nostrPubkey ?? undefined}
+                relays={nostrRelays}
+                baseUrl={nostrstackBaseUrl}
+                host={nostrstackHost ?? undefined}
+              />
+            )}
             <div className="rounded-3xl border border-white/8 bg-gradient-to-br from-[#0d162c] to-[#0a1021] p-8 shadow-2xl shadow-black/50">
               <div className="prose prose-slate max-w-none space-y-8 dark:prose-invert">
                 <MDXContent code={post.body.code} />
               </div>
             </div>
+            {widgetsEnabled && (
+              <NostrstackComments threadId={threadId} canonicalUrl={canonicalUrl} relays={nostrRelays} />
+            )}
             <div className="grid gap-4 text-sm text-slate-300 sm:grid-cols-2">
               {previous && (
                 <Link

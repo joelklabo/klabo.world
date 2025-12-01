@@ -22,6 +22,14 @@ async function extractPostInput(formData: FormData) {
     .split(',')
     .map((tag) => tag.trim())
     .filter(Boolean);
+  const lightningAddress = formData.get('lightningAddress')?.toString().trim() || null;
+  const nostrPubkey = formData.get('nostrPubkey')?.toString().trim() || null;
+  const nostrRelaysInput = formData.get('nostrRelays')?.toString() ?? '';
+  const nostrRelays = nostrRelaysInput
+    .split(/[,\n]/)
+    .map((relay) => relay.trim())
+    .filter(Boolean);
+  const nostrstackEnabled = formData.get('nostrstackEnabled') ? true : false;
   return {
     title,
     summary,
@@ -29,6 +37,10 @@ async function extractPostInput(formData: FormData) {
     tags,
     publishDate,
     featuredImage,
+    lightningAddress,
+    nostrPubkey,
+    nostrRelays,
+    nostrstackEnabled,
   };
 }
 

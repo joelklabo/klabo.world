@@ -44,6 +44,10 @@ export type AdminPostSummary = {
   tags?: string[];
   date: string;
   publishDate?: string | null;
+  lightningAddress?: string | null;
+  nostrPubkey?: string | null;
+  nostrRelays?: string[];
+  nostrstackEnabled?: boolean | null;
 };
 
 function getAdminPublishDate(post: AdminPostSummary): Date {
@@ -72,7 +76,26 @@ async function readDiskPosts(exclude: Set<string>): Promise<AdminPostSummary[]> 
       const tags = Array.isArray(data.tags) ? data.tags.map((tag) => String(tag)) : undefined;
       const date = typeof data.date === 'string' ? data.date : new Date().toISOString().slice(0, 10);
       const publishDate = typeof data.publishDate === 'string' ? data.publishDate : null;
-      entries.push({ slug, title, summary, tags, date, publishDate });
+      const lightningAddress = typeof data.lightningAddress === 'string' ? data.lightningAddress : null;
+      const nostrPubkey = typeof data.nostrPubkey === 'string' ? data.nostrPubkey : null;
+      const nostrRelays = Array.isArray(data.nostrRelays)
+        ? data.nostrRelays.map((relay) => String(relay)).filter(Boolean)
+        : undefined;
+      const nostrstackEnabled =
+        typeof data.nostrstackEnabled === 'boolean' ? data.nostrstackEnabled : undefined;
+
+      entries.push({
+        slug,
+        title,
+        summary,
+        tags,
+        date,
+        publishDate,
+        lightningAddress,
+        nostrPubkey,
+        nostrRelays,
+        nostrstackEnabled,
+      });
     }
     return entries;
   } catch (error) {
@@ -91,6 +114,10 @@ export async function getPostsForAdmin(): Promise<AdminPostSummary[]> {
     tags: post.tags,
     date: post.date,
     publishDate: post.publishDate ?? null,
+    lightningAddress: post.lightningAddress ?? null,
+    nostrPubkey: post.nostrPubkey ?? null,
+    nostrRelays: post.nostrRelays ?? undefined,
+    nostrstackEnabled: typeof post.nostrstackEnabled === 'boolean' ? post.nostrstackEnabled : undefined,
   }));
   const existing = new Set(basePosts.map((post) => post.slug));
   const diskPosts = await readDiskPosts(existing);
@@ -110,6 +137,10 @@ export async function getEditablePostBySlug(slug: string): Promise<EditablePost 
       date: contentlayerPost.date,
       publishDate: contentlayerPost.publishDate ?? null,
       featuredImage: contentlayerPost.featuredImage ?? null,
+      lightningAddress: contentlayerPost.lightningAddress ?? null,
+      nostrPubkey: contentlayerPost.nostrPubkey ?? null,
+      nostrRelays: contentlayerPost.nostrRelays ?? undefined,
+      nostrstackEnabled: typeof contentlayerPost.nostrstackEnabled === 'boolean' ? contentlayerPost.nostrstackEnabled : undefined,
       body: contentlayerPost.body.raw,
     };
   }
@@ -124,6 +155,12 @@ export async function getEditablePostBySlug(slug: string): Promise<EditablePost 
     const date = typeof data.date === 'string' ? data.date : new Date().toISOString().slice(0, 10);
     const publishDate = typeof data.publishDate === 'string' ? data.publishDate : null;
     const featuredImage = typeof data.featuredImage === 'string' ? data.featuredImage : null;
+    const lightningAddress = typeof data.lightningAddress === 'string' ? data.lightningAddress : null;
+    const nostrPubkey = typeof data.nostrPubkey === 'string' ? data.nostrPubkey : null;
+    const nostrRelays = Array.isArray(data.nostrRelays)
+      ? data.nostrRelays.map((relay) => String(relay)).filter(Boolean)
+      : undefined;
+    const nostrstackEnabled = typeof data.nostrstackEnabled === 'boolean' ? data.nostrstackEnabled : undefined;
     return {
       slug,
       title,
@@ -132,6 +169,10 @@ export async function getEditablePostBySlug(slug: string): Promise<EditablePost 
       date,
       publishDate,
       featuredImage,
+      lightningAddress,
+      nostrPubkey,
+      nostrRelays,
+      nostrstackEnabled,
       body: parsed.content.trim(),
     };
   } catch (error) {
