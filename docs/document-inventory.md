@@ -88,7 +88,7 @@ This file is the single source of truth for every Markdown document that should 
 - Assets: `screenshots/home.png`, `posts-list.png`, `post-detail.png`, `search-dropdown.png` supporting Phase 1 visual checks.
 
 ### docs/vapor (legacy reference only)
-- `index.md`, `folder-structure.md`, `routing.md`, `controllers.md`, `middleware.md`, `content.md`, `testing.md`, `docker.md`, `leaf-getting-started.md` – Legacy Swift/Vapor guides kept for historical reference.
+- (retired 2025-12-01) `index.md`, `folder-structure.md`, `routing.md`, `controllers.md`, `middleware.md`, `content.md`, `testing.md`, `docker.md`, `leaf-getting-started.md` – Legacy Swift/Vapor guides removed; Next.js stack is canonical.
 
 ### Configuration files
 - `.github/renovate.json` – Renovate configuration (auto-merge for minor/patch updates).
