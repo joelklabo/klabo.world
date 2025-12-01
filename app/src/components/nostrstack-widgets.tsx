@@ -47,6 +47,10 @@ type CommentsProps = {
   relays?: string[];
 };
 
+type NostrSignerState =
+  | { hasSigner: false }
+  | { hasSigner: true; pubkey?: string };
+
 type NostrEvent = {
   id?: string;
   pubkey: string;
@@ -366,10 +370,24 @@ export function NostrstackComments({ threadId, relays, canonicalUrl }: CommentsP
   const [error, setError] = useState<string | null>(null);
   const [content, setContent] = useState('');
   const [posting, setPosting] = useState(false);
+  const [signerState, setSignerState] = useState<NostrSignerState>({ hasSigner: false });
   const relayList = useMemo(() => (relays && relays.length ? relays : DEFAULT_RELAYS), [relays]);
   const isMockMode = relayList.includes('mock');
   const { connections, ready } = useRelayConnections(relayList);
   const seenIds = useRef<Set<string>>(new Set());
+
+  useEffect(() => {
+    // detect signer once
+    const signer = (typeof window !== 'undefined' ? (window as NostrWindow).nostr : null);
+    if (signer) {
+      signer
+        .getPublicKey()
+        .then((pubkey) => setSignerState({ hasSigner: true, pubkey }))
+        .catch(() => setSignerState({ hasSigner: true }));
+    } else {
+      setSignerState({ hasSigner: false });
+    }
+  }, []);
 
   useEffect(() => {
     if (!connections.length) return;
@@ -440,7 +458,7 @@ export function NostrstackComments({ threadId, relays, canonicalUrl }: CommentsP
         <div className="flex items-center justify-between text-sm text-slate-400">
           <button
             type="submit"
-            disabled={posting || (!connections.length && !isMockMode)}
+            disabled={posting || (!connections.length && !isMockMode) || !signerState.hasSigner}
             data-testid="nostrstack-comment-submit"
             className="rounded-full bg-white/10 px-4 py-2 font-semibold text-white transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-60"
           >
@@ -449,6 +467,11 @@ export function NostrstackComments({ threadId, relays, canonicalUrl }: CommentsP
           <span>{events.length} note{events.length === 1 ? '' : 's'}</span>
         </div>
       </form>
+      {!signerState.hasSigner && (
+        <p className="text-sm text-amber-200">
+          NIP-07 signer not detected. Install/enable a Nostr browser extension (e.g., Alby, nos2x), then refresh to post.
+        </p>
+      )}
       {error && <p className="text-sm text-rose-200">{error}</p>}
       <div className="space-y-3">
         {events.length === 0 && ready && <p className="text-sm text-slate-300">No comments yet.</p>}
