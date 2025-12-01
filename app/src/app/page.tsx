@@ -3,7 +3,7 @@ import type { Route } from 'next';
 import { getApps } from '@/lib/apps';
 import { getContexts } from '@/lib/contexts';
 import { getDashboards } from '@/lib/dashboards';
-import { getRecentPosts } from '@/lib/posts';
+import { getPosts, getRecentPosts } from '@/lib/posts';
 import { getPostTagCloud } from '@/lib/tagCloud';
 
 const heroLinks = [
