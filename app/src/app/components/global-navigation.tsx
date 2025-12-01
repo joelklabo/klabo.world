@@ -51,7 +51,13 @@ export function GlobalNavigation() {
     if (!el) return;
     const rect = el.getBoundingClientRect();
     const gutter = 8;
-    setDropdownStyle({ left: rect.left, top: rect.bottom + gutter, width: rect.width });
+    const maxWidth = 720;
+    const width = Math.min(rect.width, maxWidth);
+    const viewport = window.innerWidth;
+    const padding = 12;
+    const centeredLeft = rect.left + (rect.width - width) / 2;
+    const clampedLeft = Math.max(padding, Math.min(centeredLeft, viewport - width - padding));
+    setDropdownStyle({ left: clampedLeft, top: rect.bottom + gutter, width });
   };
 
   useEffect(() => {
@@ -247,7 +253,7 @@ const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
               ref={inputRef}
               type="search"
               name="global-search"
-              className="w-full rounded-full border border-border/50 bg-card/80 px-4 py-2 text-sm text-foreground shadow-[0_12px_30px_rgba(8,10,20,0.35)] placeholder:text-muted-foreground/70 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/40"
+              className="w-full rounded-full border border-border/50 bg-card/80 px-4 py-2 text-sm text-foreground shadow-[0_16px_32px_rgba(6,10,20,0.45)] placeholder:text-muted-foreground/70 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/40"
               placeholder="Search posts, apps, or contexts…"
               value={query}
               onChange={(event) => {
@@ -277,14 +283,21 @@ const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
                 id="global-search-dropdown"
                 role="listbox"
                 style={dropdownStyle ?? undefined}
-                className="fixed z-[120] max-h-72 overflow-auto rounded-2xl border border-border/60 bg-card/95 p-3 shadow-[0_20px_40px_rgba(6,10,20,0.55)] backdrop-blur"
+                className="fixed z-[120] max-h-80 w-full max-w-[720px] overflow-auto rounded-2xl border border-border/60 bg-card/95 p-4 shadow-[0_28px_70px_rgba(6,10,20,0.6)] ring-1 ring-border/70 backdrop-blur"
                 aria-live="polite"
                 aria-label="Search suggestions"
                 data-testid="global-search-results"
               >
-                <div className="mb-2 flex items-center justify-between text-xs uppercase tracking-[0.22em] text-muted-foreground">
+                <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
                   <span>{statusMessage}</span>
-                  <span>{focusedResult ? TYPE_LABELS[focusedResult.type] : ''}</span>
+                  <div className="flex flex-wrap items-center gap-1 text-[10px] font-semibold">
+                    <span className="rounded-full border border-border/50 bg-background/70 px-2 py-1 text-[10px] tracking-[0.28em]">↑↓</span>
+                    <span className="rounded-full border border-border/50 bg-background/70 px-2 py-1 text-[10px] tracking-[0.28em]">Enter</span>
+                    <span className="rounded-full border border-border/50 bg-background/70 px-2 py-1 text-[10px] tracking-[0.28em]">Esc</span>
+                    {focusedResult ? (
+                      <span className="ml-2 text-[10px] tracking-[0.25em] text-primary">{TYPE_LABELS[focusedResult.type]}</span>
+                    ) : null}
+                  </div>
                 </div>
                 {isSearching && (
                   <p className="text-sm text-gray-500">Looking for relevant pages…</p>
