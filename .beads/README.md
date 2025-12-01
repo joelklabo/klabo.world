@@ -76,6 +76,11 @@ bd create "Try out Beads"
 - **Quick Start Guide**: Run `bd quickstart`
 - **Examples**: [github.com/steveyegge/beads/examples](https://github.com/steveyegge/beads/tree/main/examples)
 
+## Housekeeping
+
+- If you see merge artifacts like `beads.left.jsonl` or `beads.right.jsonl` after a conflicted sync, delete them and rerun `bd doctor` to confirm only `issues.jsonl` remains.
+- Keep the recommended git hooks installed (`bd hooks install`) so sync stays automatic.
+
 ---
 
 *Beads: Issue tracking that moves at the speed of thought* ⚡
