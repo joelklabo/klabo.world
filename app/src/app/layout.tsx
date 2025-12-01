@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { JetBrains_Mono, Manrope } from 'next/font/google';
 import './globals.css';
 import { GlobalNavigation } from './components/global-navigation';
 import ApplicationInsightsConnection from './components/ApplicationInsights';
@@ -13,13 +13,17 @@ export const metadata: Metadata = {
     'klabo.world covers Bitcoin, Lightning, Nostr, and agentic engineering with tutorials, project updates, and AI context libraries.',
 };
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const manrope = Manrope({
+  variable: '--font-manrope',
+  display: 'swap',
+  weight: ['400', '500', '600', '700'],
   subsets: ['latin'],
 });
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
+const jetbrains = JetBrains_Mono({
+  variable: '--font-jetbrains-mono',
+  display: 'swap',
+  weight: ['400', '500', '600', '700'],
   subsets: ['latin'],
 });
 
@@ -30,7 +34,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}>
+      <body className={`${manrope.variable} ${jetbrains.variable} antialiased bg-background text-foreground`}>
         <GlobalNavigation />
         <main className="min-h-screen">{children}</main>
         <ApplicationInsightsConnection />
