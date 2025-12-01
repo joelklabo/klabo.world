@@ -26,7 +26,7 @@ export default function Home() {
   const tagCloud = getPostTagCloud(15);
 
   const stats = [
-    { label: 'Articles', value: recentPosts.length },
+    { label: 'Articles', value: getPosts().length },
     { label: 'Apps', value: apps.length },
     { label: 'Contexts', value: contexts.length },
     { label: 'Dashboards', value: dashboards.length },
