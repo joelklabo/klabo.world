@@ -1,19 +1,11 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import dynamic from 'next/dynamic';
 import type { Metadata } from 'next';
 import { getPostBySlug, getPosts } from '@/lib/posts';
 import { MDXContent } from '@/components/mdx-content';
 import { env } from '@/lib/env';
 import { getFlag } from '@/lib/flags';
-
-const NostrstackActionBar = dynamic(() => import('@/components/nostrstack-widgets').then((m) => m.NostrstackActionBar), {
-  ssr: false,
-});
-
-const NostrstackComments = dynamic(() => import('@/components/nostrstack-widgets').then((m) => m.NostrstackComments), {
-  ssr: false,
-});
+import { NostrstackActionBar, NostrstackComments } from '@/components/nostrstack-widgets';
 
 type Params = { slug: string };
 

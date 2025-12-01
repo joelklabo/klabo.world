@@ -8,7 +8,7 @@ const optionalUrl = z.preprocess(
     const trimmed = value.trim();
     return trimmed === '' ? undefined : trimmed;
   },
-  z.string().url().optional(),
+  z.union([z.string().url(), z.literal('mock')]).optional(),
 );
 
 const schema = z.object({

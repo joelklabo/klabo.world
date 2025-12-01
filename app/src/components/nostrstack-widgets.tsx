@@ -1,7 +1,9 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { relayInit, type Relay, type Sub } from 'nostr-tools';
+// nostr-tools is dynamically imported when needed so builds work without it.
+type Relay = any;
+type Sub = any;
 
 const DEFAULT_RELAYS = ['wss://relay.damus.io', 'wss://relay.snort.social'];
 const MIN_MSAT = 1000;
@@ -75,12 +77,26 @@ function parseLightningAddress(value?: string | null): { username: string; domai
   return { username, domain };
 }
 
+function isMockConfig(opts: { baseUrl?: string; host?: string }) {
+  return opts.baseUrl === 'mock' || opts.host === 'mock';
+}
+
 async function connectRelays(urls: string[]): Promise<Relay[]> {
+  if (urls.includes('mock')) return [];
+  let relayInit: ((url: string) => Relay) | null = null;
+  try {
+    const mod = await import('nostr-tools');
+    relayInit = (mod as any).relayInit;
+  } catch (err) {
+    console.warn('nostr-tools not available, skipping relay connections', err);
+    return [];
+  }
+  if (!relayInit) return [];
   const results: Relay[] = [];
   await Promise.all(
     urls.map(async (url) => {
       try {
-        const relay = relayInit(url);
+        const relay = relayInit!(url);
         await relay.connect();
         results.push(relay);
       } catch (error) {
@@ -185,6 +201,7 @@ export function NostrstackActionBar({
   const { connections, ready } = useRelayConnections(relayList);
   const lightning = useMemo(() => parseLightningAddress(lightningAddress ?? undefined), [lightningAddress]);
   const copyInvoice = useCallback(() => copyText(invoice), [invoice]);
+  const mockMode = useMemo(() => isMockConfig({ baseUrl, host }), [baseUrl, host]);
 
   const handleTip = useCallback(async () => {
     if (!lightning) {
@@ -195,11 +212,15 @@ export function NostrstackActionBar({
     setTipState('loading');
     setTipError(null);
     try {
-      const client = new NostrstackClient({ baseUrl, host: host ?? lightning.domain });
-      const meta = await client.metadata(lightning.username);
-      const amount = Math.max(meta?.minSendable ?? MIN_MSAT, MIN_MSAT);
-      const { pr, payment_request } = await client.invoice(lightning.username, amount);
-      const paymentRequest = pr ?? payment_request;
+      const paymentRequest = mockMode
+        ? `lnbc1mock${Math.random().toString(16).slice(2, 10)}`
+        : (await (async () => {
+            const client = new NostrstackClient({ baseUrl, host: host ?? lightning.domain });
+            const meta = await client.metadata(lightning.username);
+            const amount = Math.max(meta?.minSendable ?? MIN_MSAT, MIN_MSAT);
+            const { pr, payment_request } = await client.invoice(lightning.username, amount);
+            return pr ?? payment_request;
+          })());
       if (!paymentRequest) {
         throw new Error('Missing invoice payload');
       }
@@ -267,14 +288,16 @@ export function NostrstackActionBar({
       <div className="flex flex-wrap items-center gap-3">
         <button
           type="button"
+          data-testid="nostrstack-tip"
           onClick={handleTip}
-          disabled={!lightning || !baseUrl || tipState === 'loading'}
+          disabled={!lightning || (!baseUrl && !mockMode) || tipState === 'loading'}
           className="rounded-full bg-amber-500 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-amber-400 disabled:cursor-not-allowed disabled:bg-amber-200/50"
         >
           {tipState === 'loading' ? 'Generating…' : lightning ? 'Send sats' : 'Lightning missing'}
         </button>
         <button
           type="button"
+          data-testid="nostrstack-share"
           onClick={handleShare}
           disabled={shareState === 'posting'}
           className="rounded-full border border-white/20 px-4 py-2 text-sm font-semibold text-white transition hover:border-amber-200/70 hover:text-amber-100 disabled:cursor-wait"
@@ -320,6 +343,7 @@ export function NostrstackComments({ threadId, relays, canonicalUrl }: CommentsP
   const [content, setContent] = useState('');
   const [posting, setPosting] = useState(false);
   const relayList = useMemo(() => (relays && relays.length ? relays : DEFAULT_RELAYS), [relays]);
+  const isMockMode = relayList.includes('mock');
   const { connections, ready } = useRelayConnections(relayList);
   const seenIds = useRef<Set<string>>(new Set());
 
@@ -391,7 +415,8 @@ export function NostrstackComments({ threadId, relays, canonicalUrl }: CommentsP
         <div className="flex items-center justify-between text-sm text-slate-400">
           <button
             type="submit"
-            disabled={posting || !connections.length}
+            disabled={posting || (!connections.length && !isMockMode)}
+            data-testid="nostrstack-comment-submit"
             className="rounded-full bg-white/10 px-4 py-2 font-semibold text-white transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {posting ? 'Posting…' : 'Post comment'}
