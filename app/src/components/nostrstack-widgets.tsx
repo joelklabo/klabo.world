@@ -167,7 +167,7 @@ async function publishToRelays(relays: Relay[], event: NostrEvent) {
             clearTimeout(timer);
             resolve();
           });
-          pub.on('failed', (reason: string) => {
+          pub.on('failed', (reason?: string) => {
             clearTimeout(timer);
             reject(new Error(reason || 'publish failed'));
           });
