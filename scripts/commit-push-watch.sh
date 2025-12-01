@@ -1,13 +1,38 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [[ $# -lt 1 ]]; then
-  echo "Usage: commit-push-watch.sh \"commit message\" [workflow-list]" >&2
+usage() {
+  echo "Usage: $(basename "$0") [-m \"commit message\"] [-w \"workflow|pattern\"]" >&2
+  echo "Examples:" >&2
+  echo "  $(basename "$0") -m \"feat: add search polish\" -w \"ci|Build, Test, and Deploy to Azure\"" >&2
+  echo "  $(basename "$0") \"feat: add search polish\"" >&2
   exit 1
+}
+
+COMMIT_MESSAGE=""
+WORKFLOWS="ci|Build, Test, and Deploy to Azure"
+
+while getopts ":m:w:h" opt; do
+  case "$opt" in
+    m) COMMIT_MESSAGE="$OPTARG" ;;
+    w) WORKFLOWS="$OPTARG" ;;
+    h) usage ;;
+    \?) echo "Invalid option: -$OPTARG" >&2; usage ;;
+    :) echo "Option -$OPTARG requires an argument." >&2; usage ;;
+  esac
+done
+
+shift $((OPTIND - 1))
+
+if [[ -z "$COMMIT_MESSAGE" && $# -gt 0 ]]; then
+  COMMIT_MESSAGE=$1
+  shift
 fi
 
-COMMIT_MESSAGE=$1
-WORKFLOWS=${2:-"ci|Build, Test, and Deploy to Azure"}
+if [[ -z "$COMMIT_MESSAGE" || $# -gt 0 ]]; then
+  usage
+fi
+
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
 git add -A
