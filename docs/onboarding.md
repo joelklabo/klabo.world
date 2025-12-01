@@ -51,8 +51,8 @@ Welcome to klabo.world! This guide will help you set up your local development e
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/joelklabo/KlaboWorld.git
-cd KlaboWorld
+git clone git@github.com:joelklabo/klabo.world.git
+cd klabo.world
 ```
 
 ### 2. Install Development Tools
@@ -70,10 +70,10 @@ just bootstrap
 ```
 
 This command:
-- Installs mise and activates it
-- Installs Node 24.11.1 and PNPM 10.22.0 automatically
+- Ensures mise is installed/activated
+- Installs Node 24.11.1 and PNPM 10.22.0
 - Runs `pnpm install` for all workspace packages
-- Generates an environment info snapshot in `docs/verifications/bootstrap.md`
+- Writes env info to `docs/verifications/bootstrap.md`
 
 ### 4. Configure Environment Variables
 
@@ -174,7 +174,9 @@ Before diving into code, read the [Architectural Decision Records](/docs/adr/) t
 
 ### Starting the Dev Server
 
-**Option 1: Simple (Recommended for beginners)**
+Before coding, run `bd ready` to pick an unblocked issue.
+
+**Option 1: Simple (Recommended)**
 ```bash
 just dev
 ```
@@ -205,6 +207,7 @@ Detach with `Ctrl-b d` and reattach later with `tmux attach -t klabo-dev`.
 | `just db-reset` | Reset and seed the database |
 | `just load-test` | Run k6 load tests |
 | `just doctor` | Check environment health |
+| `just agent-shell` | tmux layout for dev server + vitest + docker logs |
 
 ### Working with Content
 
@@ -245,9 +248,7 @@ This copies the component source into `app/src/components/ui/`. Customize as nee
 
 ### 1. Find an Issue
 
-- Check [GitHub Issues](https://github.com/joelklabo/KlaboWorld/issues)
-- Look for `good first issue` label
-- Or suggest improvements in Discussions
+- Run `bd ready` (no blockers) or `bd list --status open` to pick work. Avoid asking which issue to take.
 
 ### 2. Create a Branch
 
@@ -281,33 +282,17 @@ just load-test     # Smoke test (optional)
 
 ### 6. Commit and Push
 
-```bash
-git add .
-git commit -m "feat: add new feature
-
-- Implement X
-- Add tests for Y
-- Update docs for Z"
-
-git push origin feature/my-feature-name
-```
-
-**Commit Message Format:**
-- `feat:` - New feature
-- `fix:` - Bug fix
-- `docs:` - Documentation only
-- `test:` - Adding tests
-- `refactor:` - Code refactoring
-- `style:` - Formatting changes
-- `chore:` - Maintenance tasks
-
-### 7. Create a Pull Request
+Use the helper so CI is tracked automatically:
 
 ```bash
-gh pr create --title "Add new feature" --body "Description of changes"
+./scripts/commit-push-watch.sh "feat: add new feature" "ci|Build, Test, and Deploy to Azure"
 ```
 
-Or use the GitHub web UI.
+This stages all changes, commits, pushes `HEAD` to the current branch, and opens a tmux CI watcher.
+
+### 7. (If using PRs)
+
+Open a PR from your branch if the workflow requires review; otherwise pushes to `main` go straight through CI.
 
 ## Testing
 
@@ -347,16 +332,7 @@ Runs smoke tests against http://localhost:3000.
 
 ## Deployment
 
-The platform deploys to Azure App Service automatically via GitHub Actions:
-
-1. Push to `main` triggers CI
-2. Build + Test run
-3. Docker image built and pushed to GHCR
-4. Deploy to staging slot
-5. Run smoke tests
-6. Manual approval for production swap (future)
-
-See [deployment documentation](/docs/deployment/checklist.md) for details.
+Pushes to `main` trigger the “Build, Test, and Deploy to Azure” workflow: lint/tests → Next build → container build/push → staging slot deploy → smoke tests. See `docs/deployment/checklist.md` and `docs/azure/deployment-guide.md`.
 
 ## Getting Help
 
@@ -396,8 +372,8 @@ See [deployment documentation](/docs/deployment/checklist.md) for details.
 
 1. ✅ Complete this onboarding guide
 2. ✅ Run `just dev` and explore http://localhost:3000
-3. ✅ Review the active beads issues (`bd list`) starting with `klabo.world-fh9` (Phase 4) and its open dependencies.
-4. ✅ Pick a `good first issue` and make your first PR!
+3. ✅ Run `bd ready` and pick a P1/P2 from the ready list.
+4. ✅ Make a change, commit with `commit-push-watch.sh`, and ensure CI passes.
 5. ✅ Join the team discussions and ask questions
 
 Welcome to the team! 🚀

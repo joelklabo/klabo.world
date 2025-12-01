@@ -1,6 +1,6 @@
 # Azure Infrastructure as Code (Bicep)
 
-The `infra/` folder contains the subscription-scoped Bicep templates for provisioning klabo.world in Azure. Deployments follow the workflow described in `docs/modernization-plan.md` §3.1.
+The `infra/` folder contains the subscription-scoped Bicep templates for provisioning klabo.world in Azure. Use this alongside the live deployment guides in `docs/azure/deployment-guide.md` and `docs/deployment/staging-strategy.md` (slot-first flow used by the “Build, Test, and Deploy to Azure” workflow).
 
 ## Layout
 
@@ -46,4 +46,7 @@ az deployment sub create \
 
 The deployment outputs include the resource group ID, VNet ID, storage account ID, and web app ID—capture those values for future references (GitHub secrets, runbooks, etc.).
 
-> **Note:** The current production stack still uses SQLite; the PostgreSQL module provisions the flexible server ahead of that migration so connection strings are ready when we flip Prisma to Postgres.
+> **Notes**
+> - Default app runtime uses SQLite at `file:/home/site/wwwroot/data/app.db`; Postgres is provisioned but not yet the primary. Populate `DATABASE_URL` with the Postgres connection string when you’re ready to migrate.
+> - Blob uploads default to Azure Storage; set `AZURE_STORAGE_ACCOUNT`, `AZURE_STORAGE_KEY`, and `AZURE_STORAGE_CONTAINER` in App Service settings. If absent, uploads write to `public/uploads` on the container FS (non-durable).
+> - The GitHub Actions deploy workflow builds/pushes the container and runs `scripts/deploy-smoke.sh`; keep parameter files in `infra/envs/` in sync with App Service settings.

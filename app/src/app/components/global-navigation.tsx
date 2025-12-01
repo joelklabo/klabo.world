@@ -159,14 +159,16 @@ const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     () =>
       mobileMenuOpen ? (
         <div className="lg:hidden">
-          <div className="flex flex-col gap-2 px-4 pb-4">
+          <div className="mt-2 flex flex-col gap-2 rounded-2xl border border-border/60 bg-card/90 px-4 pb-4 shadow-[0_16px_32px_rgba(6,10,20,0.45)]">
             {NAV_ITEMS.map((item) => (
               <Link
                 key={item.href}
                 href={item.href as Route}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`block rounded-lg px-3 py-2 text-sm font-semibold ${
-                  pathname === item.href ? 'bg-gray-100 text-gray-900' : 'text-gray-500 hover:text-gray-900'
+                className={`block rounded-lg px-3 py-2 text-sm font-semibold transition ${
+                  pathname === item.href
+                    ? 'bg-primary/10 text-primary'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-background/50'
                 }`}
               >
                 {item.label}
@@ -196,15 +198,19 @@ const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-gray-100 bg-white/80 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-3 sm:px-6 lg:flex-row lg:items-center lg:gap-6 lg:px-8">
+    <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl shadow-[0_20px_40px_rgba(6,10,20,0.45)]">
+      <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:gap-6 lg:px-8">
         <div className="flex items-center justify-between">
-          <Link href="/" className="text-xl font-semibold tracking-tight text-gray-900" data-testid="global-nav-logo">
+          <Link
+            href="/"
+            className="text-lg font-semibold tracking-[0.18em] uppercase text-primary drop-shadow"
+            data-testid="global-nav-logo"
+          >
             klabo.world
           </Link>
           <button
             type="button"
-            className="lg:hidden text-sm font-medium text-gray-600"
+            className="lg:hidden rounded-full border border-border/60 bg-card/70 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-foreground hover:border-primary/70"
             onClick={() => setMobileMenuOpen((prev) => !prev)}
             aria-expanded={mobileMenuOpen}
             aria-controls="global-mobile-nav"
@@ -212,14 +218,16 @@ const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
             Menu
           </button>
         </div>
-        <nav className="hidden items-center gap-6 text-sm font-semibold text-gray-600 lg:flex" aria-label="Primary navigation">
+        <nav className="hidden items-center gap-5 text-sm font-semibold text-muted-foreground lg:flex" aria-label="Primary navigation">
           {NAV_ITEMS.map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link
                 key={item.href}
                 href={item.href as Route}
-                className={`transition-colors hover:text-gray-900 ${isActive ? 'text-gray-900' : ''}`}
+                className={`rounded-full px-3 py-1 transition hover:text-primary ${
+                  isActive ? 'bg-primary/10 text-primary shadow-[0_8px_24px_rgba(255,191,71,0.15)] border border-primary/30' : ''
+                }`}
                 data-testid={`global-nav-${item.label.toLowerCase()}`}
               >
                 {item.label}
@@ -237,25 +245,25 @@ const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
             <span className="sr-only">Search all pages</span>
             <input
               ref={inputRef}
-                type="search"
+              type="search"
               name="global-search"
-              className="w-full rounded-full border border-gray-200 bg-white px-4 py-2 text-sm shadow-sm placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full rounded-full border border-border/50 bg-card/80 px-4 py-2 text-sm text-foreground shadow-[0_12px_30px_rgba(8,10,20,0.35)] placeholder:text-muted-foreground/70 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/40"
               placeholder="Search posts, apps, or contexts…"
-                value={query}
-                onChange={(event) => {
-                  const nextValue = event.target.value;
-                  setQuery(nextValue);
-                  const trimmed = nextValue.trim();
-                  if (trimmed.length >= 2) {
-                    setIsDropdownOpen(true);
-                  } else {
-                    controllerRef.current?.abort();
-                    setResults([]);
-                    setHighlightedIndex(-1);
-                    setError(null);
-                    setIsDropdownOpen(false);
-                  }
-                }}
+              value={query}
+              onChange={(event) => {
+                const nextValue = event.target.value;
+                setQuery(nextValue);
+                const trimmed = nextValue.trim();
+                if (trimmed.length >= 2) {
+                  setIsDropdownOpen(true);
+                } else {
+                  controllerRef.current?.abort();
+                  setResults([]);
+                  setHighlightedIndex(-1);
+                  setError(null);
+                  setIsDropdownOpen(false);
+                }
+              }}
               onFocus={() => {
                 if (hasQuery) {
                   setIsDropdownOpen(true);
@@ -269,12 +277,12 @@ const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
                 id="global-search-dropdown"
                 role="listbox"
                 style={dropdownStyle ?? undefined}
-                className="fixed z-[120] max-h-72 overflow-auto rounded-2xl border border-gray-200 bg-white p-3 shadow-xl shadow-black/15"
+                className="fixed z-[120] max-h-72 overflow-auto rounded-2xl border border-border/60 bg-card/95 p-3 shadow-[0_20px_40px_rgba(6,10,20,0.55)] backdrop-blur"
                 aria-live="polite"
                 aria-label="Search suggestions"
                 data-testid="global-search-results"
               >
-                <div className="mb-2 flex items-center justify-between text-xs uppercase text-gray-500">
+                <div className="mb-2 flex items-center justify-between text-xs uppercase tracking-[0.22em] text-muted-foreground">
                   <span>{statusMessage}</span>
                   <span>{focusedResult ? TYPE_LABELS[focusedResult.type] : ''}</span>
                 </div>
@@ -282,10 +290,10 @@ const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
                   <p className="text-sm text-gray-500">Looking for relevant pages…</p>
                 )}
                 {!isSearching && !results.length && !error && (
-                  <p className="text-sm text-gray-500">Try another keyword or hit enter to search the site.</p>
+                  <p className="text-sm text-muted-foreground">Try another keyword or hit enter to search the site.</p>
                 )}
                 {error && (
-                  <p className="text-sm text-red-600">Search is currently unavailable.</p>
+                  <p className="text-sm text-destructive">Search is currently unavailable.</p>
                 )}
                 <ul className="space-y-2">
                   {results.map((result, index) => {
@@ -296,7 +304,9 @@ const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
                         role="option"
                         aria-selected={isActive}
                         className={`cursor-pointer rounded-xl border px-3 py-2 text-sm transition ${
-                          isActive ? 'border-indigo-500 bg-indigo-50' : 'border-transparent hover:border-gray-200 hover:bg-gray-50'
+                          isActive
+                            ? 'border-primary/40 bg-primary/10'
+                            : 'border-transparent hover:border-border/50 hover:bg-background/40'
                         }`}
                         onMouseDown={(event) => {
                           event.preventDefault();
@@ -305,13 +315,13 @@ const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
                         onMouseEnter={() => setHighlightedIndex(index)}
                         data-testid="global-search-result"
                       >
-                        <p className="font-semibold text-gray-900">{result.title}</p>
-                        <p className="text-xs uppercase text-gray-500">{TYPE_LABELS[result.type]}</p>
-                        <p className="text-sm text-gray-500 line-clamp-2">{result.summary}</p>
+                        <p className="font-semibold text-foreground">{result.title}</p>
+                        <p className="text-[11px] uppercase tracking-[0.25em] text-muted-foreground">{TYPE_LABELS[result.type]}</p>
+                        <p className="text-sm text-muted-foreground line-clamp-2">{result.summary}</p>
                         {result.tags.length > 0 && (
-                          <div className="mt-1 flex flex-wrap gap-2 text-[10px] uppercase tracking-wider text-indigo-500">
+                          <div className="mt-2 flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.28em] text-primary">
                             {result.tags.slice(0, 3).map((tag) => (
-                              <span key={tag} className="rounded-full border border-indigo-100 px-2 py-0.5 text-[10px]">
+                              <span key={tag} className="rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] text-foreground">
                                 {tag}
                               </span>
                             ))}
