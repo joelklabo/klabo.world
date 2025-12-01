@@ -34,7 +34,7 @@ export default function Home() {
 
   return (
     <div className="bg-slate-950 text-slate-100">
-      <section className="relative overflow-hidden rounded-b-[40px] bg-gradient-to-br from-slate-900 via-slate-900 to-[#0d1b22] px-6 py-16 shadow-2xl shadow-black/40">
+      <section className="relative overflow-hidden rounded-b-[40px] bg-gradient-to-br from-slate-900 via-slate-900 to-[#0d1b22] px-6 py-16 shadow-2xl shadow-black/40 motion-fade-up">
         <div className="absolute inset-0 opacity-70">
           <div className="pointer-events-none h-full w-full bg-[radial-gradient(circle_at_top,_rgba(93,43,230,0.4),_transparent_40%)]" />
         </div>
@@ -67,7 +67,7 @@ export default function Home() {
               ))}
             </div>
           </div>
-          <div className="flex w-full flex-1 flex-col gap-4 rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur">
+          <div className="flex w-full flex-1 flex-col gap-4 rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur card-hover-lift">
             {heroHighlights.map((highlight) => (
               <Link
                 key={highlight.label}
@@ -96,11 +96,11 @@ export default function Home() {
               View all posts →
             </Link>
           </div>
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-3 motion-fade-up">
             {recentPosts.map((post) => (
               <article
                 key={post._id}
-                className="flex flex-col gap-3 rounded-3xl border border-slate-800/80 bg-slate-900/70 p-6 shadow-lg shadow-black/40 transition hover:border-indigo-400/50"
+                className="flex flex-col gap-3 rounded-3xl border border-slate-800/80 bg-slate-900/70 p-6 shadow-lg shadow-black/40 transition hover:border-indigo-400/50 card-hover-lift"
               >
                 <time className="text-xs uppercase tracking-[0.4em] text-slate-400">
                   {new Date(post.publishDate ?? post.date).toLocaleDateString(undefined, {
@@ -144,12 +144,12 @@ export default function Home() {
                 View all apps →
               </Link>
             </div>
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-6 md:grid-cols-2 motion-fade-up">
               {apps.map((app) => (
                 <Link
                   key={app.slug}
                   href={`/apps/${app.slug}`}
-                  className="flex flex-col gap-4 rounded-3xl border border-slate-800/80 bg-gradient-to-br from-slate-900 to-slate-950 p-6 shadow-2xl shadow-black/60 transition hover:-translate-y-1 hover:border-purple-400/60"
+                  className="flex flex-col gap-4 rounded-3xl border border-slate-800/80 bg-gradient-to-br from-slate-900 to-slate-950 p-6 shadow-2xl shadow-black/60 transition hover:-translate-y-1 hover:border-purple-400/60 card-hover-lift"
                 >
                   <div className="flex items-center gap-4">
                     {app.icon && (
@@ -188,11 +188,11 @@ export default function Home() {
                 Browse contexts →
               </Link>
             </div>
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-6 md:grid-cols-2 motion-fade-up">
               {contexts.slice(0, 4).map((context) => (
                 <article
                   key={context._id}
-                  className="flex flex-col gap-4 rounded-3xl border border-slate-800/80 bg-slate-900/60 p-6 shadow-lg shadow-black/40 transition hover:-translate-y-1 hover:border-emerald-400/70"
+                  className="flex flex-col gap-4 rounded-3xl border border-slate-800/80 bg-slate-900/60 p-6 shadow-lg shadow-black/40 transition hover:-translate-y-1 hover:border-emerald-400/70 card-hover-lift"
                 >
                   <p className="text-xs uppercase tracking-[0.4em] text-slate-400">
                     Updated {new Date(context.updatedDate ?? context.createdDate).toLocaleDateString()}
@@ -241,12 +241,12 @@ export default function Home() {
                 View all dashboards →
               </Link>
             </div>
-            <div className="grid gap-6 md:grid-cols-3">
+            <div className="grid gap-6 md:grid-cols-3 motion-fade-up">
               {dashboards.slice(0, 3).map((dashboard) => (
                 <Link
                   key={dashboard.slug}
                   href={`/admin/dashboards/${dashboard.slug}`}
-                  className="flex flex-col gap-3 rounded-3xl border border-slate-800/80 bg-slate-950/60 p-6 shadow-xl shadow-black/60 transition hover:-translate-y-1 hover:border-cyan-500/70"
+                  className="flex flex-col gap-3 rounded-3xl border border-slate-800/80 bg-slate-950/60 p-6 shadow-xl shadow-black/60 transition hover:-translate-y-1 hover:border-cyan-500/70 card-hover-lift"
                 >
                   <div className="flex items-center justify-between gap-3">
                     <p className="text-sm uppercase tracking-[0.4em] text-slate-400">{dashboard.panelType}</p>
@@ -277,12 +277,12 @@ export default function Home() {
           <div className="mx-auto max-w-5xl text-center">
             <p className="text-sm uppercase tracking-widest text-slate-400">Popular Topics</p>
             <h2 className="mt-2 text-2xl font-semibold text-white">Tag Cloud</h2>
-            <div className="mt-6 flex flex-wrap justify-center gap-3">
+            <div className="mt-6 flex flex-wrap justify-center gap-3 motion-fade-up">
               {tagCloud.map(({ tag, count }) => (
                 <Link
                   key={tag}
                   href={`/posts/tag/${encodeURIComponent(tag)}`}
-                  className="rounded-full border border-slate-800/80 px-4 py-2 text-sm font-medium text-slate-200 transition hover:border-indigo-400 hover:text-indigo-200"
+                  className="rounded-full border border-slate-800/80 px-4 py-2 text-sm font-medium text-slate-200 transition hover:border-indigo-400 hover:text-indigo-200 card-hover-lift"
                 >
                   {tag} <span className="text-xs text-slate-400">({count})</span>
                 </Link>
