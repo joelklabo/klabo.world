@@ -38,6 +38,7 @@ jobs:
         run: |
           if [ -n "${TURBO_TOKEN:-}" ] && [ -n "${TURBO_TEAM:-}" ]; then
             echo "Turbo remote cache enabled for team '${TURBO_TEAM}'."
+            echo "TURBO_TOKEN is set" | sed 's/./*/g'
           else
             echo "Turbo remote cache not configured (set TURBO_TOKEN and TURBO_TEAM secrets to enable)."
           fi

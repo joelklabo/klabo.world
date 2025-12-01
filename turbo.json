@@ -4,6 +4,19 @@
     "pnpm-lock.yaml"
   ],
   "tasks": {
+    "contentlayer": {
+      "cache": true,
+      "outputs": ["app/.contentlayer/generated/**"],
+      "inputs": ["content/**", "app/contentlayer.config.ts", "app/src/app/lib/**"],
+      "env": ["NODE_ENV"],
+      "dependsOn": []
+    },
+    "prisma:generate": {
+      "cache": true,
+      "outputs": ["app/node_modules/.prisma/client/**"],
+      "inputs": ["app/prisma/schema.prisma"],
+      "dependsOn": []
+    },
     "lint": {
       "dependsOn": ["^lint"],
       "outputs": []
@@ -13,7 +26,7 @@
       "outputs": []
     },
     "build": {
-      "dependsOn": ["^build", "lint"],
+      "dependsOn": ["contentlayer", "prisma:generate", "^build", "lint"],
       "outputs": [
         "dist/**",
         "build/**",
