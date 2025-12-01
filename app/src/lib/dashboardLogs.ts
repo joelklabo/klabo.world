@@ -159,7 +159,11 @@ export async function loadDashboardLogs(dashboard: Dashboard, options: LogOption
       refreshedAt: new Date().toISOString(),
     };
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown error while running query.';
+    const rawMessage = error instanceof Error ? error.message : 'Unknown error while running query.';
+    const looksLikeHtml = /<!doctype/i.test(rawMessage) || /<html/i.test(rawMessage);
+    const message = looksLikeHtml
+      ? 'Log Analytics returned HTML (likely missing/invalid credentials). Check LOG_ANALYTICS_* or APPINSIGHTS_* secrets.'
+      : rawMessage;
     return { status: 'error', message };
   }
 }
