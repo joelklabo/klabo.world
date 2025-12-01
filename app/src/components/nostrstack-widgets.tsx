@@ -220,13 +220,27 @@ export function NostrstackActionBar({
   const [invoice, setInvoice] = useState<string | null>(null);
   const [tipState, setTipState] = useState<'idle' | 'loading' | 'error' | 'copied'>('idle');
   const [tipError, setTipError] = useState<string | null>(null);
-  const [shareState, setShareState] = useState<'idle' | 'posting' | 'copied' | 'error'>('idle');
+  const [shareState, setShareState] = useState<'idle' | 'posting' | 'posted' | 'error'>('idle');
   const [shareError, setShareError] = useState<string | null>(null);
   const relayList = useMemo(() => (relays && relays.length ? relays : DEFAULT_RELAYS), [relays]);
   const { connections, ready } = useRelayConnections(relayList);
   const lightning = useMemo(() => parseLightningAddress(lightningAddress ?? undefined), [lightningAddress]);
   const copyInvoice = useCallback(() => copyText(invoice), [invoice]);
   const mockMode = useMemo(() => isMockConfig({ baseUrl, host }), [baseUrl, host]);
+  const [signerAvailable, setSignerAvailable] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const signer = (window as NostrWindow).nostr;
+    if (!signer) {
+      setSignerAvailable(false);
+      return;
+    }
+    signer
+      .getPublicKey()
+      .then(() => setSignerAvailable(true))
+      .catch(() => setSignerAvailable(true));
+  }, []);
 
   const handleTip = useCallback(async () => {
     if (!lightning) {
@@ -262,51 +276,46 @@ export function NostrstackActionBar({
     const note = `${title}\n${canonicalUrl}${lightningAddress ? `\n⚡️ ${lightningAddress}` : ''}`;
     setShareError(null);
 
-    // Prefer Nostr share when signer is available
-    if (typeof window !== 'undefined') {
-      const signer = (window as NostrWindow).nostr;
-      if (signer && connections.length) {
-        setShareState('posting');
-        try {
-          const pubkey = await signer.getPublicKey();
-          const unsigned: NostrEvent = {
-            kind: 1,
-            created_at: Math.floor(Date.now() / 1000),
-          tags: [
-            ['t', slug],
-            ['r', canonicalUrl],
-            ...(nostrPubkey ? [['p', nostrPubkey]] : []),
-          ],
-            content: note,
-            pubkey,
-          };
-          const signed = await signer.signEvent(unsigned);
-          await publishToRelays(connections, signed);
-          setShareState('copied');
-          await copyText(note);
-          return;
-        } catch (error) {
-        setShareError(formatError(error));
-        setShareState('error');
-        return;
-      }
-      }
+    if (typeof window === 'undefined') {
+      setShareError('NIP-07 signer required to share.');
+      return;
+    }
+    const signer = (window as NostrWindow).nostr;
+    if (!signer) {
+      setShareError('NIP-07 signer required to share.');
+      return;
+    }
+    if (!connections.length) {
+      setShareError('No relay connections. Please try again when relays are ready.');
+      return;
     }
 
-    // Fallback: copy/share without nostr signer
+    setShareState('posting');
     try {
-      if (navigator?.share) {
-        await navigator.share({ title, text: note, url: canonicalUrl });
-        setShareState('copied');
-        return;
-      }
-      await copyText(note);
-      setShareState('copied');
+      const pubkey = await signer.getPublicKey();
+      const unsigned: NostrEvent = {
+        kind: 1,
+        created_at: Math.floor(Date.now() / 1000),
+        tags: [
+          ['t', slug],
+          ['r', canonicalUrl],
+          ...(nostrPubkey ? [['p', nostrPubkey]] : []),
+        ],
+        content: note,
+        pubkey,
+      };
+      const signed = await signer.signEvent(unsigned);
+      await publishToRelays(connections, signed);
+      setShareState('posted');
     } catch (error) {
       setShareError(formatError(error));
       setShareState('error');
+    } finally {
+      if (shareState === 'posting') {
+        setShareState((prev) => (prev === 'posting' ? 'idle' : prev));
+      }
     }
-  }, [canonicalUrl, connections, lightningAddress, nostrPubkey, slug, title]);
+  }, [canonicalUrl, connections, lightningAddress, nostrPubkey, shareState, slug, title]);
 
   return (
     <Section title="Support & Share">
@@ -327,8 +336,8 @@ export function NostrstackActionBar({
           type="button"
           data-testid="nostrstack-share"
           onClick={handleShare}
-          disabled={shareState === 'posting'}
-          className="rounded-full border border-white/20 px-4 py-2 text-sm font-semibold text-white transition hover:border-amber-200/70 hover:text-amber-100 disabled:cursor-wait"
+          disabled={shareState === 'posting' || !signerAvailable || !ready || !connections.length}
+          className="rounded-full border border-white/20 px-4 py-2 text-sm font-semibold text-white transition hover:border-amber-200/70 hover:text-amber-100 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {shareState === 'posting' ? 'Posting…' : 'Share to Nostr'}
         </button>
@@ -338,6 +347,9 @@ export function NostrstackActionBar({
           <span className="text-xs uppercase tracking-[0.25em] text-slate-400">Connecting relays…</span>
         )}
       </div>
+      {!signerAvailable && (
+        <p className="text-sm text-amber-200">NIP-07 signer not detected. Please enable your Nostr extension to share.</p>
+      )}
       {invoice && (
         <div className="rounded-2xl border border-amber-200/40 bg-amber-50/10 p-3">
           <div className="flex items-center justify-between gap-3 text-xs font-semibold uppercase tracking-[0.3em] text-amber-100">
@@ -361,6 +373,7 @@ export function NostrstackActionBar({
       )}
       {tipError && <p className="text-sm text-rose-200">{tipError}</p>}
       {shareError && <p className="text-sm text-rose-200">{shareError}</p>}
+      {shareState === 'posted' && !shareError && <p className="text-sm text-emerald-200">Shared to Nostr.</p>}
     </Section>
   );
 }
