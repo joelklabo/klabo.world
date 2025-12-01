@@ -4,7 +4,6 @@ import { test, expect } from '@playwright/test';
 // Playwright isolates contexts, so set in test via addInitScript.
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
-    // @ts-expect-error allow monkey patch in tests
     navigator.share = () => Promise.resolve();
   });
 });
