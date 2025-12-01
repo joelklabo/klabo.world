@@ -80,6 +80,7 @@ bd create "Try out Beads"
 
 - If you see merge artifacts like `beads.left.jsonl` or `beads.right.jsonl` after a conflicted sync, delete them and rerun `bd doctor` to confirm only `issues.jsonl` remains.
 - Keep the recommended git hooks installed (`bd hooks install`) so sync stays automatic.
+- After upgrading bd via Homebrew, run `bd migrate` so the SQLite schema matches the CLI version. If multiple clones share issues, set a `sync-branch` in `.beads/config.yaml` to avoid diverging histories.
 
 ---
 
