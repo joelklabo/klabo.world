@@ -565,3 +565,6 @@ This testing plan provides:
 6. **Comprehensive Checklist**: Automated and manual checks before deployment
 
 Run through all these tests before pushing to ensure a smooth deployment to Azure!
+# ⚠️ Deprecated – Legacy Vapor/Azure Deployment Plan
+
+This document describes a Swift/Vapor-era local Azure simulation plan and is kept only for historical reference. It does **not** apply to the current Next.js 16 + Tailwind 4 stack. For present-day deployment and testing, use `docs/deployment/*`, `docs/azure/*`, and the Next.js runbooks in `docs/runbooks/`.

@@ -35,7 +35,7 @@ This file is the single source of truth for every Markdown document that should 
 - `modernization-plan.md` – Warm/playful redesign direction, tokens, typography, and implementation steps.
 
 ### docs/experimental
-- `design.md` – Legacy Vapor/Azure local deployment testing plan; archive or rewrite for the current Next.js stack.
+- `design.md` – Deprecated legacy Vapor/Azure local deployment testing plan (kept for reference only).
 
 ### docs/guides
 - `onboarding.md` – Developer onboarding: setup, workflow, first contribution.
