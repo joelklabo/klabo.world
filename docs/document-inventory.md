@@ -1,88 +1,99 @@
 # Documentation Inventory and Naming Conventions
 
-This file is the single source of truth for every Markdown document that should be kept in the repository. All documentation now lives under `docs/` and follows the kebab-case convention described below.
+This file is the single source of truth for every Markdown document that should be kept in the repository. All docs live under `docs/` and use kebab-case names; update this inventory whenever a doc is added, retired, or moved, and mark legacy/experimental items explicitly.
 
 ## Naming convention
-- Directories under `docs/` roughly map to functional areas (e.g., `docs/azure`, `docs/deployment`, `docs/plans`, `docs/testing`, `docs/security`).
-- Every file name is lowercase with hyphen separators (`kebab-case`).
-- Whenever new documentation is added, place it into the appropriate directory and update this inventory.
+- Directories under `docs/` map to functional areas (e.g., `docs/azure`, `docs/deployment`, `docs/testing`, `docs/security`).
+- Filenames are lowercase with hyphen separators (`kebab-case`).
+- When you add or archive a doc, update this file and note legacy/experimental status where relevant.
 
 ## Inventory by directory
 
 ### docs/adr
-- `0001-use-nextjs-app-router.md` – Decision to adopt Next.js 16 App Router over Pages Router or alternative frameworks.
-- `0002-sqlite-default-postgres-optional.md` – SQLite as default database with optional PostgreSQL for scalability.
-- `0003-azure-monitor-observability.md` – Azure Monitor + Application Insights for observability and telemetry.
-- `0004-contentlayer-file-first-content.md` – Contentlayer for type-safe, file-first content management.
+- `0001-use-nextjs-app-router.md` – Adopt Next.js 16 App Router.
+- `0002-sqlite-default-postgres-optional.md` – SQLite default, Postgres optional.
+- `0003-azure-monitor-observability.md` – Azure Monitor + Application Insights for telemetry.
+- `0004-contentlayer-file-first-content.md` – Contentlayer for type-safe, file-first content.
 - `0005-shadcn-ui-component-library.md` – shadcn/ui copy-paste component library approach.
-- `0006-monorepo-pnpm-turborepo.md` – Monorepo structure with PNPM workspaces and TurboRepo.
-- `0007-renovate-dependency-updates.md` – Renovate for automated dependency updates with auto-merge.
-- `0008-api-layer.md` – Decision to use tRPC for internal/admin APIs while keeping REST for public surfaces, plus migration plan.
-- `0009-monorepo-modularization.md` – Strategy to modularize the monorepo, tune the Turbo build graph, and set measurable build targets.
+- `0006-monorepo-pnpm-turborepo.md` – Monorepo with PNPM workspaces + TurboRepo.
+- `0007-renovate-dependency-updates.md` – Renovate with auto-merge for safe updates.
+- `0008-api-layer.md` – tRPC for internal/admin APIs, REST for public surfaces.
+- `0009-monorepo-modularization.md` – Modular build strategy and measurable targets.
 
 ### docs/azure
-- `auth-setup.md` – Azure CLI authorization setup guidance used by the deployment scripts.
-- `authentication-upgrade.md` – Notes about migrating the legacy Swift admin authentication service into the Next.js stack.
-- `deployment-guide.md` – How Azure App Service, Azure Storage, and App Insights are wired up for production.
+- `auth-setup.md` – Azure CLI authorization setup for deployment scripts.
+- `authentication-upgrade.md` – Migrating legacy Swift auth into the Next.js stack.
+- `deployment-guide.md` – Production App Service/Storage/App Insights wiring.
 
 ### docs/deployment
-- `checklist.md` – The canonical deployment checklist that previously existed at the repository root.
-- `github-token.md` – Instructions for provisioning the GitHub token used by the automated content sync scripts.
-- `phase5-cutover-checklist.md` – Final cutover runbook for the legacy → modern site migration.
-
-### docs/experimental
-- `design.md` – Experimental feature ideas and notes that are still tracked and revisited as experiments.
-
-### docs/guides
-- `coding-partners.md` – Pairing guidelines and rules of engagement for people collaborating in this repository.
-- `onboarding.md` – Comprehensive developer onboarding guide covering setup, workflow, and first contributions.
-
-### docs/integration
-- `github.md` – GitHub-specific workflows such as how the `@klaboworld/scripts` CLI interacts with the repo.
-
-### docs/plans
-- (deprecated) Plans are now tracked as beads issues (see `klabo.world-fh9` + children). No Markdown plan files remain; keep this directory reserved for any future exports or archived snapshots.
-
-### docs/observability
-- `slos.md` – Defines Service Level Objectives (SLOs) for key user journeys, including page load time, API response time, and error rates.
-
-### docs/deployment
-- `staging-strategy.md` – Outlines the strategy and process for utilizing the staging environment to ensure safe and reliable deployments to production.
-
-### docs/runbooks
-- `admin-content.md`, `deployment.md`, `observability.md`, `rollback.md`, `secrets.md`, `db-recovery.md` – Established runbooks for run/ops and emergencies.
-- `feature-flags.md` – Guidance for implementing provider-agnostic feature flags with in-memory, Redis, and hosted-provider adapters.
-- `build-modularity.md` – Plan to modularize the monorepo build graph, add remote caching, and reduce cold/warm build times.
-
-### docs/security
-- `migration.md` – Security migration notes that were previously tracked at the repository root.
-
-### docs/testing
-- `ui-testing-plan.md`, `ui-coverage-matrix.md` – Playwright/Vitest strategy and coverage matrix.
-- `navigation-inventory.md` – Source of truth for public/admin nav routes, test IDs, and the Playwright spec that covers them.
-
-### docs/vapor
-- Several Vapor-specific tutorials (`index.md`, `folder-structure.md`, `controllers.md`, etc.) preserved for reference but not actively maintained.
+- `checklist.md` – Canonical deployment checklist (moved from repo root).
+- `github-token.md` – Provision the GitHub token used by automated content sync.
+- `phase5-cutover-checklist.md` – Final cutover runbook for the legacy → modern migration.
+- `staging-strategy.md` – How to use staging safely before production deploys.
 
 ### docs/design
-- `modernization-plan.md` – UI direction, color/typography tokens, and implementation steps for the warm/playful site refresh.
+- `modernization-plan.md` – Warm/playful redesign direction, tokens, typography, and implementation steps.
+
+### docs/experimental
+- `design.md` – Legacy Vapor/Azure local deployment testing plan; archive or rewrite for the current Next.js stack.
+
+### docs/guides
+- `onboarding.md` – Developer onboarding: setup, workflow, first contribution.
+- `coding-partners.md` – Pairing guidelines and rules of engagement.
+
+### docs/integration
+- `github.md` – GitHub workflows and how `@klaboworld/scripts` interacts with the repo.
+
+### docs/infra
+- `README.md` – Azure Bicep layout, modules, and deployment commands.
+
+### docs/plans
+- (deprecated) Kept empty/reserved; all plans now live as beads issues.
+
+### docs/observability
+- `slos.md` – Service Level Objectives for key user journeys.
+
+### docs/runbooks
+- `admin-content.md` – Publishing, uploads, admin smoke tests.
+- `deployment.md` – Deployment runbook and checks.
+- `observability.md` – Enabling Application Insights locally/Azure and verifying spans.
+- `rollback.md` – Rollback procedure.
+- `secrets.md` – Secrets management across local env, GitHub Actions, and Azure.
+- `db-recovery.md` – Database recovery steps.
+- `feature-flags.md` – Provider-agnostic feature flag guidance.
+- `build-modularity.md` – Plan to modularize the Turbo graph, add caching, and cut build times.
+
+### docs/security
+- `migration.md` – Security migration notes (moved from repo root).
+
+### docs/testing
+- `ui-testing-plan.md` – Playwright/Vitest strategy.
+- `ui-coverage-matrix.md` – Coverage matrix for UI scenarios.
+- `navigation-inventory.md` – Public/admin route + test ID inventory for navigation coverage.
 
 ### docs/verifications
-- Phase-by-phase verification artifacts (`phase0-inventory.md` through `phase5-monitoring.md`, `bootstrap.md`, etc.) that capture test evidence for each milestone.
-- `phase1-pages.md` – Playwright smoke suite for `/`, `/posts`, `/apps`, `/contexts`, and search link parity.
-- `phase1-styling.md` – Tailwind/tag/highlight.js/style audit confirming the new stack matches the legacy visual tokens.
-- `phase1-testing.md` – Vitest + public/admin Playwright regression command summary.
-- `phase2-auth.md` – Credential/rate-limiter login verification via the admin suites.
-- `phase2-admin-crud.md` – CRUD coverage for posts/apps/contexts using the admin helpers.
-- `phase2-uploads.md` – Upload helper route verification with a PNG fixture and cleanup.
-- `phase2-ui.md` – Admin layout/components review vs. the legacy Leaf templates.
-- `phase2-integration.md` – Combined Playwright integration job covering pages + admin flows.
-- `phase3-apis.md` – Public contexts/gist/health/search/tags API proof for Phase 3 parity.
+- `bootstrap.md` – `just bootstrap` env snapshot.
+- `doctor.md` – Latest `just doctor` output.
+- `infra-deploy.md` – Azure deployment verification log.
+- `prisma-generate.md` – Prisma client generation output.
+- `contentlayer-schema.md` – Contentlayer schema verification (Phase 1 parity).
+- `contentlayer-build.md` – Contentlayer build attempt log (2025-11-14) showing CLI error.
+- `legacy-export.md` – Export-legacy migration verification (posts/contexts/apps).
+- Phase 0: `phase0-inventory.md` – Baseline parity inventory.
+- Phase 1: `phase1-code-organization.md`, `phase1-front-site.md`, `phase1-pages.md`, `phase1-styling.md`, `phase1-testing.md` – Code organization, front-site smoke, page parity, style audit, and test summary.
+- Phase 2: `phase2-admin-apps-contexts.md`, `phase2-admin-crud.md`, `phase2-auth.md`, `phase2-integration.md`, `phase2-ui.md`, `phase2-uploads.md` – Admin CRUD, auth, integration, UI, and upload verifications.
+- Phase 3: `phase3-apis.md`, `phase3-contexts-api.md` – Public API parity checks.
+- Phase 4: `phase4-playwright-smoke.md` – Playwright smoke coverage.
+- Phase 5: `phase5-data-validation.md`, `phase5-load-test.md`, `phase5-monitoring.md`, `phase5-smoke.md`, `phase5-smoke-local.md`, `phase5-stakeholder-approval.md`, `phase5-visual-checks.md` – Final cutover data/latency/visual validations (visual checks include follow-up to enable `/search` GET in production).
+- Assets: `screenshots/home.png`, `posts-list.png`, `post-detail.png`, `search-dropdown.png` supporting Phase 1 visual checks.
 
-## Configuration Files
-- `.github/renovate.json` – Configuration for Renovate to automate dependency updates, including auto-merging for minor and patch updates.
+### docs/vapor (legacy reference only)
+- `index.md`, `folder-structure.md`, `routing.md`, `controllers.md`, `middleware.md`, `content.md`, `testing.md`, `docker.md`, `leaf-getting-started.md` – Legacy Swift/Vapor guides kept for historical reference.
 
-## Notes on cleaned documents
-- Removed `CLAUDE.md` because `AGENTS.md` now encapsulates the working instructions.
-- Root-level copies of Azure/deployment/security docs were consolidated into the folders above.
-- From now on, any new doc should live under `docs/` and be added to this inventory.
+### Configuration files
+- `.github/renovate.json` – Renovate configuration (auto-merge for minor/patch updates).
+
+### Notes on cleaned/retired docs
+- Legacy root Azure/deployment/security docs were consolidated into the directories above.
+- `CLAUDE.md` was removed once `AGENTS.md` absorbed the working instructions.
+- Any new docs must live under `docs/` and be added here immediately.
