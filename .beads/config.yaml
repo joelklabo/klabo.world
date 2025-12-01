@@ -57,3 +57,6 @@ orphan-detection: false
 # - github.org
 # - github.repo
 # - sync.branch - Git branch for beads commits (use BEADS_SYNC_BRANCH env var or bd config set)
+
+# Shared sync branch for beads JSONL (keeps multiple clones aligned)
+sync-branch: main
