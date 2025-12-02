@@ -1,0 +1,32 @@
+name: contentlayer-check
+
+on:
+  pull_request:
+    paths:
+      - content/**/*
+      - contentlayer.config.ts
+      - app/src/contentlayer.ts
+      - app/package.json
+      - pnpm-lock.yaml
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 10.22.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.11.1
+          cache: pnpm
+      - name: Install (frozen lockfile)
+        run: pnpm install --frozen-lockfile
+      - name: Generate contentlayer
+        working-directory: app
+        run: pnpm exec contentlayer build
