@@ -1,0 +1,14 @@
+# Default owner
+* @joelklabo
+
+# Workflows
+.github/workflows/* @joelklabo
+
+# App and packages
+app/** @joelklabo
+packages/** @joelklabo
+content/** @joelklabo
+
+# Docs and infra
+docs/** @joelklabo
+infra/** @joelklabo
