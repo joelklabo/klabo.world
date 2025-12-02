@@ -139,7 +139,7 @@ Expected output:
 │   ├── config/               # Shared ESLint and tsconfig
 │   ├── scripts/              # CLI tools (@klaboworld/scripts)
 │   └── ui/                   # Shared UI components (future)
-├── content/                  # MDX/JSON content (posts, apps, contexts, dashboards)
+├── content/                  # MDX/JSON content (posts, apps, dashboards)
 ├── infra/                    # Azure Bicep infrastructure definitions
 ├── docs/                     # Documentation, ADRs, runbooks, plans
 ├── scripts/                  # Shell scripts for automation

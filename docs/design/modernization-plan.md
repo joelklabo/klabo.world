@@ -58,9 +58,9 @@ Goal: refresh klabo.world so it feels warm, colorful, and playful while keeping 
 - Reduce chrome: fewer borders, rely on soft shadows and subtle gradients; keep 1px translucent outlines for separation.
 - Normalize padding/spacing scale (8/12/16/24/32) across cards, nav, and lists; avoid nested heavy containers.
 - Consolidate button styles to two variants (solid amber, outline coral) and one size with pill radius.
-- Use consistent chip/tag treatment (uppercase tiny text, light accent fill) across posts, contexts, search.
+- Use consistent chip/tag treatment (uppercase tiny text, light accent fill) across posts, apps, search.
 - Keep hero/section headings compact with 1–2 lines of subtext; avoid mega banners.
 
 ## Deliverables
-- Tokenized CSS variables, font setup, updated component styles, and refreshed markdown/code theme across posts/contexts/admin.
-- Visual QA checklist + screenshots for home, post detail, contexts, admin dashboard, and search.
+- Tokenized CSS variables, font setup, updated component styles, and refreshed markdown/code theme across posts/admin.
+- Visual QA checklist + screenshots for home, post detail, admin dashboard, and search.

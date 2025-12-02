@@ -6,7 +6,7 @@
 
 ## Context
 
-The platform manages blog posts, app showcases, contexts, and dashboards. We needed a content management approach that provides:
+The platform manages blog posts, app showcases, and dashboards. We needed a content management approach that provides:
 - Type-safe access to content in TypeScript
 - MDX support for rich content with React components
 - Git-backed version control
@@ -40,7 +40,6 @@ We use **Contentlayer** to transform MDX/JSON files in `content/` into type-safe
 content/
 ├── posts/*.mdx       # Blog posts
 ├── apps/*.json       # App showcases
-├── contexts/*.mdx    # Knowledge contexts
 └── dashboards/*.mdx  # Observability dashboards
 ```
 

@@ -11,10 +11,10 @@ A concise map of klabo.world's stack and data flows.
 - **Telemetry**: OpenTelemetry → Azure Application Insights; dashboards use Log Analytics API.
 
 ## Key modules
-- `app/src/lib/posts.ts`, `contexts.ts` etc: read Contentlayer data.
+- `app/src/lib/posts.ts`, `apps.ts`, `dashboards.ts`: read Contentlayer data.
 - `app/src/lib/logger.ts`: structured logging with OTEL context.
 - `app/src/components/nostrstack-widgets.tsx`: Nostr tip/share/comments (requires NIP-07 signer).
-- `app/src/app/api/*`: public APIs (`contexts`, `search`, `gists`, `tags`, feeds).
+- `app/src/app/api/*`: public APIs (`search`, `gists`, `tags`, feeds).
 - `app/src/app/(admin)`: admin CRUD, dashboards.
 
 ## Data flow

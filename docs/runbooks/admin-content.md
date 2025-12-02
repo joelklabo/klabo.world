@@ -1,6 +1,6 @@
 # Admin Content Runbook
 
-This runbook documents how to manage klabo.world content (posts, apps, contexts, uploads) using the Next.js admin interface and supporting scripts. Treat it as the source of truth for day-to-day publishing tasks.
+This runbook documents how to manage klabo.world content (posts, apps, uploads) using the Next.js admin interface and supporting scripts. Treat it as the source of truth for day-to-day publishing tasks.
 
 ## Prerequisites
 - Local services launched with `just dev`. Docker is optional—SQLite (`app/data/app.db`) and the in-memory rate limiter work without Postgres/Redis. Start `docker compose -f docker-compose.dev.yml up -d db redis azurite` only when you explicitly need Redis/Azurite or you have pointed `DATABASE_URL` at Postgres.
@@ -14,7 +14,7 @@ This runbook documents how to manage klabo.world content (posts, apps, contexts,
    - Starts `pnpm --filter app dev`.
    - Optionally launches your browser at `http://localhost:3000` and `/admin` when `AUTO_OPEN_BROWSER=true`.
 2. Visit `http://localhost:3000/admin` and log in using the credentials defined in `.env` (defaults `admin@example.com / change-me`).
-3. The dashboard lists all posts (published + drafts). Use the navigation pills for Compose, Apps, and Contexts.
+3. The dashboard lists all posts (published + drafts). Use the navigation pills for Compose, Apps, and Dashboards.
 
 ## Managing Posts
 ### Create
@@ -40,13 +40,8 @@ This runbook documents how to manage klabo.world content (posts, apps, contexts,
 6. Delete uses the `Delete app` button (server action removes the JSON file).
 7. Playwright smoke: `app/tests/e2e/admin-apps.e2e.ts`.
 
-## Managing Contexts
-1. Go to **Contexts → New context**.
-2. Fill title, optional slug, summary, tags (comma/newline), created/updated dates, status (published/draft), and markdown body.
-3. Upload helper supports embedding assets the same way as posts/apps.
-4. Saves to `content/contexts/<slug>.mdx` (GitHub in production).
-5. Edit or delete via `/admin/contexts/[slug]/edit`.
-6. Playwright smoke: `app/tests/e2e/admin-contexts.e2e.ts`.
+## Managing Contexts (retired)
+The contexts feature was removed on 2025-12-02. Existing pages/routes are gone; author only posts/apps/dashboards going forward.
 
 ## Monitoring Dashboards
 1. Navigate to **Dashboards** in the admin navigation to view existing panels or click **New dashboard** to add one.
@@ -76,12 +71,12 @@ This runbook documents how to manage klabo.world content (posts, apps, contexts,
 
 ## GitHub Integration Notes
 - When `GITHUB_TOKEN`, `GITHUB_OWNER`, and `GITHUB_REPO` are configured AND `NODE_ENV=production`, admin write/delete operations go through the GitHub Content API (matching the legacy GitHubService behavior). Local development without a token falls back to writing inside `content/` directly.
-- Uploaded posts/apps/contexts survive container restarts because Azure mounts the uploads directory (configure `UPLOADS_DIR` accordingly in App Service settings).
+- Uploaded posts/apps survive container restarts because Azure mounts the uploads directory (configure `UPLOADS_DIR` accordingly in App Service settings).
 
 ## Verification Flow Before Deploying
 1. `pnpm turbo lint`
 2. `pnpm turbo test`
-3. `cd app && PLAYWRIGHT_BASE_URL=http://localhost:3000 ADMIN_EMAIL=admin@example.com ADMIN_PASSWORD=change-me pnpm exec playwright test tests/e2e/admin-content.e2e.ts tests/e2e/admin-apps.e2e.ts tests/e2e/admin-contexts.e2e.ts`
+3. `cd app && PLAYWRIGHT_BASE_URL=http://localhost:3000 ADMIN_EMAIL=admin@example.com ADMIN_PASSWORD=change-me pnpm exec playwright test tests/e2e/admin-content.e2e.ts tests/e2e/admin-apps.e2e.ts`
 4. Optional local smoke: `./scripts/deploy-smoke.sh` (set `SMOKE_BASE_URL=http://localhost:3000`).
 
 ## Troubleshooting

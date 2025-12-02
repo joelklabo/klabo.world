@@ -3,7 +3,7 @@
 This initiative closes the gap between the automated Playwright smoke checks we already run and the level of UI confidence we expect before every release. The plan combines best practices from industry guidance (e.g., Cypress’s recommendations for stable selectors and purposeful waits [1] and Playwright’s guidance on parallelized, isolated tests with tracing [2]) with our domain-specific needs (admin workflows, static content rendering, and ensuring no production link ever references `localhost`).
 
 ## Goals
-- Every critical flow—public pages, search, contexts APIs, admin CRUD (posts/apps/contexts/dashboards), uploads, and dashboards—has deterministic automated coverage.
+- Every critical flow—public pages, search, admin CRUD (posts/apps/dashboards), uploads, and dashboards—has deterministic automated coverage.
 - Tests run against both localhost (fast inner loop) and real hosts (`preview`, `staging`, `prod`) with the same code.
 - A static link audit guarantees no `localhost` or other placeholder URLs leak into production builds.
 - Manual exploratory passes on staging focus on regression-prone areas (Markdown rendering, external embeds, uploads) with documented checklists.
@@ -17,11 +17,11 @@ This initiative closes the gap between the automated Playwright smoke checks we 
 ## Phase 2 – Automated Playwright Suite Expansion
 1. **Configurable base URL**: `playwright.config.ts` now prefers `PLAYWRIGHT_BASE_URL` when you want to point at staging/production, and otherwise spins up its own dev server on `http://127.0.0.1:3100` with a dedicated SQLite database + `NEXTAUTH_URL` override so tests can run without touching whatever dev server (port 3000) you keep open for manual QA. (If you already have `pnpm dev` running, either stop it or set `PLAYWRIGHT_BASE_URL=http://127.0.0.1:3000` because Next.js only allows one dev instance per project at a time.)
 2. **Public site specs**
-   - Home/posts/apps/contexts/search page assertions (hero text, tag clouds, pagination).
+   - Home/posts/apps/search page assertions (hero text, tag clouds, pagination).
    - Link audit: `await expect(page.locator('a[href*="localhost"])).toHaveCount(0)` and custom reporter that fails when any anchor or script URL contains non-production hosts.
    - Metadata checks: verify canonical URLs, OG tags, RSS endpoints respond `200`.
 3. **Admin specs**
-   - Posts/apps/contexts CRUD: create fixture content, assert GitHub/local files update, delete cleanup.
+   - Posts/apps CRUD: create fixture content, assert GitHub/local files update, delete cleanup.
    - Dashboards: ensure charts/log panels render and poll endpoints.
    - Uploads: mock Azure storage in dev, then hit real staging container with throwaway assets, ensuring `https://` URLs are returned.
 4. **Playwright features**
@@ -32,7 +32,7 @@ This initiative closes the gap between the automated Playwright smoke checks we 
    - Add a script (e.g., `pnpm --filter app run audit:links`) that builds the site, walks `/app/.next/server/pages` HTML, and fails on `localhost` or other disallowed hosts. Wire it into CI before Playwright runs.
 
 ## Phase 3 – Manual / Exploratory Runs
-1. **Staging checklist** (commit: `docs/runbooks/ui-exploratory.md`): responsive snapshots (mobile/desktop), Markdown preview parity, gist embeds, context raw endpoints, search debounce.
+1. **Staging checklist** (commit: `docs/runbooks/ui-exploratory.md`): responsive snapshots (mobile/desktop), Markdown preview parity, gist embeds, search debounce.
 2. **Browser/device matrix**: run Chrome + Safari + Firefox latest on macOS (physical) once per release. Capture any anomalies in Jira/issue tracker.
 3. **Session recording**: use Playwright Inspector or browser devtools recorder to capture traces for tricky bugs—store references alongside the checklist.
 

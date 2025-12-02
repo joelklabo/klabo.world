@@ -18,7 +18,7 @@ This document describes how we manage secrets across local development, CI, and 
 | `REDIS_URL` | Rate limiter store. | Leave blank for in-memory; set to `redis://localhost:6379` when running the docker-compose service. |
 | `UPLOADS_DIR` / `AZURE_STORAGE_*` | Control where uploads land. | Local `public/uploads`; prod should point to persistent storage or Blob container. |
 | `APPLICATIONINSIGHTS_CONNECTION_STRING` | Enables OTel → Azure Monitor. | Optional locally; required in prod for telemetry. |
-| `GITHUB_TOKEN`, `GITHUB_OWNER`, `GITHUB_REPO` | GitHub Content API credentials for post/app/context writes in production. | Omit locally to force filesystem writes. |
+| `GITHUB_TOKEN`, `GITHUB_OWNER`, `GITHUB_REPO` | GitHub Content API credentials for post/app writes in production. | Omit locally to force filesystem writes. |
 
 ## Azure Key Vault References
 For production, add secrets to Azure Key Vault (one per key), then reference them from App Service app settings:
@@ -39,8 +39,8 @@ Set via repository settings (Actions secrets). Minimum required:
 Add others (DB URLs, storage creds) if CI ever needs to run migrations or integration tests hitting Azure resources.
 
 ## Fallback Behavior (no GitHub token)
-- When `GITHUB_TOKEN` isn’t set **and** `NODE_ENV !== 'production'`, admin CRUD writes directly into `content/{posts,apps,contexts}`. This mirrors the legacy “local mode” so new contributors can work offline.
-- In production without a token, post/app/context writes will fail fast (`serviceUnavailable`) to avoid silently diverging from GitHub.
+- When `GITHUB_TOKEN` isn’t set **and** `NODE_ENV !== 'production'`, admin CRUD writes directly into `content/{posts,apps}`. This mirrors the legacy “local mode” so new contributors can work offline.
+- In production without a token, post/app writes will fail fast (`serviceUnavailable`) to avoid silently diverging from GitHub.
 
 ## Rotation Checklist
 1. Update the secret in Key Vault (or GitHub Actions for CI-only values).
@@ -51,7 +51,7 @@ Add others (DB URLs, storage creds) if CI ever needs to run migrations or integr
 Keep this runbook updated as we add more managed secrets or migrate services.
 
 ### Rotating the GitHub Content Token
-The production admin UI writes posts/apps/contexts through the GitHub Content API. To rotate the PAT it uses:
+The production admin UI writes posts/apps through the GitHub Content API. To rotate the PAT it uses:
 
 ```bash
 # 1. Ensure gh-cli is logged in with a PAT that has repo scope.

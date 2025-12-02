@@ -24,8 +24,8 @@ Proposed — tracks beads issue `klabw-gfu.1`.
 - **Caching**: cache headers on public REST; keep tRPC internal/uncached by default; allow per-procedure cache hints.
 
 ## Migration Plan
-1) **Pilot**: add a tRPC router for contexts/search reads; ship a typed client wrapper; keep REST endpoints intact.
-2) **Phase 2**: move admin mutations (contexts/apps/posts CRUD) to tRPC; apply the error taxonomy.
+1) **Pilot**: add a tRPC router for search reads; ship a typed client wrapper; keep REST endpoints intact.
+2) **Phase 2**: move admin mutations (apps/posts CRUD) to tRPC; apply the error taxonomy.
 3) **Phase 3**: centralize DTOs; enforce zod schemas on all routes (REST + tRPC).
 4) **Phase 4**: decide whether to retire duplicated REST endpoints or keep both with versioning.
 
@@ -44,8 +44,8 @@ Proposed — tracks beads issue `klabw-gfu.1`.
 ## Acceptance (for `klabw-gfu.1`)
 - ADR merged with decision and rationale.
 - Migration plan includes phases and named owners.
-- Pilot target (contexts/search) identified and scheduled.
+- Pilot target (search) identified and scheduled.
 - Beads comment added to `klabw-gfu.1` with links to ADR and pilot issue once created.
 
 ### Beads comment text (paste into `klabw-gfu.1`)
-Linked ADR: `docs/adr/0008-api-layer.md` (tRPC for internal/admin, keep REST for public). Pilot target: contexts/search reads via tRPC with typed client wrapper. Once ADR is merged and pilot issue is opened, this satisfies acceptance for `klabw-gfu.1`; link the pilot issue here.
+Linked ADR: `docs/adr/0008-api-layer.md` (tRPC for internal/admin, keep REST for public). Pilot target: search reads via tRPC with typed client wrapper. Once ADR is merged and pilot issue is opened, this satisfies acceptance for `klabw-gfu.1`; link the pilot issue here.

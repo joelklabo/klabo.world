@@ -82,11 +82,11 @@ This file is the single source of truth for every Markdown document that should 
 - `prisma-generate.md` – Prisma client generation output.
 - `contentlayer-schema.md` – Contentlayer schema verification (Phase 1 parity).
 - `contentlayer-build.md` – Contentlayer build attempt log (2025-11-14) showing CLI error.
-- `legacy-export.md` – Export-legacy migration verification (posts/contexts/apps).
+- `legacy-export.md` – Export-legacy migration verification (posts/apps) *(contexts retired Dec 2025)*.
 - Phase 0: `phase0-inventory.md` – Baseline parity inventory.
 - Phase 1: `phase1-code-organization.md`, `phase1-front-site.md`, `phase1-pages.md`, `phase1-styling.md`, `phase1-testing.md` – Code organization, front-site smoke, page parity, style audit, and test summary.
-- Phase 2: `phase2-admin-apps-contexts.md`, `phase2-admin-crud.md`, `phase2-auth.md`, `phase2-integration.md`, `phase2-ui.md`, `phase2-uploads.md` – Admin CRUD, auth, integration, UI, and upload verifications.
-- Phase 3: `phase3-apis.md`, `phase3-contexts-api.md` – Public API parity checks.
+- Phase 2: `phase2-admin-apps-contexts.md` *(archived)*, `phase2-admin-crud.md`, `phase2-auth.md`, `phase2-integration.md`, `phase2-ui.md`, `phase2-uploads.md` – Admin CRUD, auth, integration, UI, and upload verifications.
+- Phase 3: `phase3-apis.md` – Public API parity checks.
 - Phase 4: `phase4-playwright-smoke.md` – Playwright smoke coverage.
 - Phase 5: `phase5-data-validation.md`, `phase5-load-test.md`, `phase5-monitoring.md`, `phase5-smoke.md`, `phase5-smoke-local.md`, `phase5-stakeholder-approval.md`, `phase5-visual-checks.md` – Final cutover data/latency/visual validations (visual checks include follow-up to enable `/search` GET in production).
 - Assets: `screenshots/home.png`, `posts-list.png`, `post-detail.png`, `search-dropdown.png` supporting Phase 1 visual checks.

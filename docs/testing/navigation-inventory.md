@@ -6,7 +6,7 @@ Authoritative map for nav-related coverage. Keep this in sync when adding or ren
 - `global-nav-home` → `/`
 - `global-nav-posts` → `/posts`
 - `global-nav-apps` → `/apps`
-- `global-nav-contexts` → `/contexts`
+- `global-nav-dashboards` → `/admin/dashboards`
 - `global-search-input` opens results container `global-search-results` (minimum query length handled server-side).
 
 ## Admin navigation (header, authenticated)
@@ -15,7 +15,6 @@ Authoritative map for nav-related coverage. Keep this in sync when adding or ren
   - `admin-nav-dashboard` → `/admin`
   - `admin-nav-compose` → `/admin/compose`
   - `admin-nav-apps` → `/admin/apps`
-  - `admin-nav-contexts` → `/admin/contexts`
   - `admin-nav-dashboards` → `/admin/dashboards`
 - Auth controls: login form test IDs (`admin-login-form`, `admin-login-email`, `admin-login-password`, `admin-login-submit`); after login expect “Sign out” button.
 
