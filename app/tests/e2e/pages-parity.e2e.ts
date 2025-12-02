@@ -23,8 +23,8 @@ const contextRoutes = [
 test.describe('public content routes', () => {
   test('home page renders hero and sections', async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByRole('heading', { name: 'Bitcoin, Lightning, Nostr & Agentic Engineering' })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Read Articles' })).toHaveAttribute('href', '/posts');
+    await expect(page.getByRole('heading', { name: /Build confidently with agentic engineering/i })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Read the latest' })).toHaveAttribute('href', '/posts');
     await expect(page.getByRole('heading', { name: 'Recent Articles' })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Projects & Experiments' })).toBeVisible();
   });
