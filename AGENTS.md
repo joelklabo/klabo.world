@@ -58,6 +58,8 @@
 
 ## Env & Secrets
 - Copy `.env.example` → `.env`. Key vars: `DATABASE_URL` (defaults to SQLite file; use `file:/home/site/wwwroot/data/app.db` in Azure or a Postgres URL), `ADMIN_EMAIL`/`ADMIN_PASSWORD`, `NEXTAUTH_SECRET` (random in prod), `UPLOADS_DIR` + Azure storage vars, optional `REDIS_URL`, `APPLICATIONINSIGHTS_CONNECTION_STRING`, `LOG_ANALYTICS_WORKSPACE_ID`/`LOG_ANALYTICS_SHARED_KEY`, `AUTO_OPEN_BROWSER`.
+- Production must set either `LOG_ANALYTICS_WORKSPACE_ID`/`LOG_ANALYTICS_SHARED_KEY` **or** `APPINSIGHTS_APP_ID`/`APPINSIGHTS_API_KEY` for dashboards; otherwise charts/logs will 401.
+- `GITHUB_TOKEN` is optional but recommended so `/api/gists` avoids rate limits in CI.
 
 ## Content & Admin
 - Source of truth: `content/{posts,apps,contexts,dashboards}`. Admin CRUD lives at `/admin` (server components).
