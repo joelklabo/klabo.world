@@ -14,7 +14,8 @@
     "lint": "just lint",
     "test": "just test",
     "doctor": "just doctor",
-    "flags:check": "node scripts/list-expired-flags.js"
+    "flags:check": "node scripts/list-expired-flags.js",
+    "lint:boundaries": "eslint -c .eslintrc.boundaries.json \"app/**/*.{ts,tsx}\""
   },
   "devDependencies": {
     "@azure/monitor-opentelemetry-exporter": "1.0.0-beta.32",

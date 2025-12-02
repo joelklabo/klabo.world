@@ -1,0 +1,26 @@
+{
+  "plugins": ["boundaries"],
+  "overrides": [
+    {
+      "files": ["app/**/*.{ts,tsx}"],
+      "rules": {
+        "boundaries/element-types": [
+          "error",
+          {
+            "default": "disallow",
+            "rules": [
+              { "from": "app", "allow": ["app", "packages", "contentlayer"] },
+              { "from": "packages", "allow": ["packages"] },
+              { "from": "contentlayer", "allow": ["contentlayer"] }
+            ],
+            "zoneFields": [
+              { "from": "./app/**/*", "type": "app" },
+              { "from": "./packages/**/*", "type": "packages" },
+              { "from": "./.contentlayer/**/*", "type": "contentlayer" }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
