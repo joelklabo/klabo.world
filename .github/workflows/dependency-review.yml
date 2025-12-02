@@ -1,0 +1,22 @@
+name: dependency-review
+
+on:
+  pull_request:
+    paths:
+      - '**/pnpm-lock.yaml'
+      - '**/package.json'
+      - '**/patches/**'
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  review:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: critical
+          license-check: true
