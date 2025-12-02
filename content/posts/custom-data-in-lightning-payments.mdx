@@ -14,7 +14,7 @@ When making a lightning payment you are now able to add your own custom data to 
 
 The definition of the `dest_custom_records` parameter is as follows ([from the `lncli sendpayment` api docs](https://api.lightning.community/#sendpayment))
 
-```
+```text
 An optional field that can be used to pass an arbitrary set of TLV records to a peer which understands the new records. This can be used to pass application specific data during the payment attempt. Record types are required to be in the custom range >= 65536. When using REST, the values must be encoded as base64.
 ```
 
@@ -28,7 +28,7 @@ I mentioned earlier that these records are already being used in production apps
 
 `keysend` payments allow you to make a payment to another node without an invoice. From the [LND v0.9 Release Notes](https://github.com/lightningnetwork/lnd/releases/tag/v0.9.0-beta):
 
-```
+```text
 One application of custom records is a spontaneous payment, also known as keysend. In key send, a custom record is used to encode the payment preimage in the onion payload for the recipient of the payment. This allows them to pull the payment without prior knowledge of the preimage.
 
 Note that spontaneous payment is not yet defined in the Lightning spec. Therefore the current implementation should be considered experimental and is subjected to change.
@@ -38,7 +38,7 @@ In a regular invoice lightning payment there is a `payment_preimage` that would 
 
 Here an example keysend payment from the release notes:
 
-```
+```bash
 🏔 tlncli sendpayment --keysend --dest=0270685ca81a8e4d4d01beec5781f4cc924684072ae52c507f8ebe9daf0caaab7b --amt=1000 --final_cltv_delta=40
 {
     "payment_error": "",
@@ -83,7 +83,7 @@ If your node receives a payment with this custom information in it it will be st
 
 In the [sphinx-relay repo](https://github.com/stakwork/sphinx-relay), which is used on top of LND to parse out and send these messages, you can see where they are adding a custom record for the message information: [source](https://github.com/stakwork/sphinx-relay/blob/master/src/utils/lightning.ts#L240-L243)
 
-```
+```javascript
 const keysend = (opts) => {
   return new Promise(async function (resolve, reject) {
     let lightning = await loadLightning()
