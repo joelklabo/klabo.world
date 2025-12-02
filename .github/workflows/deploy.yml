@@ -126,3 +126,18 @@ jobs:
         env:
           SMOKE_BASE_URL: https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net
         run: ./scripts/deploy-smoke.sh
+
+      - name: Capture smoke screenshots
+        if: success()
+        run: |
+          pnpm --filter app exec playwright install --with-deps
+          SMOKE_BASE_URL=https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net pnpm --filter app exec playwright test tests/e2e/home-smoke.e2e.ts --reporter=dot || true
+          tar -czf smoke-screenshots.tar.gz app/test-results || true
+
+      - name: Upload smoke screenshots
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-screenshots
+          path: smoke-screenshots.tar.gz
+          if-no-files-found: ignore
