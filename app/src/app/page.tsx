@@ -7,15 +7,15 @@ import { getPosts, getRecentPosts } from '@/lib/posts';
 import { getPostTagCloud } from '@/lib/tagCloud';
 
 const heroLinks = [
-  { href: '/posts', label: 'Read Articles' },
-  { href: '/apps', label: 'View Apps' },
-  { href: '/contexts', label: 'Browse Contexts' },
+  { href: '/posts', label: 'Read the latest' },
+  { href: '/admin', label: 'Open admin' },
+  { href: '/admin/dashboards', label: 'View dashboards' },
 ];
 
 const heroHighlights = [
-  { label: 'Articles', description: 'Deep dives, tutorials, and dispatch notes.', link: '/posts' },
-  { label: 'Apps', description: 'Experimental tooling built for Bitcoin + Lightning.', link: '/apps' },
-  { label: 'Contexts', description: 'Shared AI contexts and MCP insights.', link: '/contexts' },
+  { label: 'Articles', emoji: '🛰️', description: 'Deep dives, tutorials, and dispatch notes.', link: '/posts' },
+  { label: 'Apps', emoji: '⚡', description: 'Experimental tooling built for Bitcoin + Lightning.', link: '/apps' },
+  { label: 'Contexts', emoji: '🧠', description: 'Shared AI contexts and MCP insights.', link: '/contexts' },
 ];
 
 export default function Home() {
@@ -34,25 +34,27 @@ export default function Home() {
 
   return (
     <div className="bg-slate-950 text-slate-100">
-      <section className="relative overflow-hidden rounded-b-[40px] bg-gradient-to-br from-slate-900 via-slate-900 to-[#0d1b22] px-6 py-16 shadow-2xl shadow-black/40 motion-fade-up">
+      <section className="relative overflow-hidden rounded-b-[40px] bg-gradient-to-br from-[#0b1020] via-[#0b1224] to-[#05060e] px-6 py-18 shadow-2xl shadow-black/50 motion-fade-up">
         <div className="absolute inset-0 opacity-70">
-          <div className="pointer-events-none h-full w-full bg-[radial-gradient(circle_at_top,_rgba(93,43,230,0.4),_transparent_40%)]" />
+          <div className="pointer-events-none h-full w-full bg-[radial-gradient(circle_at_20%_20%,rgba(93,43,230,0.35),transparent_35%),radial-gradient(circle_at_80%_0%,rgba(16,185,129,0.25),transparent_30%),radial-gradient(circle_at_50%_100%,rgba(14,165,233,0.18),transparent_35%)]" />
         </div>
-        <div className="relative mx-auto flex max-w-6xl flex-col gap-10 lg:flex-row lg:items-center">
+        <div className="relative mx-auto flex max-w-6xl flex-col gap-12 lg:flex-row lg:items-center">
           <div className="flex-1 space-y-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.5em] text-indigo-300">klabo.world</p>
+            <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.35em] text-indigo-200 shadow-lg shadow-indigo-900/40">
+              Agents · Bitcoin · Lightning · Nostr
+            </div>
             <h1 className="text-4xl font-bold leading-tight text-white drop-shadow-lg md:text-5xl">
-              Bitcoin, Lightning, Nostr &amp; Agentic Engineering
+              Build confidently with agentic engineering, Bitcoin, and Lightning
             </h1>
             <p className="max-w-2xl text-base text-slate-200/80">
-              Tactical walkthroughs, agentic tooling updates, and playable research on decentralized protocols—crafted by the klabo.world team so future engineers can build with confidence.
+              Tactical walkthroughs, agentic tooling updates, and playable research on decentralized protocols—crafted so future engineers can ship faster with fewer regressions.
             </p>
             <div className="flex flex-wrap gap-3">
               {heroLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href as Route}
-                  className="rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-indigo-500/30 transition hover:translate-y-0.5"
+                  className="rounded-full border border-indigo-400/50 bg-indigo-500/20 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-indigo-500/30 transition hover:-translate-y-0.5 hover:border-white/80 hover:bg-indigo-400/30"
                 >
                   {link.label}
                 </Link>
@@ -60,7 +62,10 @@ export default function Home() {
             </div>
             <div className="flex flex-wrap gap-4">
               {stats.map((stat) => (
-                <div key={stat.label} className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm">
+                <div
+                  key={stat.label}
+                  className="rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-sm shadow-lg shadow-black/30"
+                >
                   <p className="text-3xl font-semibold text-white">{stat.value}</p>
                   <p className="text-xs uppercase tracking-widest text-slate-300">{stat.label}</p>
                 </div>
@@ -72,13 +77,18 @@ export default function Home() {
               <Link
                 key={highlight.label}
                 href={highlight.link as Route}
-                className="group rounded-2xl border border-white/5 bg-gradient-to-r from-white/5 to-transparent p-4 transition hover:border-white/30 hover:bg-white/10"
+                className="group flex items-start gap-4 rounded-2xl border border-white/5 bg-gradient-to-r from-white/5 to-transparent p-4 transition hover:border-white/30 hover:bg-white/10"
               >
-                <p className="text-xs font-semibold uppercase tracking-[0.4em] text-slate-300">{highlight.label}</p>
-                <p className="mt-2 text-base font-semibold text-white">{highlight.description}</p>
-                <span className="mt-2 inline-flex text-xs font-semibold text-indigo-300 group-hover:text-indigo-100">
-                  Explore →
-                </span>
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 text-xl">
+                  {highlight.emoji}
+                </div>
+                <div className="space-y-1">
+                  <p className="text-xs font-semibold uppercase tracking-[0.4em] text-slate-300">{highlight.label}</p>
+                  <p className="text-base font-semibold text-white">{highlight.description}</p>
+                  <span className="inline-flex text-xs font-semibold text-indigo-300 group-hover:text-indigo-100">
+                    Explore →
+                  </span>
+                </div>
               </Link>
             ))}
           </div>
