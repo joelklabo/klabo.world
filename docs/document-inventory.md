@@ -34,6 +34,9 @@ This file is the single source of truth for every Markdown document that should 
 ### docs/design
 - `modernization-plan.md` – Warm/playful redesign direction, tokens, typography, and implementation steps.
 
+### docs/architecture
+- `overview.md` – High-level system diagram and stack summary.
+
 ### docs/experimental
 - `design.md` – Deprecated legacy Vapor/Azure local deployment testing plan (kept for reference only).
 
