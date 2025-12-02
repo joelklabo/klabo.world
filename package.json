@@ -60,15 +60,6 @@
     },
     "patchedDependencies": {
       "clipanion@3.2.1": "patches/clipanion@3.2.1.patch"
-    },
-    "onlyBuiltDependencies": [
-      "@prisma/client",
-      "@prisma/engines",
-      "contentlayer",
-      "esbuild",
-      "prisma",
-      "protobufjs",
-      "sharp"
-    ]
+    }
   }
 }
