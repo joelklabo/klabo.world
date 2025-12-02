@@ -61,6 +61,7 @@ This file is the single source of truth for every Markdown document that should 
 - `deployment.md` – Deployment runbook and checks.
 - `observability.md` – Enabling Application Insights locally/Azure and verifying spans.
 - `rollback.md` – Rollback procedure.
+- `turbo-cache.md` – Guidance on enabling Turbo remote cache and reading metrics.
 - `secrets.md` – Secrets management across local env, GitHub Actions, and Azure.
 - `db-recovery.md` – Database recovery steps.
 - `feature-flags.md` – Provider-agnostic feature flag guidance.
