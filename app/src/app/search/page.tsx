@@ -34,15 +34,16 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         <div className="absolute right-0 top-10 h-72 w-72 rounded-full bg-secondary/18 blur-3xl" />
       </div>
 
-      <div className="relative mx-auto max-w-5xl px-6 py-16">
-        <div className="mb-10 flex flex-col gap-3">
+      <div className="relative mx-auto max-w-6xl px-6 py-16 space-y-8">
+        <div className="rounded-3xl border border-border/60 bg-card/80 px-6 py-5 shadow-[0_20px_50px_rgba(6,10,20,0.45)]">
+          <div className="mb-6 flex flex-col gap-3">
           <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary">Search</p>
           <h1 className="text-4xl font-bold leading-tight text-foreground">Find posts and apps</h1>
           <p className="text-sm text-muted-foreground">
             Type two or more characters to see instant results. Use ↑↓ to navigate, Enter to open, Esc to close.
           </p>
-        </div>
-        <form className="mb-8" action="/search" method="get">
+          </div>
+        <form className="space-y-3" action="/search" method="get">
           <input
             type="search"
             name="q"
@@ -50,7 +51,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             placeholder="agents, swift, vicechips..."
             className="w-full rounded-2xl border border-border/60 bg-card/80 px-5 py-3 text-lg text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/40 shadow-[0_18px_40px_rgba(6,10,20,0.5)]"
           />
-          <div className="mt-3 flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <button
               className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition hover:-translate-y-0.5 hover:shadow-primary/40"
               type="submit"
@@ -64,6 +65,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             </div>
           </div>
         </form>
+        </div>
         {query && query.length < 2 && <p className="text-sm text-muted-foreground">Type at least two characters to search.</p>}
         {query.length >= 2 && (
           <div className="space-y-4">
@@ -72,7 +74,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
               <Link
                 key={`${result.type}-${result.url}`}
                 href={result.url as Route}
-                className="block rounded-2xl border border-border/70 bg-card/80 p-5 shadow-[0_20px_50px_rgba(6,10,20,0.45)] transition hover:-translate-y-0.5 hover:border-primary/50"
+                className="block rounded-2xl border border-border/70 bg-gradient-to-r from-card/90 to-background/80 p-5 shadow-[0_20px_50px_rgba(6,10,20,0.45)] transition hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-[0_24px_60px_rgba(6,10,20,0.55)]"
               >
                 <div className="text-[11px] uppercase tracking-[0.35em] text-muted-foreground">{result.type}</div>
                 <h2 className="mt-1 text-2xl font-semibold text-foreground">{result.title}</h2>
