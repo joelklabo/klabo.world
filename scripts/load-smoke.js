@@ -2,7 +2,7 @@ import http from 'k6/http';
 import { check, sleep } from 'k6';
 
 const BASE_URL = __ENV.LOAD_BASE_URL || 'http://localhost:3000';
-const ENDPOINTS = ['/', '/posts', '/apps', '/contexts', '/search?q=bitcoin', '/api/health'];
+const ENDPOINTS = ['/', '/posts', '/apps', '/search?q=bitcoin', '/api/health'];
 
 export const options = {
   vus: Number(__ENV.LOAD_VUS || 5),

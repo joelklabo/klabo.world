@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getPostTagCloud, getContextTagCloud, getCombinedTagCloud } from '@/lib/tagCloud';
+import { getCombinedTagCloud, getPostTagCloud } from '@/lib/tagCloud';
 
 describe('tag cloud helpers', () => {
   it('returns sorted post tags with counts', () => {
@@ -8,13 +8,10 @@ describe('tag cloud helpers', () => {
     expect(tags[0].count).toBeGreaterThanOrEqual(tags[1]?.count ?? 0);
   });
 
-  it('limits results when requested', () => {
-    const tags = getContextTagCloud(1);
-    expect(tags).toHaveLength(1);
-  });
-
-  it('combines post/context tags', () => {
-    const tags = getCombinedTagCloud();
-    expect(tags.some((tag) => tag.count > 1)).toBe(true);
+  it('combines post tags', () => {
+    const combined = getCombinedTagCloud();
+    const posts = getPostTagCloud();
+    expect(combined.length).toBe(posts.length);
+    expect(combined[0]?.tag).toBe(posts[0]?.tag);
   });
 });

@@ -8,7 +8,6 @@ const navLinks = [
   { href: '/admin', label: 'Dashboard', id: 'dashboard' },
   { href: '/admin/compose', label: 'Compose', id: 'compose' },
   { href: '/admin/apps', label: 'Apps', id: 'apps' },
-  { href: '/admin/contexts', label: 'Contexts', id: 'contexts' },
   { href: '/admin/dashboards', label: 'Dashboards', id: 'dashboards' },
 ];
 

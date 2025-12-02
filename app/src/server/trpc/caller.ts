@@ -1,6 +1,6 @@
 import type { Session } from 'next-auth';
-import { appRouter } from './router';
 import type { TRPCContext } from './context';
+import { appRouter } from './router';
 
 /**
  * Creates a server-side tRPC caller with the current NextAuth session injected.

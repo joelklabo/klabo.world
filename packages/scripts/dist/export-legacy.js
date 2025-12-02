@@ -6,9 +6,8 @@ const REPO_ROOT = path.resolve(__dirname, '..', '..', '..');
 const LEGACY_ROOT = path.join(REPO_ROOT, 'Resources');
 const DEST_POSTS = path.join(REPO_ROOT, 'content/posts');
 const DEST_APPS = path.join(REPO_ROOT, 'content/apps');
-const DEST_CONTEXTS = path.join(REPO_ROOT, 'content/contexts');
 async function ensureDirs() {
-    await Promise.all([DEST_POSTS, DEST_APPS, DEST_CONTEXTS].map((dir) => fs.mkdir(dir, { recursive: true })));
+    await Promise.all([DEST_POSTS, DEST_APPS].map((dir) => fs.mkdir(dir, { recursive: true })));
 }
 async function directoryExists(dir) {
     try {
@@ -72,7 +71,6 @@ export async function exportLegacyContent() {
     }
     await ensureDirs();
     await copyMarkdownFiles(path.join(LEGACY_ROOT, 'Posts'), DEST_POSTS);
-    await copyMarkdownFiles(path.join(LEGACY_ROOT, 'Contexts'), DEST_CONTEXTS);
     await copyRawFiles(path.join(LEGACY_ROOT, 'Apps'), DEST_APPS, ['.json']);
 }
 const invokedDirectly = (() => {

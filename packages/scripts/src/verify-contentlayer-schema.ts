@@ -1,4 +1,4 @@
-import { Post, AppDoc, ContextDoc, DashboardDoc } from '../../../app/contentlayer.config.ts';
+import { Post, AppDoc, DashboardDoc } from '../../../app/contentlayer.config.ts';
 
 type ExpectedFields = Record<string, string[]>;
 
@@ -16,12 +16,11 @@ const expectedFields: ExpectedFields = {
     'appStoreURL',
     'githubURL',
   ],
-  ContextDoc: ['title', 'summary', 'createdDate', 'updatedDate', 'tags', 'isPublished'],
   DashboardDoc: ['title', 'summary', 'panelType', 'tags', 'chartType', 'kqlQuery', 'iframeUrl', 'externalUrl', 'refreshIntervalSeconds'],
 };
 
 async function main() {
-  const docTypes = [Post, AppDoc, ContextDoc, DashboardDoc];
+  const docTypes = [Post, AppDoc, DashboardDoc];
   const missingFields: string[] = [];
 
   for (const docType of docTypes) {

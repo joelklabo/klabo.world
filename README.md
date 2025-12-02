@@ -24,7 +24,7 @@ just dev                # runs the Next dev server (starts optional Docker infra
 | `just doctor` | Prints envinfo + docker status (kept under `docs/verifications/`). |
 | `just load-test` | Runs k6 smoke tests against the dev server. |
 | `just agent-shell` | Opens tmux layout for AI/human pair sessions (dev server + vitest + docker logs + shell). |
-| `pnpm --filter @klaboworld/scripts run export-legacy` | Copies legacy `Resources/{Posts,Apps,Contexts}` into `content/` for Contentlayer. |
+| `pnpm --filter @klaboworld/scripts run export-legacy` | Copies legacy `Resources/{Posts,Apps}` into `content/` for Contentlayer. |
 | `pnpm --filter @klaboworld/scripts run new-post -- --title "My Post"` | Scaffolds `content/posts/*.mdx` with front matter (same slug logic as the admin UI). |
 
 Docker Desktop (or compatible) is only required when you need the optional services from `docker-compose.dev.yml` (Redis for distributed rate limiting, Azurite for blob uploads, or Postgres if you override `DATABASE_URL`). The default SQLite database lives at `app/data/app.db`, so day-to-day development works even without Docker.
@@ -42,7 +42,7 @@ Docker Desktop (or compatible) is only required when you need the optional servi
 │   ├── config/               # shared ESLint + tsconfig presets
 │   ├── scripts/              # TypeScript CLIs (create-admin/export-legacy)
 │   └── ui/                   # placeholder for shared UI primitives
-├── content/                  # MDX/JSON dashboards/posts/apps/contexts
+├── content/                  # MDX/JSON dashboards/posts/apps
 ├── infra/                    # Bicep modules (Azure infra WIP)
 ├── docs/                     # Modernization plan, AGENTS, runbooks, verifications
 ├── docker-compose.dev.yml    # Postgres 17.6 + Redis 7.4 + Azurite
@@ -107,17 +107,16 @@ Run `./scripts/install-dev-tools.sh` once after cloning to install tmux (and oth
 
 ## Contentlayer
 
-- Content lives under `content/{posts,apps,contexts,dashboards}`.
+- Content lives under `content/{posts,apps,dashboards}`.
 - Build the content graph manually with `cd app && pnpm contentlayer build` (tracked logs in `docs/verifications/contentlayer-build.md`).
 - Next.js imports will be wired once Contentlayer stabilizes on Node 24; for now the UI renders placeholder copy.
 
 ## Admin uploads
 
-- `/admin` exposes compose/edit forms for posts, apps, and contexts. Each “Featured image”, “Icon”, and “Screenshots” field now includes an Upload control that calls `POST /admin/upload-image`.
+- `/admin` exposes compose/edit forms for posts, apps, and dashboards. Each “Featured image”, “Icon”, and “Screenshots” field now includes an Upload control that calls `POST /admin/upload-image`.
 - Local development stores images inside `UPLOADS_DIR` (defaults to `public/uploads` inside `app/`), so the returned path always looks like `/uploads/<file>`.
 - In production, set `AZURE_STORAGE_ACCOUNT`, `AZURE_STORAGE_KEY`, and optionally `AZURE_STORAGE_CONTAINER` to write straight to Azure Blob Storage; the API returns the blob URL so you can paste it anywhere (Markdown, screenshot lists, etc.).
-- Context forms also surface a helper that uploads and copies the resulting URL to the clipboard for quick Markdown embedding.
-- Post/Context editors now provide a live Markdown Preview button that sends content to `/admin/markdown-preview`, compiles it with MDX (frontmatter + GFM), and renders the static HTML inside the form so you can verify formatting without manual QA.
+- Markdown editors provide a live Preview button that sends content to `/admin/markdown-preview`, compiles it with MDX (frontmatter + GFM), and renders the static HTML inside the form so you can verify formatting without manual QA.
 
 ## Admin dashboards
 
@@ -148,15 +147,11 @@ See `docs/observability/slos.md` and `docs/deployment/staging-strategy.md` for d
 
 ## Public APIs
 
-- `GET /api/contexts` – JSON list of published contexts (metadata only, sorted by updated date).
-- `GET /api/contexts/search?q=term` – case-insensitive search across titles/summaries/tags (>=2 chars, max 10 results).
-- `GET /api/contexts/:slug` – metadata + raw markdown + rendered HTML for the requested context.
-- `GET /api/contexts/:slug/raw` – raw markdown response with `text/markdown` headers for quick copy/download.
 - `GET /api/gists/:username/:gistId` – proxy to GitHub’s gist API returning the first file’s content (respects `GITHUB_TOKEN` when configured to avoid rate limits).
-- `GET /api/search?q=term` – combined search (posts, apps, contexts). The `/search` page uses this helper with the same ≥2 character rule and returns up to 10 results.
+- `GET /api/search?q=term` – combined search (posts, apps). The `/search` page uses this helper with the same ≥2 character rule and returns up to 10 results.
 - `GET /rss.xml` – RSS feed of the 20 latest posts.
 - `GET /feed.json` – JSON Feed v1.1 for the latest posts.
-- `GET /api/tags?limit=15` – returns post/context/combined tag counts for tag cloud UI.
+- `GET /api/tags?limit=15` – returns post/combined tag counts for tag cloud UI.
 
 ## Observability
 
@@ -175,7 +170,7 @@ See `docs/observability/slos.md` and `docs/deployment/staging-strategy.md` for d
 
 ## Deployment
 
-- `scripts/deploy-smoke.sh` runs a multi-endpoint health check (/, /posts, /apps, /contexts, /api/health). The Azure deploy workflow executes it automatically after pushing the container, and you can run it manually with `SMOKE_BASE_URL=https://your-app scripts/deploy-smoke.sh`.
+- `scripts/deploy-smoke.sh` runs a multi-endpoint health check (/, /posts, /apps, /api/health). The Azure deploy workflow executes it automatically after pushing the container, and you can run it manually with `SMOKE_BASE_URL=https://your-app scripts/deploy-smoke.sh`.
 - Azure resources are defined in [`infra/`](infra/README.md). Provision them with Bicep (`az deployment sub create --template-file infra/main.bicep --parameters @infra/envs/prod.json`) before wiring up the GitHub Actions deployment.
 - `pnpm --filter @klaboworld/scripts run deploy` builds/pushes the Docker image, runs Prisma migrations (when `DATABASE_URL` is provided), updates the staging slot, and swaps it into production. The `Build, Test, and Deploy to Azure` workflow uses the same script; it expects Azure federated-credential secrets (`AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID`) plus `DATABASE_URL` (when using Postgres) to be present in the repo.
 

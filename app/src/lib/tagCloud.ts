@@ -1,5 +1,4 @@
 import { getPostTagCounts } from './posts';
-import { getContextTagCounts } from './contexts';
 
 export type TagCount = { tag: string; count: number };
 
@@ -14,10 +13,6 @@ export function getPostTagCloud(limit?: number): TagCount[] {
   return toArray(getPostTagCounts(), limit);
 }
 
-export function getContextTagCloud(limit?: number): TagCount[] {
-  return toArray(getContextTagCounts(), limit);
-}
-
 export function getCombinedTagCloud(limit?: number): TagCount[] {
   const combined: Record<string, number> = {};
   const merge = (record: Record<string, number>) => {
@@ -26,6 +21,5 @@ export function getCombinedTagCloud(limit?: number): TagCount[] {
     });
   };
   merge(getPostTagCounts());
-  merge(getContextTagCounts());
   return toArray(combined, limit);
 }

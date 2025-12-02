@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Search • klabo.world',
-  description: 'Search posts, apps, and contexts.',
+  description: 'Search posts and apps.',
 };
 
 function normalizeParam(value?: string | string[]): string {
@@ -37,7 +37,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       <div className="relative mx-auto max-w-5xl px-6 py-16">
         <div className="mb-10 flex flex-col gap-3">
           <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary">Search</p>
-          <h1 className="text-4xl font-bold leading-tight text-foreground">Find posts, apps, and contexts</h1>
+          <h1 className="text-4xl font-bold leading-tight text-foreground">Find posts and apps</h1>
           <p className="text-sm text-muted-foreground">
             Type two or more characters to see instant results. Use ↑↓ to navigate, Enter to open, Esc to close.
           </p>

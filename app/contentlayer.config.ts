@@ -20,9 +20,6 @@ const computedFields: ComputedFields = {
       if (doc._raw.flattenedPath.startsWith('apps/')) {
         return `/apps/${doc._raw.flattenedPath.replace(/^apps\//, '')}`;
       }
-      if (doc._raw.flattenedPath.startsWith('contexts/')) {
-        return `/contexts/${doc._raw.flattenedPath.replace(/^contexts\//, '')}`;
-      }
       if (doc._raw.flattenedPath.startsWith('dashboards/')) {
         return `/admin/dashboards/${doc._raw.flattenedPath.replace(/^dashboards\//, '')}`;
       }
@@ -69,21 +66,6 @@ export const AppDoc = defineDocumentType(() => ({
   computedFields,
 }));
 
-export const ContextDoc = defineDocumentType(() => ({
-  name: 'ContextDoc',
-  filePathPattern: `contexts/**/*.mdx`,
-  contentType: 'mdx',
-  fields: {
-    title: { type: 'string', required: true },
-    summary: { type: 'string', required: true },
-    createdDate: { type: 'date', required: true },
-    updatedDate: { type: 'date', required: false },
-    tags: { type: 'list', of: { type: 'string' }, required: false },
-    isPublished: { type: 'boolean', required: true, default: true },
-  },
-  computedFields,
-}));
-
 export const DashboardDoc = defineDocumentType(() => ({
   name: 'DashboardDoc',
   filePathPattern: `dashboards/**/*.mdx`,
@@ -105,7 +87,7 @@ export const DashboardDoc = defineDocumentType(() => ({
 export default makeSource({
   contentDirPath: '../content',
   contentDirExclude: ['README.md'],
-  documentTypes: [Post, AppDoc, ContextDoc, DashboardDoc],
+  documentTypes: [Post, AppDoc, DashboardDoc],
   disableImportAliasWarning: true,
   mdx: {
     mdxOptions: (opts) => {

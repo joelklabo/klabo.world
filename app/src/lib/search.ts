@@ -1,9 +1,8 @@
 import { getPosts } from './posts';
 import { getApps } from './apps';
-import { getContexts, toContextMetadata } from './contexts';
 
 export type SearchResult = {
-  type: 'post' | 'app' | 'context';
+  type: 'post' | 'app';
   title: string;
   summary: string;
   url: string;
@@ -62,20 +61,7 @@ export function searchContent(term: string): SearchResult[] {
       tags: includeTags(app.features),
     }));
 
-  const contextResults: SearchResult[] = getContexts()
-    .filter((context) => context.summary.toLowerCase().includes(normalized) || context.title.toLowerCase().includes(normalized) || context.tags?.some((tag) => tag.toLowerCase().includes(normalized)))
-    .map((context) => {
-      const metadata = toContextMetadata(context);
-      return {
-        type: 'context' as const,
-        title: metadata.title,
-        summary: metadata.summary,
-        url: context.url,
-        tags: metadata.tags,
-      };
-    });
-
-  const combined = [...postResults, ...appResults, ...contextResults].map((result) => ({
+  const combined = [...postResults, ...appResults].map((result) => ({
     result,
     score: scoreMatch(result.title, result.summary, result.tags, normalized),
   }));

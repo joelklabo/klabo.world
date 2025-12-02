@@ -1,34 +1,8 @@
 import { expect, test } from '@playwright/test';
 
 test.describe('Phase 3 public APIs', () => {
-  const contextSlug = 'ios-development-best-practices';
   const gistId = '36cbd765b4a3a47c7a03cb2685de1162';
   const gistUrl = `/api/gists/joelklabo/${gistId}`;
-
-  test('context endpoints return metadata, raw, and search results', async ({ request }) => {
-    const contexts = await request.get('/api/contexts');
-    expect(contexts.ok()).toBe(true);
-    const contextsJson = await contexts.json();
-    expect(Array.isArray(contextsJson)).toBe(true);
-    expect(contextsJson.some((ctx: { slug: string }) => ctx.slug === contextSlug)).toBe(true);
-
-    const detail = await request.get(`/api/contexts/${contextSlug}`);
-    expect(detail.ok()).toBe(true);
-    const detailJson = await detail.json();
-    expect(detailJson.metadata.slug).toBe(contextSlug);
-    expect(detailJson.content).toContain('SwiftUI');
-
-    const raw = await request.get(`/api/contexts/${contextSlug}/raw`);
-    expect(raw.ok()).toBe(true);
-    const rawText = await raw.text();
-    expect(rawText).toContain('iOS Development Best Practices');
-
-    const search = await request.get('/api/contexts/search?q=ios');
-    expect(search.ok()).toBe(true);
-    const searchJson = await search.json();
-    expect(Array.isArray(searchJson)).toBe(true);
-    expect(searchJson.some((ctx: { slug: string }) => ctx.slug === contextSlug)).toBe(true);
-  });
 
   test('search, tags, health, and gist APIs return expected data', async ({ request }) => {
     const search = await request.get('/api/search?q=Claude');

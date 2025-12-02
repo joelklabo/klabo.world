@@ -1,15 +1,5 @@
 [
   {
-    "key": "api-layer-pilot",
-    "type": "boolean",
-    "defaultValue": false,
-    "description": "Gate the tRPC contexts/search pilot before wider rollout.",
-    "owner": "platform",
-    "expiry": "2026-03-31",
-    "issue": "klabw-2e0",
-    "killSeverity": "high"
-  },
-  {
     "key": "nostrstack-post-widgets",
     "type": "boolean",
     "defaultValue": true,

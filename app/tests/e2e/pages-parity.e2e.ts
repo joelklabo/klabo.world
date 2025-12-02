@@ -15,11 +15,6 @@ const postRoutes = [
   },
 ];
 
-const contextRoutes = [
-  { slug: 'ios-development-best-practices', title: 'iOS Development Best Practices' },
-  { slug: 'swift-vapor-development', title: 'Swift Vapor Web Development Context' },
-];
-
 test.describe('public content routes', () => {
   test('home page renders hero and sections', async ({ page }) => {
     await page.goto('/');
@@ -56,19 +51,9 @@ test.describe('public content routes', () => {
     await expect(page.getByText(/ViceChips is a modern iOS habit tracking app/)).toBeVisible();
   });
 
-  test('contexts index and detail pages display content summaries', async ({ page }) => {
-    await page.goto('/contexts');
-    await expect(page.getByRole('heading', { name: 'Claude & MCP Context Library' })).toBeVisible();
-    for (const context of contextRoutes) {
-      await expect(page.getByRole('link', { name: context.title })).toBeVisible();
-    }
-    await page.goto(`/contexts/${contextRoutes[0].slug}`);
-    await expect(page.getByRole('heading', { name: contextRoutes[0].title }).first()).toBeVisible();
-  });
-
   test('search returns results for Claude', async ({ page }) => {
     await page.goto('/search?q=Claude');
-    await expect(page.getByText('Find posts, apps, and contexts')).toBeVisible();
+    await expect(page.getByText('Find posts and apps')).toBeVisible();
     const claudeResult = page.getByRole('link').filter({ hasText: /Claude/i }).first();
     await expect(claudeResult).toBeVisible();
   });

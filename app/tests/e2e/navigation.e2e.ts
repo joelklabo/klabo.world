@@ -8,7 +8,7 @@ test.describe('global navigation', () => {
     await page.goto('/');
     await expect(page.getByTestId('global-nav-home')).toBeVisible();
 
-    const links = ['global-nav-posts', 'global-nav-apps', 'global-nav-contexts'];
+    const links = ['global-nav-posts', 'global-nav-apps', 'global-nav-dashboards'];
     for (const testId of links) {
       const link = page.getByTestId(testId);
       const href = await link.getAttribute('href');
@@ -50,7 +50,6 @@ test.describe('admin navigation', () => {
       { id: 'dashboard', path: /\/admin$/ },
       { id: 'compose', path: /\/admin\/compose/ },
       { id: 'apps', path: /\/admin\/apps/ },
-      { id: 'contexts', path: /\/admin\/contexts/ },
       { id: 'dashboards', path: /\/admin\/dashboards/ },
     ];
 

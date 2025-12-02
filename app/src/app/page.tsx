@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import type { Route } from 'next';
 import { getApps } from '@/lib/apps';
-import { getContexts } from '@/lib/contexts';
 import { getDashboards } from '@/lib/dashboards';
 import { getPosts, getRecentPosts } from '@/lib/posts';
 import { getPostTagCloud } from '@/lib/tagCloud';
@@ -15,20 +14,18 @@ const heroLinks = [
 const heroHighlights = [
   { label: 'Articles', emoji: '🛰️', description: 'Deep dives, tutorials, and dispatch notes.', link: '/posts' },
   { label: 'Apps', emoji: '⚡', description: 'Experimental tooling built for Bitcoin + Lightning.', link: '/apps' },
-  { label: 'Contexts', emoji: '🧠', description: 'Shared AI contexts and MCP insights.', link: '/contexts' },
+  { label: 'Dashboards', emoji: '📈', description: 'Operational KQL dashboards for telemetry.', link: '/admin/dashboards' },
 ];
 
 export default function Home() {
   const recentPosts = getRecentPosts(3);
   const apps = getApps();
-  const contexts = getContexts();
   const dashboards = getDashboards();
   const tagCloud = getPostTagCloud(15);
 
   const stats = [
     { label: 'Articles', value: getPosts().length },
     { label: 'Apps', value: apps.length },
-    { label: 'Contexts', value: contexts.length },
     { label: 'Dashboards', value: dashboards.length },
   ];
 
@@ -186,55 +183,6 @@ export default function Home() {
         </section>
       )}
 
-      {contexts.length > 0 && (
-        <section className="px-6 py-16">
-          <div className="mx-auto max-w-6xl">
-            <div className="mb-8 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-              <div>
-                <p className="text-sm uppercase tracking-widest text-emerald-300">Contexts</p>
-                <h2 className="text-3xl font-semibold text-white">AI &amp; MCP Context Library</h2>
-              </div>
-              <Link href="/contexts" className="text-sm font-semibold text-emerald-200 transition hover:text-emerald-100">
-                Browse contexts →
-              </Link>
-            </div>
-            <div className="grid gap-6 md:grid-cols-2 motion-fade-up">
-              {contexts.slice(0, 4).map((context) => (
-                <article
-                  key={context._id}
-                  className="flex flex-col gap-4 rounded-3xl border border-slate-800/80 bg-slate-900/60 p-6 shadow-lg shadow-black/40 transition hover:-translate-y-1 hover:border-emerald-400/70 card-hover-lift"
-                >
-                  <p className="text-xs uppercase tracking-[0.4em] text-slate-400">
-                    Updated {new Date(context.updatedDate ?? context.createdDate).toLocaleDateString()}
-                  </p>
-                  <h3 className="text-2xl font-semibold text-white">
-                    <Link href={`/contexts/${context.slug}`} className="hover:text-emerald-200">
-                      {context.title}
-                    </Link>
-                  </h3>
-                  <p className="text-sm text-slate-300">{context.summary}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {context.tags?.map((tag) => (
-                      <Link
-                        key={tag}
-                        href={`/contexts/tag/${encodeURIComponent(tag)}`}
-                        className="rounded-full border border-emerald-700/70 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-emerald-100 hover:border-emerald-300 hover:text-emerald-50"
-                      >
-                        {tag}
-                      </Link>
-                    ))}
-                  </div>
-                  <div>
-                    <Link href={`/contexts/${context.slug}`} className="text-sm font-semibold text-emerald-200 hover:text-emerald-100">
-                      View context →
-                    </Link>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
       {dashboards.length > 0 && (
         <section className="bg-gradient-to-br from-slate-900 via-slate-900 to-black px-6 py-16">

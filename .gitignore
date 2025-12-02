@@ -46,6 +46,7 @@ cookies.txt
 .beads/bd.sock
 .beads/daemon.*
 .beads/*.log
+.beads/history.jsonl
 
 # Documentation drafts
 docs/drafts/

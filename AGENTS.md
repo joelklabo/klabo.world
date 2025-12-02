@@ -30,7 +30,7 @@
 
 ## Quick Context
 - Stack: Next.js 16 (App Router) + React 19, TypeScript 5, Tailwind 4, Contentlayer MDX, Prisma (SQLite default; Postgres optional), optional Redis, Azure Blob Storage, Azure App Service containers.
-- Layout: `app/` (Next app), `packages/{config,scripts,ui}`, `content/{posts,apps,contexts,dashboards}`, `infra/` (Bicep), `docs/`, `docker-compose.dev.yml`, `Justfile`, `.devcontainer/`.
+- Layout: `app/` (Next app), `packages/{config,scripts,ui}`, `content/{posts,apps,dashboards}`, `infra/` (Bicep), `docs/`, `docker-compose.dev.yml`, `Justfile`, `.devcontainer/`.
 
 ## Prereqs
 - macOS/Linux, Git, [mise](https://mise.jdx.dev/) (installs Node 24.11.1 + pnpm 10.22.0 via `just bootstrap`).
@@ -62,7 +62,7 @@
 - `GITHUB_TOKEN` is optional but recommended so `/api/gists` avoids rate limits in CI.
 
 ## Content & Admin
-- Source of truth: `content/{posts,apps,contexts,dashboards}`. Admin CRUD lives at `/admin` (server components).
+- Source of truth: `content/{posts,apps,dashboards}`. Admin CRUD lives at `/admin` (server components).
 - Uploads: local writes to `public/uploads`; with Azure storage vars set, uploader writes to Blob Storage and returns the blob URL.
 - Markdown preview + upload helpers are covered by Vitest; full flow in `docs/runbooks/admin-content.md`.
 

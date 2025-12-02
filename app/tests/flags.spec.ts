@@ -15,43 +15,43 @@ describe('feature flags', () => {
     vi.doUnmock('redis');
 
     const { getFlag } = await import('../src/lib/flags');
-    const result = await getFlag('api-layer-pilot');
+    const result = await getFlag('nostrstack-post-widgets');
 
-    expect(result.value).toBe(false);
+    expect(result.value).toBe(true);
     expect(result.source).toBe('default');
     expect(result.isKillSwitch).toBe(false);
   });
 
   it('prefers env overrides when provided', async () => {
-    process.env.FEATURE_FLAGS_JSON = JSON.stringify({ 'api-layer-pilot': true });
+    process.env.FEATURE_FLAGS_JSON = JSON.stringify({ 'nostrstack-post-widgets': false });
     delete process.env.REDIS_URL;
     vi.doUnmock('redis');
 
     const { getFlag } = await import('../src/lib/flags');
-    const result = await getFlag('api-layer-pilot');
+    const result = await getFlag('nostrstack-post-widgets');
 
-    expect(result.value).toBe(true);
+    expect(result.value).toBe(false);
     expect(result.source).toBe('env');
   });
 
   it('uses redis value when available', async () => {
     process.env.REDIS_URL = 'redis://localhost:6379';
     delete process.env.FEATURE_FLAGS_JSON;
-    mockRedis({ 'feature-flags:api-layer-pilot': 'true' });
+    mockRedis({ 'feature-flags:nostrstack-post-widgets': 'false' });
 
     const { getFlag } = await import('../src/lib/flags');
-    const result = await getFlag('api-layer-pilot');
+    const result = await getFlag('nostrstack-post-widgets');
 
-    expect(result.value).toBe(true);
+    expect(result.value).toBe(false);
     expect(result.source).toBe('redis');
   });
 
   it('marks kill-switch when redis forces boolean false and kill severity is set', async () => {
     process.env.REDIS_URL = 'redis://localhost:6379';
-    mockRedis({ 'feature-flags:api-layer-pilot': 'false' });
+    mockRedis({ 'feature-flags:nostrstack-post-widgets': 'false' });
 
     const { getFlag } = await import('../src/lib/flags');
-    const result = await getFlag('api-layer-pilot');
+    const result = await getFlag('nostrstack-post-widgets');
 
     expect(result.value).toBe(false);
     expect(result.isKillSwitch).toBe(true);
@@ -62,7 +62,7 @@ describe('feature flags', () => {
     const { listExpiredFlags } = await import('../src/lib/flags');
     const expired = listExpiredFlags(new Date('2027-01-01'));
 
-    expect(expired.map((f) => f.key)).toContain('api-layer-pilot');
+    expect(expired.map((f) => f.key)).toContain('nostrstack-post-widgets');
   });
 });
 

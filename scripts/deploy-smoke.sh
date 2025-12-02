@@ -2,7 +2,7 @@
 set -euo pipefail
 
 BASE_URL=${SMOKE_BASE_URL:-"https://klabo-world-app.azurewebsites.net"}
-ENDPOINTS=("/" "/posts" "/apps" "/contexts" "/search?q=bitcoin" "/api/health")
+ENDPOINTS=("/" "/posts" "/apps" "/search?q=bitcoin" "/api/health")
 
 log() { printf '%s\n' "$*" >&2; }
 

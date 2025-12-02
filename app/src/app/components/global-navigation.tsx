@@ -9,19 +9,17 @@ const NAV_ITEMS = [
   { label: 'Home', href: '/' },
   { label: 'Posts', href: '/posts' },
   { label: 'Apps', href: '/apps' },
-  { label: 'Contexts', href: '/contexts' },
   { label: 'Dashboards', href: '/admin/dashboards' },
   { label: 'Admin', href: '/admin' },
 ];
 
-const TYPE_LABELS: Record<'post' | 'app' | 'context', string> = {
+const TYPE_LABELS: Record<'post' | 'app', string> = {
   post: 'Post',
   app: 'App',
-  context: 'Context',
 };
 
 type SearchResult = {
-  type: 'post' | 'app' | 'context';
+  type: 'post' | 'app';
   title: string;
   summary: string;
   url: string;
@@ -254,7 +252,7 @@ const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
               type="search"
               name="global-search"
               className="w-full rounded-full border border-border/50 bg-card/80 px-4 py-2 text-sm text-foreground shadow-[0_16px_32px_rgba(6,10,20,0.45)] placeholder:text-muted-foreground/70 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/40"
-              placeholder="Search posts, apps, or contexts…"
+              placeholder="Search posts or apps…"
               value={query}
               onChange={(event) => {
                 const nextValue = event.target.value;
