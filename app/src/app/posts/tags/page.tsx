@@ -10,7 +10,7 @@ export default function PostTagsPage() {
   const tags = Object.entries(getPostTagCounts()).sort((a, b) => b[1] - a[1]);
 
   return (
-    <div className="bg-gradient-to-b from-[#0b1020] via-[#0d1428] to-[#0c1326] text-slate-100">
+    <div className="bg-linear-to-b from-[#0b1020] via-[#0d1428] to-[#0c1326] text-slate-100">
       <div className="mx-auto max-w-6xl px-6 py-16">
         <p className="text-xs font-semibold uppercase tracking-[0.35em] text-amber-200/80">
           Tags

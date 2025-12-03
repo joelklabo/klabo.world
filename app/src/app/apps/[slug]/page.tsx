@@ -37,7 +37,7 @@ export default async function AppDetailPage({
   }
 
   return (
-    <article className="bg-gradient-to-b from-[#0b1020] via-[#0d1428] to-[#0c1326] text-slate-100">
+    <article className="bg-linear-to-b from-[#0b1020] via-[#0d1428] to-[#0c1326] text-slate-100">
       <div className="mx-auto max-w-4xl px-6 py-16">
         <div className="rounded-3xl border border-white/8 bg-white/5 p-8 shadow-[0_24px_70px_rgba(12,19,38,0.55)]">
           <div className="flex items-start gap-4">

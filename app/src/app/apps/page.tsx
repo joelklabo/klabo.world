@@ -12,7 +12,7 @@ export default function AppsPage() {
   const apps = getApps();
 
   return (
-    <div className="bg-gradient-to-b from-[#0b1020] via-[#0d1428] to-[#0c1326] text-slate-100">
+    <div className="bg-linear-to-b from-[#0b1020] via-[#0d1428] to-[#0c1326] text-slate-100">
       <div className="mx-auto max-w-6xl px-6 py-16">
         <header className="mb-12 text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.35em] text-amber-200/80">
