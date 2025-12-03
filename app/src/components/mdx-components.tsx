@@ -101,7 +101,7 @@ function CodeBlock({ children }: { children: ReactNode }) {
 function InlineCode(props: { children: ReactNode }) {
   return (
     <code
-      className="rounded-md border border-amber-200/30 bg-amber-100/10 px-1.5 py-0.5 font-mono text-[13px] font-semibold leading-6 text-amber-100 shadow-inner shadow-amber-200/10"
+      className="rounded-md border border-amber-200/30 bg-amber-100/10 px-1.5 py-0.5 font-mono text-[13px] font-semibold leading-6 text-amber-100 shadow-inner shadow-amber-200/10 break-all"
       {...props}
     />
   );
