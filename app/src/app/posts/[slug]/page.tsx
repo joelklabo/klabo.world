@@ -69,7 +69,7 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
     <div className="bg-gradient-to-b from-[#0b1020] via-[#0d1428] to-[#0c1326] text-slate-100">
       <div className="mx-auto max-w-6xl px-6 py-16">
         <div className="grid gap-10 lg:grid-cols-[3fr_1fr]">
-          <section className="space-y-8">
+          <section className="min-w-0 space-y-8">
             <div className="rounded-3xl border border-white/8 bg-white/5 p-8 shadow-[0_24px_70px_rgba(12,19,38,0.55)]">
               <Link
                 href="/posts"
