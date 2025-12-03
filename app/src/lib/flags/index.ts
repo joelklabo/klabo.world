@@ -1,5 +1,5 @@
-import { performance } from 'node:perf_hooks';
-import { createClient, type RedisClientType } from 'redis';
+import { performance } from "node:perf_hooks";
+import { createClient, type RedisClientType } from "redis";
 import {
   type FlagAdapter,
   type FlagAdapterResult,
@@ -8,26 +8,41 @@ import {
   type FlagEvaluationContext,
   type FlagSource,
   type FlagValue,
-} from '@klaboworld/types';
-import { env } from '../env';
-import { logger } from '../logger';
-import { flagRegistry, validateRegistry } from './registry';
+} from "@klaboworld/types";
+import { env } from "../env";
+import { logger } from "../logger";
+import { flagRegistry, validateRegistry } from "./registry";
 
-type RedisLike = Pick<RedisClientType, 'get' | 'mGet' | 'keys' | 'isOpen' | 'connect'>;
+type RedisLike = Pick<
+  RedisClientType,
+  "get" | "mGet" | "keys" | "isOpen" | "connect"
+>;
 
-const REDIS_PREFIX = 'feature-flags:';
+async function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) =>
+      setTimeout(() => reject(new Error(`timeout after ${ms}ms`)), ms),
+    ),
+  ]);
+}
+
+const REDIS_PREFIX = "feature-flags:";
 
 const parsedOverrides: Record<string, FlagValue> = (() => {
   if (!env.FEATURE_FLAGS_JSON) {
     return {};
   }
   try {
-    const value = JSON.parse(env.FEATURE_FLAGS_JSON) as Record<string, FlagValue>;
-    if (value && typeof value === 'object') {
+    const value = JSON.parse(env.FEATURE_FLAGS_JSON) as Record<
+      string,
+      FlagValue
+    >;
+    if (value && typeof value === "object") {
       return value;
     }
   } catch (error) {
-    logger.warn('Failed to parse FEATURE_FLAGS_JSON; ignoring overrides', {
+    logger.warn("Failed to parse FEATURE_FLAGS_JSON; ignoring overrides", {
       error: error instanceof Error ? error.message : String(error),
     });
   }
@@ -39,7 +54,7 @@ class MemoryFlagAdapter implements FlagAdapter {
 
   async get(key: string): Promise<FlagAdapterResult | null> {
     if (key in this.overrides) {
-      return { value: this.overrides[key], source: 'env' };
+      return { value: this.overrides[key], source: "env" };
     }
     return null;
   }
@@ -48,7 +63,7 @@ class MemoryFlagAdapter implements FlagAdapter {
     const results: Record<string, FlagAdapterResult> = {};
     for (const [key, value] of Object.entries(this.overrides)) {
       if (!prefix || key.startsWith(prefix)) {
-        results[key] = { value, source: 'env' };
+        results[key] = { value, source: "env" };
       }
     }
     return results;
@@ -58,33 +73,51 @@ class MemoryFlagAdapter implements FlagAdapter {
 class RedisFlagAdapter implements FlagAdapter {
   constructor(private client: RedisLike) {}
 
+  private static disabled = false;
+
   private async ensureConnected() {
-    if (!this.client.isOpen) {
-      await this.client.connect();
+    if (RedisFlagAdapter.disabled) {
+      return false;
     }
+    if (!this.client.isOpen) {
+      try {
+        await withTimeout(this.client.connect(), 500);
+      } catch (error) {
+        RedisFlagAdapter.disabled = true;
+        logger.warn("flag adapter error", {
+          key: "redis-connect",
+          adapter: this.constructor.name,
+          error: error instanceof Error ? error.message : String(error),
+        });
+        return false;
+      }
+    }
+    return this.client.isOpen;
   }
 
   async get(key: string): Promise<FlagAdapterResult | null> {
-    await this.ensureConnected();
+    const connected = await this.ensureConnected();
+    if (!connected) return null;
     const raw = await this.client.get(REDIS_PREFIX + key);
     if (!raw) return null;
 
     const parsed = safelyParse(raw);
     return {
       value: parsed ?? raw,
-      source: 'redis',
+      source: "redis",
     };
   }
 
   async getAll(prefix?: string): Promise<Record<string, FlagAdapterResult>> {
-    await this.ensureConnected();
-    const pattern = REDIS_PREFIX + (prefix ? `${prefix}*` : '*');
+    const connected = await this.ensureConnected();
+    if (!connected) return {};
+    const pattern = REDIS_PREFIX + (prefix ? `${prefix}*` : "*");
     const keys = await this.client.keys(pattern);
     if (!keys.length) return {};
     const values = await this.client.mGet(keys);
     const results: Record<string, FlagAdapterResult> = {};
     keys.forEach((k, idx) => {
-      const keyWithoutPrefix = k.replace(REDIS_PREFIX, '');
+      const keyWithoutPrefix = k.replace(REDIS_PREFIX, "");
       const raw = values[idx];
       if (raw === null) {
         return;
@@ -93,7 +126,7 @@ class RedisFlagAdapter implements FlagAdapter {
       const value = (parsed ?? raw) as FlagValue;
       results[keyWithoutPrefix] = {
         value,
-        source: 'redis',
+        source: "redis",
       };
     });
     return results;
@@ -125,10 +158,10 @@ function buildEvaluation(
   metadata: FlagDefinition,
 ): FlagEvaluation {
   const isKillSwitch =
-    metadata.type === 'boolean' &&
-    metadata.killSeverity !== 'none' &&
+    metadata.type === "boolean" &&
+    metadata.killSeverity !== "none" &&
     value === false &&
-    source !== 'default';
+    source !== "default";
 
   return {
     key,
@@ -176,7 +209,7 @@ const adapters = activeAdapters(redisClient);
 validateRegistry();
 
 function logHeartbeat() {
-  logger.info('feature-flags heartbeat', {
+  logger.info("feature-flags heartbeat", {
     adapterOrder: adapters.map((a) => a.constructor.name),
     flagCount: flagRegistry.length,
     redisEnabled: Boolean(redisClient),
@@ -196,11 +229,17 @@ export async function getFlag(
     try {
       const result = await adapter.get(key, ctx);
       if (result !== null) {
-        maybeSampleEval(meta.key, result.source, result.value, ctx, performance.now() - start);
+        maybeSampleEval(
+          meta.key,
+          result.source,
+          result.value,
+          ctx,
+          performance.now() - start,
+        );
         return buildEvaluation(key, result.value, result.source, meta);
       }
     } catch (error) {
-      logger.warn('flag adapter error', {
+      logger.warn("flag adapter error", {
         key,
         adapter: adapter.constructor.name,
         error: error instanceof Error ? error.message : String(error),
@@ -208,12 +247,22 @@ export async function getFlag(
     }
   }
 
-  maybeSampleEval(meta.key, 'default', meta.defaultValue, ctx, performance.now() - start);
-  return buildEvaluation(key, meta.defaultValue, 'default', meta);
+  maybeSampleEval(
+    meta.key,
+    "default",
+    meta.defaultValue,
+    ctx,
+    performance.now() - start,
+  );
+  return buildEvaluation(key, meta.defaultValue, "default", meta);
 }
 
-export async function getAllFlags(prefix?: string): Promise<Record<string, FlagEvaluation>> {
-  const definitions = flagRegistry.filter((def) => !prefix || def.key.startsWith(prefix));
+export async function getAllFlags(
+  prefix?: string,
+): Promise<Record<string, FlagEvaluation>> {
+  const definitions = flagRegistry.filter(
+    (def) => !prefix || def.key.startsWith(prefix),
+  );
   const results: Record<string, FlagEvaluation> = {};
 
   for (const def of definitions) {
@@ -229,7 +278,7 @@ export async function withFlag<T>(
   ctx?: FlagEvaluationContext,
 ): Promise<T | null> {
   const evaluation = await getFlag(key, ctx);
-  if (evaluation.value === true || evaluation.value === 'on') {
+  if (evaluation.value === true || evaluation.value === "on") {
     return fn();
   }
   return null;
@@ -249,11 +298,11 @@ function maybeSampleEval(
   const shouldSample = Math.random() < 0.1;
   if (!shouldSample) return;
 
-  logger.info('flag evaluation', {
+  logger.info("flag evaluation", {
     key,
     source,
     value,
-    bucket: ctx?.userId ? 'user' : 'anon',
+    bucket: ctx?.userId ? "user" : "anon",
     latencyMs: Math.round(latencyMs),
   });
 }
