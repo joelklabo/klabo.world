@@ -22,15 +22,15 @@ That endpoint should return an object with some data containing a callback URL (
 
 Here is what the object I return from that endpoint looks like:
 
-```JSON
+```json
 {
-	"tag":"payRequest",
-	"minSendable":1000,
-	"maxSendable":400000000,
-	"commentAllowed":50,
-	"callback":"https://klabo.blog/api/lnurlp/invoice",
-	"metadata":
-		"[[\"text/identifier\",\"joel@klabo.blog\"],[\"text/plain\",\"Send sats to joel@klabo.blog\"]]"
+  "tag": "payRequest",
+  "minSendable": 1000,
+  "maxSendable": 400000000,
+  "commentAllowed": 50,
+  "callback": "https://klabo.blog/api/lnurlp/invoice",
+  "metadata":
+    "[[\"text/identifier\",\"joel@klabo.blog\"],[\"text/plain\",\"Send sats to joel@klabo.blog\"]]"
 }
 ```
 

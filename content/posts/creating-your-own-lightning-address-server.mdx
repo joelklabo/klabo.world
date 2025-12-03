@@ -12,8 +12,8 @@ Most of the setup on your domain has to do with handling requests to `yourdomain
 
 It ended up being more involved than I had originally thought, the initial payload was pretty straight-forward. It looks something like this (example from my joel@satoshis.lol address):
 
-```javascript
-{ 
+```json
+{
 "status":"OK",
 "callback":"https://satoshis.lol/.well-known/lnurlp/joel",
 "tag":"payRequest",
@@ -39,7 +39,7 @@ The setup is pretty simple. You just download the repo, run `go build` (I needed
 
 Before you run it you need to set some environment variables to make it work. An example from the documentation:
 
-```
+```bash
 PORT=17422
 DOMAIN=bitmia.com
 SECRET=askdbasjdhvakjvsdjasd

@@ -16,7 +16,7 @@ In the last post [Adding Nostr NIP-05 Verification to Your Blog (Jekyll)](https:
 
 The issue here is that CORS wasn't set up correctly. You can learn more about [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) if you're interested but for those of you that just want to get it working I'm going to show you what I had to do in my Caddyfile:
 
-```
+```caddyfile
 (cors) {
   @cors_preflight method OPTIONS
   @cors header Origin {args.0}
