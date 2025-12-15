@@ -59,6 +59,13 @@
       "import-in-the-middle": "2.0.0",
       "require-in-the-middle": "8.0.1"
     },
+    "peerDependencyRules": {
+      "allowedVersions": {
+        "@opentelemetry/api": ">=1.0.0",
+        "esbuild": "0.17.x || 0.18.x || 0.25.x",
+        "next": ">=12"
+      }
+    },
     "patchedDependencies": {
       "clipanion@3.2.1": "patches/clipanion@3.2.1.patch"
     }
