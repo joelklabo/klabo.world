@@ -28,27 +28,50 @@ export default async function PostTagPage({ params }: { params: Params | Promise
   }
 
   return (
-    <div className="bg-gray-50 px-6 py-16 dark:bg-gray-950">
-      <div className="mx-auto max-w-4xl">
-        <div className="mb-10">
-          <p className="text-sm uppercase tracking-widest text-indigo-500">Tag</p>
-          <h1 className="mt-2 text-4xl font-bold">{tag}</h1>
-          <Link href="/posts/tags" className="text-sm font-semibold text-indigo-600 hover:text-indigo-400">
+    <div className="bg-gradient-to-b from-[#0b1020] via-[#0d1428] to-[#0c1326] text-slate-100">
+      <div className="mx-auto max-w-6xl px-6 py-16">
+        <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div className="space-y-3">
+            <p className="text-xs font-semibold uppercase tracking-[0.35em] text-amber-200/80">Tag</p>
+            <h1 className="text-4xl font-semibold tracking-tight text-white">{tag}</h1>
+            <p className="max-w-2xl text-sm text-slate-400">Posts filed under “{tag}”.</p>
+          </div>
+          <Link
+            href="/posts/tags"
+            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-amber-200/90 transition hover:-translate-y-0.5 hover:border-amber-200/60 hover:bg-amber-50/5 hover:text-amber-100"
+          >
             ← Back to all tags
           </Link>
-        </div>
-        <div className="space-y-6">
+        </header>
+
+        <div className="mt-10 grid gap-5 sm:grid-cols-2">
           {posts.map((post) => (
-            <article key={post._id} className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-              <time className="text-xs uppercase tracking-widest text-gray-500">
+            <article
+              key={post._id}
+              className="group h-full rounded-2xl border border-white/5 bg-white/5 p-5 shadow-[0_20px_50px_rgba(12,19,38,0.35)] transition hover:-translate-y-1 hover:border-amber-200/40 hover:bg-amber-50/5 hover:shadow-[0_24px_60px_rgba(12,19,38,0.5)]"
+            >
+              <time className="text-xs uppercase tracking-[0.3em] text-slate-400">
                 {new Date(post.publishDate ?? post.date).toLocaleDateString()}
               </time>
-              <h2 className="mt-2 text-2xl font-semibold">
-                <Link href={`/posts/${post.slug}`} className="hover:text-indigo-600">
+              <h2 className="mt-3 text-xl font-semibold leading-snug text-white">
+                <Link href={`/posts/${post.slug}`} className="hover:text-amber-100">
                   {post.title}
                 </Link>
               </h2>
-              <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{post.summary}</p>
+              <p className="mt-2 text-sm text-slate-300 line-clamp-3">{post.summary}</p>
+              {post.tags && post.tags.length > 0 && (
+                <div className="mt-3 flex flex-wrap gap-2 text-[11px] uppercase tracking-[0.3em] text-amber-200/80">
+                  {post.tags.slice(0, 4).map((entry) => (
+                    <Link
+                      key={entry}
+                      href={`/posts/tag/${encodeURIComponent(entry)}`}
+                      className="rounded-full border border-amber-200/30 bg-amber-50/5 px-3 py-1 transition group-hover:border-amber-200/60 group-hover:text-amber-100"
+                    >
+                      {entry}
+                    </Link>
+                  ))}
+                </div>
+              )}
             </article>
           ))}
         </div>
