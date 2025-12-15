@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   description: "Recent GitHub projects and experiments by klabo.world.",
 };
 
-export const revalidate = 60 * 60;
+export const revalidate = 3600;
 
 export default async function ProjectsPage() {
   const [pinned, initialRecent] = await Promise.all([

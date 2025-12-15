@@ -6,7 +6,7 @@ import { getFeaturedGitHubProjects } from "@/lib/github-projects";
 import { GitHubProjectCard } from "@/components/github-project-card";
 import { Button } from "@/components/ui/button";
 
-export const revalidate = 60 * 60;
+export const revalidate = 3600;
 
 export default async function Home() {
   const recentPosts = getRecentPosts(3);
@@ -174,4 +174,3 @@ export default async function Home() {
     </div>
   );
 }
-
