@@ -1,0 +1,23 @@
+import { expect, test } from '@playwright/test';
+
+test.describe('home page interactions', () => {
+  test('writing and GitHub cards are navigable', async ({ page }) => {
+    await page.goto('/');
+
+    const firstPost = page.getByTestId('home-writing-post').first();
+    await expect(firstPost).toBeVisible();
+
+    const postHref = await firstPost.getAttribute('href');
+    expect(postHref).toMatch(/^\/posts\//);
+
+    await Promise.all([page.waitForNavigation(), firstPost.click()]);
+    await expect(page).toHaveURL(new RegExp(postHref!.replace('/', '\\/')));
+
+    await page.goto('/');
+    const featuredProject = page.getByTestId('home-github-featured');
+    await expect(featuredProject).toBeVisible();
+    await expect(featuredProject).toHaveAttribute('href', /github\.com/i);
+    await expect(featuredProject).toHaveAttribute('target', '_blank');
+  });
+});
+

@@ -10,22 +10,14 @@ export const revalidate = 3600;
 
 export default async function Home() {
   const recentPosts = getRecentPosts(2);
-  const projects = await getFeaturedGitHubProjects(env.GITHUB_OWNER, 5);
+  const projects = await getFeaturedGitHubProjects(env.GITHUB_OWNER, 4);
 
   return (
     <div className="bg-background text-foreground">
       <section className="relative overflow-hidden border-b border-border/50 py-16">
-        <div className="pointer-events-none absolute inset-0 opacity-80">
-          <div className="absolute -left-24 -top-16 h-72 w-72 rounded-full bg-primary/18 blur-3xl" />
-          <div className="absolute right-0 top-8 h-80 w-80 rounded-full bg-secondary/12 blur-3xl" />
-          <div className="absolute bottom-0 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-primary/10 blur-3xl" />
-        </div>
 
         <div className="relative mx-auto flex max-w-6xl flex-col gap-10 px-6">
           <div className="max-w-3xl space-y-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary">
-              Bitcoin · Lightning · Nostr · Agentic engineering
-            </p>
             <h1
               className="text-4xl font-bold tracking-tight text-foreground md:text-5xl"
               data-testid="home-hero-title"
@@ -34,8 +26,9 @@ export default async function Home() {
               rails.
             </h1>
             <p className="text-base text-muted-foreground md:text-lg">
-              Practical writing and small tools—built so future me (and you) can
-              move faster with fewer regressions.
+              Bitcoin, Lightning, Nostr, agentic engineering. Practical writing
+              and small tools—built so future me (and you) can move faster with
+              fewer regressions.
             </p>
             <div className="flex flex-wrap gap-3">
               <Button asChild size="lg">
