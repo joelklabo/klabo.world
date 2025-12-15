@@ -4,6 +4,7 @@ import { getApps } from '@/lib/apps';
 import { getDashboards } from '@/lib/dashboards';
 import { getPosts, getRecentPosts } from '@/lib/posts';
 import { getPostTagCloud } from '@/lib/tagCloud';
+import { Button } from '@/components/ui/button';
 
 const heroLinks = [
   { href: '/posts', label: 'Read the latest' },
@@ -48,13 +49,9 @@ export default function Home() {
             </p>
             <div className="flex flex-wrap gap-3">
               {heroLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href as Route}
-                  className="rounded-full border border-indigo-400/50 bg-indigo-500/20 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-indigo-500/30 transition hover:-translate-y-0.5 hover:border-white/80 hover:bg-indigo-400/30"
-                >
-                  {link.label}
-                </Link>
+                <Button key={link.href} asChild variant="soft" size="lg">
+                  <Link href={link.href as Route}>{link.label}</Link>
+                </Button>
               ))}
             </div>
             <div className="flex flex-wrap gap-4">

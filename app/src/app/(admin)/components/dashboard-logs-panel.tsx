@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { DashboardLogsState } from "@/lib/dashboardLogs";
+import { Button } from "@/components/ui/button";
 
 type DashboardLogsPanelProps = {
   dashboardSlug: string;
@@ -159,13 +160,15 @@ export function DashboardLogsPanel({
             </option>
           ))}
         </select>
-        <button
+        <Button
           type="button"
           onClick={fetchLogs}
-          className="rounded-full border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 hover:border-gray-300"
+          variant="outline"
+          size="sm"
+          className="bg-transparent border-gray-200 text-gray-700 hover:border-gray-300 hover:bg-gray-50"
         >
           Refresh
-        </button>
+        </Button>
       </div>
 
       <div className="text-xs text-gray-500">

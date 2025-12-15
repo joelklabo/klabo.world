@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { Metadata, Route } from 'next';
 import { searchContent } from '@/lib/search';
+import { Button } from '@/components/ui/button';
 
 type SearchParams = {
   q?: string | string[];
@@ -52,12 +53,9 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             className="w-full rounded-2xl border border-border/60 bg-card/80 px-5 py-3 text-lg text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/40 shadow-[0_18px_40px_rgba(6,10,20,0.5)]"
           />
           <div className="flex flex-wrap items-center gap-3">
-            <button
-              className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition hover:-translate-y-0.5 hover:shadow-primary/40"
-              type="submit"
-            >
+            <Button type="submit" size="lg">
               Search
-            </button>
+            </Button>
             <div className="flex flex-wrap items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-muted-foreground">
               <span className="rounded-full border border-border/60 bg-background/80 px-2 py-1">↑↓</span>
               <span className="rounded-full border border-border/60 bg-background/80 px-2 py-1">Enter</span>

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import type { Route } from 'next';
 import { usePathname, useRouter } from 'next/navigation';
 import { KeyboardEvent, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { Button } from '@/components/ui/button';
 
 const NAV_ITEMS = [
   { label: 'Home', href: '/' },
@@ -343,17 +344,19 @@ const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
                   })}
                 </ul>
                 {!results.length && (
-                  <button
+                  <Button
                     type="button"
+                    variant="link"
+                    size="xs"
+                    className="mt-3 justify-start px-0 text-xs font-semibold uppercase tracking-widest"
                     onMouseDown={(event) => {
                       event.preventDefault();
                       router.push(`/search?q=${encodeURIComponent(query.trim())}`);
                       setIsDropdownOpen(false);
                     }}
-                    className="mt-3 text-xs font-semibold uppercase tracking-widest text-indigo-600"
                   >
                     View full search results
-                  </button>
+                  </Button>
                 )}
               </div>
             )}

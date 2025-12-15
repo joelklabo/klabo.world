@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getAppBySlug, getApps } from "@/lib/apps";
+import { Button } from "@/components/ui/button";
 
 type Params = { slug: string };
 
@@ -62,31 +63,22 @@ export default async function AppDetailPage({
 
           <div className="mt-6 flex flex-wrap gap-3">
             {app.appStoreURL && (
-              <a
-                href={app.appStoreURL}
-                target="_blank"
-                rel="noreferrer"
-                className="rounded-full bg-gradient-to-r from-amber-500 to-amber-300 px-5 py-2 text-sm font-semibold text-black shadow-md shadow-amber-500/30 transition hover:-translate-y-0.5"
-              >
-                View on App Store
-              </a>
+              <Button asChild size="lg">
+                <a href={app.appStoreURL} target="_blank" rel="noreferrer">
+                  View on App Store
+                </a>
+              </Button>
             )}
             {app.githubURL && (
-              <a
-                href={app.githubURL}
-                target="_blank"
-                rel="noreferrer"
-                className="rounded-full border border-amber-200/40 px-5 py-2 text-sm font-semibold text-amber-100 transition hover:border-amber-200/70 hover:text-white"
-              >
-                View on GitHub
-              </a>
+              <Button asChild variant="soft" size="lg">
+                <a href={app.githubURL} target="_blank" rel="noreferrer">
+                  View on GitHub
+                </a>
+              </Button>
             )}
-            <Link
-              href="/apps"
-              className="rounded-full border border-white/20 px-5 py-2 text-sm font-semibold text-amber-100 transition hover:border-amber-200/60 hover:text-white"
-            >
-              ← Back to apps
-            </Link>
+            <Button asChild variant="outline" size="lg">
+              <Link href="/apps">← Back to apps</Link>
+            </Button>
           </div>
 
           {app.features?.length ? (

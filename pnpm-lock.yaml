@@ -90,9 +90,6 @@ importers:
       '@klaboworld/types':
         specifier: workspace:*
         version: link:../packages/types
-      '@klaboworld/ui':
-        specifier: workspace:*
-        version: link:../packages/ui
       '@mdx-js/mdx':
         specifier: ^3.0.0
         version: 3.1.1

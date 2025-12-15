@@ -3,6 +3,7 @@ import type { Route } from 'next';
 import { auth } from '@/lib/nextAuth';
 import { LoginForm } from '../login-form';
 import { getPostsForAdmin } from '@/lib/posts';
+import { Button } from '@/components/ui/button';
 
 export const dynamic = 'force-dynamic';
 
@@ -31,9 +32,9 @@ export default async function AdminLanding({ searchParams }: { searchParams?: Ad
           <p className="text-sm uppercase tracking-widest text-indigo-500">Dashboard</p>
           <h1 className="text-3xl font-bold">Content overview</h1>
         </div>
-        <Link href={'/admin/compose' as Route} className="rounded-full bg-indigo-600 px-5 py-2 text-sm font-semibold text-white hover:bg-indigo-500">
-          Compose post
-        </Link>
+        <Button asChild size="lg">
+          <Link href={'/admin/compose' as Route}>Compose post</Link>
+        </Button>
       </div>
       <div className="rounded-3xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
         <table className="min-w-full divide-y divide-gray-200 text-sm dark:divide-gray-800">

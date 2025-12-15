@@ -4,7 +4,10 @@ import { requireAdminSession } from '@/lib/adminSession';
 import { ImageUploadField } from '@/app/(admin)/components/image-upload-field';
 import { ImageListUploadField } from '@/app/(admin)/components/image-list-upload-field';
 import { upsertAppAction } from '../[slug]/actions';
-import { Button, Input, Label, Textarea } from '@klaboworld/ui';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {

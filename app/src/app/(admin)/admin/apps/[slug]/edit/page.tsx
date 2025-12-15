@@ -6,6 +6,7 @@ import { requireAdminSession } from '@/lib/adminSession';
 import { ImageUploadField } from '@/app/(admin)/components/image-upload-field';
 import { ImageListUploadField } from '@/app/(admin)/components/image-list-upload-field';
 import { upsertAppAction, deleteAppAction } from '../actions';
+import { Button } from '@/components/ui/button';
 
 export const dynamic = 'force-dynamic';
 
@@ -159,18 +160,19 @@ export default async function EditAppPage({ params }: { params: Promise<{ slug: 
             uploadButtonTestId="apps-edit-screenshot-upload"
           />
         </div>
-        <div className="flex justify-between">
-          <button
+        <div className="flex justify-between gap-3">
+          <Button
             type="submit"
             formAction={deleteAction}
-            className="rounded-full border border-red-200 px-5 py-2 text-sm font-semibold text-red-600 hover:bg-red-50"
+            variant="destructive-outline"
+            size="lg"
             data-testid="apps-edit-delete"
           >
             Delete app
-          </button>
-          <button type="submit" className="rounded-full bg-purple-600 px-6 py-2 text-sm font-semibold text-white hover:bg-purple-500" data-testid="apps-edit-submit">
+          </Button>
+          <Button type="submit" size="lg" data-testid="apps-edit-submit">
             Save changes
-          </button>
+          </Button>
         </div>
       </form>
     </div>

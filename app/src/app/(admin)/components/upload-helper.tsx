@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useRef, useState } from 'react';
+import { Button } from '@/components/ui/button';
 
 type Status = 'idle' | 'uploading' | 'success' | 'error';
 
@@ -55,14 +56,16 @@ export function MarkdownUploadHelper({ buttonTestId, statusTestId }: Props) {
       <p className="font-semibold">Need to embed images in Markdown?</p>
       <p className="mt-1 text-emerald-700">Upload here and we&apos;ll copy the URL to your clipboard.</p>
       <div className="mt-3 flex flex-wrap items-center gap-3">
-        <button
+        <Button
           type="button"
           onClick={() => inputRef.current?.click()}
-          className="rounded-full border border-emerald-300 px-4 py-1 font-semibold text-emerald-700 hover:bg-white"
+          variant="outline"
+          size="sm"
+          className="bg-transparent border-emerald-300 text-emerald-700 hover:bg-white"
           data-testid={buttonTestId}
         >
           Upload + copy URL
-        </button>
+        </Button>
         <input type="file" className="hidden" accept="image/*" ref={inputRef} onChange={onFileChange} />
         {status === 'uploading' && <span data-testid={statusTestId}>Uploading…</span>}
         {status !== 'idle' && status !== 'uploading' && <span data-testid={statusTestId}>{message}</span>}

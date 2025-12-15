@@ -2,6 +2,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { requireAdminSession } from '@/lib/adminSession';
 import { getAppsForAdmin } from '@/lib/apps';
+import { Button } from '@/components/ui/button';
 
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
@@ -19,9 +20,9 @@ export default async function AdminAppsPage() {
           <p className="text-sm uppercase tracking-widest text-purple-500">Apps</p>
           <h1 className="text-3xl font-bold">Manage app listings</h1>
         </div>
-        <Link href="/admin/apps/new" className="rounded-full bg-purple-600 px-5 py-2 text-sm font-semibold text-white hover:bg-purple-500">
-          New app
-        </Link>
+        <Button asChild size="lg">
+          <Link href="/admin/apps/new">New app</Link>
+        </Button>
       </div>
       <div className="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
         <table className="min-w-full divide-y divide-gray-100 text-sm dark:divide-gray-800">

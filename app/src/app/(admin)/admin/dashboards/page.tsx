@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getDashboards } from "@/lib/dashboards";
 import { requireAdminSession } from "@/lib/adminSession";
+import { Button } from "@/components/ui/button";
 
 export const dynamic = "force-dynamic";
 
@@ -22,12 +23,9 @@ export default async function AdminDashboardsPage() {
             Track telemetry, logs, and runbooks inside the admin portal.
           </p>
         </div>
-        <Link
-          href="/admin/dashboards/new"
-          className="inline-flex items-center rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground shadow-md shadow-primary/25 transition hover:-translate-y-0.5 hover:shadow-primary/40"
-        >
-          + New dashboard
-        </Link>
+        <Button asChild size="lg">
+          <Link href="/admin/dashboards/new">+ New dashboard</Link>
+        </Button>
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-border/60 bg-card shadow-[0_20px_45px_rgba(6,10,20,0.35)]">

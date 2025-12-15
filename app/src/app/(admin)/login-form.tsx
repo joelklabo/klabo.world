@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
 
 async function loadCsrfToken() {
   const response = await fetch('/api/auth/csrf', {
@@ -125,14 +126,9 @@ export function LoginForm({ initialError }: LoginFormProps) {
           required
           data-testid="admin-login-password"
         />
-        <button
-          type="submit"
-          className="rounded bg-black px-4 py-2 text-white disabled:opacity-60"
-          disabled={!csrfToken || loadingToken}
-          data-testid="admin-login-submit"
-        >
+        <Button type="submit" size="lg" disabled={!csrfToken || loadingToken} data-testid="admin-login-submit">
           {loadingToken ? 'Preparing…' : 'Sign in'}
-        </button>
+        </Button>
         {error && (
           <p className="text-sm text-red-600" role="alert" aria-live="assertive" data-testid="admin-login-error">
             {error}

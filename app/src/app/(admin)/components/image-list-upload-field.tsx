@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useRef, useState } from 'react';
+import { Button } from '@/components/ui/button';
 
 type Tone = 'indigo' | 'purple' | 'emerald';
 
@@ -97,14 +98,16 @@ export function ImageListUploadField({
       </label>
       {helperText && <p className="mt-1 text-xs text-gray-500">{helperText}</p>}
       <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">
-        <button
+        <Button
           type="button"
           onClick={() => fileInputRef.current?.click()}
-          className={`rounded-full border px-3 py-1 font-semibold hover:bg-gray-50 ${buttonTone[tone]}`}
+          variant="outline"
+          size="xs"
+          className={`bg-transparent hover:bg-gray-50 ${buttonTone[tone]}`}
           data-testid={uploadButtonTestId}
         >
           Upload + append URL
-        </button>
+        </Button>
         <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={onFileChange} />
         {status === 'uploading' && <span className="text-gray-500">Uploading…</span>}
         {status === 'success' && <span className="text-gray-600">Added latest upload.</span>}

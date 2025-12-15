@@ -5,6 +5,7 @@ import { getEditablePostBySlug } from '@/lib/posts';
 import { ImageUploadField } from '@/app/(admin)/components/image-upload-field';
 import { MarkdownField } from '@/app/(admin)/components/markdown-field';
 import { updatePostAction, deletePostAction } from '../../actions';
+import { Button } from '@/components/ui/button';
 
 type Params = { slug: string };
 
@@ -164,16 +165,12 @@ export default async function EditPostPage({ params }: { params: Promise<Params>
           tone="indigo"
         />
         <div className="flex justify-between">
-          <button
-            type="submit"
-            formAction={deleteAction}
-            className="rounded-full border border-red-200 px-5 py-2 text-sm font-semibold text-red-600 hover:bg-red-50"
-          >
+          <Button type="submit" formAction={deleteAction} variant="destructive-outline" size="lg">
             Delete
-          </button>
-          <button type="submit" className="rounded-full bg-indigo-600 px-6 py-2 text-sm font-semibold text-white hover:bg-indigo-500">
+          </Button>
+          <Button type="submit" size="lg">
             Save changes
-          </button>
+          </Button>
         </div>
       </form>
     </div>

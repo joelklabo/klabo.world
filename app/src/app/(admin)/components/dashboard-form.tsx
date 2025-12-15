@@ -2,7 +2,8 @@ import { MarkdownField } from './markdown-field';
 import { MarkdownUploadHelper } from './upload-helper';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Button, Textarea } from '@klaboworld/ui';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
 import { type Dashboard } from '@/lib/dashboards';
 
 type DashboardFormProps = {

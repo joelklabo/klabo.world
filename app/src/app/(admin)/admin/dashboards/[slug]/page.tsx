@@ -7,6 +7,7 @@ import { deleteDashboardAction, updateDashboardAction } from "../actions";
 import { getDashboardBySlug } from "@/lib/dashboards";
 import { loadDashboardChartState } from "@/lib/dashboardCharts";
 import { requireAdminSession } from "@/lib/adminSession";
+import { Button } from "@/components/ui/button";
 
 export const dynamic = "force-dynamic";
 
@@ -142,14 +143,11 @@ export default async function DashboardDetailPage({ params }: PageProps) {
                   This panel renders as a CTA button that opens the dashboard in
                   a new tab.
                 </p>
-                <a
-                  href={linkUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-4 inline-flex items-center rounded-full bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-500"
-                >
-                  Open {getHostname(linkUrl)}
-                </a>
+                <Button asChild size="xs" className="mt-4">
+                  <a href={linkUrl} target="_blank" rel="noreferrer">
+                    Open {getHostname(linkUrl)}
+                  </a>
+                </Button>
               </div>
             ) : (
               <div className="rounded-xl border border-yellow-200 bg-yellow-50 px-4 py-6 text-center text-sm text-yellow-700">
@@ -184,12 +182,9 @@ export default async function DashboardDetailPage({ params }: PageProps) {
               Deleting a dashboard removes it from Contentlayer and GitHub. This
               cannot be undone.
             </p>
-            <button
-              type="submit"
-              className="rounded-full border border-red-200 px-4 py-2 text-xs font-semibold text-red-600 hover:bg-red-100"
-            >
+            <Button type="submit" variant="destructive-outline" size="xs">
               Delete dashboard
-            </button>
+            </Button>
           </form>
         </div>
         <div className="space-y-6">

@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
+import { Button } from '@/components/ui/button';
 
 type Tone = 'indigo' | 'emerald';
 
@@ -87,14 +88,16 @@ export function MarkdownField({
       </label>
       <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600">
         {helperText && <p className="text-xs text-gray-500">{helperText}</p>}
-        <button
+        <Button
           type="button"
           onClick={handlePreview}
-          className="rounded-full border border-gray-300 px-4 py-1 font-semibold text-gray-700 hover:bg-gray-50"
+          variant="outline"
+          size="sm"
+          className="bg-transparent border-gray-300 text-gray-700 hover:bg-gray-50"
           data-testid={previewButtonTestId}
         >
           {status === 'loading' ? 'Rendering preview…' : 'Refresh preview'}
-        </button>
+        </Button>
         {status === 'success' && <span className={`rounded-full px-3 py-1 text-xs font-semibold ${badgeTone[tone]}`}>Preview updated</span>}
         {status === 'error' && error && <span className="text-red-600">{error}</span>}
       </div>
