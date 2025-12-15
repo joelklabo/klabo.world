@@ -3,20 +3,15 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 // nostr-tools is dynamically imported when needed so builds work without it.
 
-type RelayPublisher = {
-  on: (event: 'ok' | 'failed', cb: (reason?: string) => void) => void;
-};
-
-type RelaySubscription = {
-  on: (event: 'event', cb: (ev: NostrEvent) => void) => void;
-  unsub: () => void;
-};
-
 type Relay = {
+  url: string;
   connect: () => Promise<void> | void;
   close: () => void;
-  publish: (event: NostrEvent) => RelayPublisher;
-  sub: (filters: Array<Record<string, unknown>>) => RelaySubscription;
+  publish: (event: NostrEvent) => Promise<string>;
+  subscribe: (
+    filters: Array<Record<string, unknown>>,
+    params: { onevent: (ev: NostrEvent) => void; oneose?: () => void },
+  ) => { close: () => void };
 };
 
 type NostrSigner = {
@@ -108,34 +103,44 @@ function isMockConfig(opts: { baseUrl?: string; host?: string }) {
 
 async function connectRelays(urls: string[]): Promise<Relay[]> {
   if (urls.includes('mock')) return [];
-  let relayInit: ((url: string) => Relay) | null = null;
+  let RelayConnector: {
+    connect: (url: string, options?: { enablePing?: boolean; enableReconnect?: boolean }) => Promise<Relay>;
+  } | null = null;
   try {
     const mod = await import('nostr-tools');
-    relayInit = (mod as { relayInit?: (url: string) => Relay }).relayInit ?? null;
+    RelayConnector =
+      (mod as unknown as {
+        Relay?: { connect?: (url: string, options?: { enablePing?: boolean; enableReconnect?: boolean }) => Promise<Relay> };
+      }).Relay ?? null;
   } catch (err) {
     console.warn('nostr-tools not available, skipping relay connections', err);
     return [];
   }
-  if (!relayInit) return [];
-  const results: Relay[] = [];
-  await Promise.all(
+  if (!RelayConnector?.connect) return [];
+
+  const results = await Promise.allSettled(
     urls.map(async (url) => {
-      try {
-        const relay = relayInit!(url);
-        await relay.connect();
-        results.push(relay);
-      } catch (error) {
-        console.warn('relay connect failed', url, error);
-      }
+      const relay = await RelayConnector!.connect(url, { enablePing: true, enableReconnect: true });
+      return relay;
     }),
   );
-  return results;
+
+  return results
+    .filter((result): result is PromiseFulfilledResult<Relay> => result.status === 'fulfilled')
+    .map((result) => result.value);
 }
 
 function useRelayConnections(relays: string[]) {
-  const [connections, setConnections] = useState<Relay[]>([]);
-  const [ready, setReady] = useState(false);
   const relayKey = useMemo(() => relays.join('|'), [relays]);
+  const [relayState, setRelayState] = useState<{
+    key: string;
+    connections: Relay[];
+    ready: boolean;
+  }>(() => ({ key: relayKey, connections: [], ready: false }));
+
+  const isCurrent = relayState.key === relayKey;
+  const connections = isCurrent ? relayState.connections : [];
+  const ready = isCurrent ? relayState.ready : false;
 
   useEffect(() => {
     let closed = false;
@@ -147,8 +152,7 @@ function useRelayConnections(relays: string[]) {
         return;
       }
       active = next;
-      setConnections(next);
-      setReady(true);
+      setRelayState({ key: relayKey, connections: next, ready: true });
     })();
 
     return () => {
@@ -161,23 +165,23 @@ function useRelayConnections(relays: string[]) {
 }
 
 async function publishToRelays(relays: Relay[], event: NostrEvent) {
-  await Promise.all(
-    relays.map(
-      (relay) =>
-        new Promise<void>((resolve, reject) => {
-          const pub = relay.publish(event);
-          const timer = setTimeout(() => reject(new Error('publish timeout')), 7000);
-          pub.on('ok', () => {
-            clearTimeout(timer);
-            resolve();
-          });
-          pub.on('failed', (reason?: string) => {
-            clearTimeout(timer);
-            reject(new Error(reason || 'publish failed'));
-          });
-        }),
-    ),
+  const timeoutMs = 7000;
+  const settled = await Promise.allSettled(
+    relays.map(async (relay) => {
+      const timer = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error(`publish timeout (${relay.url ?? 'relay'})`)), timeoutMs),
+      );
+      await Promise.race([relay.publish(event), timer]);
+    }),
   );
+
+  const failures = settled.filter((result) => result.status === 'rejected') as Array<PromiseRejectedResult>;
+  if (failures.length === settled.length) {
+    const firstError = failures[0]?.reason instanceof Error ? failures[0].reason.message : String(failures[0]?.reason);
+    throw new Error(firstError || 'publish failed');
+  }
+
+  return { total: settled.length, failed: failures.length };
 }
 
 function formatError(error: unknown): string {
@@ -222,6 +226,7 @@ export function NostrstackActionBar({
   const [tipError, setTipError] = useState<string | null>(null);
   const [shareState, setShareState] = useState<'idle' | 'posting' | 'posted' | 'error'>('idle');
   const [shareError, setShareError] = useState<string | null>(null);
+  const [shareWarning, setShareWarning] = useState<string | null>(null);
   const relayList = useMemo(() => (relays && relays.length ? relays : DEFAULT_RELAYS), [relays]);
   const { connections, ready } = useRelayConnections(relayList);
   const lightning = useMemo(() => parseLightningAddress(lightningAddress ?? undefined), [lightningAddress]);
@@ -275,6 +280,7 @@ export function NostrstackActionBar({
   const handleShare = useCallback(async () => {
     const note = `${title}\n${canonicalUrl}${lightningAddress ? `\n⚡️ ${lightningAddress}` : ''}`;
     setShareError(null);
+    setShareWarning(null);
 
     if (typeof window === 'undefined') {
       setShareError('NIP-07 signer required to share.');
@@ -305,17 +311,16 @@ export function NostrstackActionBar({
         pubkey,
       };
       const signed = await signer.signEvent(unsigned);
-      await publishToRelays(connections, signed);
+      const result = await publishToRelays(connections, signed);
+      if (result.failed > 0) {
+        setShareWarning(`Posted, but ${result.failed}/${result.total} relays failed.`);
+      }
       setShareState('posted');
     } catch (error) {
       setShareError(formatError(error));
       setShareState('error');
-    } finally {
-      if (shareState === 'posting') {
-        setShareState((prev) => (prev === 'posting' ? 'idle' : prev));
-      }
     }
-  }, [canonicalUrl, connections, lightningAddress, nostrPubkey, shareState, slug, title]);
+  }, [canonicalUrl, connections, lightningAddress, nostrPubkey, slug, title]);
 
   return (
     <Section title="Support & Share">
@@ -372,6 +377,7 @@ export function NostrstackActionBar({
         </div>
       )}
       {tipError && <p className="text-sm text-rose-200">{tipError}</p>}
+      {shareWarning && <p className="text-sm text-amber-200">{shareWarning}</p>}
       {shareError && <p className="text-sm text-rose-200">{shareError}</p>}
       {shareState === 'posted' && !shareError && <p className="text-sm text-emerald-200">Shared to Nostr.</p>}
     </Section>
@@ -404,19 +410,20 @@ export function NostrstackComments({ threadId, relays, canonicalUrl }: CommentsP
 
   useEffect(() => {
     if (!connections.length) return;
-    const subs: RelaySubscription[] = [];
+    const subs: Array<{ close: () => void }> = [];
     const filters: Array<{ kinds: number[]; '#t': string[] }> = [{ kinds: [1], '#t': [threadId] }];
     connections.forEach((relay) => {
-      const sub = relay.sub(filters);
-      sub.on('event', (ev: NostrEvent) => {
-        if (ev?.id && seenIds.current.has(ev.id)) return;
-        if (ev?.id) seenIds.current.add(ev.id);
-        setEvents((prev) => [...prev, ev]);
+      const sub = relay.subscribe(filters, {
+        onevent: (ev: NostrEvent) => {
+          if (ev?.id && seenIds.current.has(ev.id)) return;
+          if (ev?.id) seenIds.current.add(ev.id);
+          setEvents((prev) => [...prev, ev]);
+        },
       });
       subs.push(sub);
     });
     return () => {
-      subs.forEach((sub) => sub.unsub());
+      subs.forEach((sub) => sub.close());
     };
   }, [connections, threadId]);
 
