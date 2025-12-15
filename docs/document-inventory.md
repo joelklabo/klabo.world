@@ -33,6 +33,7 @@ This file is the single source of truth for every Markdown document that should 
 
 ### docs/design
 - `modernization-plan.md` – Warm/playful redesign direction, tokens, typography, and implementation steps.
+- `tokens.md` – Current typography/spacing/radius token defaults and drift notes.
 
 ### docs/architecture
 - `overview.md` – High-level system diagram and stack summary.
