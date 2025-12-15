@@ -115,27 +115,27 @@ export function DashboardForm({ action, submitLabel, dashboard, includeSlugField
           <Label htmlFor="iframeUrl">Iframe URL (for embeds)</Label>
           <Input
             type="url"
-          id="iframeUrl"
-          name="iframeUrl"
-          placeholder="https://portal.azure.com/..."
-          defaultValue={dashboard?.iframeUrl ?? ''}
-          className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          data-testid="dashboard-iframe-url"
-        />
-          <p className="mt-1 text-xs text-gray-500">Provide secure https:// URLs only. Required when “Embed” panel type is selected.</p>
+            id="iframeUrl"
+            name="iframeUrl"
+            placeholder="https://portal.azure.com/..."
+            defaultValue={dashboard?.iframeUrl ?? ''}
+            data-testid="dashboard-iframe-url"
+          />
+          <p className="text-xs text-muted-foreground">
+            Provide secure https:// URLs only. Required when “Embed” panel type is selected.
+          </p>
         </div>
-        <div>
+        <div className="space-y-2">
           <Label htmlFor="externalUrl">External link</Label>
-          <input
+          <Input
             type="url"
-          id="externalUrl"
-          name="externalUrl"
-          placeholder="https://appsmith.com/apps/..."
-          defaultValue={dashboard?.externalUrl ?? ''}
-          className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          data-testid="dashboard-external-url"
-        />
-          <p className="mt-1 text-xs text-gray-500">Used for “Link” panels to launch full dashboards in a new tab.</p>
+            id="externalUrl"
+            name="externalUrl"
+            placeholder="https://appsmith.com/apps/..."
+            defaultValue={dashboard?.externalUrl ?? ''}
+            data-testid="dashboard-external-url"
+          />
+          <p className="text-xs text-muted-foreground">Used for “Link” panels to launch full dashboards in a new tab.</p>
         </div>
       </div>
 
@@ -149,7 +149,9 @@ export function DashboardForm({ action, submitLabel, dashboard, includeSlugField
           defaultValue={dashboard?.kqlQuery ?? ''}
           data-testid="dashboard-kql"
         />
-        <p className="mt-1 text-xs text-gray-500">Required for chart + log panels. We run this via Log Analytics with the configured workspace.</p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          Required for chart + log panels. We run this via Log Analytics with the configured workspace.
+        </p>
       </div>
 
       <div className="space-y-4">

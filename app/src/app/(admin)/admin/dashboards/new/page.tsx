@@ -9,26 +9,21 @@ export default async function NewDashboardPage() {
   await requireAdminSession();
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-sm uppercase tracking-widest text-indigo-500">
-            Dashboards
-          </p>
-          <h1 className="text-3xl font-bold">New dashboard</h1>
-          <p className="text-sm text-gray-500">
-            Link Azure dashboards, graphs, or log searches so they’re one click
-            away.
-          </p>
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">Dashboards</p>
+          <h1 className="text-3xl font-bold text-foreground">New dashboard</h1>
+          <p className="text-sm text-muted-foreground">Link Azure dashboards, graphs, or log searches so they’re one click away.</p>
         </div>
         <Link
           href="/admin/dashboards"
-          className="text-sm font-semibold text-gray-500 hover:text-gray-700"
+          className="text-sm font-semibold text-muted-foreground hover:text-foreground"
         >
           ← Back to dashboards
         </Link>
       </div>
 
-      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="rounded-2xl border border-border/60 bg-card p-6 shadow-[0_20px_45px_rgba(6,10,20,0.35)]">
         <DashboardForm
           action={createDashboardAction}
           submitLabel="Create dashboard"

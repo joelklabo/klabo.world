@@ -50,16 +50,14 @@ export default async function DashboardDetailPage({ params }: PageProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-sm uppercase tracking-widest text-indigo-500">
-            Dashboard
-          </p>
-          <h1 className="text-3xl font-bold" data-testid="dashboard-title">
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">Dashboard</p>
+          <h1 className="text-3xl font-bold text-foreground" data-testid="dashboard-title">
             {dashboard.title}
           </h1>
           <p
-            className="text-sm text-gray-500"
+            className="text-sm text-muted-foreground"
             data-testid="dashboard-summary-text"
           >
             {dashboard.summary}
@@ -67,29 +65,27 @@ export default async function DashboardDetailPage({ params }: PageProps) {
         </div>
         <Link
           href="/admin/dashboards"
-          className="text-sm font-semibold text-gray-500 hover:text-gray-700"
+          className="text-sm font-semibold text-muted-foreground hover:text-foreground"
         >
           ← Back to dashboards
         </Link>
       </div>
 
       {showPanelPreview && (
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-border/60 bg-card p-6 shadow-[0_20px_45px_rgba(6,10,20,0.35)]">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <p className="text-sm uppercase tracking-widest text-indigo-500">
-                Panel preview
-              </p>
-              <h2 className="text-2xl font-semibold">{dashboard.title}</h2>
+              <p className="text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">Panel preview</p>
+              <h2 className="text-2xl font-semibold text-foreground">{dashboard.title}</h2>
               {chartState?.status === "success" && (
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-muted-foreground">
                   Last refreshed{" "}
                   {new Date(chartState.refreshedAt).toUTCString()}
                 </p>
               )}
             </div>
             {dashboard.refreshIntervalSeconds && (
-              <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600">
+              <span className="rounded-full border border-border/60 bg-background/60 px-3 py-1 text-xs font-semibold text-muted-foreground">
                 Refreshes ~ every {dashboard.refreshIntervalSeconds}s
               </span>
             )}
@@ -108,7 +104,7 @@ export default async function DashboardDetailPage({ params }: PageProps) {
                   Unable to load chart data: {chartState.message}
                 </div>
               ) : chartState.status === "empty" ? (
-                <div className="rounded-xl border border-dashed border-gray-200 px-4 py-6 text-center text-sm text-gray-500">
+                <div className="rounded-xl border border-dashed border-border/60 px-4 py-6 text-center text-sm text-muted-foreground">
                   {chartState.reason}
                 </div>
               ) : (
@@ -126,20 +122,18 @@ export default async function DashboardDetailPage({ params }: PageProps) {
                 <iframe
                   src={embedUrl}
                   title={dashboard.title}
-                  className="h-[420px] w-full rounded-2xl border border-gray-100"
+                  className="h-[420px] w-full rounded-2xl border border-border/60"
                   allowFullScreen
                 />
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-muted-foreground">
                   Embedded iframe. Update the URL or switch panel types below if
                   you need to point at a different dashboard.
                 </p>
               </div>
             ) : linkUrl ? (
-              <div className="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-6 text-sm text-indigo-900">
-                <p className="font-semibold text-indigo-900">
-                  External dashboard
-                </p>
-                <p className="mt-2 text-indigo-800">
+              <div className="rounded-2xl border border-primary/20 bg-primary/10 p-6 text-sm text-foreground">
+                <p className="font-semibold text-foreground">External dashboard</p>
+                <p className="mt-2 text-muted-foreground">
                   This panel renders as a CTA button that opens the dashboard in
                   a new tab.
                 </p>
@@ -159,11 +153,9 @@ export default async function DashboardDetailPage({ params }: PageProps) {
       )}
 
       <div className="grid gap-6 lg:grid-cols-3">
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm lg:col-span-2">
-          <h2 className="text-lg font-semibold">Configuration</h2>
-          <p className="text-sm text-gray-500">
-            Update metadata, KQL queries, or embed links.
-          </p>
+        <div className="rounded-2xl border border-border/60 bg-card p-6 shadow-[0_20px_45px_rgba(6,10,20,0.35)] lg:col-span-2">
+          <h2 className="text-lg font-semibold text-foreground">Configuration</h2>
+          <p className="text-sm text-muted-foreground">Update metadata, KQL queries, or embed links.</p>
           <div className="mt-6">
             <DashboardForm
               action={updateDashboardAction}
@@ -174,11 +166,11 @@ export default async function DashboardDetailPage({ params }: PageProps) {
           </div>
           <form
             action={deleteDashboardAction}
-            className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-600 dark:bg-red-950/30"
+            className="mt-6 rounded-2xl border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive"
           >
             <input type="hidden" name="slug" value={dashboard.slug} />
             <p className="mb-3 font-semibold">Danger zone</p>
-            <p className="mb-4 text-red-500">
+            <p className="mb-4 text-destructive/80">
               Deleting a dashboard removes it from Contentlayer and GitHub. This
               cannot be undone.
             </p>
@@ -188,43 +180,39 @@ export default async function DashboardDetailPage({ params }: PageProps) {
           </form>
         </div>
         <div className="space-y-6">
-          <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-            <h3 className="text-sm font-semibold uppercase tracking-widest text-gray-500">
-              Metadata
-            </h3>
-            <dl className="mt-4 space-y-3 text-sm text-gray-700">
+          <div className="rounded-2xl border border-border/60 bg-card p-5 shadow-[0_20px_45px_rgba(6,10,20,0.35)]">
+            <h3 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">Metadata</h3>
+            <dl className="mt-4 space-y-3 text-sm text-muted-foreground">
               <div>
-                <dt className="font-semibold text-gray-900">Slug</dt>
-                <dd className="text-gray-600">{dashboard.slug}</dd>
+                <dt className="font-semibold text-foreground">Slug</dt>
+                <dd>{dashboard.slug}</dd>
               </div>
               <div>
-                <dt className="font-semibold text-gray-900">Panel type</dt>
-                <dd className="text-gray-600 capitalize">
-                  {dashboard.panelType ?? "chart"}
-                </dd>
+                <dt className="font-semibold text-foreground">Panel type</dt>
+                <dd className="capitalize">{dashboard.panelType ?? "chart"}</dd>
               </div>
               <div>
-                <dt className="font-semibold text-gray-900">Tags</dt>
+                <dt className="font-semibold text-foreground">Tags</dt>
                 <dd className="flex flex-wrap gap-2">
                   {dashboard.tags?.map((tag) => (
                     <span
                       key={tag}
-                      className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600"
+                      className="rounded-full border border-border/60 bg-background/60 px-3 py-1 text-xs font-medium text-muted-foreground"
                     >
                       {tag}
                     </span>
-                  )) ?? <span className="text-xs text-gray-400">—</span>}
+                  )) ?? <span className="text-xs text-muted-foreground">—</span>}
                 </dd>
               </div>
               {dashboard.externalUrl && (
                 <div>
-                  <dt className="font-semibold text-gray-900">External link</dt>
+                  <dt className="font-semibold text-foreground">External link</dt>
                   <dd>
                     <a
                       href={dashboard.externalUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-indigo-600 hover:text-indigo-500"
+                      className="text-primary hover:text-primary/80"
                     >
                       {dashboard.externalUrl}
                     </a>
@@ -234,7 +222,7 @@ export default async function DashboardDetailPage({ params }: PageProps) {
             </dl>
           </div>
           {dashboard.iframeUrl && (
-            <div className="rounded-2xl border border-gray-200 bg-white shadow-sm">
+            <div className="rounded-2xl border border-border/60 bg-card shadow-[0_20px_45px_rgba(6,10,20,0.35)]">
               <iframe
                 src={dashboard.iframeUrl}
                 title={dashboard.title}
@@ -243,20 +231,16 @@ export default async function DashboardDetailPage({ params }: PageProps) {
             </div>
           )}
           {dashboard.kqlQuery && (
-            <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-              <h3 className="mb-3 text-sm font-semibold uppercase tracking-widest text-gray-500">
-                KQL query
-              </h3>
+            <div className="rounded-2xl border border-border/60 bg-card p-5 shadow-[0_20px_45px_rgba(6,10,20,0.35)]">
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-widest text-muted-foreground">KQL query</h3>
               <pre className="overflow-x-auto rounded-xl bg-gray-900 p-3 text-xs text-gray-100">
                 <code>{dashboard.kqlQuery}</code>
               </pre>
             </div>
           )}
-          <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-            <h3 className="mb-3 text-sm font-semibold uppercase tracking-widest text-gray-500">
-              Notes
-            </h3>
-            <article className="prose prose-sm max-w-none whitespace-pre-wrap text-gray-700">
+          <div className="rounded-2xl border border-border/60 bg-card p-5 shadow-[0_20px_45px_rgba(6,10,20,0.35)]">
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-widest text-muted-foreground">Notes</h3>
+            <article className="prose prose-sm max-w-none whitespace-pre-wrap text-muted-foreground dark:prose-invert">
               {dashboard.body?.raw ?? "No notes yet."}
             </article>
           </div>
