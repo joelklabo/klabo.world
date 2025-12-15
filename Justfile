@@ -3,36 +3,36 @@ set shell := ["/bin/bash", "-c"]
 # Helper to ensure corepack + pnpm versions match .tool-versions
 bootstrap:
 	mise install
-	corepack enable
-	corepack prepare pnpm@10.22.0 --activate
-	npm config set fund false
-	pnpm install --ignore-scripts
+	mise exec -- corepack enable
+	mise exec -- corepack prepare pnpm@10.22.0 --activate
+	mise exec -- npm config set fund false
+	mise exec -- pnpm install --ignore-scripts
 
 # Start local services + dev server
 alias dev := run-dev
 run-dev:
 	docker compose -f docker-compose.dev.yml up -d db redis azurite
 	./scripts/maybe-open-dev-browser.sh &
-	PNPM_HOME=${PNPM_HOME:-$HOME/.local/share/pnpm} pnpm --filter app dev
+	PNPM_HOME=${PNPM_HOME:-$HOME/.local/share/pnpm} mise exec -- pnpm --filter app dev
 
 # Test suites
 lint:
-	pnpm turbo lint
+	mise exec -- pnpm turbo lint
 
 test:
-	pnpm turbo test
+	mise exec -- pnpm turbo test
 
 watch:
-	pnpm vitest --runInBand --watch
+	mise exec -- pnpm vitest --runInBand --watch
 
 # Reset database to clean state
 db-reset:
 	docker compose -f docker-compose.dev.yml up -d db redis
-	pnpm prisma migrate reset --force
+	mise exec -- pnpm prisma migrate reset --force
 
 # Health check for dev environment
 doctor:
-	pnpm dlx envinfo --system --binaries --browsers
+	mise exec -- pnpm dlx envinfo --system --binaries --browsers
 	docker compose -f docker-compose.dev.yml ps
 
 # Load testing shortcut
@@ -41,7 +41,7 @@ load-test:
 
 # AI agent friendly tmux session stub
 agent-shell:
-	tmux new-session -d -s klaboworld 'pnpm dev' \
-		&& tmux split-window -v 'pnpm vitest --watch' \
+	tmux new-session -d -s klaboworld 'mise exec -- pnpm dev' \
+		&& tmux split-window -v 'mise exec -- pnpm vitest --watch' \
 		&& tmux split-window -h 'docker compose -f docker-compose.dev.yml logs -f' \
 		&& tmux attach -t klaboworld
