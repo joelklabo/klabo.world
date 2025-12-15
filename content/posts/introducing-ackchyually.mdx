@@ -1,0 +1,104 @@
+---
+title: "ackchyually: the “ackchyually…” friend for your CLI"
+summary: "A PTY-first shim that remembers what worked (per repo) and suggests fixes when you get the details wrong."
+date: 2025-12-15
+publishDate: 2025-12-15
+tags: [cli, ai, devtools, go]
+---
+
+![ackchyually](/images/ackchyually-hero.png)
+
+I’ve been building a little tool that I wish existed years ago.
+
+You know the moment when you *mostly* remember a command, but not quite?
+
+- You type `--prety` instead of `--pretty`.
+- You put flags in the wrong place.
+- You reach for a subcommand that *does* exist… just not on *this* tool.
+
+When it’s me at the keyboard, I fix it and move on. When it’s an AI agent running commands, it often turns into a little loop of `--help`, scrolling, and retries.
+
+So I made **ackchyually**.
+
+It’s the “ackchyually…” friend for your CLI: it remembers what worked (per repo) and suggests the right command when you get the details wrong.
+
+If you want the short version: https://ackchyually.sh
+
+## What it does
+
+**ackchyually** sits in front of your existing tools (like `git`, `gh`, etc.) using shims.
+
+When you run a command successfully, it remembers the invocation for *that repo*.
+
+Later, if you typo something and the tool errors, ackchyually can nudge you with something that worked before *here*.
+
+That “here” part matters. The right command in one repo is not always the right command in another.
+
+## Installing it
+
+Install:
+
+```bash
+curl -fsSL https://ackchyually.sh/install.sh | sh
+```
+
+Then install shims for the tools you want it to help with:
+
+```bash
+ackchyually shim install git gh
+```
+
+And persist the shim directory at the front of your `PATH`:
+
+```bash
+ackchyually shim enable
+```
+
+To confirm it’s wired up correctly, use `which`:
+
+```bash
+which git
+# ~/.local/share/ackchyually/shims/git
+```
+
+If `which` prints something else, your shim directory isn’t first in `PATH` yet.
+
+## A quick example
+
+Here’s a very real kind of failure:
+
+```bash
+git log -1 --prety=%s
+```
+
+Git complains. Ackchyually can respond with a “this worked before here” suggestion:
+
+```bash
+git log -1 '--pretty=%s'
+```
+
+It’s not trying to be magic. It’s just giving you a fast path back to something you already proved works in this repo.
+
+## Why I’m excited about it
+
+This started as a tool for *me*, but it’s become even more useful with agents in the loop.
+
+If you’re building an agent that touches your terminal, you want it to:
+
+- stay in PTY mode for interactive commands
+- avoid breaking existing CLI behavior
+- make fewer “let me check the help output again” calls
+
+That’s the whole vibe of ackchyually.
+
+If you try it and it feels helpful (or if it feels annoying in a specific way), I’d love to hear about it:
+
+- Site: https://ackchyually.sh
+- GitHub: https://github.com/joelklabo/ackchyually
+
+## Conclusion
+
+I’m going to keep iterating on this until it feels like a genuinely useful teammate.
+
+If you’ve ever yelled “I *know* this command…”, this tool is for you.
+
