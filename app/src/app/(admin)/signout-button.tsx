@@ -7,7 +7,8 @@ export function SignOutButton() {
   return (
     <Button
       type="button"
-      variant="destructive-outline"
+      variant="outline"
+      size="sm"
       onClick={() => signOut({ callbackUrl: '/admin' })}
     >
       Sign out
