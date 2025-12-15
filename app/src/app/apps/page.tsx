@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { getApps } from "@/lib/apps";
 
 export const metadata: Metadata = {
-  title: "Apps • klabo.world",
+  title: "Apps",
   description:
     "Projects, tools, and experiments built for Bitcoin, Lightning, and Nostr.",
 };

@@ -21,7 +21,7 @@ test.describe('global navigation', () => {
   });
 
   test('search dropdown appears with results', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/posts');
     const search = page.getByTestId('global-search-input');
     await search.click();
     await search.fill('nostr');

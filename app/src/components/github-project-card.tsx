@@ -28,6 +28,8 @@ export function GitHubProjectCard({
 }: GitHubProjectCardProps) {
   const updatedLabel = project.updatedAt ? formatProjectDate(project.updatedAt) : null;
   const topics = showTopics ? project.topics.slice(0, topicLimit) : [];
+  const description = project.description?.trim() || null;
+  const hasStars = project.stargazerCount > 0;
 
   return (
     <a
@@ -54,9 +56,9 @@ export function GitHubProjectCard({
         </span>
       </div>
 
-      <p className="mt-3 text-sm text-muted-foreground line-clamp-3">
-        {project.description ?? "No description provided."}
-      </p>
+      {description ? (
+        <p className="mt-3 text-sm text-muted-foreground line-clamp-3">{description}</p>
+      ) : null}
 
       <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted-foreground">
         {project.primaryLanguage ? (
@@ -71,7 +73,9 @@ export function GitHubProjectCard({
             <span className="font-medium">{project.primaryLanguage.name}</span>
           </span>
         ) : null}
-        <span className="font-medium">★ {project.stargazerCount.toLocaleString()}</span>
+        {hasStars ? (
+          <span className="font-medium">★ {project.stargazerCount.toLocaleString()}</span>
+        ) : null}
         {updatedLabel ? <span>Updated {updatedLabel}</span> : null}
       </div>
 
@@ -90,4 +94,3 @@ export function GitHubProjectCard({
     </a>
   );
 }
-

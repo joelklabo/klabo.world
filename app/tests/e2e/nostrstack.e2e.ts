@@ -5,7 +5,7 @@ test('nostr widgets require a NIP-07 signer', async ({ page }) => {
   await page.goto(`/posts/${slug}`, { waitUntil: 'domcontentloaded' });
 
   const shareButton = page.getByTestId('nostrstack-share');
-  await expect(shareButton).toBeDisabled();
+  await expect(shareButton).toBeEnabled();
   await expect(
     page.getByText('NIP-07 signer not detected. Please enable your Nostr extension to share.'),
   ).toBeVisible();

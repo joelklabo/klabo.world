@@ -14,9 +14,9 @@ export async function generateMetadata({ params }: { params: Params | Promise<Pa
   const tag = decodeURIComponent(rawTag);
   const posts = getPosts().filter((post) => post.tags?.includes(tag));
   if (posts.length === 0) {
-    return { title: 'Tag not found • klabo.world' };
+    return { title: 'Tag not found' };
   }
-  return { title: `${tag} posts • klabo.world` };
+  return { title: `${tag} posts` };
 }
 
 export default async function PostTagPage({ params }: { params: Params | Promise<Params> }) {

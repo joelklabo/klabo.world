@@ -33,15 +33,18 @@ export function GlobalNavigation() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const [error, setError] = useState<string | null>(null);
+  const [isSearching, setIsSearching] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dropdownStyle, setDropdownStyle] = useState<{ left: number; top: number; width: number } | null>(null);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const navRef = useRef<HTMLDivElement>(null);
   const controllerRef = useRef<AbortController | null>(null);
+  const searchRequestSeqRef = useRef(0);
 
   const hasQuery = query.trim().length >= 2;
   const showDropdown = hasQuery && isDropdownOpen;
+  const showInlineSearch = pathname !== '/';
 
   const updateDropdownPosition = () => {
     const el = inputRef.current;
@@ -63,6 +66,7 @@ export function GlobalNavigation() {
       return;
     }
 
+    const requestId = (searchRequestSeqRef.current += 1);
     const controller = new AbortController();
     controllerRef.current?.abort();
     controllerRef.current = controller;
@@ -79,11 +83,14 @@ export function GlobalNavigation() {
         return res.json();
       })
       .then((payload: SearchResult[]) => {
+        if (searchRequestSeqRef.current !== requestId) return;
+        setError(null);
         setResults(payload);
         setHighlightedIndex(-1);
         setIsDropdownOpen(true);
       })
       .catch((err) => {
+        if (searchRequestSeqRef.current !== requestId) return;
         if (err.name !== 'AbortError') {
           setError('Unable to search right now');
           setResults([]);
@@ -91,7 +98,9 @@ export function GlobalNavigation() {
         }
       })
       .finally(() => {
+        if (searchRequestSeqRef.current !== requestId) return;
         controllerRef.current = null;
+        setIsSearching(false);
       });
   }, [hasQuery, query]);
 
@@ -109,16 +118,16 @@ export function GlobalNavigation() {
 
   useEffect(() => {
     const listener = (event: MouseEvent) => {
-    if (!navRef.current?.contains(event.target as Node)) {
-      setIsDropdownOpen(false);
-      setHighlightedIndex(-1);
-    }
-  };
-  document.addEventListener('mousedown', listener);
-  return () => document.removeEventListener('mousedown', listener);
-}, []);
+      if (!navRef.current?.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+        setHighlightedIndex(-1);
+      }
+    };
+    document.addEventListener('mousedown', listener);
+    return () => document.removeEventListener('mousedown', listener);
+  }, []);
 
-const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (!showDropdown && event.key !== 'Enter') {
       return;
     }
@@ -185,8 +194,6 @@ const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
 
   const focusedResult = highlightedIndex >= 0 && results[highlightedIndex];
 
-  const isSearching = hasQuery && results.length === 0 && error === null;
-
   const statusMessage = useMemo(() => {
     if (error) return error;
     if (isSearching) return 'Searching for the right page…';
@@ -241,126 +248,141 @@ const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
           })}
         </nav>
         <div className="flex-1" ref={navRef}>
-          <label
-            className="relative block"
-            role="combobox"
-            aria-expanded={showDropdown}
-            aria-controls="global-search-dropdown"
-          >
-            <span className="sr-only">Search all pages</span>
-            <input
-              ref={inputRef}
-              type="search"
-              name="global-search"
-              className="w-full rounded-full border border-border/50 bg-card/80 px-4 py-2 text-sm text-foreground shadow-[0_16px_32px_rgba(6,10,20,0.45)] placeholder:text-muted-foreground/70 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/40"
-              placeholder="Search posts or apps…"
-              value={query}
-              onChange={(event) => {
-                const nextValue = event.target.value;
-                setQuery(nextValue);
-                const trimmed = nextValue.trim();
-                if (trimmed.length >= 2) {
-                  setIsDropdownOpen(true);
-                } else {
-                  controllerRef.current?.abort();
-                  setResults([]);
-                  setHighlightedIndex(-1);
-                  setError(null);
-                  setIsDropdownOpen(false);
-                }
-              }}
-              onFocus={() => {
-                if (hasQuery) {
-                  setIsDropdownOpen(true);
-                }
-              }}
-              onKeyDown={handleKeyDown}
-              data-testid="global-search-input"
-            />
-            {showDropdown && (
-              <div
-                id="global-search-dropdown"
-                role="listbox"
-                style={dropdownStyle ?? undefined}
-                className="fixed z-[120] max-h-80 w-full max-w-[720px] overflow-auto rounded-2xl border border-border/60 bg-card/95 p-4 shadow-[0_28px_70px_rgba(6,10,20,0.6)] ring-1 ring-border/70 backdrop-blur"
-                aria-live="polite"
-                aria-label="Search suggestions"
-                data-testid="global-search-results"
-              >
-                <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-                  <span>{statusMessage}</span>
-                  <div className="flex flex-wrap items-center gap-1 text-[10px] font-semibold">
-                    <span className="rounded-full border border-border/50 bg-background/70 px-2 py-1 text-[10px] tracking-[0.28em]">↑↓</span>
-                    <span className="rounded-full border border-border/50 bg-background/70 px-2 py-1 text-[10px] tracking-[0.28em]">Enter</span>
-                    <span className="rounded-full border border-border/50 bg-background/70 px-2 py-1 text-[10px] tracking-[0.28em]">Esc</span>
-                    {focusedResult ? (
-                      <span className="ml-2 text-[10px] tracking-[0.25em] text-primary">{TYPE_LABELS[focusedResult.type]}</span>
-                    ) : null}
+          {showInlineSearch ? (
+            <label
+              className="relative block"
+              role="combobox"
+              aria-expanded={showDropdown}
+              aria-controls="global-search-dropdown"
+            >
+              <span className="sr-only">Search all pages</span>
+              <input
+                ref={inputRef}
+                type="search"
+                name="global-search"
+                className="w-full rounded-full border border-border/50 bg-card/80 px-4 py-2 text-sm text-foreground shadow-[0_16px_32px_rgba(6,10,20,0.45)] placeholder:text-muted-foreground/70 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/40"
+                placeholder="Search posts or apps…"
+                value={query}
+                onChange={(event) => {
+                  const nextValue = event.target.value;
+                  setQuery(nextValue);
+                  const trimmed = nextValue.trim();
+                  if (trimmed.length >= 2) {
+                    setError(null);
+                    setIsSearching(true);
+                    setResults([]);
+                    setHighlightedIndex(-1);
+                    setIsDropdownOpen(true);
+                  } else {
+                    controllerRef.current?.abort();
+                    setResults([]);
+                    setHighlightedIndex(-1);
+                    setError(null);
+                    setIsSearching(false);
+                    setIsDropdownOpen(false);
+                  }
+                }}
+                onFocus={() => {
+                  if (hasQuery) {
+                    setIsDropdownOpen(true);
+                  }
+                }}
+                onKeyDown={handleKeyDown}
+                data-testid="global-search-input"
+              />
+              {showDropdown && (
+                <div
+                  id="global-search-dropdown"
+                  role="listbox"
+                  style={dropdownStyle ?? undefined}
+                  className="fixed z-[120] max-h-80 w-full max-w-[720px] overflow-auto rounded-2xl border border-border/60 bg-card/95 p-4 shadow-[0_28px_70px_rgba(6,10,20,0.6)] ring-1 ring-border/70 backdrop-blur"
+                  aria-live="polite"
+                  aria-label="Search suggestions"
+                  data-testid="global-search-results"
+                >
+                  <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+                    <span>{statusMessage}</span>
+                    <div className="flex flex-wrap items-center gap-1 text-[10px] font-semibold">
+                      <span className="rounded-full border border-border/50 bg-background/70 px-2 py-1 text-[10px] tracking-[0.28em]">↑↓</span>
+                      <span className="rounded-full border border-border/50 bg-background/70 px-2 py-1 text-[10px] tracking-[0.28em]">Enter</span>
+                      <span className="rounded-full border border-border/50 bg-background/70 px-2 py-1 text-[10px] tracking-[0.28em]">Esc</span>
+                      {focusedResult ? (
+                        <span className="ml-2 text-[10px] tracking-[0.25em] text-primary">{TYPE_LABELS[focusedResult.type]}</span>
+                      ) : null}
+                    </div>
                   </div>
+                  {isSearching && (
+                    <p className="text-sm text-gray-500">Looking for relevant pages…</p>
+                  )}
+                  {!isSearching && !results.length && !error && (
+                    <p className="text-sm text-muted-foreground">Try another keyword or hit enter to search the site.</p>
+                  )}
+                  {error && (
+                    <p className="text-sm text-destructive">Search is currently unavailable.</p>
+                  )}
+                  <ul className="space-y-2">
+                    {results.map((result, index) => {
+                      const isActive = highlightedIndex === index;
+                      return (
+                        <li
+                          key={`${result.url}-${result.title}`}
+                          role="option"
+                          aria-selected={isActive}
+                          className={`cursor-pointer rounded-xl border px-3 py-2 text-sm transition ${
+                            isActive
+                              ? 'border-primary/40 bg-primary/10'
+                              : 'border-transparent hover:border-border/50 hover:bg-background/40'
+                          }`}
+                          onMouseDown={(event) => {
+                            event.preventDefault();
+                            handleSelectResult(result);
+                          }}
+                          onMouseEnter={() => setHighlightedIndex(index)}
+                          data-testid="global-search-result"
+                        >
+                          <p className="font-semibold text-foreground">{result.title}</p>
+                          <p className="text-[11px] uppercase tracking-[0.25em] text-muted-foreground">{TYPE_LABELS[result.type]}</p>
+                          <p className="text-sm text-muted-foreground line-clamp-2">{result.summary}</p>
+                          {result.tags.length > 0 && (
+                            <div className="mt-2 flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.28em] text-primary">
+                              {result.tags.slice(0, 3).map((tag) => (
+                                <span key={tag} className="rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] text-foreground">
+                                  {tag}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                  {!isSearching && !results.length && (
+                    <Button
+                      type="button"
+                      variant="link"
+                      size="xs"
+                      className="mt-3 justify-start px-0 text-xs font-semibold uppercase tracking-widest"
+                      onMouseDown={(event) => {
+                        event.preventDefault();
+                        router.push(`/search?q=${encodeURIComponent(query.trim())}`);
+                        setIsDropdownOpen(false);
+                      }}
+                    >
+                      View full search results
+                    </Button>
+                  )}
                 </div>
-                {isSearching && (
-                  <p className="text-sm text-gray-500">Looking for relevant pages…</p>
-                )}
-                {!isSearching && !results.length && !error && (
-                  <p className="text-sm text-muted-foreground">Try another keyword or hit enter to search the site.</p>
-                )}
-                {error && (
-                  <p className="text-sm text-destructive">Search is currently unavailable.</p>
-                )}
-                <ul className="space-y-2">
-                  {results.map((result, index) => {
-                    const isActive = highlightedIndex === index;
-                    return (
-                      <li
-                        key={`${result.url}-${result.title}`}
-                        role="option"
-                        aria-selected={isActive}
-                        className={`cursor-pointer rounded-xl border px-3 py-2 text-sm transition ${
-                          isActive
-                            ? 'border-primary/40 bg-primary/10'
-                            : 'border-transparent hover:border-border/50 hover:bg-background/40'
-                        }`}
-                        onMouseDown={(event) => {
-                          event.preventDefault();
-                          handleSelectResult(result);
-                        }}
-                        onMouseEnter={() => setHighlightedIndex(index)}
-                        data-testid="global-search-result"
-                      >
-                        <p className="font-semibold text-foreground">{result.title}</p>
-                        <p className="text-[11px] uppercase tracking-[0.25em] text-muted-foreground">{TYPE_LABELS[result.type]}</p>
-                        <p className="text-sm text-muted-foreground line-clamp-2">{result.summary}</p>
-                        {result.tags.length > 0 && (
-                          <div className="mt-2 flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.28em] text-primary">
-                            {result.tags.slice(0, 3).map((tag) => (
-                              <span key={tag} className="rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] text-foreground">
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </li>
-                    );
-                  })}
-                </ul>
-                {!results.length && (
-                  <Button
-                    type="button"
-                    variant="link"
-                    size="xs"
-                    className="mt-3 justify-start px-0 text-xs font-semibold uppercase tracking-widest"
-                    onMouseDown={(event) => {
-                      event.preventDefault();
-                      router.push(`/search?q=${encodeURIComponent(query.trim())}`);
-                      setIsDropdownOpen(false);
-                    }}
-                  >
-                    View full search results
-                  </Button>
-                )}
-              </div>
-            )}
-          </label>
+              )}
+            </label>
+          ) : (
+            <div className="flex justify-end">
+              <Button asChild variant="outline" size="sm" className="w-full lg:w-auto">
+                <Link href="/search" data-testid="global-search-link">
+                  Search
+                </Link>
+              </Button>
+            </div>
+          )}
         </div>
       </div>
       <div id="global-mobile-nav">{mobileNavigation}</div>

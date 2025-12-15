@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { getPostTagCounts } from "@/lib/posts";
 
 export const metadata: Metadata = {
-  title: "Post tags • klabo.world",
+  title: "Post tags",
 };
 
 export default function PostTagsPage() {

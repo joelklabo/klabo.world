@@ -10,7 +10,7 @@ type SearchParams = {
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Search • klabo.world',
+  title: 'Search',
   description: 'Search posts and apps.',
 };
 

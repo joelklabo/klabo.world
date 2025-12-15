@@ -18,10 +18,10 @@ export async function generateMetadata({
   const resolvedParams = await Promise.resolve(params);
   const app = getAppBySlug(resolvedParams.slug);
   if (!app) {
-    return { title: "App not found • klabo.world" };
+    return { title: "App not found" };
   }
   return {
-    title: `${app.name} • klabo.world`,
+    title: app.name,
     description: app.fullDescription,
   };
 }

@@ -41,7 +41,7 @@ export async function generateMetadata({ params }: { params: Params | Promise<Pa
   const publishedTime = post.publishDate ?? post.date;
 
   return {
-    title: `${post.title} • klabo.world`,
+    title: post.title,
     description: post.summary,
     alternates: { canonical: canonicalPath },
     openGraph: {

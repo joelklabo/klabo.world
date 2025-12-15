@@ -48,7 +48,7 @@ export default async function Home() {
 
       <section className="py-14">
         <div className="mx-auto max-w-6xl space-y-10 px-6">
-          <div className="grid gap-12 lg:grid-cols-2">
+          <div className="flex flex-col gap-12">
             <section className="space-y-6" data-testid="home-section-writing">
               <div className="flex items-end justify-between gap-4">
                 <div className="space-y-2">

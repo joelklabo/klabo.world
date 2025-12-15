@@ -10,7 +10,7 @@ import { GitHubProjectCard } from "@/components/github-project-card";
 import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
-  title: "Projects • klabo.world",
+  title: "Projects",
   description: "Recent GitHub projects and experiments by klabo.world.",
 };
 

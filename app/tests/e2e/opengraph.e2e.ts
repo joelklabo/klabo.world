@@ -23,6 +23,8 @@ test.describe('open graph metadata', () => {
     const slug = 'agentically-engineering-past-procrastination';
     await page.goto(`/posts/${slug}`, { waitUntil: 'domcontentloaded' });
 
+    await expect(page).toHaveTitle('Agentically Engineering Past Procrastination • klabo.world');
+
     const ogTitle = page.locator('meta[property="og:title"]');
     await expect(ogTitle).toHaveAttribute('content', /Agentically Engineering Past Procrastination/);
 
@@ -37,4 +39,3 @@ test.describe('open graph metadata', () => {
     expect(res.headers()['content-type']).toMatch(/image\//);
   });
 });
-

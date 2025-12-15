@@ -10,7 +10,8 @@ test.describe('nostr share', () => {
     await expect(share).toBeEnabled();
 
     await share.click();
-    await expect(page.getByText('NIP-07 signer required to share.')).toBeVisible();
+    await expect(
+      page.getByText('NIP-07 signer not detected. Please enable your Nostr extension to share.'),
+    ).toBeVisible();
   });
 });
-

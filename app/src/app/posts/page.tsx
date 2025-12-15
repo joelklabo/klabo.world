@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import { getPosts } from '@/lib/posts';
 
 export const metadata: Metadata = {
-  title: 'Posts • klabo.world',
+  title: 'Posts',
 };
 
 export default function PostsIndex() {
