@@ -94,8 +94,15 @@ test('nostr share publishes a real note to relays (requires NOSTR_E2E_REAL=1)', 
   const shareButton = page.getByTestId('nostrstack-share');
   await expect(shareButton).toBeEnabled({ timeout: 30_000 });
 
+  const shareCount = page.getByTestId('nostrstack-share-count');
+  await expect(shareCount).toBeVisible({ timeout: 30_000 });
+  const beforeShareCount = Number((await shareCount.textContent())?.trim() ?? '0') || 0;
+
   await shareButton.click();
   await expect(page.getByText('Shared to Nostr.')).toBeVisible({ timeout: 30_000 });
+  await expect
+    .poll(async () => Number((await shareCount.textContent())?.trim() ?? '0') || 0, { timeout: 30_000 })
+    .toBeGreaterThanOrEqual(beforeShareCount + 1);
 
   const { eventId } = await page.evaluate<{ eventId?: string }>(() => {
     const w = window as unknown as { __nostr_test_lastSignedEvent?: { id?: string } };

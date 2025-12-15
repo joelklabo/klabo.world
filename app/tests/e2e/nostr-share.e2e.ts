@@ -5,6 +5,9 @@ test.describe('nostr share', () => {
     const slug = 'agentically-engineering-past-procrastination';
     await page.goto(`/posts/${slug}`, { waitUntil: 'domcontentloaded' });
 
+    await expect(page.getByTestId('nostrstack-share-activity')).toBeVisible();
+    await expect(page.getByTestId('nostrstack-share-count')).toHaveText('0');
+
     const share = page.getByTestId('nostrstack-share');
     await expect(share).toBeVisible();
     await expect(share).toBeEnabled();

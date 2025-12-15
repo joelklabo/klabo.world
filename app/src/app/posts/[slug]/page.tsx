@@ -5,7 +5,7 @@ import { getPostBySlug, getPosts } from '@/lib/posts';
 import { MDXContent } from '@/components/mdx-content';
 import { env } from '@/lib/env';
 import { getFlag } from '@/lib/flags';
-import { NostrstackActionBar, NostrstackComments } from '@/components/nostrstack-widgets';
+import { NostrstackActionBar, NostrstackComments, NostrstackOmnoster } from '@/components/nostrstack-widgets';
 
 type Params = { slug: string };
 
@@ -180,32 +180,38 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
             </div>
           </section>
           <aside className="space-y-6">
-            <div className="sticky top-20 space-y-4 rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl shadow-black/50">
-              <h2 className="text-xs font-semibold uppercase tracking-[0.35em] text-slate-400">Post Details</h2>
-              <p className="text-sm text-slate-300">{post.summary}</p>
-              <dl className="space-y-3 text-xs uppercase tracking-[0.35em] text-slate-400">
+            <div className="sticky top-20 space-y-6">
+              <div className="space-y-4 rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl shadow-black/50">
+                <h2 className="text-xs font-semibold uppercase tracking-[0.35em] text-slate-400">Post Details</h2>
+                <p className="text-sm text-slate-300">{post.summary}</p>
+                <dl className="space-y-3 text-xs uppercase tracking-[0.35em] text-slate-400">
+                  <div>
+                    <dt className="text-[10px] text-slate-500">Published</dt>
+                    <dd className="text-sm text-white">{new Date(post.date).toLocaleDateString()}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-[10px] text-slate-500">Reading time</dt>
+                    <dd className="text-sm text-white">{readingTime} mins</dd>
+                  </div>
+                </dl>
                 <div>
-                  <dt className="text-[10px] text-slate-500">Published</dt>
-                  <dd className="text-sm text-white">{new Date(post.date).toLocaleDateString()}</dd>
-                </div>
-                <div>
-                  <dt className="text-[10px] text-slate-500">Reading time</dt>
-                  <dd className="text-sm text-white">{readingTime} mins</dd>
-                </div>
-              </dl>
-              <div>
-                <p className="text-[11px] uppercase tracking-[0.35em] text-slate-500">Quick tags</p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {post.tags?.map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-full border border-amber-200/30 bg-amber-50/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.35em] text-amber-100"
-                    >
-                      {tag}
-                    </span>
-                  ))}
+                  <p className="text-[11px] uppercase tracking-[0.35em] text-slate-500">Quick tags</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {post.tags?.map((tag) => (
+                      <span
+                        key={tag}
+                        className="rounded-full border border-amber-200/30 bg-amber-50/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.35em] text-amber-100"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
+
+              {widgetsEnabled && (
+                <NostrstackOmnoster slug={post.slug} canonicalUrl={canonicalUrl} relays={nostrRelays} />
+              )}
             </div>
           </aside>
         </div>
