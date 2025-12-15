@@ -1,72 +1,31 @@
-# Security Migration Guide
+# Security Migration Notes (Next.js)
 
-## ✅ Migration Complete!
+This repository has migrated from the legacy Swift/Vapor stack to a Next.js + Prisma + NextAuth stack. These notes summarize the current security-relevant behavior and what to configure in production.
 
-## Overview
-Your admin authentication has been upgraded from HTTP Basic Auth to a more secure session-based system with the following improvements:
+## Admin authentication
 
-### New Security Features
-1. **BCrypt Password Hashing** - Passwords are now hashed instead of stored in plain text
-2. **Session-Based Authentication** - Secure session cookies replace Basic Auth
-3. **Rate Limiting** - Progressive delays prevent brute force attacks
-4. **Password Change Feature** - Admin can update password through the web interface
-5. **Secure Logout** - Proper session termination
+- Admin auth uses NextAuth Credentials provider.
+- The admin user record is stored in the database.
+- `ADMIN_PASSWORD` can be provided as plaintext or bcrypt hash; plaintext is hashed before storage.
 
-## Migration Steps
+See `docs/azure/authentication-upgrade.md` for details.
 
-### 1. Generate Your Hashed Password
-Run the following command to generate a BCrypt hash of your desired password:
+## Production configuration checklist
 
-```bash
-./hash-password.sh
-```
+- [ ] `NEXTAUTH_SECRET` set to a strong random value
+- [ ] `NEXTAUTH_URL` set to the production origin (e.g. `https://klabo.world`)
+- [ ] `ADMIN_EMAIL` / `ADMIN_PASSWORD` set (treat as secrets)
+- [ ] `DATABASE_URL` points at a persistent database (SQLite file under `/home/...` or Postgres)
+- [ ] `UPLOADS_DIR` points at persistent storage (`/home/site/wwwroot/uploads` on Azure)
 
-Or directly:
-```bash
-swift run KlaboWorld hash-password
-```
+## Observability credentials
 
-Enter your desired password when prompted (minimum 8 characters).
+If you enable admin dashboards backed by Log Analytics / App Insights APIs, store credentials as secrets:
+- `APPLICATIONINSIGHTS_CONNECTION_STRING`
+- Either `LOG_ANALYTICS_WORKSPACE_ID` + `LOG_ANALYTICS_SHARED_KEY` or `APPINSIGHTS_APP_ID` + `APPINSIGHTS_API_KEY`
 
-### 2. Update Environment Variable
-Copy the generated hash and update your `ADMIN_PASSWORD` environment variable:
+## Recommended hardening (follow-up)
 
-```bash
-export ADMIN_PASSWORD="$2b$12$..."  # Use your generated hash
-```
-
-Or in your `.env` file:
-```
-ADMIN_PASSWORD="$2b$12$..."
-```
-
-### 3. Restart Application
-Restart your application for the changes to take effect.
-
-### 4. Access Admin Area
-- Navigate to `/admin/login`
-- Username: `admin` (hardcoded)
-- Password: Your chosen password (not the hash)
-
-## Security Improvements
-
-### Rate Limiting
-- Failed login attempts trigger progressive delays: 1s, 2s, 4s, 8s, 16s, 32s, then 60s max
-- Delays reset after successful login
-- Tracked by IP address
-
-### Session Management
-- Sessions expire after 2 hours (regular) or 30 days (remember me)
-- Secure, HttpOnly cookies prevent XSS attacks
-- Sessions stored in memory (cleared on restart)
-
-### Password Updates
-- Access "Change Password" from admin dashboard
-- Requires current password verification
-- Generates new hash to update environment variable
-
-## Notes
-- The system still uses a single admin user
-- Username remains hardcoded as "admin"
-- Consider implementing database-backed sessions for production
-- CSRF protection is prepared but not fully implemented yet
+- Put secrets in Key Vault (or at minimum App Service Configuration).
+- Restrict access to `/admin` via Entra ID / IP allowlists if needed.
+- Add explicit rate limiting around admin login if brute-force risk becomes material.
