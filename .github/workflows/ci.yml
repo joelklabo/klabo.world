@@ -79,11 +79,11 @@ jobs:
       - name: Playwright smoke tests (headed via Xvfb)
         run: |
           BASE_URL="http://127.0.0.1:3000"
-          NEXTAUTH_URL="$BASE_URL" SITE_URL="$BASE_URL" pnpm --filter app start --hostname 127.0.0.1 --port 3000 > /tmp/next.log 2>&1 &
+          FEATURE_FLAGS_JSON='{"nostrstack-post-widgets":true}' NOSTRSTACK_BASE_URL=mock NOSTRSTACK_HOST=mock NOSTRSTACK_RELAYS=mock NEXTAUTH_URL="$BASE_URL" SITE_URL="$BASE_URL" pnpm --filter app start --hostname 127.0.0.1 --port 3000 > /tmp/next.log 2>&1 &
           NEXT_PID=$!
           trap "kill $NEXT_PID" EXIT
           npx wait-on "$BASE_URL"
-          PLAYWRIGHT_BASE_URL="$BASE_URL" NEXTAUTH_URL="$BASE_URL" SITE_URL="$BASE_URL" pnpm --filter app exec playwright test --reporter=dot
+          PLAYWRIGHT_BASE_URL="$BASE_URL" FEATURE_FLAGS_JSON='{"nostrstack-post-widgets":true}' NOSTRSTACK_BASE_URL=mock NOSTRSTACK_HOST=mock NOSTRSTACK_RELAYS=mock NEXTAUTH_URL="$BASE_URL" SITE_URL="$BASE_URL" pnpm --filter app exec playwright test --reporter=dot
       - name: Upload Playwright artifacts
         if: failure()
         uses: actions/upload-artifact@v4
