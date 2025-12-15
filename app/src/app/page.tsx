@@ -31,7 +31,12 @@ export default async function Home() {
             </p>
             <div className="flex flex-wrap items-center gap-3">
               <Button asChild size="lg">
-                <Link href="/posts" data-testid="home-cta-writing">
+                <Link
+                  href="/posts"
+                  data-testid="home-cta-writing"
+                  data-analytics-event="ui.home.cta"
+                  data-analytics-label="writing"
+                >
                   Read the writing
                 </Link>
               </Button>
@@ -41,7 +46,12 @@ export default async function Home() {
                 size="lg"
                 className="px-2 text-sm font-semibold uppercase tracking-[0.24em] text-muted-foreground hover:text-primary"
               >
-                <Link href="/projects" data-testid="home-cta-projects">
+                <Link
+                  href="/projects"
+                  data-testid="home-cta-projects"
+                  data-analytics-event="ui.home.cta"
+                  data-analytics-label="projects"
+                >
                   Explore projects →
                 </Link>
               </Button>
@@ -69,7 +79,12 @@ export default async function Home() {
                   size="sm"
                   className="px-0 text-xs font-semibold uppercase tracking-[0.28em]"
                 >
-                  <Link href="/posts" data-testid="home-writing-all">
+                  <Link
+                    href="/posts"
+                    data-testid="home-writing-all"
+                    data-analytics-event="ui.home.section_link"
+                    data-analytics-label="all_posts"
+                  >
                     All posts →
                   </Link>
                 </Button>
@@ -82,6 +97,8 @@ export default async function Home() {
                       key={post._id}
                       href={`/posts/${post.slug}` as Route}
                       data-testid="home-writing-post"
+                      data-analytics-event="ui.home.latest_post"
+                      data-analytics-label={post.slug}
                       className="group block px-5 py-4 transition hover:bg-background/15"
                     >
                       <div className="flex items-baseline justify-between gap-4">
@@ -120,7 +137,12 @@ export default async function Home() {
                   size="sm"
                   className="px-0 text-xs font-semibold uppercase tracking-[0.28em]"
                 >
-                  <Link href="/projects" data-testid="home-projects-all">
+                  <Link
+                    href="/projects"
+                    data-testid="home-projects-all"
+                    data-analytics-event="ui.home.section_link"
+                    data-analytics-label="all_projects"
+                  >
                     All projects →
                   </Link>
                 </Button>

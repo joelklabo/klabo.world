@@ -81,6 +81,9 @@ export function GitHubProjectsShowcase({
           target="_blank"
           rel="noreferrer"
           data-testid={featuredTestId}
+          data-analytics-event="ui.home.github_project"
+          data-analytics-label={featured.fullName}
+          data-analytics-featured="true"
           className="group relative block overflow-hidden p-6 transition hover:bg-background/15 focus:outline-none md:p-7"
         >
           <div
@@ -189,6 +192,8 @@ export function GitHubProjectsShowcase({
                 target="_blank"
                 rel="noreferrer"
                 data-testid={listItemTestId}
+                data-analytics-event="ui.home.github_project"
+                data-analytics-label={project.fullName}
                 className="group block px-5 py-4 transition hover:bg-background/15 focus:outline-none"
               >
                 <div className="flex items-start justify-between gap-4">
