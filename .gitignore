@@ -27,6 +27,7 @@ node_modules/
 .turbo/
 .contentlayer/
 app/.contentlayer/
+packages/scripts/dist/
 app/data/*
 !app/data/.gitkeep
 !app/data/github/
