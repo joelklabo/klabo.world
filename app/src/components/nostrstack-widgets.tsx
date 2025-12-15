@@ -110,8 +110,14 @@ function isRelayConnector(value: unknown): value is RelayConnector {
   return typeof (value as { connect?: unknown }).connect === 'function';
 }
 
-async function connectRelays(urls: string[]): Promise<Relay[]> {
-  if (urls.includes('mock')) return [];
+type RelayConnectResult = {
+  connections: Relay[];
+  attempted: number;
+  failed: number;
+};
+
+async function connectRelays(urls: string[]): Promise<RelayConnectResult> {
+  if (urls.includes('mock')) return { connections: [], attempted: 0, failed: 0 };
   let connector: RelayConnector | null = null;
   try {
     const mod = await import('nostr-tools');
@@ -119,10 +125,11 @@ async function connectRelays(urls: string[]): Promise<Relay[]> {
     connector = isRelayConnector(candidate) ? candidate : null;
   } catch (err) {
     console.warn('nostr-tools not available, skipping relay connections', err);
-    return [];
+    return { connections: [], attempted: urls.length, failed: urls.length };
   }
-  if (!connector) return [];
+  if (!connector) return { connections: [], attempted: urls.length, failed: urls.length };
 
+  const attempted = urls.length;
   const results = await Promise.allSettled(
     urls.map(async (url) => {
       const relay = await connector.connect(url, { enablePing: true, enableReconnect: true });
@@ -130,22 +137,41 @@ async function connectRelays(urls: string[]): Promise<Relay[]> {
     }),
   );
 
-  return results
+  const connections = results
     .filter((result): result is PromiseFulfilledResult<Relay> => result.status === 'fulfilled')
     .map((result) => result.value);
+
+  return { connections, attempted, failed: attempted - connections.length };
 }
 
 function useRelayConnections(relays: string[]) {
   const relayKey = useMemo(() => relays.join('|'), [relays]);
+  const [retryIndex, setRetryIndex] = useState(0);
   const [relayState, setRelayState] = useState<{
     key: string;
+    attempt: number;
     connections: Relay[];
-    ready: boolean;
-  }>(() => ({ key: relayKey, connections: [], ready: false }));
+    attempted: number;
+    failed: number;
+    status: 'connecting' | 'ready' | 'failed' | 'mock';
+  }>(() => ({
+    key: relayKey,
+    attempt: 0,
+    connections: [],
+    attempted: 0,
+    failed: 0,
+    status: relays.includes('mock') ? 'mock' : 'connecting',
+  }));
 
-  const isCurrent = relayState.key === relayKey;
+  const isCurrent = relayState.key === relayKey && relayState.attempt === retryIndex;
   const connections = isCurrent ? relayState.connections : [];
-  const ready = isCurrent ? relayState.ready : false;
+  const attempted = isCurrent ? relayState.attempted : 0;
+  const failed = isCurrent ? relayState.failed : 0;
+  const status = isCurrent ? relayState.status : relays.includes('mock') ? 'mock' : 'connecting';
+
+  const retry = useCallback(() => {
+    setRetryIndex((value) => value + 1);
+  }, []);
 
   useEffect(() => {
     let closed = false;
@@ -153,20 +179,28 @@ function useRelayConnections(relays: string[]) {
     (async () => {
       const next = await connectRelays(relays);
       if (closed) {
-        next.forEach((relay) => relay.close());
+        next.connections.forEach((relay) => relay.close());
         return;
       }
-      active = next;
-      setRelayState({ key: relayKey, connections: next, ready: true });
+      active = next.connections;
+      const status = next.attempted === 0 ? 'mock' : next.connections.length ? 'ready' : 'failed';
+      setRelayState({
+        key: relayKey,
+        attempt: retryIndex,
+        connections: next.connections,
+        attempted: next.attempted,
+        failed: next.failed,
+        status,
+      });
     })();
 
     return () => {
       closed = true;
       active.forEach((relay) => relay.close());
     };
-  }, [relayKey, relays]);
+  }, [relayKey, relays, retryIndex]);
 
-  return { connections, ready } as const;
+  return { connections, attempted, failed, status, retry } as const;
 }
 
 async function publishToRelays(relays: Relay[], event: NostrEvent) {
@@ -233,7 +267,7 @@ export function NostrstackActionBar({
   const [shareError, setShareError] = useState<string | null>(null);
   const [shareWarning, setShareWarning] = useState<string | null>(null);
   const relayList = useMemo(() => (relays && relays.length ? relays : DEFAULT_RELAYS), [relays]);
-  const { connections, ready } = useRelayConnections(relayList);
+  const { connections, attempted, failed, status, retry } = useRelayConnections(relayList);
   const lightning = useMemo(() => parseLightningAddress(lightningAddress ?? undefined), [lightningAddress]);
   const copyInvoice = useCallback(() => copyText(invoice), [invoice]);
   const mockMode = useMemo(() => isMockConfig({ baseUrl, host }), [baseUrl, host]);
@@ -346,15 +380,37 @@ export function NostrstackActionBar({
           type="button"
           data-testid="nostrstack-share"
           onClick={handleShare}
-          disabled={shareState === 'posting' || !signerAvailable || !ready || !connections.length}
+          disabled={
+            shareState === 'posting' ||
+            !signerAvailable ||
+            status === 'connecting' ||
+            (status !== 'mock' && !connections.length)
+          }
           className="rounded-full border border-white/20 px-4 py-2 text-sm font-semibold text-white transition hover:border-amber-200/70 hover:text-amber-100 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {shareState === 'posting' ? 'Posting…' : 'Share to Nostr'}
         </button>
-        {ready ? (
-          <span className="text-xs uppercase tracking-[0.25em] text-amber-100/80">Relays ready</span>
-        ) : (
+        {status === 'connecting' ? (
           <span className="text-xs uppercase tracking-[0.25em] text-slate-400">Connecting relays…</span>
+        ) : status === 'failed' ? (
+          <span className="inline-flex items-center gap-3 text-xs uppercase tracking-[0.25em] text-rose-200">
+            No relays connected
+            <button
+              type="button"
+              onClick={retry}
+              className="rounded-full border border-rose-200/30 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.25em] text-rose-100 hover:bg-rose-100/10"
+            >
+              Retry
+            </button>
+          </span>
+        ) : status === 'mock' ? (
+          <span className="text-xs uppercase tracking-[0.25em] text-slate-400">Relays: mock</span>
+        ) : failed > 0 ? (
+          <span className="text-xs uppercase tracking-[0.25em] text-amber-100/80">
+            Relays {connections.length}/{attempted}
+          </span>
+        ) : (
+          <span className="text-xs uppercase tracking-[0.25em] text-amber-100/80">Relays ready</span>
         )}
       </div>
       {!signerAvailable && (
@@ -397,7 +453,7 @@ export function NostrstackComments({ threadId, relays, canonicalUrl }: CommentsP
   const [signerState, setSignerState] = useState<NostrSignerState>({ hasSigner: false });
   const relayList = useMemo(() => (relays && relays.length ? relays : DEFAULT_RELAYS), [relays]);
   const isMockMode = relayList.includes('mock');
-  const { connections, ready } = useRelayConnections(relayList);
+  const { connections, status, retry } = useRelayConnections(relayList);
   const seenIds = useRef<Set<string>>(new Set());
 
   useEffect(() => {
@@ -471,7 +527,20 @@ export function NostrstackComments({ threadId, relays, canonicalUrl }: CommentsP
       <p className="text-sm text-slate-300">
         Relays: {relayList.join(', ')}. NIP-07 signer required to post.
       </p>
-      {!ready && <p className="text-sm text-slate-400">Connecting to relays…</p>}
+      {status === 'connecting' ? (
+        <p className="text-sm text-slate-400">Connecting to relays…</p>
+      ) : status === 'failed' ? (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-rose-200/20 bg-rose-200/5 p-3 text-sm text-rose-100">
+          <p>No relays connected. Comments may be unavailable.</p>
+          <button
+            type="button"
+            onClick={retry}
+            className="rounded-full border border-rose-200/30 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.25em] text-rose-100 hover:bg-rose-100/10"
+          >
+            Retry
+          </button>
+        </div>
+      ) : null}
       <form className="space-y-3" onSubmit={handleSubmit}>
         <textarea
           value={content}
@@ -483,7 +552,7 @@ export function NostrstackComments({ threadId, relays, canonicalUrl }: CommentsP
         <div className="flex items-center justify-between text-sm text-slate-400">
           <button
             type="submit"
-            disabled={posting || (!connections.length && !isMockMode) || !signerState.hasSigner}
+            disabled={posting || (status === 'connecting' && !isMockMode) || (!connections.length && !isMockMode) || !signerState.hasSigner}
             data-testid="nostrstack-comment-submit"
             className="rounded-full bg-white/10 px-4 py-2 font-semibold text-white transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-60"
           >
@@ -499,7 +568,9 @@ export function NostrstackComments({ threadId, relays, canonicalUrl }: CommentsP
       )}
       {error && <p className="text-sm text-rose-200">{error}</p>}
       <div className="space-y-3">
-        {events.length === 0 && ready && <p className="text-sm text-slate-300">No comments yet.</p>}
+        {events.length === 0 && status !== 'connecting' && (
+          <p className="text-sm text-slate-300">No comments yet.</p>
+        )}
         {events
           .slice()
           .reverse()
