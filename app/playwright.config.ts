@@ -3,6 +3,11 @@ import { defineConfig, devices } from '@playwright/test';
 const defaultPort = Number(process.env.PLAYWRIGHT_PORT ?? 3100);
 const defaultBaseUrl = process.env.PLAYWRIGHT_BASE_URL ?? `http://127.0.0.1:${defaultPort}`;
 const defaultDatabaseUrl = process.env.PLAYWRIGHT_DATABASE_URL ?? 'file:../data/app.db';
+const defaultWorkers = process.env.PLAYWRIGHT_WORKERS
+  ? Number(process.env.PLAYWRIGHT_WORKERS)
+  : process.env.PLAYWRIGHT_BASE_URL
+    ? undefined
+    : 1;
 
 // Always force the SQLite-backed URL when Playwright owns the dev server so we
 // don't accidentally reuse a developer's Postgres/Redis stack.
@@ -14,6 +19,7 @@ export default defineConfig({
   testDir: './tests/e2e',
   testMatch: '**/*.e2e.ts',
   timeout: 60_000,
+  workers: defaultWorkers,
   fullyParallel: true,
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? [['github'], ['list']] : 'list',

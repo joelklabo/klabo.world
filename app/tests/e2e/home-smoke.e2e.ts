@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-const routes = ['/', '/posts', '/apps'];
+const routes = ['/', '/posts', '/projects', '/apps'];
 
 test.describe('public smoke', () => {
   for (const route of routes) {

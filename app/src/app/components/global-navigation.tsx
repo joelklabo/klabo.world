@@ -8,10 +8,8 @@ import { Button } from '@/components/ui/button';
 
 const NAV_ITEMS = [
   { label: 'Home', href: '/' },
-  { label: 'Posts', href: '/posts' },
-  { label: 'Apps', href: '/apps' },
-  { label: 'Dashboards', href: '/admin/dashboards' },
-  { label: 'Admin', href: '/admin' },
+  { label: 'Writing', href: '/posts' },
+  { label: 'Projects', href: '/projects' },
 ];
 
 const TYPE_LABELS: Record<'post' | 'app', string> = {
@@ -171,7 +169,7 @@ const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
                 href={item.href as Route}
                 onClick={() => setMobileMenuOpen(false)}
                 className={`block rounded-lg px-3 py-2 text-sm font-semibold transition ${
-                  pathname === item.href
+                  pathname === item.href || (item.href !== '/' && pathname.startsWith(`${item.href}/`))
                     ? 'bg-primary/10 text-primary'
                     : 'text-muted-foreground hover:text-foreground hover:bg-background/50'
                 }`}
@@ -225,7 +223,9 @@ const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
         </div>
         <nav className="hidden items-center gap-5 text-sm font-semibold text-muted-foreground lg:flex" aria-label="Primary navigation">
           {NAV_ITEMS.map((item) => {
-            const isActive = pathname === item.href;
+            const isActive =
+              pathname === item.href ||
+              (item.href !== '/' && pathname.startsWith(`${item.href}/`));
             return (
               <Link
                 key={item.href}

@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test('nostr widgets require a NIP-07 signer', async ({ page }) => {
   const slug = 'add-tipping-to-your-site-with-LNBits';
-  await page.goto(`/posts/${slug}`);
+  await page.goto(`/posts/${slug}`, { waitUntil: 'domcontentloaded' });
 
   const shareButton = page.getByTestId('nostrstack-share');
   await expect(shareButton).toBeDisabled();

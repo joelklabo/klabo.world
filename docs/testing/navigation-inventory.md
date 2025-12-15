@@ -4,9 +4,8 @@ Authoritative map for nav-related coverage. Keep this in sync when adding or ren
 
 ## Public navigation (header)
 - `global-nav-home` → `/`
-- `global-nav-posts` → `/posts`
-- `global-nav-apps` → `/apps`
-- `global-nav-dashboards` → `/admin/dashboards`
+- `global-nav-writing` → `/posts`
+- `global-nav-projects` → `/projects`
 - `global-search-input` opens results container `global-search-results` (minimum query length handled server-side).
 
 ## Admin navigation (header, authenticated)

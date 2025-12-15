@@ -27,8 +27,10 @@ node_modules/
 .turbo/
 .contentlayer/
 app/.contentlayer/
-app/data/
+app/data/*
 !app/data/.gitkeep
+!app/data/github/
+!app/data/github/**
 pnpm-debug.log
 .next/
 app/.next/

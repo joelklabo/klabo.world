@@ -1,251 +1,177 @@
-import Link from 'next/link';
-import type { Route } from 'next';
-import { getApps } from '@/lib/apps';
-import { getDashboards } from '@/lib/dashboards';
-import { getPosts, getRecentPosts } from '@/lib/posts';
-import { getPostTagCloud } from '@/lib/tagCloud';
-import { Button } from '@/components/ui/button';
+import Link from "next/link";
+import type { Route } from "next";
+import { env } from "@/lib/env";
+import { getRecentPosts } from "@/lib/posts";
+import { getFeaturedGitHubProjects } from "@/lib/github-projects";
+import { GitHubProjectCard } from "@/components/github-project-card";
+import { Button } from "@/components/ui/button";
 
-const heroLinks = [
-  { href: '/posts', label: 'Read the latest' },
-  { href: '/admin', label: 'Open admin' },
-  { href: '/admin/dashboards', label: 'View dashboards' },
-];
+export const revalidate = 60 * 60;
 
-const heroHighlights = [
-  { label: 'Articles', emoji: '🛰️', description: 'Deep dives, tutorials, and dispatch notes.', link: '/posts' },
-  { label: 'Apps', emoji: '⚡', description: 'Experimental tooling built for Bitcoin + Lightning.', link: '/apps' },
-  { label: 'Dashboards', emoji: '📈', description: 'Operational KQL dashboards for telemetry.', link: '/admin/dashboards' },
-];
-
-export default function Home() {
+export default async function Home() {
   const recentPosts = getRecentPosts(3);
-  const apps = getApps();
-  const dashboards = getDashboards();
-  const tagCloud = getPostTagCloud(15);
-
-  const stats = [
-    { label: 'Articles', value: getPosts().length },
-    { label: 'Apps', value: apps.length },
-    { label: 'Dashboards', value: dashboards.length },
-  ];
+  const projects = await getFeaturedGitHubProjects(env.GITHUB_OWNER, 6);
 
   return (
-    <div className="bg-slate-950 text-slate-100">
-      <section className="relative overflow-hidden rounded-b-[40px] bg-gradient-to-br from-[#0b1020] via-[#0b1224] to-[#05060e] px-6 py-18 shadow-2xl shadow-black/50 motion-fade-up">
-        <div className="absolute inset-0 opacity-70">
-          <div className="pointer-events-none h-full w-full bg-[radial-gradient(circle_at_20%_20%,rgba(93,43,230,0.35),transparent_35%),radial-gradient(circle_at_80%_0%,rgba(16,185,129,0.25),transparent_30%),radial-gradient(circle_at_50%_100%,rgba(14,165,233,0.18),transparent_35%)]" />
+    <div className="bg-background text-foreground">
+      <section className="relative overflow-hidden border-b border-border/50 py-16">
+        <div className="pointer-events-none absolute inset-0 opacity-80">
+          <div className="absolute -left-24 -top-16 h-72 w-72 rounded-full bg-primary/18 blur-3xl" />
+          <div className="absolute right-0 top-8 h-80 w-80 rounded-full bg-secondary/12 blur-3xl" />
+          <div className="absolute bottom-0 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-primary/10 blur-3xl" />
         </div>
-        <div className="relative mx-auto flex max-w-6xl flex-col gap-12 lg:flex-row lg:items-center">
-          <div className="flex-1 space-y-6">
-            <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.35em] text-indigo-200 shadow-lg shadow-indigo-900/40">
-              Agents · Bitcoin · Lightning · Nostr
-            </div>
-            <h1 className="text-4xl font-bold leading-tight text-white drop-shadow-lg md:text-5xl">
-              Build confidently with agentic engineering, Bitcoin, and Lightning
+
+        <div className="relative mx-auto flex max-w-6xl flex-col gap-10 px-6">
+          <div className="max-w-3xl space-y-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary">
+              Bitcoin · Lightning · Nostr · Agentic engineering
+            </p>
+            <h1
+              className="text-4xl font-bold tracking-tight text-foreground md:text-5xl"
+              data-testid="home-hero-title"
+            >
+              Notes, playbooks, and projects for shipping on decentralized
+              rails.
             </h1>
-            <p className="max-w-2xl text-base text-slate-200/80">
-              Tactical walkthroughs, agentic tooling updates, and playable research on decentralized protocols—crafted so future engineers can ship faster with fewer regressions.
+            <p className="text-base text-muted-foreground md:text-lg">
+              Practical writing and small tools—built so future me (and you) can
+              move faster with fewer regressions.
             </p>
             <div className="flex flex-wrap gap-3">
-              {heroLinks.map((link) => (
-                <Button key={link.href} asChild variant="soft" size="lg">
-                  <Link href={link.href as Route}>{link.label}</Link>
-                </Button>
-              ))}
+              <Button asChild size="lg">
+                <Link href="/posts" data-testid="home-cta-writing">
+                  Read the writing
+                </Link>
+              </Button>
+              <Button asChild variant="soft" size="lg">
+                <Link href="/projects" data-testid="home-cta-projects">
+                  Explore projects
+                </Link>
+              </Button>
             </div>
-            <div className="flex flex-wrap gap-4">
-              {stats.map((stat) => (
-                <div
-                  key={stat.label}
-                  className="rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-sm shadow-lg shadow-black/30"
-                >
-                  <p className="text-3xl font-semibold text-white">{stat.value}</p>
-                  <p className="text-xs uppercase tracking-widest text-slate-300">{stat.label}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="flex w-full flex-1 flex-col gap-4 rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur card-hover-lift">
-            {heroHighlights.map((highlight) => (
-              <Link
-                key={highlight.label}
-                href={highlight.link as Route}
-                className="group flex items-start gap-4 rounded-2xl border border-white/5 bg-gradient-to-r from-white/5 to-transparent p-4 transition hover:border-white/30 hover:bg-white/10"
-              >
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 text-xl">
-                  {highlight.emoji}
-                </div>
-                <div className="space-y-1">
-                  <p className="text-xs font-semibold uppercase tracking-[0.4em] text-slate-300">{highlight.label}</p>
-                  <p className="text-base font-semibold text-white">{highlight.description}</p>
-                  <span className="inline-flex text-xs font-semibold text-indigo-300 group-hover:text-indigo-100">
-                    Explore →
-                  </span>
-                </div>
-              </Link>
-            ))}
           </div>
         </div>
       </section>
 
-      <section className="px-6 py-16">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-8 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-            <div>
-              <p className="text-sm uppercase tracking-widest text-indigo-400">Latest dispatches</p>
-              <h2 className="text-3xl font-semibold text-white">Recent Articles</h2>
+      <section className="py-14">
+        <div className="mx-auto max-w-6xl space-y-8 px-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div className="space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">
+                Writing
+              </p>
+              <h2 className="text-3xl font-bold text-foreground">
+                Recent articles
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Deep dives, implementation notes, and small dispatches.
+              </p>
             </div>
-            <Link href="/posts" className="text-sm font-semibold text-indigo-300 transition hover:text-indigo-100">
-              View all posts →
-            </Link>
+            <Button asChild variant="link" size="sm" className="px-0">
+              <Link href="/posts" data-testid="home-writing-all">
+                View all →
+              </Link>
+            </Button>
           </div>
-          <div className="grid gap-6 md:grid-cols-3 motion-fade-up">
+
+          <div className="grid gap-4 md:grid-cols-3">
             {recentPosts.map((post) => (
               <article
                 key={post._id}
-                className="flex flex-col gap-3 rounded-3xl border border-slate-800/80 bg-slate-900/70 p-6 shadow-lg shadow-black/40 transition hover:border-indigo-400/50 card-hover-lift"
+                className="rounded-2xl border border-border/60 bg-card/80 p-6 shadow-[0_20px_50px_rgba(6,10,20,0.35)] transition hover:-translate-y-0.5 hover:border-primary/40 hover:bg-card"
               >
-                <time className="text-xs uppercase tracking-[0.4em] text-slate-400">
-                  {new Date(post.publishDate ?? post.date).toLocaleDateString(undefined, {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric',
-                  })}
+                <time className="text-[11px] font-semibold uppercase tracking-[0.28em] text-muted-foreground">
+                  {new Date(post.publishDate ?? post.date).toLocaleDateString(
+                    undefined,
+                    { month: "short", day: "numeric", year: "numeric" },
+                  )}
                 </time>
-                <h3 className="text-xl font-semibold leading-snug text-white">
-                  <Link href={`/posts/${post.slug}`} className="hover:text-indigo-300">
+                <h3 className="mt-3 text-xl font-semibold leading-snug text-foreground">
+                  <Link
+                    href={`/posts/${post.slug}` as Route}
+                    className="hover:text-primary"
+                    data-testid="home-writing-post"
+                  >
                     {post.title}
                   </Link>
                 </h3>
-                <p className="text-sm text-slate-300">{post.summary}</p>
-                <div className="mt-auto flex flex-wrap gap-2">
-                  {post.tags?.map((tag) => (
-                    <Link
-                      key={tag}
-                      href={`/posts/tag/${encodeURIComponent(tag)}`}
-                      className="rounded-full border border-slate-800/70 px-3 py-1 text-xs font-medium uppercase tracking-widest text-slate-200 hover:border-indigo-400 hover:text-indigo-200"
-                    >
-                      {tag}
-                    </Link>
-                  ))}
-                </div>
+                <p className="mt-2 text-sm text-muted-foreground line-clamp-3">
+                  {post.summary}
+                </p>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      {apps.length > 0 && (
-        <section className="bg-slate-900 px-6 py-16">
-          <div className="mx-auto max-w-6xl">
-            <div className="mb-8 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-              <div>
-                <p className="text-sm uppercase tracking-widest text-purple-300">Tools</p>
-                <h2 className="text-3xl font-semibold text-white">Projects &amp; Experiments</h2>
-              </div>
-              <Link href="/apps" className="text-sm font-semibold text-purple-200 transition hover:text-purple-100">
-                View all apps →
-              </Link>
+      <section className="border-t border-border/50 py-14">
+        <div className="mx-auto max-w-6xl space-y-8 px-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div className="space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">
+                Projects
+              </p>
+              <h2 className="text-3xl font-bold text-foreground">
+                Recent GitHub work
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                A small selection of repos I&apos;ve touched recently.
+              </p>
             </div>
-            <div className="grid gap-6 md:grid-cols-2 motion-fade-up">
-              {apps.map((app) => (
-                <Link
-                  key={app.slug}
-                  href={`/apps/${app.slug}`}
-                  className="flex flex-col gap-4 rounded-3xl border border-slate-800/80 bg-gradient-to-br from-slate-900 to-slate-950 p-6 shadow-2xl shadow-black/60 transition hover:-translate-y-1 hover:border-purple-400/60 card-hover-lift"
-                >
-                  <div className="flex items-center gap-4">
-                    {app.icon && (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={app.icon} alt={app.name} className="h-12 w-12 rounded-2xl object-cover" />
-                    )}
-                    <div className="flex-1">
-                      <p className="text-xs uppercase tracking-[0.5em] text-slate-400">{new Date(app.publishDate).toLocaleDateString()}</p>
-                      <h3 className="text-xl font-semibold text-white">{app.name}</h3>
-                    </div>
-                  </div>
-                  <p className="text-sm text-slate-300 line-clamp-3">{app.fullDescription}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {app.features?.slice(0, 3).map((feature) => (
-                      <span key={feature} className="rounded-full bg-purple-900/50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.3em] text-purple-100">
-                        {feature}
-                      </span>
-                    ))}
-                  </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <Button asChild variant="soft" size="sm">
+                <Link href="/apps" data-testid="home-projects-apps">
+                  Apps
                 </Link>
-              ))}
+              </Button>
+              <Button asChild variant="outline" size="sm">
+                <a
+                  href={`https://github.com/${env.GITHUB_OWNER}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  data-testid="home-projects-github"
+                >
+                  GitHub profile
+                </a>
+              </Button>
             </div>
           </div>
-        </section>
-      )}
 
-
-      {dashboards.length > 0 && (
-        <section className="bg-gradient-to-br from-slate-900 via-slate-900 to-black px-6 py-16">
-          <div className="mx-auto max-w-6xl">
-            <div className="mb-8 flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-              <div>
-                <p className="text-sm uppercase tracking-widest text-cyan-300">Dashboards</p>
-                <h2 className="text-3xl font-semibold text-white">Telemetry & Observability</h2>
-              </div>
-              <Link
-                href="/admin/dashboards"
-                className="text-sm font-semibold text-cyan-200 transition hover:text-cyan-100"
+          {projects.length > 0 ? (
+            <div className="grid gap-4 md:grid-cols-3">
+              {projects.map((project) => (
+                <GitHubProjectCard
+                  key={project.fullName}
+                  project={project}
+                  testId="home-github-project"
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-2xl border border-border/60 bg-card p-6 text-sm text-muted-foreground">
+              GitHub projects are temporarily unavailable. Visit{" "}
+              <a
+                className="font-semibold text-primary hover:text-primary/80"
+                href={`https://github.com/${env.GITHUB_OWNER}`}
+                target="_blank"
+                rel="noreferrer"
               >
-                View all dashboards →
-              </Link>
+                github.com/{env.GITHUB_OWNER}
+              </a>{" "}
+              to browse recent work.
             </div>
-            <div className="grid gap-6 md:grid-cols-3 motion-fade-up">
-              {dashboards.slice(0, 3).map((dashboard) => (
-                <Link
-                  key={dashboard.slug}
-                  href={`/admin/dashboards/${dashboard.slug}`}
-                  className="flex flex-col gap-3 rounded-3xl border border-slate-800/80 bg-slate-950/60 p-6 shadow-xl shadow-black/60 transition hover:-translate-y-1 hover:border-cyan-500/70 card-hover-lift"
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="text-sm uppercase tracking-[0.4em] text-slate-400">{dashboard.panelType}</p>
-                    {dashboard.refreshIntervalSeconds ? (
-                      <span className="rounded-full border border-cyan-500/60 px-3 py-0.5 text-[11px] font-semibold uppercase tracking-[0.3em] text-cyan-100">
-                        {dashboard.refreshIntervalSeconds / 60}m refresh
-                      </span>
-                    ) : null}
-                  </div>
-                  <h3 className="text-2xl font-semibold text-white">{dashboard.title}</h3>
-                  <p className="text-sm text-slate-300 line-clamp-3">{dashboard.summary}</p>
-                  <div className="mt-auto flex flex-wrap gap-2">
-                    {dashboard.tags?.map((tag) => (
-                      <span key={tag} className="rounded-full border border-cyan-500/50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-cyan-100">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+          )}
 
-      {tagCloud.length > 0 && (
-        <section className="bg-slate-900 px-6 py-12">
-          <div className="mx-auto max-w-5xl text-center">
-            <p className="text-sm uppercase tracking-widest text-slate-400">Popular Topics</p>
-            <h2 className="mt-2 text-2xl font-semibold text-white">Tag Cloud</h2>
-            <div className="mt-6 flex flex-wrap justify-center gap-3 motion-fade-up">
-              {tagCloud.map(({ tag, count }) => (
-                <Link
-                  key={tag}
-                  href={`/posts/tag/${encodeURIComponent(tag)}`}
-                  className="rounded-full border border-slate-800/80 px-4 py-2 text-sm font-medium text-slate-200 transition hover:border-indigo-400 hover:text-indigo-200 card-hover-lift"
-                >
-                  {tag} <span className="text-xs text-slate-400">({count})</span>
-                </Link>
-              ))}
-            </div>
+          <div>
+            <Button asChild variant="link" size="sm" className="px-0">
+              <Link href="/projects" data-testid="home-projects-all">
+                View all projects →
+              </Link>
+            </Button>
           </div>
-        </section>
-      )}
+        </div>
+      </section>
     </div>
   );
 }
+

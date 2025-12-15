@@ -8,7 +8,7 @@ test.describe('global navigation', () => {
     await page.goto('/');
     await expect(page.getByTestId('global-nav-home')).toBeVisible();
 
-    const links = ['global-nav-posts', 'global-nav-apps', 'global-nav-dashboards'];
+    const links = ['global-nav-writing', 'global-nav-projects'];
     for (const testId of links) {
       const link = page.getByTestId(testId);
       const href = await link.getAttribute('href');

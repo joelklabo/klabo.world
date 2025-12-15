@@ -18,10 +18,16 @@ const postRoutes = [
 test.describe('public content routes', () => {
   test('home page renders hero and sections', async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByRole('heading', { name: /Build confidently with agentic engineering/i })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Read the latest' })).toHaveAttribute('href', '/posts');
-    await expect(page.getByRole('heading', { name: 'Recent Articles' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Projects & Experiments' })).toBeVisible();
+    await expect(page.getByTestId('home-hero-title')).toBeVisible();
+    await expect(page.getByTestId('home-cta-writing')).toHaveAttribute('href', '/posts');
+    await expect(page.getByTestId('home-cta-projects')).toHaveAttribute('href', '/projects');
+    await expect(page.getByRole('heading', { name: 'Recent articles' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Recent GitHub work' })).toBeVisible();
+    await expect(page.getByTestId('home-github-project').first()).toBeVisible();
+
+    await Promise.all([page.waitForNavigation(), page.getByTestId('home-cta-projects').click()]);
+    await expect(page).toHaveURL(/\/projects/);
+    await expect(page.getByRole('heading', { name: 'GitHub projects' })).toBeVisible();
   });
 
   test('posts index shows known articles', async ({ page }) => {
@@ -33,10 +39,10 @@ test.describe('public content routes', () => {
 
   for (const post of postRoutes) {
     test(`post ${post.slug} renders title and summary`, async ({ page }) => {
-      await page.goto(`/posts/${post.slug}`);
-    await expect(page.getByRole('heading', { name: post.title })).toBeVisible();
-    await expect(page.getByText(post.summary).first()).toBeVisible();
-  });
+      await page.goto(`/posts/${post.slug}`, { waitUntil: 'domcontentloaded' });
+      await expect(page.getByRole('heading', { name: post.title })).toBeVisible();
+      await expect(page.getByText(post.summary).first()).toBeVisible();
+    });
   }
 
   test('apps index shows ViceChips card', async ({ page }) => {
