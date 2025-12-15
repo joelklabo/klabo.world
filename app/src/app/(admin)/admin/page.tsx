@@ -18,7 +18,7 @@ export default async function AdminLanding({ searchParams }: { searchParams?: Ad
 
   if (!session?.user) {
     return (
-      <div className="mx-auto max-w-md px-6 py-16">
+      <div className="mx-auto max-w-md py-16">
         <h1 className="mb-6 text-3xl font-semibold">Admin Login</h1>
         <LoginForm key={`login-${resolvedSearchParams?.error ?? 'none'}`} initialError={resolvedSearchParams?.error} />
       </div>
@@ -26,40 +26,41 @@ export default async function AdminLanding({ searchParams }: { searchParams?: Ad
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-12">
-      <div className="mb-8 flex items-center justify-between">
+    <div className="space-y-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-sm uppercase tracking-widest text-indigo-500">Dashboard</p>
-          <h1 className="text-3xl font-bold">Content overview</h1>
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">Dashboard</p>
+          <h1 className="text-3xl font-bold text-foreground">Content overview</h1>
+          <p className="text-sm text-muted-foreground">Publish and maintain posts.</p>
         </div>
         <Button asChild size="lg">
           <Link href={'/admin/compose' as Route}>Compose post</Link>
         </Button>
       </div>
-      <div className="rounded-3xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
-        <table className="min-w-full divide-y divide-gray-200 text-sm dark:divide-gray-800">
-          <thead className="bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500 dark:bg-gray-800 dark:text-gray-300">
+      <div className="overflow-hidden rounded-2xl border border-border/60 bg-card shadow-[0_20px_45px_rgba(6,10,20,0.35)]">
+        <table className="min-w-full divide-y divide-border/60 text-sm">
+          <thead className="bg-background/80 text-left">
             <tr>
-              <th className="px-6 py-3">Title</th>
-              <th className="px-6 py-3">Publish date</th>
-              <th className="px-6 py-3">Tags</th>
-              <th className="px-6 py-3">Actions</th>
+              <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">Title</th>
+              <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">Publish date</th>
+              <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">Tags</th>
+              <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+          <tbody className="divide-y divide-border/60">
             {posts.map((post) => (
-              <tr key={post.slug} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
-                <td className="px-6 py-4 font-medium text-gray-900 dark:text-gray-100">{post.title}</td>
-                <td className="px-6 py-4 text-gray-600 dark:text-gray-300">
+              <tr key={post.slug} className="hover:bg-background/40">
+                <td className="px-6 py-4 font-medium text-foreground">{post.title}</td>
+                <td className="px-6 py-4 text-muted-foreground">
                   {new Date(post.publishDate ?? post.date).toLocaleDateString()}
                 </td>
-                <td className="px-6 py-4 text-gray-500 dark:text-gray-400">{post.tags?.length ? post.tags.join(', ') : '—'}</td>
+                <td className="px-6 py-4 text-muted-foreground">{post.tags?.length ? post.tags.join(', ') : '—'}</td>
                 <td className="px-6 py-4 text-sm">
                   <div className="flex gap-3">
-                    <Link href={`/posts/${post.slug}` as Route} target="_blank" className="text-indigo-600 hover:text-indigo-400">
+                    <Link href={`/posts/${post.slug}` as Route} target="_blank" className="font-semibold text-muted-foreground hover:text-foreground">
                       View
                     </Link>
-                    <Link href={`/admin/posts/${post.slug}/edit` as Route} className="text-emerald-600 hover:text-emerald-400">
+                    <Link href={`/admin/posts/${post.slug}/edit` as Route} className="font-semibold text-primary hover:text-primary/80">
                       Edit
                     </Link>
                   </div>
@@ -68,7 +69,7 @@ export default async function AdminLanding({ searchParams }: { searchParams?: Ad
             ))}
           </tbody>
         </table>
-        {posts.length === 0 && <p className="px-6 py-10 text-center text-sm text-gray-500">No posts yet.</p>}
+        {posts.length === 0 && <p className="px-6 py-10 text-center text-sm text-muted-foreground">No posts yet.</p>}
       </div>
     </div>
   );
