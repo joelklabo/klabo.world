@@ -7,6 +7,7 @@ import {
   getFeaturedGitHubProjects,
 } from "@/lib/github-projects";
 import { GitHubProjectCard } from "@/components/github-project-card";
+import { GitHubProjectsExplorer } from "@/components/github-projects-explorer";
 import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
@@ -101,16 +102,10 @@ export default async function ProjectsPage() {
             </p>
           </div>
           {recentWithoutPinned.length > 0 ? (
-            <div className="grid gap-4 md:grid-cols-3">
-              {recentWithoutPinned.map((project) => (
-                <GitHubProjectCard
-                  key={project.fullName}
-                  project={project}
-                  showTopics={false}
-                  testId="projects-recent-project"
-                />
-              ))}
-            </div>
+            <GitHubProjectsExplorer
+              projects={recentWithoutPinned}
+              cardTestId="projects-recent-project"
+            />
           ) : (
             <div className="rounded-2xl border border-border/60 bg-card p-6 text-sm text-muted-foreground">
               GitHub projects are temporarily unavailable. Visit{" "}
