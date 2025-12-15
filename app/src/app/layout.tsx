@@ -13,29 +13,30 @@ export const metadata: Metadata = {
   },
   description:
     'klabo.world covers Bitcoin, Lightning, Nostr, and agentic engineering with tutorials, project updates, and AI context libraries.',
-  openGraph: {
-    type: 'website',
-    url: env.SITE_URL,
-    siteName: 'klabo.world',
-    title: 'klabo.world • Bitcoin, Lightning, Nostr & Agentic Engineering',
-    description:
-      'klabo.world covers Bitcoin, Lightning, Nostr, and agentic engineering with tutorials, project updates, and AI context libraries.',
-    images: [
-      {
-        url: '/opengraph-image',
-        width: 1200,
-        height: 630,
-        alt: 'klabo.world',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'klabo.world • Bitcoin, Lightning, Nostr & Agentic Engineering',
-    description:
-      'klabo.world covers Bitcoin, Lightning, Nostr, and agentic engineering with tutorials, project updates, and AI context libraries.',
-    images: ['/opengraph-image'],
-  },
+	  openGraph: {
+	    type: 'website',
+	    url: env.SITE_URL,
+	    siteName: 'klabo.world',
+	    title: 'klabo.world • Bitcoin, Lightning, Nostr & Agentic Engineering',
+	    description:
+	      'klabo.world covers Bitcoin, Lightning, Nostr, and agentic engineering with tutorials, project updates, and AI context libraries.',
+	    images: [
+	      {
+	        url: new URL('/og.png', env.SITE_URL),
+	        width: 1200,
+	        height: 630,
+	        alt: 'klabo.world',
+	        type: 'image/png',
+	      },
+	    ],
+	  },
+	  twitter: {
+	    card: 'summary_large_image',
+	    title: 'klabo.world • Bitcoin, Lightning, Nostr & Agentic Engineering',
+	    description:
+	      'klabo.world covers Bitcoin, Lightning, Nostr, and agentic engineering with tutorials, project updates, and AI context libraries.',
+	    images: [new URL('/og.png', env.SITE_URL)],
+	  },
 };
 
 const manrope = Manrope({

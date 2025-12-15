@@ -40,34 +40,35 @@ export async function generateMetadata({ params }: { params: Params | Promise<Pa
   const canonicalPath = `/posts/${post.slug}`;
   const publishedTime = post.publishDate ?? post.date;
 
-  return {
-    title: post.title,
-    description: post.summary,
-    alternates: { canonical: canonicalPath },
-    openGraph: {
-      type: 'article',
-      url: canonicalPath,
-      title: post.title,
-      description: post.summary,
-      publishedTime,
-      tags: post.tags ?? [],
-      images: [
-        {
-          url: `${canonicalPath}/opengraph-image`,
-          width: 1200,
-          height: 630,
-          alt: post.title,
-        },
-      ],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: post.title,
-      description: post.summary,
-      images: [`${canonicalPath}/opengraph-image`],
-    },
-  };
-}
+	  return {
+	    title: post.title,
+	    description: post.summary,
+	    alternates: { canonical: canonicalPath },
+	    openGraph: {
+	      type: 'article',
+	      url: canonicalPath,
+	      title: post.title,
+	      description: post.summary,
+	      publishedTime,
+	      tags: post.tags ?? [],
+	      images: [
+	        {
+	          url: new URL(`${canonicalPath}/og.png`, env.SITE_URL),
+	          width: 1200,
+	          height: 630,
+	          alt: post.title,
+	          type: 'image/png',
+	        },
+	      ],
+	    },
+	    twitter: {
+	      card: 'summary_large_image',
+	      title: post.title,
+	      description: post.summary,
+	      images: [new URL(`${canonicalPath}/og.png`, env.SITE_URL)],
+	    },
+	  };
+	}
 
 export default async function PostPage({ params }: { params: Params | Promise<Params> }) {
   const resolvedParams = await Promise.resolve(params as Params);
