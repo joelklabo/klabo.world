@@ -14,8 +14,7 @@ export default async function Home() {
 
   return (
     <div className="bg-background text-foreground">
-      <section className="relative overflow-hidden border-b border-border/50 py-16">
-
+      <section className="relative overflow-hidden py-16 sm:py-20">
         <div className="relative mx-auto flex max-w-6xl flex-col gap-10 px-6">
           <div className="max-w-3xl space-y-6">
             <h1
@@ -30,15 +29,20 @@ export default async function Home() {
               and small tools—built so future me (and you) can move faster with
               fewer regressions.
             </p>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               <Button asChild size="lg">
                 <Link href="/posts" data-testid="home-cta-writing">
                   Read the writing
                 </Link>
               </Button>
-              <Button asChild variant="soft" size="lg">
+              <Button
+                asChild
+                variant="link"
+                size="lg"
+                className="px-2 text-sm font-semibold uppercase tracking-[0.24em] text-muted-foreground hover:text-primary"
+              >
                 <Link href="/projects" data-testid="home-cta-projects">
-                  Explore projects
+                  Explore projects →
                 </Link>
               </Button>
             </div>
@@ -46,25 +50,27 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="py-14">
-        <div className="mx-auto max-w-6xl space-y-10 px-6">
-          <div className="flex flex-col gap-12">
-            <section className="space-y-6" data-testid="home-section-writing">
-              <div className="flex items-end justify-between gap-4">
-                <div className="space-y-2">
-                  <p className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">
-                    Writing
-                  </p>
-                  <h2 className="text-3xl font-bold text-foreground">
-                    Latest posts
+      <section className="pb-16 sm:pb-20">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="grid gap-10 md:grid-cols-2">
+            <section className="space-y-5" data-testid="home-section-writing">
+              <div className="flex items-baseline justify-between gap-4">
+                <div className="space-y-1">
+                  <h2 className="text-xl font-semibold text-foreground">
+                    Latest writing
                   </h2>
                   <p className="text-sm text-muted-foreground">
-                    Deep dives, implementation notes, and small dispatches.
+                    Deep dives and implementation notes.
                   </p>
                 </div>
-                <Button asChild variant="link" size="sm" className="px-0">
+                <Button
+                  asChild
+                  variant="link"
+                  size="sm"
+                  className="px-0 text-xs font-semibold uppercase tracking-[0.28em]"
+                >
                   <Link href="/posts" data-testid="home-writing-all">
-                    View all →
+                    All posts →
                   </Link>
                 </Button>
               </div>
@@ -76,7 +82,7 @@ export default async function Home() {
                       key={post._id}
                       href={`/posts/${post.slug}` as Route}
                       data-testid="home-writing-post"
-                      className="group block px-5 py-4 transition hover:bg-background/40"
+                      className="group block px-5 py-4 transition hover:bg-background/15"
                     >
                       <div className="flex items-baseline justify-between gap-4">
                         <h3 className="min-w-0 truncate text-base font-semibold text-foreground transition group-hover:text-primary">
@@ -98,36 +104,26 @@ export default async function Home() {
               </div>
             </section>
 
-            <section className="space-y-6" data-testid="home-section-projects">
-              <div className="flex flex-wrap items-end justify-between gap-4">
-                <div className="space-y-2">
-                  <p className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">
-                    Projects
-                  </p>
-                  <h2 className="text-3xl font-bold text-foreground">
+            <section className="space-y-5" data-testid="home-section-projects">
+              <div className="flex items-baseline justify-between gap-4">
+                <div className="space-y-1">
+                  <h2 className="text-xl font-semibold text-foreground">
                     Recent GitHub work
                   </h2>
                   <p className="text-sm text-muted-foreground">
                     A small selection of repos I&apos;ve shipped recently.
                   </p>
                 </div>
-                <div className="flex flex-wrap items-center gap-3">
-                  <Button asChild variant="soft" size="sm">
-                    <Link href="/projects" data-testid="home-projects-all">
-                      View all →
-                    </Link>
-                  </Button>
-                  <Button asChild variant="outline" size="sm">
-                    <a
-                      href={`https://github.com/${env.GITHUB_OWNER}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      data-testid="home-projects-github"
-                    >
-                      GitHub
-                    </a>
-                  </Button>
-                </div>
+                <Button
+                  asChild
+                  variant="link"
+                  size="sm"
+                  className="px-0 text-xs font-semibold uppercase tracking-[0.28em]"
+                >
+                  <Link href="/projects" data-testid="home-projects-all">
+                    All projects →
+                  </Link>
+                </Button>
               </div>
 
               {projects.length > 0 ? (
@@ -140,6 +136,7 @@ export default async function Home() {
                     href={`https://github.com/${env.GITHUB_OWNER}`}
                     target="_blank"
                     rel="noreferrer"
+                    data-testid="home-projects-github"
                   >
                     github.com/{env.GITHUB_OWNER}
                   </a>{" "}

@@ -6,7 +6,7 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? 'change-me';
 test.describe('global navigation', () => {
   test('public nav links load key pages', async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByTestId('global-nav-home')).toBeVisible();
+    await expect(page.getByTestId('global-nav-logo')).toBeVisible();
 
     const links = ['global-nav-writing', 'global-nav-projects'];
     for (const testId of links) {

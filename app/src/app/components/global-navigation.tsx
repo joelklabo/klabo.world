@@ -7,7 +7,6 @@ import { KeyboardEvent, useEffect, useLayoutEffect, useMemo, useRef, useState } 
 import { Button } from '@/components/ui/button';
 
 const NAV_ITEMS = [
-  { label: 'Home', href: '/' },
   { label: 'Writing', href: '/posts' },
   { label: 'Projects', href: '/projects' },
 ];
