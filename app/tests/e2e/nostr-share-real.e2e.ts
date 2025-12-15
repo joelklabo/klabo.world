@@ -102,6 +102,9 @@ test('nostr share publishes a real note to relays (requires NOSTR_E2E_REAL=1)', 
     return { eventId: w.__nostr_test_lastSignedEvent?.id };
   });
   expect(eventId).toBeTruthy();
+  if (!eventId) {
+    throw new Error('Expected a signed event id after sharing to Nostr.');
+  }
 
   const relayUrls = (process.env.NOSTRSTACK_RELAYS ?? '')
     .split(/[,\n]/)

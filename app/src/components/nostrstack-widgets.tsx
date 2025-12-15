@@ -101,26 +101,31 @@ function isMockConfig(opts: { baseUrl?: string; host?: string }) {
   return opts.baseUrl === 'mock' || opts.host === 'mock';
 }
 
+type RelayConnector = {
+  connect: (url: string, options?: { enablePing?: boolean; enableReconnect?: boolean }) => Promise<Relay>;
+};
+
+function isRelayConnector(value: unknown): value is RelayConnector {
+  if (!value || (typeof value !== 'object' && typeof value !== 'function')) return false;
+  return typeof (value as { connect?: unknown }).connect === 'function';
+}
+
 async function connectRelays(urls: string[]): Promise<Relay[]> {
   if (urls.includes('mock')) return [];
-  let RelayConnector: {
-    connect: (url: string, options?: { enablePing?: boolean; enableReconnect?: boolean }) => Promise<Relay>;
-  } | null = null;
+  let connector: RelayConnector | null = null;
   try {
     const mod = await import('nostr-tools');
-    RelayConnector =
-      (mod as unknown as {
-        Relay?: { connect?: (url: string, options?: { enablePing?: boolean; enableReconnect?: boolean }) => Promise<Relay> };
-      }).Relay ?? null;
+    const candidate = (mod as unknown as { Relay?: unknown }).Relay ?? null;
+    connector = isRelayConnector(candidate) ? candidate : null;
   } catch (err) {
     console.warn('nostr-tools not available, skipping relay connections', err);
     return [];
   }
-  if (!RelayConnector?.connect) return [];
+  if (!connector) return [];
 
   const results = await Promise.allSettled(
     urls.map(async (url) => {
-      const relay = await RelayConnector!.connect(url, { enablePing: true, enableReconnect: true });
+      const relay = await connector.connect(url, { enablePing: true, enableReconnect: true });
       return relay;
     }),
   );
