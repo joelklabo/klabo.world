@@ -275,15 +275,39 @@ export function NostrstackActionBar({
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const signer = (window as NostrWindow).nostr;
-    if (!signer) {
-      setSignerAvailable(false);
-      return;
-    }
-    signer
-      .getPublicKey()
-      .then(() => setSignerAvailable(true))
-      .catch(() => setSignerAvailable(true));
+    let cancelled = false;
+
+    const checkSigner = () => {
+      const signer = (window as NostrWindow).nostr;
+      if (!signer) {
+        if (!cancelled) setSignerAvailable(false);
+        return;
+      }
+
+      signer
+        .getPublicKey()
+        .then(() => {
+          if (!cancelled) setSignerAvailable(true);
+        })
+        .catch(() => {
+          if (!cancelled) setSignerAvailable(true);
+        });
+    };
+
+    checkSigner();
+
+    // Some NIP-07 providers inject `window.nostr` asynchronously; poll briefly.
+    const interval = window.setInterval(checkSigner, 500);
+    window.addEventListener('focus', checkSigner);
+
+    const timeout = window.setTimeout(() => window.clearInterval(interval), 8000);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(interval);
+      window.clearTimeout(timeout);
+      window.removeEventListener('focus', checkSigner);
+    };
   }, []);
 
   const handleTip = useCallback(async () => {
@@ -382,7 +406,6 @@ export function NostrstackActionBar({
           onClick={handleShare}
           disabled={
             shareState === 'posting' ||
-            !signerAvailable ||
             status === 'connecting' ||
             (status !== 'mock' && !connections.length)
           }
