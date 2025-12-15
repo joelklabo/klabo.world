@@ -2,20 +2,10 @@
 
 import { useCallback, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 
 type Tone = 'indigo' | 'purple' | 'emerald';
-
-const inputTone: Record<Tone, string> = {
-  indigo: 'focus:border-indigo-500 focus:ring-indigo-500',
-  purple: 'focus:border-purple-500 focus:ring-purple-500',
-  emerald: 'focus:border-emerald-500 focus:ring-emerald-500',
-};
-
-const buttonTone: Record<Tone, string> = {
-  indigo: 'border-indigo-200 text-indigo-600',
-  purple: 'border-purple-200 text-purple-600',
-  emerald: 'border-emerald-200 text-emerald-600',
-};
 
 type Props = {
   name: string;
@@ -36,7 +26,6 @@ export function ImageListUploadField({
   defaultValue = '',
   helperText,
   placeholder,
-  tone = 'indigo',
   textareaTestId,
   uploadButtonTestId,
 }: Props) {
@@ -83,35 +72,33 @@ export function ImageListUploadField({
   );
 
   return (
-    <div>
-      <label className="block text-sm font-semibold text-gray-700">
-        {label}
-        <textarea
-          name={name}
-          rows={5}
-          value={value}
-          placeholder={placeholder}
-          onChange={(event) => setValue(event.target.value)}
-          className={`mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 font-mono text-sm focus:outline-none focus:ring-2 ${inputTone[tone]}`}
-          data-testid={textareaTestId}
-        />
-      </label>
-      {helperText && <p className="mt-1 text-xs text-gray-500">{helperText}</p>}
-      <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">
+    <div className="space-y-2">
+      <Label htmlFor={name}>{label}</Label>
+      <Textarea
+        id={name}
+        name={name}
+        rows={5}
+        value={value}
+        placeholder={placeholder}
+        onChange={(event) => setValue(event.target.value)}
+        className="font-mono"
+        data-testid={textareaTestId}
+      />
+      {helperText && <p className="text-xs text-muted-foreground">{helperText}</p>}
+      <div className="flex flex-wrap items-center gap-3 text-sm">
         <Button
           type="button"
           onClick={() => fileInputRef.current?.click()}
           variant="outline"
           size="xs"
-          className={`bg-transparent hover:bg-gray-50 ${buttonTone[tone]}`}
           data-testid={uploadButtonTestId}
         >
           Upload + append URL
         </Button>
         <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={onFileChange} />
-        {status === 'uploading' && <span className="text-gray-500">Uploading…</span>}
-        {status === 'success' && <span className="text-gray-600">Added latest upload.</span>}
-        {status === 'error' && error && <span className="text-red-600">{error}</span>}
+        {status === 'uploading' && <span className="text-muted-foreground">Uploading…</span>}
+        {status === 'success' && <span className="text-muted-foreground">Added latest upload.</span>}
+        {status === 'error' && error && <span className="text-destructive">{error}</span>}
       </div>
     </div>
   );

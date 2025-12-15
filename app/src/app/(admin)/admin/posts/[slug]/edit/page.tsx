@@ -6,6 +6,9 @@ import { ImageUploadField } from '@/app/(admin)/components/image-upload-field';
 import { MarkdownField } from '@/app/(admin)/components/markdown-field';
 import { updatePostAction, deletePostAction } from '../../actions';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 
 type Params = { slug: string };
 
@@ -31,121 +34,100 @@ export default async function EditPostPage({ params }: { params: Promise<Params>
   const deleteAction = deletePostAction.bind(null, post.slug);
 
   return (
-    <div className="mx-auto max-w-4xl px-6 py-10">
-      <div className="mb-8 flex items-center justify-between">
+    <div className="mx-auto max-w-4xl space-y-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-sm uppercase tracking-widest text-indigo-500">Posts</p>
-          <h1 className="text-3xl font-bold">Edit post</h1>
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">Posts</p>
+          <h1 className="text-3xl font-bold text-foreground">Edit post</h1>
         </div>
-        <Link href="/admin" className="text-sm font-semibold text-gray-500 hover:text-gray-700">
+        <Link href="/admin" className="text-sm font-semibold text-muted-foreground hover:text-foreground">
           ← Back to dashboard
         </Link>
       </div>
       <form action={updateAction} className="space-y-6">
-        <div>
-          <label htmlFor="title" className="block text-sm font-semibold text-gray-700">
-            Title
-          </label>
-          <input
+        <div className="space-y-2">
+          <Label htmlFor="title">Title</Label>
+          <Input
             id="title"
             name="title"
             type="text"
             defaultValue={post.title}
             required
-            className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
-        <div>
-          <label htmlFor="summary" className="block text-sm font-semibold text-gray-700">
-            Summary
-          </label>
-          <textarea
+        <div className="space-y-2">
+          <Label htmlFor="summary">Summary</Label>
+          <Textarea
             id="summary"
             name="summary"
             rows={3}
             defaultValue={post.summary}
             required
-            className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
         <div className="grid gap-6 md:grid-cols-2">
-          <div>
-            <label htmlFor="tags" className="block text-sm font-semibold text-gray-700">
-              Tags (comma-separated)
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="tags">Tags (comma-separated)</Label>
+            <Input
               id="tags"
               name="tags"
               type="text"
               defaultValue={post.tags?.join(', ')}
-              className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
-          <div>
-            <label htmlFor="publishDate" className="block text-sm font-semibold text-gray-700">
-              Publish date
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="publishDate">Publish date</Label>
+            <Input
               id="publishDate"
               name="publishDate"
               type="date"
               defaultValue={(post.publishDate ?? post.date).slice(0, 10)}
-              className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
         </div>
-        <div className="space-y-3 rounded-2xl border border-gray-200 bg-white/70 p-4 shadow-sm">
+        <div className="space-y-3 rounded-2xl border border-border/60 bg-card/70 p-4 shadow-sm">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-500">nostrstack</p>
-            <p className="text-sm text-gray-600">Optional metadata for tips, Nostr share, and comments.</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">nostrstack</p>
+            <p className="text-sm text-muted-foreground">Optional metadata for tips, Nostr share, and comments.</p>
           </div>
           <div className="grid gap-4 md:grid-cols-2">
-            <div>
-              <label htmlFor="lightningAddress" className="block text-sm font-semibold text-gray-700">
-                Lightning address
-              </label>
-              <input
+            <div className="space-y-2">
+              <Label htmlFor="lightningAddress">Lightning address</Label>
+              <Input
                 id="lightningAddress"
                 name="lightningAddress"
                 type="email"
                 defaultValue={post.lightningAddress ?? ''}
                 placeholder="joel@nostrstack.lol"
-                className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
-            <div>
-              <label htmlFor="nostrPubkey" className="block text-sm font-semibold text-gray-700">
-                Nostr pubkey (npub or hex)
-              </label>
-              <input
+            <div className="space-y-2">
+              <Label htmlFor="nostrPubkey">Nostr pubkey (npub or hex)</Label>
+              <Input
                 id="nostrPubkey"
                 name="nostrPubkey"
                 type="text"
                 defaultValue={post.nostrPubkey ?? ''}
                 placeholder="npub1..."
-                className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
           </div>
-          <div>
-            <label htmlFor="nostrRelays" className="block text-sm font-semibold text-gray-700">
-              Nostr relays (comma separated)
-            </label>
-            <textarea
+          <div className="space-y-2">
+            <Label htmlFor="nostrRelays">Nostr relays (comma separated)</Label>
+            <Textarea
               id="nostrRelays"
               name="nostrRelays"
               rows={2}
               defaultValue={post.nostrRelays?.join(', ') ?? ''}
               placeholder="wss://relay.damus.io, wss://relay.snort.social"
-              className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
-          <label className="flex items-center gap-2 text-sm text-gray-700">
+          <label className="flex items-center gap-2 text-sm text-muted-foreground">
             <input
               type="checkbox"
               name="nostrstackEnabled"
               defaultChecked={post.nostrstackEnabled !== false}
-              className="h-4 w-4 rounded border-gray-300"
+              className="h-4 w-4 rounded border-input"
             />
             Enable nostrstack widgets for this post
           </label>

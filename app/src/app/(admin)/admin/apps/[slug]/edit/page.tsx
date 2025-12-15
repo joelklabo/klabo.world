@@ -7,6 +7,9 @@ import { ImageUploadField } from '@/app/(admin)/components/image-upload-field';
 import { ImageListUploadField } from '@/app/(admin)/components/image-list-upload-field';
 import { upsertAppAction, deleteAppAction } from '../actions';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 
 export const dynamic = 'force-dynamic';
 
@@ -29,113 +32,92 @@ export default async function EditAppPage({ params }: { params: Promise<{ slug: 
   const deleteAction = deleteAppAction.bind(null, app.slug);
 
   return (
-    <div className="mx-auto max-w-4xl px-6 py-10">
-      <div className="mb-8 flex items-center justify-between">
+    <div className="mx-auto max-w-4xl space-y-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-sm uppercase tracking-widest text-purple-500">Apps</p>
-          <h1 className="text-3xl font-bold">Edit app</h1>
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">Apps</p>
+          <h1 className="text-3xl font-bold text-foreground">Edit app</h1>
         </div>
-        <Link href="/admin/apps" className="text-sm font-semibold text-gray-500 hover:text-gray-700">
+        <Link href="/admin/apps" className="text-sm font-semibold text-muted-foreground hover:text-foreground">
           ← Back to apps
         </Link>
       </div>
       <form action={upsertAppAction} className="space-y-6" data-testid="apps-edit-form">
         <input type="hidden" name="slug" defaultValue={app.slug} data-testid="apps-edit-slug" />
-        <div>
-          <label htmlFor="name" className="block text-sm font-semibold text-gray-700">
-            Name
-          </label>
-          <input
+        <div className="space-y-2">
+          <Label htmlFor="name">Name</Label>
+          <Input
             id="name"
             name="name"
             type="text"
             defaultValue={app.name}
             required
-            className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
             data-testid="apps-edit-name"
           />
         </div>
         <div className="grid gap-6 md:grid-cols-2">
-          <div>
-            <label htmlFor="version" className="block text-sm font-semibold text-gray-700">
-              Version
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="version">Version</Label>
+            <Input
               id="version"
               name="version"
               type="text"
               defaultValue={app.version}
               required
-              className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
               data-testid="apps-edit-version"
             />
           </div>
-          <div>
-            <label htmlFor="publishDate" className="block text-sm font-semibold text-gray-700">
-              Publish date
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="publishDate">Publish date</Label>
+            <Input
               id="publishDate"
               name="publishDate"
               type="date"
               defaultValue={app.publishDate.slice(0, 10)}
               required
-              className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
               data-testid="apps-edit-publish-date"
             />
           </div>
         </div>
-        <div>
-          <label htmlFor="fullDescription" className="block text-sm font-semibold text-gray-700">
-            Description
-          </label>
-          <textarea
+        <div className="space-y-2">
+          <Label htmlFor="fullDescription">Description</Label>
+          <Textarea
             id="fullDescription"
             name="fullDescription"
             rows={5}
             defaultValue={app.fullDescription}
             required
-            className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
             data-testid="apps-edit-description"
           />
         </div>
-        <div>
-          <label htmlFor="features" className="block text-sm font-semibold text-gray-700">
-            Features (one per line)
-          </label>
-          <textarea
+        <div className="space-y-2">
+          <Label htmlFor="features">Features (one per line)</Label>
+          <Textarea
             id="features"
             name="features"
             rows={6}
             defaultValue={app.features?.join('\n')}
-            className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
             data-testid="apps-edit-features"
           />
         </div>
         <div className="grid gap-6 md:grid-cols-2">
-          <div>
-            <label htmlFor="appStoreURL" className="block text-sm font-semibold text-gray-700">
-              App Store URL
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="appStoreURL">App Store URL</Label>
+            <Input
               id="appStoreURL"
               name="appStoreURL"
               type="url"
               defaultValue={app.appStoreURL ?? ''}
-              className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
               data-testid="apps-edit-appstore"
             />
           </div>
-          <div>
-            <label htmlFor="githubURL" className="block text-sm font-semibold text-gray-700">
-              GitHub URL
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="githubURL">GitHub URL</Label>
+            <Input
               id="githubURL"
               name="githubURL"
               type="url"
               defaultValue={app.githubURL ?? ''}
-              className="mt-1 w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
               data-testid="apps-edit-github"
             />
           </div>

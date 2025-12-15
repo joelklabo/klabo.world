@@ -2,26 +2,10 @@
 
 import { useCallback, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 type Tone = 'indigo' | 'purple' | 'emerald';
-
-const inputTone: Record<Tone, string> = {
-  indigo: 'focus:border-indigo-500 focus:ring-indigo-500',
-  purple: 'focus:border-purple-500 focus:ring-purple-500',
-  emerald: 'focus:border-emerald-500 focus:ring-emerald-500',
-};
-
-const buttonTone: Record<Tone, string> = {
-  indigo: 'border-indigo-200 text-indigo-600',
-  purple: 'border-purple-200 text-purple-600',
-  emerald: 'border-emerald-200 text-emerald-600',
-};
-
-const successTone: Record<Tone, string> = {
-  indigo: 'text-indigo-600',
-  purple: 'text-purple-600',
-  emerald: 'text-emerald-600',
-};
 
 type Props = {
   name: string;
@@ -42,7 +26,6 @@ export function ImageUploadField({
   defaultValue = '',
   helperText,
   placeholder,
-  tone = 'indigo',
   inputTestId,
   uploadButtonTestId,
 }: Props) {
@@ -91,35 +74,32 @@ export function ImageUploadField({
   }, []);
 
   return (
-    <div>
-      <label className="block text-sm font-semibold text-gray-700">
-        {label}
-        <input
-          type="text"
-          name={name}
-          value={value}
-          placeholder={placeholder}
-          onChange={(event) => setValue(event.target.value)}
-          className={`mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 ${inputTone[tone]}`}
-          data-testid={inputTestId}
-        />
-      </label>
-      {helperText && <p className="mt-1 text-xs text-gray-500">{helperText}</p>}
-      <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">
+    <div className="space-y-2">
+      <Label htmlFor={name}>{label}</Label>
+      <Input
+        id={name}
+        type="text"
+        name={name}
+        value={value}
+        placeholder={placeholder}
+        onChange={(event) => setValue(event.target.value)}
+        data-testid={inputTestId}
+      />
+      {helperText && <p className="text-xs text-muted-foreground">{helperText}</p>}
+      <div className="flex flex-wrap items-center gap-3 text-sm">
         <Button
           type="button"
           onClick={onBrowseClick}
           variant="outline"
           size="xs"
-          className={`bg-transparent hover:bg-gray-50 ${buttonTone[tone]}`}
           data-testid={uploadButtonTestId}
         >
           Upload image
         </Button>
         <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={onFileChange} />
-        {status === 'uploading' && <span className="text-gray-500">Uploading…</span>}
-        {status === 'success' && uploadedPath && <span className={successTone[tone]}>Uploaded! {uploadedPath}</span>}
-        {status === 'error' && error && <span className="text-red-600">{error}</span>}
+        {status === 'uploading' && <span className="text-muted-foreground">Uploading…</span>}
+        {status === 'success' && uploadedPath && <span className="text-primary">Uploaded! {uploadedPath}</span>}
+        {status === 'error' && error && <span className="text-destructive">{error}</span>}
       </div>
     </div>
   );

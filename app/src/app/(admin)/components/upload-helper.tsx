@@ -52,23 +52,23 @@ export function MarkdownUploadHelper({ buttonTestId, statusTestId }: Props) {
   );
 
   return (
-    <div className="rounded-2xl border border-emerald-100 bg-emerald-50/60 p-4 text-sm text-emerald-900">
+    <div className="rounded-2xl border border-primary/20 bg-primary/10 p-4 text-sm text-foreground">
       <p className="font-semibold">Need to embed images in Markdown?</p>
-      <p className="mt-1 text-emerald-700">Upload here and we&apos;ll copy the URL to your clipboard.</p>
+      <p className="mt-1 text-muted-foreground">Upload here and we&apos;ll copy the URL to your clipboard.</p>
       <div className="mt-3 flex flex-wrap items-center gap-3">
         <Button
           type="button"
           onClick={() => inputRef.current?.click()}
           variant="outline"
           size="sm"
-          className="bg-transparent border-emerald-300 text-emerald-700 hover:bg-white"
           data-testid={buttonTestId}
         >
           Upload + copy URL
         </Button>
         <input type="file" className="hidden" accept="image/*" ref={inputRef} onChange={onFileChange} />
-        {status === 'uploading' && <span data-testid={statusTestId}>Uploading…</span>}
-        {status !== 'idle' && status !== 'uploading' && <span data-testid={statusTestId}>{message}</span>}
+        {status === 'uploading' && <span className="text-muted-foreground" data-testid={statusTestId}>Uploading…</span>}
+        {status === 'success' && <span className="text-primary" data-testid={statusTestId}>{message}</span>}
+        {status === 'error' && <span className="text-destructive" data-testid={statusTestId}>{message}</span>}
       </div>
     </div>
   );

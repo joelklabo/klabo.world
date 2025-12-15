@@ -2,18 +2,10 @@
 
 import { useCallback, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 
 type Tone = 'indigo' | 'emerald';
-
-const inputTone: Record<Tone, string> = {
-  indigo: 'focus:border-indigo-500 focus:ring-indigo-500',
-  emerald: 'focus:border-emerald-500 focus:ring-emerald-500',
-};
-
-const badgeTone: Record<Tone, string> = {
-  indigo: 'bg-indigo-50 text-indigo-700',
-  emerald: 'bg-emerald-50 text-emerald-700',
-};
 
 type Props = {
   name: string;
@@ -36,7 +28,6 @@ export function MarkdownField({
   placeholder,
   helperText,
   rows = 18,
-  tone = 'indigo',
   textareaTestId,
   previewButtonTestId,
 }: Props) {
@@ -74,36 +65,40 @@ export function MarkdownField({
 
   return (
     <div className="space-y-4">
-      <label className="block text-sm font-semibold text-gray-700">
-        {label}
-        <textarea
+      <div className="space-y-2">
+        <Label htmlFor={name}>{label}</Label>
+        <Textarea
+          id={name}
           name={name}
           rows={rows}
           value={value}
           placeholder={placeholder}
           onChange={(event) => setValue(event.target.value)}
-          className={`mt-2 w-full rounded-2xl border border-gray-300 px-4 py-3 font-mono text-sm focus:outline-none focus:ring-2 ${inputTone[tone]}`}
+          className="font-mono"
           data-testid={textareaTestId}
         />
-      </label>
-      <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600">
-        {helperText && <p className="text-xs text-gray-500">{helperText}</p>}
+      </div>
+      <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+        {helperText && <p className="text-xs text-muted-foreground">{helperText}</p>}
         <Button
           type="button"
           onClick={handlePreview}
           variant="outline"
           size="sm"
-          className="bg-transparent border-gray-300 text-gray-700 hover:bg-gray-50"
           data-testid={previewButtonTestId}
         >
           {status === 'loading' ? 'Rendering preview…' : 'Refresh preview'}
         </Button>
-        {status === 'success' && <span className={`rounded-full px-3 py-1 text-xs font-semibold ${badgeTone[tone]}`}>Preview updated</span>}
-        {status === 'error' && error && <span className="text-red-600">{error}</span>}
+        {status === 'success' && (
+          <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold text-foreground">
+            Preview updated
+          </span>
+        )}
+        {status === 'error' && error && <span className="text-destructive">{error}</span>}
       </div>
       {previewHTML && (
-        <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-          <p className="text-xs uppercase tracking-widest text-gray-400">Preview</p>
+        <div className="rounded-2xl border border-border/60 bg-card p-4 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Preview</p>
           <div className="prose prose-sm mt-3 max-w-none dark:prose-invert" dangerouslySetInnerHTML={{ __html: previewHTML }} />
         </div>
       )}
