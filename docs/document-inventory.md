@@ -67,6 +67,7 @@ This file is the single source of truth for every Markdown document that should 
 - `secrets.md` – Secrets management across local env, GitHub Actions, and Azure.
 - `db-recovery.md` – Database recovery steps.
 - `feature-flags.md` – Provider-agnostic feature flag guidance.
+- `github-projects.md` – Refreshing the GitHub projects snapshot used by home + `/projects`.
 - (retired) `build-modularity.md` – superseded by Turbo task changes and build cache epics.
 
 ### docs/security

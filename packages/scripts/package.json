@@ -7,6 +7,7 @@
     "build": "tsc -p tsconfig.json",
     "lint": "echo \"(scripts lint placeholder)\"",
     "export-legacy": "ts-node --esm src/export-legacy.ts",
+    "github-snapshot": "ts-node --esm src/refresh-github-projects.ts",
     "new-post": "ts-node --esm src/create-post.ts",
     "infra-deploy": "ts-node --esm src/infra-deploy.ts",
     "deploy": "ts-node --esm src/deploy.ts",

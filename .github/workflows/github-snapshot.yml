@@ -1,0 +1,54 @@
+name: Refresh GitHub projects snapshot
+
+on:
+  schedule:
+    - cron: '0 6 * * 1' # Mondays 06:00 UTC
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+env:
+  GITHUB_OWNER: joelklabo
+
+jobs:
+  refresh:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 10.22.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.11.1
+          cache: pnpm
+
+      - run: corepack enable
+
+      - name: Install dependencies
+        run: pnpm install --ignore-scripts
+
+      - name: Refresh GitHub snapshot
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pnpm --filter @klaboworld/scripts run github-snapshot -- --owner "${GITHUB_OWNER}" --limit 24
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: 'chore: refresh GitHub projects snapshot'
+          title: 'chore: refresh GitHub projects snapshot'
+          body: |
+            Automated snapshot refresh for `app/data/github/${{ env.GITHUB_OWNER }}.json`.
+
+            This keeps the landing page and `/projects` stable even when GitHub rate-limits unauthenticated requests.
+          branch: chore/refresh-github-projects-snapshot
+          delete-branch: true
