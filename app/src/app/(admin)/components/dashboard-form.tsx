@@ -1,3 +1,7 @@
+'use client';
+
+import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { MarkdownField } from './markdown-field';
 import { MarkdownUploadHelper } from './upload-helper';
 import { Input } from '@/components/ui/input';
@@ -5,9 +9,10 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { type Dashboard } from '@/lib/dashboards';
+import { type ActionState } from '../admin/dashboards/actions';
 
 type DashboardFormProps = {
-  action: (formData: FormData) => Promise<void>;
+  action: (state: ActionState, formData: FormData) => Promise<ActionState>;
   submitLabel: string;
   dashboard?: Dashboard;
   includeSlugField?: boolean;
@@ -20,9 +25,25 @@ const panelTypeOptions = [
   { value: 'link', label: 'External Link – CTA button to another dashboard' },
 ];
 
-export function DashboardForm({ action, submitLabel, dashboard, includeSlugField = false }: DashboardFormProps) {
+function SubmitButton({ label }: { label: string }) {
+  const { pending } = useFormStatus();
   return (
-    <form action={action} className="space-y-6">
+    <Button type="submit" disabled={pending} data-testid="dashboard-submit">
+      {pending ? 'Saving...' : label}
+    </Button>
+  );
+}
+
+export function DashboardForm({ action, submitLabel, dashboard, includeSlugField = false }: DashboardFormProps) {
+  const [state, formAction] = useActionState(action, { message: '', success: false });
+
+  return (
+    <form action={formAction} className="space-y-6">
+      {state.message && !state.success && (
+        <div className="rounded-md bg-destructive/15 p-3 text-sm text-destructive">
+          {state.message}
+        </div>
+      )}
       {includeSlugField && dashboard && <input type="hidden" name="slug" value={dashboard.slug} />}
       <div className="space-y-2">
         <Label htmlFor="title">Title</Label>
@@ -169,9 +190,7 @@ export function DashboardForm({ action, submitLabel, dashboard, includeSlugField
       </div>
 
       <div>
-        <Button type="submit" data-testid="dashboard-submit">
-          {submitLabel}
-        </Button>
+        <SubmitButton label={submitLabel} />
       </div>
     </form>
   );

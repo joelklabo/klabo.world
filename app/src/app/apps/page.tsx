@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { getApps } from "@/lib/apps";
@@ -35,10 +36,11 @@ export default function AppsPage() {
             >
               <div className="flex items-start gap-4">
                 {app.icon && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
+                  <Image
                     src={app.icon}
                     alt={app.name}
+                    width={56}
+                    height={56}
                     className="h-14 w-14 rounded-2xl object-cover"
                   />
                 )}

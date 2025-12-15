@@ -2,116 +2,163 @@
 
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { after } from 'next/server';
+import { z } from 'zod';
 import {
   createDashboard,
   deleteDashboard,
   updateDashboard,
   type DashboardInput,
-  type DashboardType,
 } from '@/lib/dashboardPersistence';
 import { requireAdminSession } from '@/lib/adminSession';
 import { withSpan } from '@/lib/telemetry';
 
-const PANEL_TYPES: DashboardType[] = ['chart', 'logs', 'embed', 'link'];
-
-function normalizePanelType(value: string | null): DashboardType {
-  const fallback: DashboardType = 'chart';
-  if (!value) return fallback;
-  const normalized = value.trim().toLowerCase();
-  return (PANEL_TYPES.find((type) => type === normalized) ?? fallback) as DashboardType;
-}
-
-function enforcePanelRequirements(input: DashboardInput) {
-  if ((input.panelType === 'chart' || input.panelType === 'logs') && !input.kqlQuery) {
-    throw new Error('KQL query is required for chart/log panels.');
-  }
-  if (input.panelType === 'embed' && !input.iframeUrl) {
-    throw new Error('Iframe URL is required for embed panels.');
-  }
-  if (input.panelType === 'link' && !input.externalUrl) {
-    throw new Error('External URL is required for link panels.');
-  }
-}
-
-function sanitizeByPanelType(input: DashboardInput): DashboardInput {
-  const next: DashboardInput = { ...input };
-  if (next.panelType !== 'embed') {
-    next.iframeUrl = null;
-  }
-  if (next.panelType !== 'link') {
-    next.externalUrl = null;
-  }
-  if (next.panelType !== 'chart' && next.panelType !== 'logs') {
-    next.kqlQuery = null;
-  }
-  return next;
-}
-
-async function extractDashboardInput(formData: FormData): Promise<DashboardInput> {
-  await requireAdminSession();
-  const title = formData.get('title')?.toString().trim();
-  const summary = formData.get('summary')?.toString().trim();
-  const panelType = normalizePanelType(formData.get('panelType')?.toString() ?? null);
-  if (!title || !summary) {
-    throw new Error('Title and summary are required');
-  }
-  const tags = Array.from(
-    new Set(
-      formData
-        .get('tags')
-        ?.toString()
+const dashboardSchema = z
+  .object({
+    title: z.string().min(1, 'Title is required'),
+    summary: z.string().min(1, 'Summary is required'),
+    panelType: z.enum(['chart', 'logs', 'embed', 'link']),
+    tags: z.string().transform((val) =>
+      val
         .split(',')
-        .map((tag) => tag.trim())
-        .filter(Boolean) ?? [],
+        .map((t) => t.trim())
+        .filter(Boolean),
     ),
+    chartType: z.string().optional().nullable(),
+    kqlQuery: z.string().optional().nullable(),
+    iframeUrl: z.string().url('Invalid URL').optional().nullable(),
+    externalUrl: z.string().url('Invalid URL').optional().nullable(),
+    refreshIntervalSeconds: z.coerce.number().min(0).optional().nullable(),
+    notes: z.string().optional().nullable(),
+  })
+  .refine(
+    (data) => {
+      if ((data.panelType === 'chart' || data.panelType === 'logs') && !data.kqlQuery) {
+        return false;
+      }
+      if (data.panelType === 'embed' && !data.iframeUrl) {
+        return false;
+      }
+      if (data.panelType === 'link' && !data.externalUrl) {
+        return false;
+      }
+      return true;
+    },
+    {
+      message: 'Missing required fields for selected panel type',
+      path: ['panelType'],
+    },
   );
-  const chartType = formData.get('chartType')?.toString().trim() || null;
-  const kqlQuery = formData.get('kqlQuery')?.toString().trim() || null;
-  const iframeUrl = formData.get('iframeUrl')?.toString().trim() || null;
-  const externalUrl = formData.get('externalUrl')?.toString().trim() || null;
-  const refreshRaw = formData.get('refreshIntervalSeconds')?.toString().trim();
-  const refreshIntervalSeconds = refreshRaw ? Math.max(Number(refreshRaw) || 0, 0) : null;
-  const notes = formData.get('notes')?.toString().trim() || null;
-  const input: DashboardInput = {
-    title,
-    summary,
-    panelType,
-    tags,
-    chartType,
-    kqlQuery,
-    iframeUrl,
-    externalUrl,
-    refreshIntervalSeconds,
-    notes,
-  };
-  enforcePanelRequirements(input);
-  return sanitizeByPanelType(input);
-}
 
-export async function createDashboardAction(formData: FormData) {
-  const input = await extractDashboardInput(formData);
-  const { slug } = await withSpan('admin.dashboard.create', async (span) => {
-    span.setAttributes({ 'dashboard.title': input.title });
-    return createDashboard(input);
-  });
-  revalidatePath('/admin/dashboards');
-  revalidatePath(`/admin/dashboards/${slug}`);
-  redirect(`/admin/dashboards/${slug}`);
-}
+export type ActionState = {
+  message: string;
+  errors?: Record<string, string[]>;
+  success?: boolean;
+};
 
-export async function updateDashboardAction(formData: FormData) {
-  const slug = formData.get('slug')?.toString().trim();
-  if (!slug) {
-    throw new Error('Missing dashboard slug');
+export async function extractDashboardInput(formData: FormData): Promise<DashboardInput> {
+  await requireAdminSession();
+  const raw = Object.fromEntries(formData.entries());
+  const result = dashboardSchema.safeParse(raw);
+
+  if (!result.success) {
+    const errorMessages = result.error.flatten().fieldErrors;
+    // Throwing here to be caught by the action handler, but ideally we'd return the errors directly
+    // For now, we'll join them into a string to fit the existing error handling structure
+    // or we can update the caller to handle ZodError.
+    // Given the current structure, let's throw a formatted error or handle it in the action.
+    throw new Error(JSON.stringify(errorMessages));
   }
-  const input = await extractDashboardInput(formData);
-  await withSpan('admin.dashboard.update', async (span) => {
-    span.setAttributes({ 'dashboard.slug': slug });
-    await updateDashboard(slug, input);
-  });
-  revalidatePath('/admin/dashboards');
-  revalidatePath(`/admin/dashboards/${slug}`);
-  redirect(`/admin/dashboards/${slug}`);
+
+  return result.data as DashboardInput;
+}
+
+export async function createDashboardAction(
+  prevState: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  let slug: string | undefined;
+  try {
+    await requireAdminSession();
+    const raw = Object.fromEntries(formData.entries());
+    const result = dashboardSchema.safeParse(raw);
+
+    if (!result.success) {
+      return {
+        message: 'Validation failed',
+        errors: result.error.flatten().fieldErrors,
+        success: false,
+      };
+    }
+
+    const input = result.data as DashboardInput;
+    const createResult = await createDashboard(input);
+    slug = createResult.slug;
+
+    after(async () => {
+      await withSpan('admin.dashboard.create', async (span) => {
+        span.setAttributes({ 'dashboard.title': input.title, 'dashboard.slug': slug! });
+      });
+    });
+
+    revalidatePath('/admin/dashboards');
+    revalidatePath(`/admin/dashboards/${slug}`);
+  } catch (error) {
+    return {
+      message: error instanceof Error ? error.message : 'Failed to create dashboard',
+      success: false,
+    };
+  }
+  if (slug) {
+    redirect(`/admin/dashboards/${slug}`);
+  }
+  return { message: 'Dashboard created', success: true };
+}
+
+export async function updateDashboardAction(
+  prevState: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  let slug: string | undefined;
+  try {
+    await requireAdminSession();
+    slug = formData.get('slug')?.toString().trim();
+    if (!slug) {
+      throw new Error('Missing dashboard slug');
+    }
+
+    const raw = Object.fromEntries(formData.entries());
+    const result = dashboardSchema.safeParse(raw);
+
+    if (!result.success) {
+      return {
+        message: 'Validation failed',
+        errors: result.error.flatten().fieldErrors,
+        success: false,
+      };
+    }
+
+    const input = result.data as DashboardInput;
+    await updateDashboard(slug!, input);
+
+    after(async () => {
+      await withSpan('admin.dashboard.update', async (span) => {
+        span.setAttributes({ 'dashboard.slug': slug! });
+      });
+    });
+
+    revalidatePath('/admin/dashboards');
+    revalidatePath(`/admin/dashboards/${slug}`);
+  } catch (error) {
+    return {
+      message: error instanceof Error ? error.message : 'Failed to update dashboard',
+      success: false,
+    };
+  }
+  if (slug) {
+    redirect(`/admin/dashboards/${slug}`);
+  }
+  return { message: 'Dashboard updated', success: true };
 }
 
 export async function deleteDashboardAction(formData: FormData) {
@@ -120,10 +167,14 @@ export async function deleteDashboardAction(formData: FormData) {
   if (!slug) {
     throw new Error('Missing dashboard slug');
   }
-  await withSpan('admin.dashboard.delete', async (span) => {
-    span.setAttributes({ 'dashboard.slug': slug });
-    await deleteDashboard(slug);
+  await deleteDashboard(slug);
+
+  after(async () => {
+    await withSpan('admin.dashboard.delete', async (span) => {
+      span.setAttributes({ 'dashboard.slug': slug });
+    });
   });
+
   revalidatePath('/admin/dashboards');
   redirect('/admin/dashboards');
 }

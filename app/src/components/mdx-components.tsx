@@ -2,6 +2,7 @@
 
 import { ClipboardDocumentIcon, ClipboardDocumentCheckIcon } from '@heroicons/react/24/outline';
 import Highlight, { defaultProps, type Language, type PrismTheme } from 'prism-react-renderer';
+import Image from 'next/image';
 import Link from 'next/link';
 import type { Route } from 'next';
 import React, { useState, type ReactNode } from 'react';
@@ -137,12 +138,13 @@ function ProseImage(props: { src?: string | null; alt?: string; title?: string }
     <figure className="group relative my-10">
       <Link href={src as Route} target="_blank" rel="noreferrer" className="pointer-events-auto">
         <div className="relative overflow-hidden rounded-[32px] border border-white/10 bg-gradient-to-b from-slate-900 via-slate-950 to-black shadow-2xl shadow-black/60 transition hover:-translate-y-1.5 hover:shadow-[0_30px_50px_rgba(2,6,23,0.75)]">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src={src}
             alt={alt ?? 'Illustration'}
             title={title}
-            loading="lazy"
+            width={1600}
+            height={900}
+            sizes="(max-width: 768px) 100vw, 800px"
             className="w-full max-h-[70vh] object-contain transition duration-300 group-hover:scale-105 md:max-h-[80vh]"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/50 opacity-0 transition group-hover:opacity-100" />

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -43,10 +44,11 @@ export default async function AppDetailPage({
         <div className="rounded-3xl border border-white/8 bg-white/5 p-8 shadow-[0_24px_70px_rgba(12,19,38,0.55)]">
           <div className="flex items-start gap-4">
             {app.icon && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <Image
                 src={app.icon}
                 alt={app.name}
+                width={64}
+                height={64}
                 className="h-16 w-16 rounded-2xl object-cover"
               />
             )}
@@ -100,11 +102,13 @@ export default async function AppDetailPage({
               <h2 className="text-2xl font-semibold">Screenshots</h2>
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
                 {app.screenshots.map((shot) => (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
+                  <Image
                     key={shot}
                     src={shot}
                     alt={`${app.name} screenshot`}
+                    width={600}
+                    height={400}
+                    sizes="(max-width: 640px) 100vw, 50vw"
                     className="rounded-2xl border border-white/10 shadow-lg shadow-black/40"
                   />
                 ))}
