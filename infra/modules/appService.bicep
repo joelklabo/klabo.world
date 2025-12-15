@@ -45,6 +45,8 @@ resource webApp 'Microsoft.Web/sites@2023-12-01' = {
     httpsOnly: true
     siteConfig: {
       linuxFxVersion: linuxFxVersion
+      alwaysOn: true
+      healthCheckPath: '/api/health'
       appSettings: [
         {
           name: 'DOCKER_REGISTRY_SERVER_URL'
