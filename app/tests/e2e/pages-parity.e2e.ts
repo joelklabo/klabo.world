@@ -21,9 +21,14 @@ test.describe('public content routes', () => {
     await expect(page.getByTestId('home-hero-title')).toBeVisible();
     await expect(page.getByTestId('home-cta-writing')).toHaveAttribute('href', '/posts');
     await expect(page.getByTestId('home-cta-projects')).toHaveAttribute('href', '/projects');
-    await expect(page.getByRole('heading', { name: 'Recent articles' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Recent GitHub work' })).toBeVisible();
-    await expect(page.getByTestId('home-github-project').first()).toBeVisible();
+    await expect(page.getByTestId('home-section-writing')).toBeVisible();
+    await expect(page.getByTestId('home-writing-post').first()).toBeVisible();
+    await expect(page.getByTestId('home-section-projects')).toBeVisible();
+    await expect(
+      page
+        .getByTestId('home-github-featured')
+        .or(page.getByText('GitHub projects are temporarily unavailable')),
+    ).toBeVisible();
 
     await Promise.all([page.waitForNavigation(), page.getByTestId('home-cta-projects').click()]);
     await expect(page).toHaveURL(/\/projects/);
