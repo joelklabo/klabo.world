@@ -36,7 +36,37 @@ export async function generateMetadata({ params }: { params: Params | Promise<Pa
   if (!post) {
     return { title: 'Post not found' };
   }
-  return { title: `${post.title} • klabo.world`, description: post.summary };
+
+  const canonicalPath = `/posts/${post.slug}`;
+  const publishedTime = post.publishDate ?? post.date;
+
+  return {
+    title: `${post.title} • klabo.world`,
+    description: post.summary,
+    alternates: { canonical: canonicalPath },
+    openGraph: {
+      type: 'article',
+      url: canonicalPath,
+      title: post.title,
+      description: post.summary,
+      publishedTime,
+      tags: post.tags ?? [],
+      images: [
+        {
+          url: `${canonicalPath}/opengraph-image`,
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.summary,
+      images: [`${canonicalPath}/opengraph-image`],
+    },
+  };
 }
 
 export default async function PostPage({ params }: { params: Params | Promise<Params> }) {

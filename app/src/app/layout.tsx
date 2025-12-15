@@ -3,14 +3,39 @@ import { JetBrains_Mono, Manrope } from 'next/font/google';
 import './globals.css';
 import { GlobalNavigation } from './components/global-navigation';
 import ApplicationInsightsConnection from './components/ApplicationInsights';
+import { env } from '@/lib/env';
 
 export const metadata: Metadata = {
+  metadataBase: new URL(env.SITE_URL),
   title: {
     template: '%s • klabo.world',
     default: 'klabo.world • Bitcoin, Lightning, Nostr & Agentic Engineering',
   },
   description:
     'klabo.world covers Bitcoin, Lightning, Nostr, and agentic engineering with tutorials, project updates, and AI context libraries.',
+  openGraph: {
+    type: 'website',
+    url: env.SITE_URL,
+    siteName: 'klabo.world',
+    title: 'klabo.world • Bitcoin, Lightning, Nostr & Agentic Engineering',
+    description:
+      'klabo.world covers Bitcoin, Lightning, Nostr, and agentic engineering with tutorials, project updates, and AI context libraries.',
+    images: [
+      {
+        url: '/opengraph-image',
+        width: 1200,
+        height: 630,
+        alt: 'klabo.world',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'klabo.world • Bitcoin, Lightning, Nostr & Agentic Engineering',
+    description:
+      'klabo.world covers Bitcoin, Lightning, Nostr, and agentic engineering with tutorials, project updates, and AI context libraries.',
+    images: ['/opengraph-image'],
+  },
 };
 
 const manrope = Manrope({
