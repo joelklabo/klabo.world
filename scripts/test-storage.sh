@@ -1,5 +1,7 @@
 #!/bin/bash
-# Test persistent storage behavior
+# Test persistent storage behavior for the Azure-like Docker volumes.
+
+set -euo pipefail
 
 echo "🗄️  Testing Persistent Storage"
 echo "============================="
@@ -57,20 +59,15 @@ else
     echo "❌ File did not persist after restart!"
 fi
 
-# Test volume information
-echo ""
-echo "Volume information:"
-docker volume inspect klaboworld_azure-storage 2>/dev/null || docker volume inspect klabo-world_azure-storage 2>/dev/null || echo "Volume not found"
-
 # Test upload directory permissions
 echo ""
 echo "Directory permissions:"
 docker-compose -f docker-compose.prod.yml exec -T app-prod-test ls -ld /home/site/wwwroot/uploads
 
-# Test writing as vapor user
+# Test writing inside the container
 echo ""
-echo "Testing write permissions as vapor user:"
-docker-compose -f docker-compose.prod.yml exec -T app-prod-test sh -c "whoami && touch /home/site/wwwroot/uploads/vapor-test.txt && echo '✅ Can write as vapor user' || echo '❌ Cannot write as vapor user'"
+echo "Testing write permissions inside container:"
+docker-compose -f docker-compose.prod.yml exec -T app-prod-test sh -c "whoami && touch /home/site/wwwroot/uploads/container-write-test.txt && echo '✅ Can write to uploads dir'"
 
 # Cleanup
 echo ""
@@ -79,11 +76,3 @@ docker-compose -f docker-compose.prod.yml down
 
 echo ""
 echo "✅ Persistent storage testing complete!"
-echo ""
-echo "💡 For manual upload testing:"
-echo "   1. Run: make test-azure-local"
-echo "   2. Visit: http://localhost:8080/admin"
-echo "   3. Upload an image"
-echo "   4. Note the image URL"
-echo "   5. Restart the container"
-echo "   6. Verify the image is still accessible"

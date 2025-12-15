@@ -1,30 +1,51 @@
-version: '3.8'
+name: klaboworld-prod
 
 services:
-  app-prod:
-    build:
-      context: .
-      args:
-        BUILD_VERSION: ${BUILD_VERSION:-test-local}
-        BUILD_DATE: ${BUILD_DATE:-test-date}
+  # Production-like local run for the Next.js container (simulates Azure App Service).
+  app-prod-test:
+    image: ghcr.io/joelklabo/klaboworld:${IMAGE_TAG:-latest}
+    platform: linux/amd64
     environment:
-      # These simulate Azure App Service environment variables
+      # App Service routing expects the container to listen on this port.
       WEBSITES_PORT: 8080
-      SMTP_HOST: ${SMTP_HOST}
-      SMTP_USERNAME: ${SMTP_USERNAME}
-      SMTP_PASSWORD: ${SMTP_PASSWORD}
-      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      PORT: 8080
+
+      # URLs used for canonical links + NextAuth callbacks.
+      SITE_URL: ${SITE_URL:-http://localhost:8080}
+      NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:8080}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:-test-secret}
+
+      # Admin auth (NextAuth credentials provider).
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@example.com}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-change-me}
+
+      # Persisted paths (simulates Azure /home storage).
+      DATABASE_URL: ${DATABASE_URL:-file:/home/site/wwwroot/data/app.db}
       UPLOADS_DIR: ${UPLOADS_DIR:-/home/site/wwwroot/uploads}
-      GA_TRACKING_ID: ${GA_TRACKING_ID}
+
+      # Optional observability.
+      APPLICATIONINSIGHTS_CONNECTION_STRING: ${APPLICATIONINSIGHTS_CONNECTION_STRING:-}
+      LOG_ANALYTICS_WORKSPACE_ID: ${LOG_ANALYTICS_WORKSPACE_ID:-}
+      LOG_ANALYTICS_SHARED_KEY: ${LOG_ANALYTICS_SHARED_KEY:-}
+      APPINSIGHTS_APP_ID: ${APPINSIGHTS_APP_ID:-}
+      APPINSIGHTS_API_KEY: ${APPINSIGHTS_API_KEY:-}
+
+      # Optional GitHub integration (avoids rate limits for /api/gists).
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+      GITHUB_OWNER: ${GITHUB_OWNER:-}
+      GITHUB_REPO: ${GITHUB_REPO:-}
+
       BUILD_VERSION: ${BUILD_VERSION:-test-local}
       BUILD_DATE: ${BUILD_DATE:-test-date}
     ports:
       - "8080:8080"
     volumes:
       # Simulate Azure's persistent storage at /home
+      - production-data:/home/site/wwwroot/data
       - production-uploads:/home/site/wwwroot/uploads
-    command: ["serve", "--env", "production", "--hostname", "0.0.0.0", "--port", "8080"]
 
 volumes:
+  production-data:
+    driver: local
   production-uploads:
     driver: local

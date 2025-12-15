@@ -1,35 +1,25 @@
 #!/bin/bash
 
 # test-azure-deployment.sh
-# Test the application in an Azure-like environment locally
+# Test the Next.js container in an Azure-like environment locally
 
-set -e
+set -euo pipefail
 
 echo "🔍 Testing Azure-like deployment locally..."
 echo "==========================================="
 
-# Check if .env.production exists
-if [ ! -f .env.production ]; then
-    echo "❌ Error: .env.production not found!"
-    echo "Please copy .env.production.example to .env.production and configure it."
-    exit 1
-fi
-
-# Export production environment variables
-export $(cat .env.production | grep -v '^#' | xargs)
-
 # Set a test build version if not provided
 export BUILD_VERSION=${BUILD_VERSION:-"test-$(date +%Y%m%d-%H%M%S)"}
 
-echo "📦 Building production Docker image..."
+echo "📦 Pulling production container image..."
 echo "BUILD_VERSION: $BUILD_VERSION"
 
-# Build and run the production container
-docker-compose -f docker-compose.prod.yml build
+# Pull and run the production container image
+docker-compose -f docker-compose.prod.yml pull app-prod-test
 
 echo ""
 echo "🚀 Starting production container..."
-docker-compose -f docker-compose.prod.yml up -d
+docker-compose -f docker-compose.prod.yml up -d app-prod-test
 
 echo ""
 echo "⏳ Waiting for application to start..."
@@ -39,41 +29,31 @@ sleep 10
 echo ""
 echo "🧪 Running health checks..."
 
-# Check if the server is responding
-RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/ || echo "000")
+check_endpoint() {
+  local path="$1"
+  local expected="${2:-200}"
+  local status
+  status=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:8080${path}" || echo "000")
+  if [ "$status" = "$expected" ]; then
+    echo "✅ ${path} (HTTP ${status})"
+  else
+    echo "❌ ${path} (HTTP ${status}, expected ${expected})"
+    return 1
+  fi
+}
 
-if [ "$RESPONSE" = "200" ]; then
-    echo "✅ Application is responding (HTTP $RESPONSE)"
-    
-    # Check if build version appears in footer
-    BUILD_CHECK=$(curl -s http://localhost:8080/ | grep -o "Build: $BUILD_VERSION" || echo "")
-    if [ -n "$BUILD_CHECK" ]; then
-        echo "✅ Build version found in footer: $BUILD_VERSION"
-    else
-        echo "⚠️  Build version not found in footer"
-    fi
-    
-    # Test static assets
-    STATIC_CHECK=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/css/style.css || echo "000")
-    if [ "$STATIC_CHECK" = "200" ]; then
-        echo "✅ Static assets serving correctly"
-    else
-        echo "❌ Static assets not accessible"
-    fi
-    
-    # Test admin panel (should return 401 without auth)
-    ADMIN_CHECK=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/admin || echo "000")
-    if [ "$ADMIN_CHECK" = "401" ]; then
-        echo "✅ Admin panel is protected"
-    else
-        echo "⚠️  Admin panel returned unexpected status: $ADMIN_CHECK"
-    fi
-    
+check_endpoint "/" 200
+check_endpoint "/posts" 200
+check_endpoint "/apps" 200
+check_endpoint "/admin" 200
+check_endpoint "/api/health" 200
+
+HEALTH_JSON=$(curl -s http://localhost:8080/api/health)
+if echo "$HEALTH_JSON" | grep -q "\"version\":\"${BUILD_VERSION}\""; then
+  echo "✅ /api/health reports version: ${BUILD_VERSION}"
 else
-    echo "❌ Application is not responding (HTTP $RESPONSE)"
-    echo ""
-    echo "📋 Container logs:"
-    docker-compose -f docker-compose.prod.yml logs --tail=50
+  echo "⚠️  /api/health did not report expected version"
+  echo "$HEALTH_JSON"
 fi
 
 echo ""

@@ -51,8 +51,9 @@ if command -v docker &> /dev/null; then
     
     # Try to build Docker image
     echo "Testing Docker build..."
-    if docker-compose build app > /dev/null 2>&1; then
+    if docker build -t klaboworld-deploy-check . > /dev/null 2>&1; then
         echo "✅ Docker image builds successfully"
+        docker rmi klaboworld-deploy-check > /dev/null 2>&1 || true
     else
         echo "❌ Docker build failed"
         ((ERRORS++))

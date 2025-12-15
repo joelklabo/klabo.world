@@ -1,8 +1,10 @@
 #!/bin/bash
-# Test environment variable injection
+# Test environment variable injection for the Next.js production container.
 
-echo "🔍 Testing Environment Variables"
-echo "==============================="
+set -euo pipefail
+
+echo "🔍 Testing Container Environment Variables (Next.js)"
+echo "==================================================="
 
 # Start container
 echo "Starting container..."
@@ -24,27 +26,36 @@ echo ""
 echo "Environment Variable Status:"
 echo "---------------------------"
 
-# Test each environment variable
-echo -n "SMTP_HOST: "
-docker-compose -f docker-compose.prod.yml exec -T app-prod-test sh -c 'echo $SMTP_HOST'
+# Print non-secret env vars (do not print secrets)
+echo -n "PORT: "
+docker-compose -f docker-compose.prod.yml exec -T app-prod-test sh -c 'echo ${PORT:-"Not set"}'
 
-echo -n "SMTP_USERNAME: "
-docker-compose -f docker-compose.prod.yml exec -T app-prod-test sh -c 'echo $SMTP_USERNAME'
-
-echo -n "Admin Password: "
-docker-compose -f docker-compose.prod.yml exec -T app-prod-test sh -c 'test -n "$ADMIN_PASSWORD" && echo "✅ Set" || echo "❌ Not set"'
-
-echo -n "Uploads Directory: "
-docker-compose -f docker-compose.prod.yml exec -T app-prod-test sh -c 'echo $UPLOADS_DIR'
-
-echo -n "GA Tracking ID: "
-docker-compose -f docker-compose.prod.yml exec -T app-prod-test sh -c 'echo ${GA_TRACKING_ID:-"Not set"}'
-
-echo -n "Build Version: "
-docker-compose -f docker-compose.prod.yml exec -T app-prod-test sh -c 'echo ${BUILD_VERSION:-"Not set"}'
-
-echo -n "Websites Port: "
+echo -n "WEBSITES_PORT: "
 docker-compose -f docker-compose.prod.yml exec -T app-prod-test sh -c 'echo ${WEBSITES_PORT:-"Not set"}'
+
+echo -n "SITE_URL: "
+docker-compose -f docker-compose.prod.yml exec -T app-prod-test sh -c 'echo ${SITE_URL:-"Not set"}'
+
+echo -n "NEXTAUTH_URL: "
+docker-compose -f docker-compose.prod.yml exec -T app-prod-test sh -c 'echo ${NEXTAUTH_URL:-"Not set"}'
+
+echo -n "NEXTAUTH_SECRET: "
+docker-compose -f docker-compose.prod.yml exec -T app-prod-test sh -c 'test -n "${NEXTAUTH_SECRET:-}" && echo "✅ Set" || echo "❌ Not set"'
+
+echo -n "ADMIN_EMAIL: "
+docker-compose -f docker-compose.prod.yml exec -T app-prod-test sh -c 'echo ${ADMIN_EMAIL:-"Not set"}'
+
+echo -n "ADMIN_PASSWORD: "
+docker-compose -f docker-compose.prod.yml exec -T app-prod-test sh -c 'test -n "${ADMIN_PASSWORD:-}" && echo "✅ Set" || echo "❌ Not set"'
+
+echo -n "DATABASE_URL: "
+docker-compose -f docker-compose.prod.yml exec -T app-prod-test sh -c 'echo ${DATABASE_URL:-"Not set"}'
+
+echo -n "UPLOADS_DIR: "
+docker-compose -f docker-compose.prod.yml exec -T app-prod-test sh -c 'echo ${UPLOADS_DIR:-"Not set"}'
+
+echo -n "BUILD_VERSION: "
+docker-compose -f docker-compose.prod.yml exec -T app-prod-test sh -c 'echo ${BUILD_VERSION:-"Not set"}'
 
 echo ""
 echo "Testing API Endpoints:"
@@ -58,15 +69,6 @@ else
     echo "❌ Failed"
 fi
 
-# Test admin page (should require auth)
-echo -n "Admin page (no auth): "
-HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/admin)
-if [ "$HTTP_CODE" = "303" ] || [ "$HTTP_CODE" = "401" ]; then
-    echo "✅ Protected (HTTP $HTTP_CODE)"
-else
-    echo "❌ Not protected (HTTP $HTTP_CODE)"
-fi
-
 # Test posts page
 echo -n "Posts page: "
 if curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/posts | grep -q "200"; then
@@ -75,14 +77,25 @@ else
     echo "❌ Failed"
 fi
 
-# Check for build version in footer
-echo ""
-echo "Checking build version in footer:"
-BUILD_VERSION_CHECK=$(docker-compose -f docker-compose.prod.yml exec -T app-prod-test sh -c 'echo $BUILD_VERSION')
-if curl -s http://localhost:8080 | grep -q "Build:.*${BUILD_VERSION_CHECK}"; then
-    echo "✅ Build version appears in footer: $BUILD_VERSION_CHECK"
+# Test admin page (unauthenticated should show the login form)
+echo -n "Admin page (no auth): "
+HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/admin)
+if [ "$HTTP_CODE" = "200" ]; then
+    echo "✅ OK (HTTP $HTTP_CODE)"
 else
-    echo "❌ Build version not found in footer"
+    echo "❌ Failed (HTTP $HTTP_CODE)"
+fi
+
+# Check for build version in /api/health
+echo ""
+echo "Checking build version in /api/health:"
+BUILD_VERSION_CHECK=$(docker-compose -f docker-compose.prod.yml exec -T app-prod-test sh -c 'echo ${BUILD_VERSION:-""}')
+HEALTH_JSON=$(curl -s http://localhost:8080/api/health)
+if echo "$HEALTH_JSON" | grep -q "\"version\":\"${BUILD_VERSION_CHECK}\""; then
+    echo "✅ /api/health reports version: $BUILD_VERSION_CHECK"
+else
+    echo "❌ /api/health did not report expected version"
+    echo "$HEALTH_JSON"
 fi
 
 # Cleanup
