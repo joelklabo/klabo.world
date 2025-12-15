@@ -55,16 +55,32 @@ test('nostr share publishes a real note to relays (requires NOSTR_E2E_REAL=1)', 
   });
 
   await page.addInitScript(() => {
+    type NostrEventTemplate = {
+      kind: number;
+      tags: string[][];
+      content: string;
+      created_at: number;
+    };
+
+    type NostrSignedEvent = NostrEventTemplate & {
+      id: string;
+      sig: string;
+      pubkey: string;
+    };
+
     const w = window as unknown as {
       __nostr_test_getPublicKey: () => Promise<string>;
-      __nostr_test_signEvent: (evt: any) => Promise<any>;
-      __nostr_test_lastSignedEvent?: any;
-      nostr?: any;
+      __nostr_test_signEvent: (evt: NostrEventTemplate) => Promise<NostrSignedEvent>;
+      __nostr_test_lastSignedEvent?: NostrSignedEvent;
+      nostr?: {
+        getPublicKey: () => Promise<string>;
+        signEvent: (evt: NostrEventTemplate) => Promise<NostrSignedEvent>;
+      };
     };
 
     w.nostr = {
       getPublicKey: async () => await w.__nostr_test_getPublicKey(),
-      signEvent: async (evt: any) => {
+      signEvent: async (evt: NostrEventTemplate) => {
         const signed = await w.__nostr_test_signEvent(evt);
         w.__nostr_test_lastSignedEvent = signed;
         return signed;
@@ -81,9 +97,9 @@ test('nostr share publishes a real note to relays (requires NOSTR_E2E_REAL=1)', 
   await shareButton.click();
   await expect(page.getByText('Shared to Nostr.')).toBeVisible({ timeout: 30_000 });
 
-  const { eventId } = await page.evaluate(() => {
-    const last = (window as any).__nostr_test_lastSignedEvent;
-    return { eventId: last?.id as string | undefined };
+  const { eventId } = await page.evaluate<{ eventId?: string }>(() => {
+    const w = window as unknown as { __nostr_test_lastSignedEvent?: { id?: string } };
+    return { eventId: w.__nostr_test_lastSignedEvent?.id };
   });
   expect(eventId).toBeTruthy();
 
