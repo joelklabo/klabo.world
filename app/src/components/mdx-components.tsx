@@ -78,14 +78,12 @@ function CodeBlock({ children }: { children: ReactNode }) {
             <code className={className} style={{ ...style, paddingTop: '0.5rem' }}>
               {tokens.map((line, lineIndex) => {
                 const lineProps = getLineProps({ line, key: lineIndex });
-                const { key: lineKey, ...lineRest } = lineProps;
-                void lineKey;
+                const { key: _lineKey, ...lineRest } = lineProps;
                 return (
                   <div key={`line-${lineIndex}`} {...lineRest} className="flex">
                     {line.map((token, tokenIndex) => {
                       const tokenProps = getTokenProps({ token, key: tokenIndex });
-                      const { key: tokenKey, ...tokenRest } = tokenProps;
-                      void tokenKey;
+                      const { key: _tokenKey, ...tokenRest } = tokenProps;
                       return <span key={`token-${lineIndex}-${tokenIndex}`} {...tokenRest} />;
                     })}
                   </div>

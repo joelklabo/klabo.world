@@ -16,6 +16,11 @@ run-dev:
 	PNPM_HOME=${PNPM_HOME:-$HOME/.local/share/pnpm} mise exec -- pnpm --filter app dev
 
 # Test suites
+audit:
+	pnpm lint:dead
+	pnpm lint:dupes
+	just lint
+
 lint:
 	mise exec -- pnpm turbo lint
 

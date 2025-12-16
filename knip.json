@@ -1,0 +1,13 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": ["app/src/app/**/*.{ts,tsx}", "packages/**/*.{ts,tsx}", "scripts/**/*.{js,ts}"],
+  "project": ["app/**/*.{ts,tsx}", "packages/**/*.{ts,tsx}", "scripts/**/*.{js,ts}"],
+  "ignore": ["**/*.d.ts", "**/generated/**", "app/.contentlayer/**"],
+  "ignoreDependencies": ["eslint-config-next", "postcss", "autoprefixer"],
+  "workspaces": {
+    "app": {
+      "entry": ["src/app/**/*.{ts,tsx}", "next.config.ts"],
+      "project": ["src/**/*.{ts,tsx}"]
+    }
+  }
+}
