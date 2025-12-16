@@ -6,6 +6,9 @@ const nextConfig: NextConfig = {
   typedRoutes: true,
   turbopack: {},
   output: 'standalone',
+  reactCompiler: true,
+  // Note: cacheComponents disabled due to incompatibility with dynamic='force-dynamic' in admin routes
+  // cacheComponents: true,
   images: {
     formats: ['image/avif', 'image/webp'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],

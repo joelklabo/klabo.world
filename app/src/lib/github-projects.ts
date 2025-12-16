@@ -190,7 +190,6 @@ export async function getPinnedGitHubProjects(
     method: "POST",
     headers: getGitHubHeaders(),
     body: JSON.stringify({ query, variables: { login: owner, first: limit } }),
-    next: { revalidate: 60 * 60 },
   });
 
   const payload = (await response.json()) as GitHubGraphQLResponse<PinnedQueryData>;
@@ -219,7 +218,6 @@ export async function getRecentGitHubProjects(
 
   const response = await fetch(url.toString(), {
     headers: getGitHubHeaders(),
-    next: { revalidate: 60 * 60 },
   });
   if (!response.ok) {
     throw new Error(`GitHub repos request failed (${response.status})`);

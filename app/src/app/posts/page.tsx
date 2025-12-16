@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Metadata } from 'next';
 import { getPosts } from '@/lib/posts';
+import { ViewTransitionLink } from '@/components/view-transition-link';
 
 export const metadata: Metadata = {
   title: 'Posts',
@@ -47,9 +48,9 @@ export default function PostsIndex() {
                   )}
                 </div>
                 <h2 className="mt-3 text-xl font-semibold leading-snug text-white">
-                  <Link href={`/posts/${post.slug}`} className="hover:text-amber-100">
+                  <ViewTransitionLink href={`/posts/${post.slug}`} className="hover:text-amber-100">
                     {post.title}
-                  </Link>
+                  </ViewTransitionLink>
                 </h2>
                 <p className="mt-2 text-sm text-slate-300 line-clamp-3">{post.summary}</p>
                 {post.tags && post.tags.length > 0 && (

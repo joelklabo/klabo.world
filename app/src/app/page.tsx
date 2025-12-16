@@ -5,6 +5,7 @@ import { getRecentPosts } from "@/lib/posts";
 import { getFeaturedGitHubProjects } from "@/lib/github-projects";
 import { GitHubProjectsShowcase } from "@/components/github-projects-showcase";
 import { Button } from "@/components/ui/button";
+import { ViewTransitionLink } from "@/components/view-transition-link";
 
 export const revalidate = 3600;
 
@@ -93,7 +94,7 @@ export default async function Home() {
               <div className="overflow-hidden rounded-3xl border border-border/70 bg-card/70 shadow-[0_18px_50px_rgba(6,10,20,0.4)]">
                 <div className="divide-y divide-border/40">
                   {recentPosts.map((post) => (
-                    <Link
+                    <ViewTransitionLink
                       key={post._id}
                       href={`/posts/${post.slug}` as Route}
                       data-testid="home-writing-post"
@@ -115,7 +116,7 @@ export default async function Home() {
                       <p className="mt-2 text-sm text-muted-foreground line-clamp-2">
                         {post.summary}
                       </p>
-                    </Link>
+                    </ViewTransitionLink>
                   ))}
                 </div>
               </div>
