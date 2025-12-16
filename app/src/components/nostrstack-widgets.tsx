@@ -607,7 +607,7 @@ export function NostrstackActionBar({
     let cancelled = false;
 
     const checkSigner = () => {
-      const signer = (globalThis as NostrWindow).nostr;
+      const signer = (globalThis as unknown as NostrWindow).nostr;
       if (!signer) {
         if (!cancelled) setSignerAvailable(false);
         return;
@@ -678,7 +678,7 @@ export function NostrstackActionBar({
       setShareError('NIP-07 signer required to share.');
       return;
     }
-    const signer = (globalThis as NostrWindow).nostr;
+    const signer = (globalThis as unknown as NostrWindow).nostr;
     if (!signer) {
       setShareError('NIP-07 signer required to share.');
       return;
@@ -1035,7 +1035,7 @@ export function NostrstackComments({ threadId, relays, canonicalUrl }: CommentsP
 
   useEffect(() => {
     // detect signer once
-    const signer = (globalThis.window === undefined ? null : (globalThis as NostrWindow).nostr);
+    const signer = (globalThis.window === undefined ? null : (globalThis as unknown as NostrWindow).nostr);
     if (signer) {
       signer
         .getPublicKey()
@@ -1069,7 +1069,7 @@ export function NostrstackComments({ threadId, relays, canonicalUrl }: CommentsP
     e.preventDefault();
     setError(null);
     if (!content.trim()) return;
-    const signer = (globalThis as NostrWindow).nostr;
+    const signer = (globalThis as unknown as NostrWindow).nostr;
     if (!signer) {
       setError('Nostr signer (NIP-07) required to post.');
       return;

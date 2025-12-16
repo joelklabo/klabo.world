@@ -12,9 +12,10 @@ test.describe('open graph metadata', () => {
     await expect(page.locator('meta[name="twitter:image"]').first()).toHaveAttribute('content', /og\.png/);
 
     const ogImage = page.locator('meta[property="og:image"]').first();
-    await expect(ogImage).toHaveAttribute('content', );
+    const ogImageUrl = await ogImage.getAttribute('content');
+    expect(ogImageUrl).toBeTruthy();
 
-    const res = await page.request.get(ogImage!);
+    const res = await page.request.get(ogImageUrl!);
     expect(res.ok()).toBe(true);
     expect(res.headers()['content-type']).toMatch(/image\//);
   });
@@ -31,8 +32,8 @@ test.describe('open graph metadata', () => {
 	    const ogImage = page.locator('meta[property="og:image"]').first();
 	    await expect(ogImage).toHaveAttribute('content', new RegExp(String.raw`/posts/${slug}/og\.png`));
 
-    const imageUrl = ogImage;
-    await expect(imageUrl).toHaveAttribute('content', );
+    const imageUrl = await ogImage.getAttribute('content');
+    expect(imageUrl).toBeTruthy();
 
     const res = await page.request.get(imageUrl!);
     expect(res.ok()).toBe(true);

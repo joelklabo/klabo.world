@@ -27,12 +27,12 @@ function SubmitButton({ label }: { label: string }) {
   );
 }
 
-function DeleteButton({ action }: { action: (state: ActionState, formData: FormData) => Promise<ActionState> }) {
+function DeleteButton({ action }: { action: (payload: FormData) => void }) {
   const { pending } = useFormStatus();
   return (
     <Button
       type="submit"
-      formAction={action as unknown as string} // React 19 types workaround
+      formAction={action}
       variant="destructive-outline"
       size="lg"
       disabled={pending}

@@ -81,7 +81,7 @@ export async function loadDashboardChartState(dashboard: Dashboard): Promise<Das
           value: normalizedValue,
         };
       })
-      .filter(Boolean);
+      .filter((point): point is DashboardChartPoint => point !== null);
 
     if (points.length === 0) {
       return { status: 'empty', reason: 'Query returned no data points.' };

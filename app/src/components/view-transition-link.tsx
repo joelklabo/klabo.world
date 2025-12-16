@@ -41,13 +41,15 @@ export function ViewTransitionLink({
     e.preventDefault();
 
     document.startViewTransition(() => {
-      router.push(href);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      router.push(href as any);
     });
   };
 
   return (
     <Link
-      href={href}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      href={href as any}
       onClick={handleClick}
       className={className}
       prefetch={prefetch}
