@@ -13,6 +13,12 @@ import {
 import { requireAdminSession } from '@/lib/adminSession';
 import { withSpan } from '@/lib/telemetry';
 
+const optionalUrl = z
+  .union([z.string().url('Invalid URL'), z.literal('')])
+  .optional()
+  .nullable()
+  .transform((value) => value || undefined);
+
 const dashboardSchema = z
   .object({
     title: z.string().min(1, 'Title is required'),
@@ -26,8 +32,8 @@ const dashboardSchema = z
     ),
     chartType: z.string().optional().nullable(),
     kqlQuery: z.string().optional().nullable(),
-    iframeUrl: z.string().url('Invalid URL').optional().nullable(),
-    externalUrl: z.string().url('Invalid URL').optional().nullable(),
+    iframeUrl: optionalUrl,
+    externalUrl: optionalUrl,
     refreshIntervalSeconds: z.coerce.number().min(0).optional().nullable(),
     notes: z.string().optional().nullable(),
   })

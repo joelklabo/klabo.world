@@ -58,6 +58,9 @@ export function PostForm({ upsertAction, deleteAction, initialData, mode }: Post
           {deleteState.message}
         </div>
       )}
+      {mode === 'edit' && initialData?.slug && (
+        <input type="hidden" name="slug" defaultValue={initialData.slug} />
+      )}
 
       <div className="space-y-2">
         <Label htmlFor="title">Title</Label>
@@ -168,7 +171,7 @@ export function PostForm({ upsertAction, deleteAction, initialData, mode }: Post
         {mode === 'edit' && deleteAction && (
           <DeleteButton action={deleteFormAction} />
         )}
-        <SubmitButton label="Save changes" />
+        <SubmitButton label={mode === 'edit' ? 'Save changes' : 'Publish post'} />
       </div>
     </form>
   );

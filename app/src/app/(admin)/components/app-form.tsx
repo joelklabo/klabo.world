@@ -18,10 +18,15 @@ type AppFormProps = {
   mode: 'create' | 'edit';
 };
 
-function SubmitButton({ label }: { label: string }) {
+type SubmitButtonProps = {
+  label: string;
+  testId?: string;
+};
+
+function SubmitButton({ label, testId }: SubmitButtonProps) {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" size="lg" disabled={pending} data-testid="apps-edit-submit">
+    <Button type="submit" size="lg" disabled={pending} data-testid={testId}>
       {pending ? 'Saving...' : label}
     </Button>
   );
@@ -51,6 +56,7 @@ export function AppForm({ upsertAction, deleteAction, initialData, mode }: AppFo
   // However, useActionState returns a wrapped action.
   // If we want to use deleteAction with useActionState, we need another hook call.
   const [deleteState, deleteFormAction] = useActionState(deleteAction || (async () => ({ message: '', success: false })), { message: '', success: false });
+  const testIdPrefix = mode === 'edit' ? 'apps-edit' : 'apps-new';
 
   return (
     <form action={formAction} className="space-y-6" data-testid="apps-edit-form">
@@ -64,11 +70,19 @@ export function AppForm({ upsertAction, deleteAction, initialData, mode }: AppFo
           {deleteState.message}
         </div>
       )}
-      
-      {initialData?.slug && (
-        <input type="hidden" name="slug" defaultValue={initialData.slug} data-testid="apps-edit-slug" />
-      )}
-      
+
+      <div className="space-y-2">
+        <Label htmlFor="slug">Slug (optional)</Label>
+        <Input
+          id="slug"
+          name="slug"
+          type="text"
+          defaultValue={initialData?.slug}
+          placeholder="my-app"
+          data-testid={`${testIdPrefix}-slug`}
+        />
+      </div>
+
       <div className="space-y-2">
         <Label htmlFor="name">Name</Label>
         <Input
@@ -77,7 +91,7 @@ export function AppForm({ upsertAction, deleteAction, initialData, mode }: AppFo
           type="text"
           defaultValue={initialData?.name}
           required
-          data-testid="apps-edit-name"
+          data-testid={`${testIdPrefix}-name`}
         />
         {state.errors?.name && <p className="text-xs text-destructive">{state.errors.name.join(', ')}</p>}
       </div>
@@ -86,26 +100,26 @@ export function AppForm({ upsertAction, deleteAction, initialData, mode }: AppFo
           <Label htmlFor="version">Version</Label>
           <Input
             id="version"
-            name="version"
-            type="text"
-            defaultValue={initialData?.version}
-            required
-            data-testid="apps-edit-version"
-          />
-          {state.errors?.version && <p className="text-xs text-destructive">{state.errors.version.join(', ')}</p>}
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="publishDate">Publish date</Label>
-          <Input
-            id="publishDate"
-            name="publishDate"
-            type="date"
-            defaultValue={initialData?.publishDate?.slice(0, 10)}
-            required
-            data-testid="apps-edit-publish-date"
-          />
-          {state.errors?.publishDate && <p className="text-xs text-destructive">{state.errors.publishDate.join(', ')}</p>}
-        </div>
+          name="version"
+          type="text"
+          defaultValue={initialData?.version}
+          required
+          data-testid={`${testIdPrefix}-version`}
+        />
+        {state.errors?.version && <p className="text-xs text-destructive">{state.errors.version.join(', ')}</p>}
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="publishDate">Publish date</Label>
+        <Input
+          id="publishDate"
+          name="publishDate"
+          type="date"
+          defaultValue={initialData?.publishDate?.slice(0, 10)}
+          required
+          data-testid={`${testIdPrefix}-publish-date`}
+        />
+        {state.errors?.publishDate && <p className="text-xs text-destructive">{state.errors.publishDate.join(', ')}</p>}
+      </div>
       </div>
       <div className="space-y-2">
         <Label htmlFor="fullDescription">Description</Label>
@@ -115,7 +129,7 @@ export function AppForm({ upsertAction, deleteAction, initialData, mode }: AppFo
           rows={5}
           defaultValue={initialData?.fullDescription}
           required
-          data-testid="apps-edit-description"
+          data-testid={`${testIdPrefix}-description`}
         />
         {state.errors?.fullDescription && <p className="text-xs text-destructive">{state.errors.fullDescription.join(', ')}</p>}
       </div>
@@ -126,7 +140,7 @@ export function AppForm({ upsertAction, deleteAction, initialData, mode }: AppFo
           name="features"
           rows={6}
           defaultValue={initialData?.features?.join('\n')}
-          data-testid="apps-edit-features"
+          data-testid={`${testIdPrefix}-features`}
         />
       </div>
       <div className="grid gap-6 md:grid-cols-2">
@@ -134,24 +148,24 @@ export function AppForm({ upsertAction, deleteAction, initialData, mode }: AppFo
           <Label htmlFor="appStoreURL">App Store URL</Label>
           <Input
             id="appStoreURL"
-            name="appStoreURL"
-            type="url"
-            defaultValue={initialData?.appStoreURL ?? ''}
-            data-testid="apps-edit-appstore"
-          />
-          {state.errors?.appStoreURL && <p className="text-xs text-destructive">{state.errors.appStoreURL.join(', ')}</p>}
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="githubURL">GitHub URL</Label>
+          name="appStoreURL"
+          type="url"
+          defaultValue={initialData?.appStoreURL ?? ''}
+          data-testid={`${testIdPrefix}-appstore`}
+        />
+        {state.errors?.appStoreURL && <p className="text-xs text-destructive">{state.errors.appStoreURL.join(', ')}</p>}
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="githubURL">GitHub URL</Label>
           <Input
             id="githubURL"
-            name="githubURL"
-            type="url"
-            defaultValue={initialData?.githubURL ?? ''}
-            data-testid="apps-edit-github"
-          />
-          {state.errors?.githubURL && <p className="text-xs text-destructive">{state.errors.githubURL.join(', ')}</p>}
-        </div>
+          name="githubURL"
+          type="url"
+          defaultValue={initialData?.githubURL ?? ''}
+          data-testid={`${testIdPrefix}-github`}
+        />
+        {state.errors?.githubURL && <p className="text-xs text-destructive">{state.errors.githubURL.join(', ')}</p>}
+      </div>
       </div>
       <div className="grid gap-6 md:grid-cols-2">
         <ImageUploadField
@@ -160,8 +174,8 @@ export function AppForm({ upsertAction, deleteAction, initialData, mode }: AppFo
           defaultValue={initialData?.icon ?? ''}
           helperText="Ideal size 512x512. Upload new assets or reuse /app-icons."
           tone="purple"
-          inputTestId="apps-edit-icon"
-          uploadButtonTestId="apps-edit-icon-upload"
+          inputTestId={`${testIdPrefix}-icon`}
+          uploadButtonTestId={`${testIdPrefix}-icon-upload`}
         />
         <ImageListUploadField
           name="screenshots"
@@ -169,15 +183,15 @@ export function AppForm({ upsertAction, deleteAction, initialData, mode }: AppFo
           defaultValue={initialData?.screenshots?.join('\n') ?? ''}
           helperText="Uploads append to the textarea automatically."
           tone="purple"
-          textareaTestId="apps-edit-screenshots"
-          uploadButtonTestId="apps-edit-screenshot-upload"
+          textareaTestId={`${testIdPrefix}-screenshots`}
+          uploadButtonTestId={`${testIdPrefix}-screenshot-upload`}
         />
       </div>
       <div className="flex justify-between gap-3">
         {mode === 'edit' && deleteAction && (
           <DeleteButton action={deleteFormAction} />
         )}
-        <SubmitButton label="Save changes" />
+        <SubmitButton label="Save changes" testId={`${testIdPrefix}-submit`} />
       </div>
     </form>
   );
