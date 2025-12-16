@@ -1,13 +1,75 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
-  "entry": ["app/src/app/**/*.{ts,tsx}", "packages/**/*.{ts,tsx}", "scripts/**/*.{js,ts}"],
-  "project": ["app/**/*.{ts,tsx}", "packages/**/*.{ts,tsx}", "scripts/**/*.{js,ts}"],
-  "ignore": ["**/*.d.ts", "**/generated/**", "app/.contentlayer/**"],
-  "ignoreDependencies": ["eslint-config-next", "postcss", "autoprefixer"],
   "workspaces": {
     "app": {
-      "entry": ["src/app/**/*.{ts,tsx}", "next.config.ts"],
-      "project": ["src/**/*.{ts,tsx}"]
+      "entry": ["src/app/**/*.{ts,tsx}", "next.config.ts", "contentlayer.config.ts"],
+      "project": ["src/**/*.{ts,tsx}"],
+      "ignore": [
+        "src/components/ui/card.tsx",
+        "src/components/ui/form.tsx",
+        "src/lib/blob-service.ts",
+        "src/lib/flags/types.ts",
+        "src/lib/github-service.ts",
+        "src/lib/rateLimiter.ts",
+        "src/server/trpc/caller.ts"
+      ],
+      "ignoreDependencies": [
+        "@azure/monitor-opentelemetry",
+        "@azure/storage-blob",
+        "@hookform/resolvers",
+        "@mdx-js/mdx",
+        "@next-auth/prisma-adapter",
+        "@octokit/rest",
+        "@trpc/client",
+        "import-in-the-middle",
+        "rate-limiter-flexible",
+        "react-hook-form",
+        "remark-frontmatter",
+        "remark-gfm",
+        "require-in-the-middle",
+        "@types/bcryptjs",
+        "baseline-browser-mapping",
+        "eslint-import-resolver-typescript",
+        "tailwindcss",
+        "tw-animate-css"
+      ]
+    },
+    "packages/scripts": {
+      "entry": ["src/**/*.ts"],
+      "ignore": ["src/refresh-github-projects.ts", "src/verify-contentlayer-schema.ts"]
     }
+  },
+  "ignore": [
+    "**/*.d.ts",
+    "**/generated/**",
+    "app/.contentlayer/**",
+    "scripts/load-smoke.js",
+    "contentlayer.config.ts",
+    "tailwind.config.ts"
+  ],
+  "ignoreDependencies": [
+    "eslint-config-next",
+    "postcss",
+    "autoprefixer",
+    "@azure/monitor-opentelemetry-exporter",
+    "@opentelemetry/auto-instrumentations-node",
+    "@opentelemetry/sdk-node",
+    "@playwright/test",
+    "@secretlint/secretlint-rule-preset-recommend",
+    "contentlayer",
+    "import-in-the-middle",
+    "playwright",
+    "require-in-the-middle",
+    "@types/react-dom",
+    "@klaboworld/config"
+  ],
+  "ignoreBinaries": ["just", "eslint"],
+  "rules": {
+    "exports": "warn",
+    "types": "warn",
+    "nsExports": "warn",
+    "classMembers": "warn",
+    "duplicates": "warn",
+    "enumMembers": "warn"
   }
 }
