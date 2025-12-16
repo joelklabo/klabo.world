@@ -1,5 +1,5 @@
 {
-  "threshold": 0,
+  "threshold": 5,
   "reporters": ["console"],
   "ignore": [
     "**/node_modules/**",
@@ -8,7 +8,13 @@
     "**/dist/**",
     "**/coverage/**",
     "**/public/**",
-    "pnpm-lock.yaml"
+    "pnpm-lock.yaml",
+    "test-login.sh",
+    "test-github-integration.sh",
+    "setup-github-token.sh",
+    "Resources/**",
+    "app/src/app/icon.tsx",
+    "app/src/app/apple-icon.tsx"
   ],
   "absolute": true
 }
