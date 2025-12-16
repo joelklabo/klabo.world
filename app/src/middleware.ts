@@ -1,6 +1,18 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 
-export function middleware() {
+const LEGACY_HOSTS = new Set(['klabo.blog', 'www.klabo.blog']);
+const PRIMARY_HOST = 'klabo.world';
+
+export function middleware(req: NextRequest) {
+  const rawHost = req.headers.get('host')?.toLowerCase() ?? '';
+  const host = rawHost.split(':')[0];
+  if (LEGACY_HOSTS.has(host)) {
+    const url = req.nextUrl.clone();
+    url.protocol = 'https:';
+    url.hostname = PRIMARY_HOST;
+    return NextResponse.redirect(url, 308);
+  }
+
   const response = NextResponse.next();
 
   // Security Headers
