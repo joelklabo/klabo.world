@@ -3,7 +3,7 @@ import { createElement } from 'react';
 import { env } from '@/lib/env';
 
 export const runtime = 'nodejs';
-export const revalidate = 86400;
+export const revalidate = 86_400;
 
 const bgTop = '#070B14';
 const bgBottom = '#0B1326';

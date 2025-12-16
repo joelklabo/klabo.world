@@ -58,7 +58,7 @@ function toFrontMatterValue(value: string | string[] | undefined | null): string
     return undefined;
   }
   if (Array.isArray(value)) {
-    return value.length ? `\n${value.map((item) => `  - ${item}`).join('\n')}` : undefined;
+    return value.length > 0 ? `\n${value.map((item) => `  - ${item}`).join('\n')}` : undefined;
   }
   return JSON.stringify(value);
 }
@@ -67,8 +67,7 @@ function buildMarkdown(slug: string, input: PostInput) {
   const today = new Date().toISOString().slice(0, 10);
   const lines = ['---'];
   lines.push(`title: ${JSON.stringify(input.title)}`);
-  lines.push(`summary: ${JSON.stringify(input.summary)}`);
-  lines.push(`date: ${today}`);
+  lines.push(`summary: ${JSON.stringify(input.summary)}`, `date: ${today}`);
   if (input.publishDate) {
     lines.push(`publishDate: ${input.publishDate}`);
   }
@@ -92,8 +91,7 @@ function buildMarkdown(slug: string, input: PostInput) {
    if (input.nostrstackEnabled === false) {
      lines.push('nostrstackEnabled: false');
    }
-  lines.push('---');
-  lines.push('');
+  lines.push('---', '');
   lines.push(input.body.trim());
   if (!input.body.endsWith('\n')) {
     lines.push('');
@@ -129,21 +127,13 @@ export async function createPost(input: PostInput) {
   const baseSlug = normalizeSlug(input.title);
   const slug = await resolveSlug(baseSlug);
   const markdown = buildMarkdown(slug, input);
-  if (shouldUseGitHub()) {
-    await writeGitHubFile(slug, markdown);
-  } else {
-    await writeLocalFile(slug, markdown);
-  }
+  await (shouldUseGitHub() ? writeGitHubFile(slug, markdown) : writeLocalFile(slug, markdown));
   return { slug };
 }
 
 export async function updatePost(slug: string, input: PostInput) {
   const markdown = buildMarkdown(slug, input);
-  if (shouldUseGitHub()) {
-    await writeGitHubFile(slug, markdown);
-  } else {
-    await writeLocalFile(slug, markdown);
-  }
+  await (shouldUseGitHub() ? writeGitHubFile(slug, markdown) : writeLocalFile(slug, markdown));
 }
 
 export async function deletePost(slug: string) {

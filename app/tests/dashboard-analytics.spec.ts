@@ -69,7 +69,7 @@ describe('dashboard analytics config', () => {
 
     const fetchMock = vi
       .fn()
-      .mockResolvedValue(new Response(JSON.stringify(mockResponse), { status: 200, headers: { 'Content-Type': 'application/json' } }));
+      .mockResolvedValue(Response.json(mockResponse, { status: 200, headers: { 'Content-Type': 'application/json' } }));
     vi.stubGlobal('fetch', fetchMock);
 
     const { loadDashboardChartState } = await import('../src/lib/dashboardCharts');
@@ -100,7 +100,7 @@ describe('dashboard analytics config', () => {
 
     const fetchMock = vi
       .fn()
-      .mockResolvedValue(new Response(JSON.stringify(mockResponse), { status: 200, headers: { 'Content-Type': 'application/json' } }));
+      .mockResolvedValue(Response.json(mockResponse, { status: 200, headers: { 'Content-Type': 'application/json' } }));
     vi.stubGlobal('fetch', fetchMock);
 
     const { loadDashboardLogs } = await import('../src/lib/dashboardLogs');

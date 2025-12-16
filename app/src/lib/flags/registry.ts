@@ -31,7 +31,7 @@ function ensureValidDates(definitions: FlagDefinition[]) {
   for (const def of definitions) {
     const date = new Date(def.expiry);
     if (Number.isNaN(date.getTime())) {
-      throw new Error(`Invalid expiry date for flag ${def.key}: ${def.expiry}`);
+      throw new TypeError(`Invalid expiry date for flag ${def.key}: ${def.expiry}`);
     }
   }
 }

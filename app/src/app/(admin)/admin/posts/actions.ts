@@ -39,8 +39,7 @@ export async function createPostAction(
     // We can manually set it to 'false' if missing, or let Zod handle optional.
     // But Zod coerce boolean treats "on" as true, missing as undefined.
     // Let's ensure it's handled correctly.
-    if (!raw.nostrstackEnabled) raw.nostrstackEnabled = 'false';
-    else raw.nostrstackEnabled = 'true';
+    raw.nostrstackEnabled = raw.nostrstackEnabled ? 'true' : 'false';
 
     const result = postSchema.safeParse(raw);
 
@@ -100,8 +99,7 @@ export async function updatePostAction(
     }
 
     const raw = Object.fromEntries(formData.entries());
-    if (!raw.nostrstackEnabled) raw.nostrstackEnabled = 'false';
-    else raw.nostrstackEnabled = 'true';
+    raw.nostrstackEnabled = raw.nostrstackEnabled ? 'true' : 'false';
 
     const result = postSchema.safeParse(raw);
 

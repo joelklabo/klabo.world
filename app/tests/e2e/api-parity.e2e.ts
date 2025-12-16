@@ -17,8 +17,8 @@ test.describe('Phase 3 public APIs', () => {
     const tagsPayload = await tags.json();
     expect(Array.isArray(tagsPayload.combined)).toBe(true);
     expect(tagsPayload.combined.length).toBeGreaterThan(0);
-    const knownTags = ['ios', 'bitcoin', 'lightning'];
-    const hasKnownTag = tagsPayload.combined.some((tag: { tag: string }) => knownTags.includes(tag.tag.toLowerCase()));
+    const knownTags = new Set(['ios', 'bitcoin', 'lightning']);
+    const hasKnownTag = tagsPayload.combined.some((tag: { tag: string }) => knownTags.has(tag.tag.toLowerCase()));
     expect(hasKnownTag).toBe(true);
 
     const health = await request.get('/api/health');

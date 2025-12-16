@@ -111,7 +111,7 @@ export default async function OpenGraphImage({
           </div>
 
           <div style={{ display: 'flex', gap: 12, marginTop: 'auto', flexWrap: 'wrap' }}>
-            {tags.length ? (
+            {tags.length > 0 ? (
               tags.map((tag) => (
                 <div
                   key={tag}

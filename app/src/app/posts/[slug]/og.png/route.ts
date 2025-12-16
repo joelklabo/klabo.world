@@ -4,7 +4,7 @@ import { createElement } from 'react';
 import { env } from '@/lib/env';
 
 export const runtime = 'nodejs';
-export const revalidate = 86400;
+export const revalidate = 86_400;
 
 type Params = { slug: string };
 
@@ -165,7 +165,7 @@ export async function GET(_req: Request, context: { params: Params | Promise<Par
         createElement(
           'div',
           { style: { display: 'flex', gap: 12, marginTop: 'auto', flexWrap: 'wrap' } },
-          ...(tags.length
+          ...(tags.length > 0
             ? tags.map((tag) =>
                 createElement(
                   'div',

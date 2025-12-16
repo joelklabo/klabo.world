@@ -19,7 +19,7 @@ export async function register() {
 
   try {
     await sdk.start();
-  } catch (err) {
-    console.error('[otel] failed to start', err);
+  } catch (error) {
+    console.error('[otel] failed to start', error);
   }
 }

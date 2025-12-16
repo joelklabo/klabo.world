@@ -71,13 +71,13 @@ function mockRedis(seed: Record<string, string>) {
     const store = new Map<string, string>(Object.entries(seed));
     const match = (pattern: string) => {
       const prefix = pattern.replace('*', '');
-      return Array.from(store.keys()).filter((key) => key.startsWith(prefix));
+      return [...store.keys()].filter((key) => key.startsWith(prefix));
     };
 
     return {
       createClient: () => ({
         isOpen: true,
-        connect: vi.fn().mockResolvedValue(undefined),
+        connect: vi.fn().mockResolvedValue(),
         get: vi.fn((key: string) => Promise.resolve(store.get(key) ?? null)),
         mGet: vi.fn((keys: string[]) => Promise.resolve(keys.map((k) => store.get(k) ?? null))),
         keys: vi.fn((pattern: string) => Promise.resolve(match(pattern))),

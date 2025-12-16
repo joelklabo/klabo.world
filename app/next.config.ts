@@ -1,4 +1,4 @@
-import path from "path";
+import path from "node:path";
 import { withContentlayer } from "next-contentlayer";
 import type { NextConfig } from "next";
 

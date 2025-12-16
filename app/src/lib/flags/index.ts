@@ -113,14 +113,14 @@ class RedisFlagAdapter implements FlagAdapter {
     if (!connected) return {};
     const pattern = REDIS_PREFIX + (prefix ? `${prefix}*` : "*");
     const keys = await this.client.keys(pattern);
-    if (!keys.length) return {};
+    if (keys.length === 0) return {};
     const values = await this.client.mGet(keys);
     const results: Record<string, FlagAdapterResult> = {};
-    keys.forEach((k, idx) => {
+    for (const [idx, k] of keys.entries()) {
       const keyWithoutPrefix = k.replace(REDIS_PREFIX, "");
       const raw = values[idx];
       if (raw === null) {
-        return;
+        continue;
       }
       const parsed = safelyParse(raw as string);
       const value = (parsed ?? raw) as FlagValue;
@@ -128,7 +128,7 @@ class RedisFlagAdapter implements FlagAdapter {
         value,
         source: "redis",
       };
-    });
+    }
     return results;
   }
 }

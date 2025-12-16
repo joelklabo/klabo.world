@@ -16,9 +16,9 @@ export function getPostTagCloud(limit?: number): TagCount[] {
 export function getCombinedTagCloud(limit?: number): TagCount[] {
   const combined: Record<string, number> = {};
   const merge = (record: Record<string, number>) => {
-    Object.entries(record).forEach(([tag, count]) => {
+    for (const [tag, count] of Object.entries(record)) {
       combined[tag] = (combined[tag] ?? 0) + count;
-    });
+    }
   };
   merge(getPostTagCounts());
   return toArray(combined, limit);

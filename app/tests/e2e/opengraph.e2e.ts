@@ -11,8 +11,8 @@ test.describe('open graph metadata', () => {
     await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute('content', 'summary_large_image');
     await expect(page.locator('meta[name="twitter:image"]').first()).toHaveAttribute('content', /og\.png/);
 
-    const ogImage = await page.locator('meta[property="og:image"]').first().getAttribute('content');
-    expect(ogImage).toBeTruthy();
+    const ogImage = page.locator('meta[property="og:image"]').first();
+    await expect(ogImage).toHaveAttribute('content', );
 
     const res = await page.request.get(ogImage!);
     expect(res.ok()).toBe(true);
@@ -29,10 +29,10 @@ test.describe('open graph metadata', () => {
 	    await expect(ogTitle).toHaveAttribute('content', /Agentically Engineering Past Procrastination/);
 
 	    const ogImage = page.locator('meta[property="og:image"]').first();
-	    await expect(ogImage).toHaveAttribute('content', new RegExp(`/posts/${slug}/og\\.png`));
+	    await expect(ogImage).toHaveAttribute('content', new RegExp(String.raw`/posts/${slug}/og\.png`));
 
-    const imageUrl = await ogImage.getAttribute('content');
-    expect(imageUrl).toBeTruthy();
+    const imageUrl = ogImage;
+    await expect(imageUrl).toHaveAttribute('content', );
 
     const res = await page.request.get(imageUrl!);
     expect(res.ok()).toBe(true);

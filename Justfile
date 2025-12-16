@@ -19,6 +19,9 @@ run-dev:
 audit:
 	pnpm lint:dead
 	pnpm lint:dupes
+	pnpm lint:secrets
+	pnpm lint:style
+	pnpm lint:deps
 	just lint
 
 lint:

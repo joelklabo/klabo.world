@@ -14,7 +14,7 @@ test.describe('global navigation', () => {
       const href = await link.getAttribute('href');
       await Promise.all([page.waitForNavigation(), link.click()]);
       if (href) {
-        await expect(page).toHaveURL(new RegExp(href.replace('/', '\\/')));
+        await expect(page).toHaveURL(new RegExp(href.replace('/', String.raw`\/`)));
       }
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
     }
@@ -42,9 +42,9 @@ test.describe('admin navigation', () => {
     await Promise.all([page.waitForNavigation(), page.getByTestId('admin-login-submit').click()]);
 
     await expect(page).toHaveURL(/\/admin$/);
-    await expect(page.getByRole('button', { name: 'Sign out' })).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('button', { name: 'Sign out' })).toBeVisible({ timeout: 10_000 });
     const adminNav = page.getByTestId('admin-nav');
-    await expect(adminNav.getByTestId('admin-nav-dashboard')).toBeVisible({ timeout: 10000 });
+    await expect(adminNav.getByTestId('admin-nav-dashboard')).toBeVisible({ timeout: 10_000 });
 
     const adminLinks: Array<{ id: string; path: RegExp }> = [
       { id: 'dashboard', path: /\/admin$/ },

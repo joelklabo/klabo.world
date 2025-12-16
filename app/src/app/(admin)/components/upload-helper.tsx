@@ -31,7 +31,7 @@ export function MarkdownUploadHelper({ buttonTestId, statusTestId }: Props) {
         throw new Error(data?.error || 'Upload failed');
       }
       if (typeof navigator !== 'undefined' && navigator.clipboard) {
-        await navigator.clipboard.writeText(data.url).catch(() => undefined);
+        await navigator.clipboard.writeText(data.url).catch(() => {});
       }
       setStatus('success');
       setMessage(`Copied ${data.url} to clipboard`);

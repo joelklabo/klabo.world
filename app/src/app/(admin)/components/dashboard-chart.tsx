@@ -75,7 +75,7 @@ export function DashboardChart({ data, chartType = 'line', valueLabel }: Dashboa
             {commonChildren}
             <Area type="monotone" dataKey="value" stroke="#4f46e5" fill="rgba(79,70,229,0.15)" strokeWidth={3} />
           </AreaChart>
-        ) : normalizedType === 'bar' ? (
+        ) : (normalizedType === 'bar' ? (
           <BarChart data={data}>
             {commonChildren}
             <Bar dataKey="value" fill="#4f46e5" radius={[6, 6, 0, 0]} />
@@ -85,7 +85,7 @@ export function DashboardChart({ data, chartType = 'line', valueLabel }: Dashboa
             {commonChildren}
             <Line type="monotone" dataKey="value" stroke="#4f46e5" strokeWidth={3} dot={{ r: 3 }} activeDot={{ r: 5 }} />
           </LineChart>
-        )}
+        ))}
       </ResponsiveContainer>
     </div>
   );

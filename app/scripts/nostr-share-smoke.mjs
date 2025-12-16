@@ -22,7 +22,7 @@ const relays = relaysRaw
   .map((entry) => entry.trim())
   .filter(Boolean);
 
-if (!relays.length) {
+if (relays.length === 0) {
   console.error('No relays provided via NOSTR_RELAYS');
   process.exit(1);
 }

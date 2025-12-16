@@ -52,9 +52,9 @@ export function DashboardLogsPanel({
       typeof refreshIntervalSeconds === "number" &&
       refreshIntervalSeconds > 0
     ) {
-      return Math.max(refreshIntervalSeconds * 1000, 15000);
+      return Math.max(refreshIntervalSeconds * 1000, 15_000);
     }
-    return 30000;
+    return 30_000;
   }, [refreshIntervalSeconds]);
 
   const fetchLogs = useCallback(async () => {
@@ -95,13 +95,13 @@ export function DashboardLogsPanel({
       if (json.status === "error") {
         setError(json.message);
       }
-    } catch (err) {
-      if ((err as { name?: string }).name === "AbortError") {
+    } catch (error_) {
+      if ((error_ as { name?: string }).name === "AbortError") {
         return;
       }
       setError(
-        err instanceof Error
-          ? err.message
+        error_ instanceof Error
+          ? error_.message
           : "Unknown error while fetching logs.",
       );
     } finally {

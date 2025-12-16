@@ -61,8 +61,8 @@ jobs:
         run: pnpm --filter app exec prisma generate
       - name: Feature flag metadata check
         run: pnpm flags:check
-      - name: Lint
-        run: pnpm turbo lint
+      - name: Lint & Audit
+        run: pnpm check:all
       - name: Unit tests
         run: pnpm turbo test --filter=app
       - name: Build Next.js app

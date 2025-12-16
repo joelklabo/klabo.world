@@ -68,7 +68,7 @@ test('nostr share publishes a real note to relays (requires NOSTR_E2E_REAL=1)', 
       pubkey: string;
     };
 
-    const w = window as unknown as {
+    const w = globalThis as unknown as {
       __nostr_test_getPublicKey: () => Promise<string>;
       __nostr_test_signEvent: (evt: NostrEventTemplate) => Promise<NostrSignedEvent>;
       __nostr_test_lastSignedEvent?: NostrSignedEvent;
@@ -105,7 +105,7 @@ test('nostr share publishes a real note to relays (requires NOSTR_E2E_REAL=1)', 
     .toBeGreaterThanOrEqual(beforeShareCount + 1);
 
   const { eventId } = await page.evaluate<{ eventId?: string }>(() => {
-    const w = window as unknown as { __nostr_test_lastSignedEvent?: { id?: string } };
+    const w = globalThis as unknown as { __nostr_test_lastSignedEvent?: { id?: string } };
     return { eventId: w.__nostr_test_lastSignedEvent?.id };
   });
   expect(eventId).toBeTruthy();

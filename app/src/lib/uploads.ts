@@ -21,10 +21,10 @@ function resolveUploadsDir() {
 }
 
 function buildLocalUrl(filename: string): string {
-  const normalized = env.UPLOADS_DIR.replace(/^\.\//, '').replace(/\\/g, '/');
+  const normalized = env.UPLOADS_DIR.replace(/^\.\//, '').replaceAll('\\', '/');
   if (normalized.startsWith('public/')) {
     const relative = normalized.slice('public'.length).replace(/^\//, '');
-    return `/${relative ? `${relative}/` : ''}${filename}`.replace(/\/+/g, '/');
+    return `/${relative ? `${relative}/` : ''}${filename}`.replaceAll(/\/+/g, '/');
   }
   return `/uploads/${filename}`;
 }

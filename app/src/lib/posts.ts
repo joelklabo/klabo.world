@@ -29,10 +29,10 @@ export function getPostBySlug(slug: string): Post | undefined {
 
 export function getPostTagCounts(): Record<string, number> {
   return getPosts().reduce<Record<string, number>>((acc, post) => {
-    post.tags?.forEach((tag) => {
+    if (post.tags) for (const tag of post.tags) {
       const normalized = tag.trim();
       acc[normalized] = (acc[normalized] ?? 0) + 1;
-    });
+    }
     return acc;
   }, {});
 }
@@ -73,13 +73,13 @@ async function readDiskPosts(exclude: Set<string>): Promise<AdminPostSummary[]> 
       const data = parsed.data as Record<string, unknown>;
       const title = typeof data.title === 'string' ? data.title : slug;
       const summary = typeof data.summary === 'string' ? data.summary : '';
-      const tags = Array.isArray(data.tags) ? data.tags.map((tag) => String(tag)) : undefined;
+      const tags = Array.isArray(data.tags) ? data.tags.map(String) : undefined;
       const date = typeof data.date === 'string' ? data.date : new Date().toISOString().slice(0, 10);
       const publishDate = typeof data.publishDate === 'string' ? data.publishDate : null;
       const lightningAddress = typeof data.lightningAddress === 'string' ? data.lightningAddress : null;
       const nostrPubkey = typeof data.nostrPubkey === 'string' ? data.nostrPubkey : null;
       const nostrRelays = Array.isArray(data.nostrRelays)
-        ? data.nostrRelays.map((relay) => String(relay)).filter(Boolean)
+        ? data.nostrRelays.map(String).filter(Boolean)
         : undefined;
       const nostrstackEnabled =
         typeof data.nostrstackEnabled === 'boolean' ? data.nostrstackEnabled : undefined;
@@ -151,14 +151,14 @@ export async function getEditablePostBySlug(slug: string): Promise<EditablePost 
     const data = parsed.data as Record<string, unknown>;
     const title = typeof data.title === 'string' ? data.title : slug;
     const summary = typeof data.summary === 'string' ? data.summary : '';
-    const tags = Array.isArray(data.tags) ? data.tags.map((tag) => String(tag)) : undefined;
+    const tags = Array.isArray(data.tags) ? data.tags.map(String) : undefined;
     const date = typeof data.date === 'string' ? data.date : new Date().toISOString().slice(0, 10);
     const publishDate = typeof data.publishDate === 'string' ? data.publishDate : null;
     const featuredImage = typeof data.featuredImage === 'string' ? data.featuredImage : null;
     const lightningAddress = typeof data.lightningAddress === 'string' ? data.lightningAddress : null;
     const nostrPubkey = typeof data.nostrPubkey === 'string' ? data.nostrPubkey : null;
     const nostrRelays = Array.isArray(data.nostrRelays)
-      ? data.nostrRelays.map((relay) => String(relay)).filter(Boolean)
+      ? data.nostrRelays.map(String).filter(Boolean)
       : undefined;
     const nostrstackEnabled = typeof data.nostrstackEnabled === 'boolean' ? data.nostrstackEnabled : undefined;
     return {

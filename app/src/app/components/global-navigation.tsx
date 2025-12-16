@@ -88,9 +88,9 @@ export function GlobalNavigation() {
         setHighlightedIndex(-1);
         setIsDropdownOpen(true);
       })
-      .catch((err) => {
+      .catch((error_) => {
         if (searchRequestSeqRef.current !== requestId) return;
-        if (err.name !== 'AbortError') {
+        if (error_.name !== 'AbortError') {
           setError('Unable to search right now');
           setResults([]);
           setIsDropdownOpen(true);
@@ -134,21 +134,28 @@ export function GlobalNavigation() {
     const hasResults = results.length > 0;
     const lastIndex = results.length - 1;
 
-    if (event.key === 'ArrowDown') {
+    switch (event.key) {
+    case 'ArrowDown': {
       if (!hasResults) {
         return;
       }
       event.preventDefault();
       setHighlightedIndex((current) => (current >= lastIndex ? 0 : current + 1));
       setIsDropdownOpen(true);
-    } else if (event.key === 'ArrowUp') {
+    
+    break;
+    }
+    case 'ArrowUp': {
       if (!hasResults) {
         return;
       }
       event.preventDefault();
       setHighlightedIndex((current) => (current <= 0 ? lastIndex : current - 1));
       setIsDropdownOpen(true);
-    } else if (event.key === 'Enter') {
+    
+    break;
+    }
+    case 'Enter': {
       event.preventDefault();
       if (highlightedIndex >= 0 && results[highlightedIndex]) {
         const target = results[highlightedIndex];
@@ -160,9 +167,16 @@ export function GlobalNavigation() {
       }
       router.push(`/search?q=${encodeURIComponent(query.trim())}` as Route);
       setIsDropdownOpen(false);
-    } else if (event.key === 'Escape') {
+    
+    break;
+    }
+    case 'Escape': {
       setIsDropdownOpen(false);
       setHighlightedIndex(-1);
+    
+    break;
+    }
+    // No default
     }
   };
 
@@ -196,7 +210,7 @@ export function GlobalNavigation() {
   const statusMessage = useMemo(() => {
     if (error) return error;
     if (isSearching) return 'Searching for the right page…';
-    if (!results.length) return 'No matching pages found';
+    if (results.length === 0) return 'No matching pages found';
     return `${results.length} result${results.length === 1 ? '' : 's'}`;
   }, [error, isSearching, results.length]);
 
@@ -313,7 +327,7 @@ export function GlobalNavigation() {
                   {isSearching && (
                     <p className="text-sm text-gray-500">Looking for relevant pages…</p>
                   )}
-                  {!isSearching && !results.length && !error && (
+                  {!isSearching && results.length === 0 && !error && (
                     <p className="text-sm text-muted-foreground">Try another keyword or hit enter to search the site.</p>
                   )}
                   {error && (
@@ -355,7 +369,7 @@ export function GlobalNavigation() {
                       );
                     })}
                   </ul>
-                  {!isSearching && !results.length && (
+                  {!isSearching && results.length === 0 && (
                     <Button
                       type="button"
                       variant="link"

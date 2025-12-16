@@ -119,11 +119,11 @@ export async function loadDashboardLogs(dashboard: Dashboard, options: LogOption
         return [];
       }
 
-      const severity = severityIndex >= 0 ? normalizeSeverity(row[severityIndex]) : undefined;
+      const severity = severityIndex === -1 ? undefined : normalizeSeverity(row[severityIndex]);
       const operationName =
-        operationIndex >= 0 && typeof row[operationIndex] === 'string' ? (row[operationIndex] as string) : undefined;
+        operationIndex !== -1 && typeof row[operationIndex] === 'string' ? (row[operationIndex] as string) : undefined;
       const category =
-        categoryIndex >= 0 && typeof row[categoryIndex] === 'string' ? (row[categoryIndex] as string) : undefined;
+        categoryIndex !== -1 && typeof row[categoryIndex] === 'string' ? (row[categoryIndex] as string) : undefined;
 
       return [
         {

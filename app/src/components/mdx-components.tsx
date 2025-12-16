@@ -31,7 +31,7 @@ const baseCodeStyles =
 
 function CodeBlock({ children }: { children: ReactNode }) {
   const child = Array.isArray(children) ? children[0] : children;
-  const code = typeof child === 'string' ? child : typeof child?.props?.children === 'string' ? child.props.children : '';
+  const code = typeof child === 'string' ? child : (typeof child?.props?.children === 'string' ? child.props.children : '');
   const className = typeof child?.props?.className === 'string' ? child.props.className : '';
   const languageMatch = className.match(/language-(\w+)/);
   const language = (languageMatch?.[1] ?? 'tsx') as Language;
@@ -42,7 +42,7 @@ function CodeBlock({ children }: { children: ReactNode }) {
     try {
       await navigator.clipboard.writeText(code);
       setCopied(true);
-      window.setTimeout(() => setCopied(false), 2000);
+      globalThis.setTimeout(() => setCopied(false), 2000);
     } catch {
       setCopied(false);
     }
@@ -109,7 +109,7 @@ function InlineCode(props: { children: ReactNode }) {
 function Paragraph({ children, ...props }: { children: ReactNode; [key: string]: unknown }) {
   const unwrapFigure = () => {
     if (Array.isArray(children)) {
-      const onlyChild = children.filter(Boolean)[0];
+      const onlyChild = children.find(Boolean);
       if (React.isValidElement(onlyChild) && onlyChild.type === 'figure') {
         return onlyChild;
       }
@@ -173,6 +173,7 @@ const components = {
   blockquote: BlockQuote,
   table: (props: { children: ReactNode }) => (
     <div className="relative overflow-hidden rounded-2xl border border-white/5 bg-slate-900/60 shadow-xl shadow-black/30">
+      {/* eslint-disable-next-line sonarjs/table-header */}
       <table className="min-w-full divide-y divide-slate-800 bg-slate-950/60" {...props} />
     </div>
   ),

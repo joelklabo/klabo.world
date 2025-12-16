@@ -1,4 +1,4 @@
-import { initTRPC, TRPCError } from '@trpc/server';
+import { initTRPC,  } from '@trpc/server';
 import superjson from 'superjson';
 import { ZodError } from 'zod';
 import type { TRPCContext } from './context';
@@ -19,4 +19,6 @@ export const t = initTRPC.context<TRPCContext>().create({
 export const router = t.router;
 export const procedure = t.procedure;
 export const middleware = t.middleware;
-export { TRPCError };
+
+
+export {TRPCError} from '@trpc/server';

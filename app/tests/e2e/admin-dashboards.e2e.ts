@@ -25,7 +25,7 @@ test('admin can create, view, and delete a link dashboard panel', async ({ page 
   await page.getByTestId('dashboard-notes').fill('## Playwright notes\n\nThis dashboard was created by an automated test.');
   await page.getByTestId('dashboard-submit').click();
 
-  await page.waitForURL(new RegExp(`/admin/dashboards/${slug}`), { timeout: 30000 });
+  await page.waitForURL(new RegExp(`/admin/dashboards/${slug}`), { timeout: 30_000 });
 
   await expect.poll(async () => {
     try {
@@ -34,11 +34,12 @@ test('admin can create, view, and delete a link dashboard panel', async ({ page 
     } catch {
       return false;
     }
-  }, { timeout: 15000, intervals: [250] }).toBe(true);
+  }, { timeout: 15_000, intervals: [250] }).toBe(true);
 
+  // eslint-disable-next-line sonarjs/no-os-command-from-path
   execSync('pnpm --filter app exec contentlayer build', { cwd: repoRoot, stdio: 'inherit' });
   await page.goto(`/admin/dashboards/${slug}`);
-  await page.waitForSelector('[data-testid="dashboard-summary-text"]', { timeout: 20000 });
+  await page.waitForSelector('[data-testid="dashboard-summary-text"]', { timeout: 20_000 });
   await expect(page.getByTestId('dashboard-summary-text')).toHaveText(summary);
   await expect(page.getByRole('link', { name: `Open ${hostname}` })).toBeVisible();
 
@@ -54,7 +55,7 @@ test('admin can create, view, and delete a link dashboard panel', async ({ page 
           return true;
         }
       },
-      { timeout: 15000, intervals: [250] },
+      { timeout: 15_000, intervals: [250] },
     )
     .toBe(true);
 });

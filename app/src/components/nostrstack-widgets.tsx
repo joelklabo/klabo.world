@@ -268,8 +268,8 @@ async function connectRelays(urls: string[]): Promise<RelayConnectResult> {
     const mod = await import('nostr-tools');
     const candidate = (mod as unknown as { Relay?: unknown }).Relay ?? null;
     connector = isRelayConnector(candidate) ? candidate : null;
-  } catch (err) {
-    console.warn('nostr-tools not available, skipping relay connections', err);
+  } catch (error) {
+    console.warn('nostr-tools not available, skipping relay connections', error);
     return { connections: [], attempted: urls.length, failed: urls.length };
   }
   if (!connector) return { connections: [], attempted: urls.length, failed: urls.length };
@@ -312,7 +312,7 @@ function useRelayConnections(relays: string[]) {
   const connections = isCurrent ? relayState.connections : [];
   const attempted = isCurrent ? relayState.attempted : 0;
   const failed = isCurrent ? relayState.failed : 0;
-  const status = isCurrent ? relayState.status : relays.includes('mock') ? 'mock' : 'connecting';
+  const status = isCurrent ? relayState.status : (relays.includes('mock') ? 'mock' : 'connecting');
 
   const retry = useCallback(() => {
     setRetryIndex((value) => value + 1);
@@ -324,11 +324,11 @@ function useRelayConnections(relays: string[]) {
     (async () => {
       const next = await connectRelays(relays);
       if (closed) {
-        next.connections.forEach((relay) => relay.close());
+        for (const relay of next.connections) relay.close();
         return;
       }
       active = next.connections;
-      const status = next.attempted === 0 ? 'mock' : next.connections.length ? 'ready' : 'failed';
+      const status = next.attempted === 0 ? 'mock' : (next.connections.length > 0 ? 'ready' : 'failed');
       setRelayState({
         key: relayKey,
         attempt: retryIndex,
@@ -341,7 +341,7 @@ function useRelayConnections(relays: string[]) {
 
     return () => {
       closed = true;
-      active.forEach((relay) => relay.close());
+      for (const relay of active) relay.close();
     };
   }, [relayKey, relays, retryIndex]);
 
@@ -349,7 +349,7 @@ function useRelayConnections(relays: string[]) {
 }
 
 async function fetchProfilesFromRelays(connections: Relay[], pubkeys: string[], timeoutMs = 3500) {
-  if (!connections.length || pubkeys.length === 0) return {} as Record<string, NostrProfile>;
+  if (connections.length === 0 || pubkeys.length === 0) return {} as Record<string, NostrProfile>;
 
   const latestByPubkey = new Map<string, NostrEvent>();
 
@@ -358,13 +358,13 @@ async function fetchProfilesFromRelays(connections: Relay[], pubkeys: string[], 
     const subs: Array<{ close: () => void }> = [];
 
     const finalize = () => {
-      subs.forEach((sub) => sub.close());
+      for (const sub of subs) sub.close();
       resolve();
     };
 
     const timer = setTimeout(finalize, timeoutMs);
 
-    connections.forEach((relay) => {
+    for (const relay of connections) {
       const sub = relay.subscribe(
         [
           {
@@ -391,16 +391,16 @@ async function fetchProfilesFromRelays(connections: Relay[], pubkeys: string[], 
         },
       );
       subs.push(sub);
-    });
+    }
   });
 
   const profiles: Record<string, NostrProfile> = {};
-  latestByPubkey.forEach((ev, pubkey) => {
+  for (const [pubkey, ev] of latestByPubkey.entries()) {
     const profile = parseProfile(ev.content);
     if (profile) {
       profiles[pubkey] = profile;
     }
-  });
+  }
   return profiles;
 }
 
@@ -475,7 +475,7 @@ function useNostrShareActivity({
     return () => {
       closed = true;
       clearTimeout(timer);
-      subs.forEach((sub) => sub.close());
+      for (const sub of subs) sub.close();
     };
   }, [addShare, canonicalUrl, connections, isRelayMock, slug, status]);
 
@@ -498,7 +498,7 @@ function useNostrShareActivity({
       .slice(0, 24);
     if (nextPubkeys.length === 0) return;
 
-    nextPubkeys.forEach((pubkey) => requestedProfiles.current.add(pubkey));
+    for (const pubkey of nextPubkeys) requestedProfiles.current.add(pubkey);
 
     let cancelled = false;
     fetchProfilesFromRelays(connections, nextPubkeys).then((nextProfiles) => {
@@ -587,7 +587,7 @@ export function NostrstackActionBar({
   const [shareState, setShareState] = useState<'idle' | 'posting' | 'posted' | 'error'>('idle');
   const [shareError, setShareError] = useState<string | null>(null);
   const [shareWarning, setShareWarning] = useState<string | null>(null);
-  const relayList = useMemo(() => (relays && relays.length ? relays : DEFAULT_RELAYS), [relays]);
+  const relayList = useMemo(() => (relays && relays.length > 0 ? relays : DEFAULT_RELAYS), [relays]);
   const { connections, attempted, failed, status, retry } = useRelayConnections(relayList);
   const isRelayMock = relayList.includes('mock');
   const lightning = useMemo(() => parseLightningAddress(lightningAddress ?? undefined), [lightningAddress]);
@@ -603,11 +603,11 @@ export function NostrstackActionBar({
   });
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (globalThis.window === undefined) return;
     let cancelled = false;
 
     const checkSigner = () => {
-      const signer = (window as NostrWindow).nostr;
+      const signer = (globalThis as NostrWindow).nostr;
       if (!signer) {
         if (!cancelled) setSignerAvailable(false);
         return;
@@ -626,15 +626,15 @@ export function NostrstackActionBar({
     checkSigner();
 
     // Some NIP-07 providers inject `window.nostr` asynchronously; poll briefly.
-    const interval = window.setInterval(checkSigner, 500);
+    const interval = globalThis.setInterval(checkSigner, 500);
     window.addEventListener('focus', checkSigner);
 
-    const timeout = window.setTimeout(() => window.clearInterval(interval), 8000);
+    const timeout = globalThis.setTimeout(() => globalThis.clearInterval(interval), 8000);
 
     return () => {
       cancelled = true;
-      window.clearInterval(interval);
-      window.clearTimeout(timeout);
+      globalThis.clearInterval(interval);
+      globalThis.clearTimeout(timeout);
       window.removeEventListener('focus', checkSigner);
     };
   }, []);
@@ -674,16 +674,16 @@ export function NostrstackActionBar({
     setShareError(null);
     setShareWarning(null);
 
-    if (typeof window === 'undefined') {
+    if (globalThis.window === undefined) {
       setShareError('NIP-07 signer required to share.');
       return;
     }
-    const signer = (window as NostrWindow).nostr;
+    const signer = (globalThis as NostrWindow).nostr;
     if (!signer) {
       setShareError('NIP-07 signer required to share.');
       return;
     }
-    if (!connections.length) {
+    if (connections.length === 0) {
       setShareError('No relay connections. Please try again when relays are ready.');
       return;
     }
@@ -728,7 +728,7 @@ export function NostrstackActionBar({
           disabled={!lightning || (!baseUrl && !mockMode) || tipState === 'loading'}
           className="rounded-full bg-amber-500 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-amber-400 disabled:cursor-not-allowed disabled:bg-amber-200/50"
         >
-          {tipState === 'loading' ? 'Generating…' : lightning ? 'Send sats' : 'Lightning missing'}
+          {tipState === 'loading' ? 'Generating…' : (lightning ? 'Send sats' : 'Lightning missing')}
         </button>
         <button
           type="button"
@@ -737,7 +737,7 @@ export function NostrstackActionBar({
           disabled={
             shareState === 'posting' ||
             status === 'connecting' ||
-            (status !== 'mock' && !connections.length)
+            (status !== 'mock' && connections.length === 0)
           }
           className="rounded-full border border-white/20 px-4 py-2 text-sm font-semibold text-white transition hover:border-amber-200/70 hover:text-amber-100 disabled:cursor-not-allowed disabled:opacity-60"
         >
@@ -854,7 +854,7 @@ export function NostrstackOmnoster({
   canonicalUrl: string;
   relays?: string[];
 }) {
-  const relayList = useMemo(() => (relays && relays.length ? relays : DEFAULT_RELAYS), [relays]);
+  const relayList = useMemo(() => (relays && relays.length > 0 ? relays : DEFAULT_RELAYS), [relays]);
   const { connections, attempted, failed, status, retry } = useRelayConnections(relayList);
   const isRelayMock = relayList.includes('mock');
   const { shares, profiles, loaded, shareCount } = useNostrShareActivity({
@@ -1028,14 +1028,14 @@ export function NostrstackComments({ threadId, relays, canonicalUrl }: CommentsP
   const [content, setContent] = useState('');
   const [posting, setPosting] = useState(false);
   const [signerState, setSignerState] = useState<NostrSignerState>({ hasSigner: false });
-  const relayList = useMemo(() => (relays && relays.length ? relays : DEFAULT_RELAYS), [relays]);
+  const relayList = useMemo(() => (relays && relays.length > 0 ? relays : DEFAULT_RELAYS), [relays]);
   const isMockMode = relayList.includes('mock');
   const { connections, status, retry } = useRelayConnections(relayList);
   const seenIds = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     // detect signer once
-    const signer = (typeof window !== 'undefined' ? (window as NostrWindow).nostr : null);
+    const signer = (globalThis.window === undefined ? null : (globalThis as NostrWindow).nostr);
     if (signer) {
       signer
         .getPublicKey()
@@ -1047,10 +1047,10 @@ export function NostrstackComments({ threadId, relays, canonicalUrl }: CommentsP
   }, []);
 
   useEffect(() => {
-    if (!connections.length) return;
+    if (connections.length === 0) return;
     const subs: Array<{ close: () => void }> = [];
     const filters: Array<{ kinds: number[]; '#t': string[] }> = [{ kinds: [1], '#t': [threadId] }];
-    connections.forEach((relay) => {
+    for (const relay of connections) {
       const sub = relay.subscribe(filters, {
         onevent: (ev: NostrEvent) => {
           if (ev?.id && seenIds.current.has(ev.id)) return;
@@ -1059,9 +1059,9 @@ export function NostrstackComments({ threadId, relays, canonicalUrl }: CommentsP
         },
       });
       subs.push(sub);
-    });
+    }
     return () => {
-      subs.forEach((sub) => sub.close());
+      for (const sub of subs) sub.close();
     };
   }, [connections, threadId]);
 
@@ -1069,7 +1069,7 @@ export function NostrstackComments({ threadId, relays, canonicalUrl }: CommentsP
     e.preventDefault();
     setError(null);
     if (!content.trim()) return;
-    const signer = (window as NostrWindow).nostr;
+    const signer = (globalThis as NostrWindow).nostr;
     if (!signer) {
       setError('Nostr signer (NIP-07) required to post.');
       return;
@@ -1092,8 +1092,8 @@ export function NostrstackComments({ threadId, relays, canonicalUrl }: CommentsP
       if (signed.id) seenIds.current.add(signed.id);
       setEvents((prev) => [...prev, signed]);
       setContent('');
-    } catch (err) {
-      setError(formatError(err));
+    } catch (error_) {
+      setError(formatError(error_));
     } finally {
       setPosting(false);
     }
@@ -1106,7 +1106,7 @@ export function NostrstackComments({ threadId, relays, canonicalUrl }: CommentsP
       </p>
       {status === 'connecting' ? (
         <p className="text-sm text-slate-400">Connecting to relays…</p>
-      ) : status === 'failed' ? (
+      ) : (status === 'failed' ? (
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-rose-200/20 bg-rose-200/5 p-3 text-sm text-rose-100">
           <p>No relays connected. Comments may be unavailable.</p>
           <button
@@ -1117,7 +1117,7 @@ export function NostrstackComments({ threadId, relays, canonicalUrl }: CommentsP
             Retry
           </button>
         </div>
-      ) : null}
+      ) : null)}
       <form className="space-y-3" onSubmit={handleSubmit}>
         <textarea
           value={content}
@@ -1129,7 +1129,7 @@ export function NostrstackComments({ threadId, relays, canonicalUrl }: CommentsP
         <div className="flex items-center justify-between text-sm text-slate-400">
           <button
             type="submit"
-            disabled={posting || (status === 'connecting' && !isMockMode) || (!connections.length && !isMockMode) || !signerState.hasSigner}
+            disabled={posting || (status === 'connecting' && !isMockMode) || (connections.length === 0 && !isMockMode) || !signerState.hasSigner}
             data-testid="nostrstack-comment-submit"
             className="rounded-full bg-white/10 px-4 py-2 font-semibold text-white transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-60"
           >
@@ -1148,8 +1148,7 @@ export function NostrstackComments({ threadId, relays, canonicalUrl }: CommentsP
         {events.length === 0 && status !== 'connecting' && (
           <p className="text-sm text-slate-300">No comments yet.</p>
         )}
-        {events
-          .slice()
+        {[...events]
           .reverse()
           .map((ev) => (
             <div

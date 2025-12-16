@@ -63,7 +63,7 @@ function pushString(lines: string[], key: string, value?: string | null) {
 function pushList(lines: string[], key: string, values?: string[] | null) {
   if (!values || values.length === 0) return;
   lines.push(`${key}:`);
-  values.forEach((value) => lines.push(`  - ${JSON.stringify(value)}`));
+  for (const value of values) lines.push(`  - ${JSON.stringify(value)}`);
 }
 
 function pushNumber(lines: string[], key: string, value?: number | null) {
@@ -74,7 +74,7 @@ function pushNumber(lines: string[], key: string, value?: number | null) {
 function pushKql(lines: string[], query?: string | null) {
   if (!query) return;
   lines.push('kqlQuery: |');
-  query.split('\n').forEach((line) => lines.push(`  ${line}`));
+  for (const line of query.split('\n')) lines.push(`  ${line}`);
 }
 
 function buildMarkdown(slug: string, input: DashboardInput) {
@@ -128,21 +128,13 @@ export async function createDashboard(input: DashboardInput) {
   const baseSlug = normalizeSlug(input.title);
   const slug = await resolveSlug(baseSlug);
   const markdown = buildMarkdown(slug, input);
-  if (shouldUseGitHub()) {
-    await writeGitHubFile(slug, markdown);
-  } else {
-    await writeLocalFile(slug, markdown);
-  }
+  await (shouldUseGitHub() ? writeGitHubFile(slug, markdown) : writeLocalFile(slug, markdown));
   return { slug };
 }
 
 export async function updateDashboard(slug: string, input: DashboardInput) {
   const markdown = buildMarkdown(slug, input);
-  if (shouldUseGitHub()) {
-    await writeGitHubFile(slug, markdown);
-  } else {
-    await writeLocalFile(slug, markdown);
-  }
+  await (shouldUseGitHub() ? writeGitHubFile(slug, markdown) : writeLocalFile(slug, markdown));
 }
 
 export async function deleteDashboard(slug: string) {

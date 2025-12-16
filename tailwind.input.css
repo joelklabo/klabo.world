@@ -18,13 +18,15 @@
 /* Skeleton loading animation */
 @keyframes skeleton-loading {
   0% {
-    background-color: rgba(139, 92, 246, 0.1);
+    background-color: rgb(139 92 246 / 10%);
   }
+
   50% {
-    background-color: rgba(139, 92, 246, 0.2);
+    background-color: rgb(139 92 246 / 20%);
   }
+
   100% {
-    background-color: rgba(139, 92, 246, 0.1);
+    background-color: rgb(139 92 246 / 10%);
   }
 }
 

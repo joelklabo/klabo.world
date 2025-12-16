@@ -53,8 +53,8 @@ export function LoginForm({ initialError }: LoginFormProps) {
           setCsrfToken(token);
         }
       })
-      .catch((err: unknown) => {
-        const message = err instanceof Error ? err.message : 'Unable to initialize login form.';
+      .catch((error_: unknown) => {
+        const message = error_ instanceof Error ? error_.message : 'Unable to initialize login form.';
         if (active) {
           showError(message);
         }
@@ -71,7 +71,7 @@ export function LoginForm({ initialError }: LoginFormProps) {
 
   useEffect(() => {
     if (!toastMessage) {
-      return undefined;
+      return;
     }
     const timer = setTimeout(() => setToastMessage(null), 5000);
     return () => clearTimeout(timer);

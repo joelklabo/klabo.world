@@ -4,8 +4,8 @@ test.describe('tag navigation', () => {
   test('post tag chip navigates to tag page', async ({ page }) => {
     await page.goto('/posts/tags');
     const tagLink = page.locator('a[href^="/posts/tag/"]').first();
-    const href = await tagLink.getAttribute('href');
-    expect(href).toBeTruthy();
+    const href = tagLink;
+    await expect(href).toHaveAttribute('href', );
     const tagText = decodeURIComponent(href!.split('/').at(-1)!).trim().toLowerCase();
     await tagLink.click();
     await expect(page).toHaveURL(/\/posts\/tag\//);

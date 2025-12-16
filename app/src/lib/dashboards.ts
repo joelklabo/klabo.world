@@ -59,7 +59,7 @@ function readDiskDashboards(): Dashboard[] {
         title: typeof data.title === 'string' ? data.title : slug,
         summary: typeof data.summary === 'string' ? data.summary : '',
         panelType: typeof data.panelType === 'string' ? data.panelType : undefined,
-        tags: Array.isArray(data.tags) ? data.tags.map((tag) => String(tag)) : [],
+        tags: Array.isArray(data.tags) ? data.tags.map(String) : [],
         chartType: typeof data.chartType === 'string' ? data.chartType : undefined,
         iframeUrl: typeof data.iframeUrl === 'string' ? data.iframeUrl : undefined,
         externalUrl: typeof data.externalUrl === 'string' ? data.externalUrl : undefined,

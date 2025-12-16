@@ -28,7 +28,7 @@ test.describe('home page interactions', () => {
     expect(postHref).toMatch(/^\/posts\//);
 
     await Promise.all([page.waitForNavigation(), firstPost.click()]);
-    await expect(page).toHaveURL(new RegExp(postHref!.replace('/', '\\/')));
+    await expect(page).toHaveURL(new RegExp(postHref!.replace('/', String.raw`\/`)));
 
     await page.goto('/');
     const featuredProject = page.getByTestId('home-github-featured');

@@ -65,11 +65,7 @@ export async function upsertApp(slug: string, input: AppInput) {
     slug: normalizedSlug,
   };
   const content = JSON.stringify(payload, null, 2);
-  if (shouldUseGitHub()) {
-    await writeGitHubFile(normalizedSlug, content);
-  } else {
-    await writeLocalFile(normalizedSlug, content);
-  }
+  await (shouldUseGitHub() ? writeGitHubFile(normalizedSlug, content) : writeLocalFile(normalizedSlug, content));
 }
 
 export async function deleteApp(slug: string) {
