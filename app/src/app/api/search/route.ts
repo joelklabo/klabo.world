@@ -19,9 +19,12 @@ export async function GET(request: Request) {
   }
 
   if (query.length < 2) {
-    return NextResponse.json({ results: [], minLength: 2 }, { status: 200 });
+    return NextResponse.json(
+      { results: [], meta: { query, total: 0, minLength: 2 } },
+      { status: 200 },
+    );
   }
 
   const results = searchContent(query);
-  return NextResponse.json(results);
+  return NextResponse.json({ results, meta: { query, total: results.length, minLength: 2 } });
 }

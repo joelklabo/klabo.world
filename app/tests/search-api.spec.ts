@@ -27,8 +27,9 @@ describe('api/search route', () => {
     const response = await searchHandler(request);
     expect(response.headers.get('content-type')).toContain('application/json');
 
-    const payload = (await response.json()) as unknown;
-    expect(Array.isArray(payload)).toBe(true);
-    expect((payload as Array<{ title: string }>).length).toBeGreaterThan(0);
+    const payload = (await response.json()) as { results: Array<{ title: string }>; meta: { total: number } };
+    expect(Array.isArray(payload.results)).toBe(true);
+    expect(payload.results.length).toBeGreaterThan(0);
+    expect(payload.meta.total).toBeGreaterThan(0);
   });
 });

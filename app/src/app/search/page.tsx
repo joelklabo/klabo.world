@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import type { Metadata, Route } from 'next';
-import { searchContent } from '@/lib/search';
+import { searchContent, type SearchResult } from '@/lib/search';
 import { Button } from '@/components/ui/button';
 
 type SearchParams = {
@@ -21,6 +21,33 @@ function normalizeParam(value?: string | string[]): string {
 
 type SearchPageProps = {
   searchParams?: SearchParams | Promise<SearchParams>;
+};
+
+function escapeRegExp(value: string) {
+  return value.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\\$&`);
+}
+
+function highlightText(text: string, query: string) {
+  if (!query) return text;
+  const pattern = new RegExp(`(${escapeRegExp(query)})`, 'ig');
+  const parts = text.split(pattern);
+  return parts.map((part, index) => {
+    if (part.toLowerCase() === query.toLowerCase()) {
+      return (
+        <mark key={`${part}-${index}`} className="rounded bg-primary/20 px-1 py-0.5 text-foreground">
+          {part}
+        </mark>
+      );
+    }
+    return part;
+  });
+}
+
+const matchLabels: Record<SearchResult['match'], string> = {
+  title: 'Title',
+  summary: 'Summary',
+  tags: 'Tag',
+  body: 'Body',
 };
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
@@ -67,6 +94,9 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         {query && query.length < 2 && <p className="text-sm text-muted-foreground">Type at least two characters to search.</p>}
         {query.length >= 2 && (
           <div className="space-y-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
+              {results.length} result{results.length === 1 ? '' : 's'} for “{query}”
+            </p>
             {results.length === 0 && <p className="text-sm text-muted-foreground">No results for “{query}”.</p>}
             {results.map((result) => (
               <Link
@@ -74,9 +104,18 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                 href={result.url as Route}
                 className="block rounded-2xl border border-border/70 bg-gradient-to-r from-card/90 to-background/80 p-5 shadow-[0_20px_50px_rgba(6,10,20,0.45)] transition hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-[0_24px_60px_rgba(6,10,20,0.55)]"
               >
-                <div className="text-[11px] uppercase tracking-[0.35em] text-muted-foreground">{result.type}</div>
-                <h2 className="mt-1 text-2xl font-semibold text-foreground">{result.title}</h2>
-                <p className="mt-2 text-sm text-muted-foreground">{result.summary}</p>
+                <div className="flex flex-wrap items-center gap-3 text-[11px] uppercase tracking-[0.35em] text-muted-foreground">
+                  <span>{result.type}</span>
+                  <span className="rounded-full border border-border/60 bg-background/60 px-2 py-1 text-[10px] tracking-[0.28em]">
+                    Match: {matchLabels[result.match]}
+                  </span>
+                </div>
+                <h2 className="mt-1 text-2xl font-semibold text-foreground">
+                  {highlightText(result.title, query)}
+                </h2>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  {highlightText(result.snippet ?? result.summary, query)}
+                </p>
                 <div className="mt-3 flex flex-wrap gap-2 text-[11px] uppercase tracking-[0.28em] text-primary">
                   {result.tags.slice(0, 5).map((tag) => (
                     <span key={tag} className="rounded-full border border-primary/25 bg-primary/10 px-3 py-1 text-foreground">

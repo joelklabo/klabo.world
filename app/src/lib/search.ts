@@ -7,7 +7,8 @@ export type SearchResult = {
   summary: string;
   url: string;
   tags: string[];
-  highlight?: string;
+  match: 'title' | 'summary' | 'tags' | 'body';
+  snippet?: string;
 };
 
 const MIN_QUERY_LENGTH = 2;
@@ -20,19 +21,71 @@ function includeTags(tags?: string[]): string[] {
   return tags?.map((tag) => tag.trim()).filter(Boolean) ?? [];
 }
 
-function scoreMatch(title: string, summary: string, tags: string[], term: string): number {
-  const lowerTitle = title.toLowerCase();
-  const lowerSummary = summary.toLowerCase();
-  if (lowerTitle.includes(term)) {
-    return 0;
+function scoreMatch(match: SearchResult['match']): number {
+  switch (match) {
+    case 'title': {
+      return 0;
+    }
+    case 'summary': {
+      return 1;
+    }
+    case 'tags': {
+      return 2;
+    }
+    case 'body': {
+      return 3;
+    }
+    default: {
+      return 4;
+    }
   }
-  if (lowerSummary.includes(term)) {
-    return 1;
+}
+
+function firstIndexOf(text: string, term: string) {
+  return text.toLowerCase().indexOf(term);
+}
+
+function buildSnippet(text: string, term: string, maxLength = 140) {
+  const index = firstIndexOf(text, term);
+  if (index < 0) {
+    return text.slice(0, maxLength).trim();
   }
-  if (tags.some((tag) => tag.toLowerCase().includes(term))) {
-    return 2;
+  const padding = 50;
+  const start = Math.max(0, index - padding);
+  const end = Math.min(text.length, index + term.length + padding);
+  const snippet = text.slice(start, end).trim();
+  const prefix = start > 0 ? '…' : '';
+  const suffix = end < text.length ? '…' : '';
+  return `${prefix}${snippet}${suffix}`;
+}
+
+function findPostMatch(post: ReturnType<typeof getPosts>[number], term: string) {
+  if (firstIndexOf(post.title, term) >= 0) {
+    return { match: 'title' as const, snippet: post.title };
   }
-  return 3;
+  if (firstIndexOf(post.summary, term) >= 0) {
+    return { match: 'summary' as const, snippet: buildSnippet(post.summary, term) };
+  }
+  if (post.tags?.some((tag) => firstIndexOf(tag, term) >= 0)) {
+    return { match: 'tags' as const, snippet: post.tags?.join(', ') };
+  }
+  if (firstIndexOf(post.body.raw, term) >= 0) {
+    return { match: 'body' as const, snippet: buildSnippet(post.body.raw, term) };
+  }
+  return null;
+}
+
+function findAppMatch(app: ReturnType<typeof getApps>[number], term: string) {
+  if (firstIndexOf(app.name, term) >= 0) {
+    return { match: 'title' as const, snippet: app.name };
+  }
+  if (firstIndexOf(app.fullDescription, term) >= 0) {
+    return { match: 'summary' as const, snippet: buildSnippet(app.fullDescription, term) };
+  }
+  if (app.features?.some((feature) => firstIndexOf(feature, term) >= 0)) {
+    return { match: 'tags' as const, snippet: app.features?.join(', ') };
+  }
+  return null;
 }
 
 export function searchContent(term: string): SearchResult[] {
@@ -41,29 +94,41 @@ export function searchContent(term: string): SearchResult[] {
     return [];
   }
 
-  const postResults: SearchResult[] = getPosts()
-    .filter((post) => post.body.raw.toLowerCase().includes(normalized) || post.summary.toLowerCase().includes(normalized) || post.title.toLowerCase().includes(normalized) || post.tags?.some((tag) => tag.toLowerCase().includes(normalized)))
-    .map((post) => ({
-      type: 'post' as const,
-      title: post.title,
-      summary: post.summary,
-      url: post.url,
-      tags: includeTags(post.tags),
-    }));
+  const postResults: SearchResult[] = getPosts().flatMap((post) => {
+    const match = findPostMatch(post, normalized);
+    if (!match) return [];
+    return [
+      {
+        type: 'post' as const,
+        title: post.title,
+        summary: post.summary,
+        url: post.url,
+        tags: includeTags(post.tags),
+        match: match.match,
+        snippet: match.snippet,
+      },
+    ];
+  });
 
-  const appResults: SearchResult[] = getApps()
-    .filter((app) => app.fullDescription.toLowerCase().includes(normalized) || app.name.toLowerCase().includes(normalized))
-    .map((app) => ({
-      type: 'app' as const,
-      title: app.name,
-      summary: app.fullDescription,
-      url: app.url,
-      tags: includeTags(app.features),
-    }));
+  const appResults: SearchResult[] = getApps().flatMap((app) => {
+    const match = findAppMatch(app, normalized);
+    if (!match) return [];
+    return [
+      {
+        type: 'app' as const,
+        title: app.name,
+        summary: app.fullDescription,
+        url: app.url,
+        tags: includeTags(app.features),
+        match: match.match,
+        snippet: match.snippet,
+      },
+    ];
+  });
 
   const combined = [...postResults, ...appResults].map((result) => ({
     result,
-    score: scoreMatch(result.title, result.summary, result.tags, normalized),
+    score: scoreMatch(result.match),
   }));
 
   return combined

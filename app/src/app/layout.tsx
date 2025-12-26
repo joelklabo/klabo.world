@@ -61,8 +61,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${manrope.variable} ${jetbrains.variable} antialiased bg-background text-foreground`}>
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 rounded-full border border-border/60 bg-card px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-foreground shadow-[0_12px_30px_rgba(6,10,20,0.45)]"
+        >
+          Skip to content
+        </a>
         <GlobalNavigation />
-        <main className="min-h-screen">{children}</main>
+        <main id="main-content" className="min-h-screen">
+          {children}
+        </main>
         <ApplicationInsightsConnection />
       </body>
     </html>

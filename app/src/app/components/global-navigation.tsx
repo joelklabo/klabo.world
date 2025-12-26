@@ -16,13 +16,42 @@ const TYPE_LABELS: Record<'post' | 'app', string> = {
   app: 'App',
 };
 
+const MATCH_LABELS: Record<SearchResult['match'], string> = {
+  title: 'Title',
+  summary: 'Summary',
+  tags: 'Tag',
+  body: 'Body',
+};
+
 type SearchResult = {
   type: 'post' | 'app';
   title: string;
   summary: string;
   url: string;
   tags: string[];
+  match: 'title' | 'summary' | 'tags' | 'body';
+  snippet?: string;
 };
+
+function escapeRegExp(value: string) {
+  return value.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\\$&`);
+}
+
+function highlightText(text: string, query: string) {
+  if (!query) return text;
+  const pattern = new RegExp(`(${escapeRegExp(query)})`, 'ig');
+  const parts = text.split(pattern);
+  return parts.map((part, index) => {
+    if (part.toLowerCase() === query.toLowerCase()) {
+      return (
+        <mark key={`${part}-${index}`} className="rounded bg-primary/20 px-1 py-0.5 text-foreground">
+          {part}
+        </mark>
+      );
+    }
+    return part;
+  });
+}
 
 export function GlobalNavigation() {
   const router = useRouter();
@@ -35,6 +64,7 @@ export function GlobalNavigation() {
   const [isSearching, setIsSearching] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dropdownStyle, setDropdownStyle] = useState<{ left: number; top: number; width: number } | null>(null);
+  const [totalResults, setTotalResults] = useState(0);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const navRef = useRef<HTMLDivElement>(null);
@@ -81,10 +111,11 @@ export function GlobalNavigation() {
         }
         return res.json();
       })
-      .then((payload: SearchResult[]) => {
+      .then((payload: { results: SearchResult[]; meta: { total: number } }) => {
         if (searchRequestSeqRef.current !== requestId) return;
         setError(null);
-        setResults(payload);
+        setResults(payload.results);
+        setTotalResults(payload.meta.total);
         setHighlightedIndex(-1);
         setIsDropdownOpen(true);
       })
@@ -93,6 +124,7 @@ export function GlobalNavigation() {
         if (error_.name !== 'AbortError') {
           setError('Unable to search right now');
           setResults([]);
+          setTotalResults(0);
           setIsDropdownOpen(true);
         }
       })
@@ -211,8 +243,8 @@ export function GlobalNavigation() {
     if (error) return error;
     if (isSearching) return 'Searching for the right page…';
     if (results.length === 0) return 'No matching pages found';
-    return `${results.length} result${results.length === 1 ? '' : 's'}`;
-  }, [error, isSearching, results.length]);
+    return `${totalResults} result${totalResults === 1 ? '' : 's'}`;
+  }, [error, isSearching, results.length, totalResults]);
 
   const handleSelectResult = (result: SearchResult) => {
     setIsDropdownOpen(false);
@@ -262,17 +294,19 @@ export function GlobalNavigation() {
         </nav>
         <div className="flex-1" ref={navRef}>
           {showInlineSearch ? (
-            <label
-              className="relative block"
-              role="combobox"
-              aria-expanded={showDropdown}
-              aria-controls="global-search-dropdown"
-            >
+            <label className="relative block">
               <span className="sr-only">Search all pages</span>
               <input
                 ref={inputRef}
                 type="search"
                 name="global-search"
+                role="combobox"
+                aria-expanded={showDropdown}
+                aria-controls="global-search-dropdown"
+                aria-autocomplete="list"
+                aria-activedescendant={
+                  highlightedIndex >= 0 ? `global-search-option-${highlightedIndex}` : undefined
+                }
                 className="w-full rounded-full border border-border/50 bg-card/80 px-4 py-2 text-sm text-foreground shadow-[0_16px_32px_rgba(6,10,20,0.45)] placeholder:text-muted-foreground/70 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/40"
                 placeholder="Search posts or apps…"
                 value={query}
@@ -284,11 +318,13 @@ export function GlobalNavigation() {
                     setError(null);
                     setIsSearching(true);
                     setResults([]);
+                    setTotalResults(0);
                     setHighlightedIndex(-1);
                     setIsDropdownOpen(true);
                   } else {
                     controllerRef.current?.abort();
                     setResults([]);
+                    setTotalResults(0);
                     setHighlightedIndex(-1);
                     setError(null);
                     setIsSearching(false);
@@ -303,6 +339,9 @@ export function GlobalNavigation() {
                 onKeyDown={handleKeyDown}
                 data-testid="global-search-input"
               />
+              <span className="sr-only" role="status" aria-live="polite">
+                {statusMessage}
+              </span>
               {showDropdown && (
                 <div
                   id="global-search-dropdown"
@@ -325,7 +364,7 @@ export function GlobalNavigation() {
                     </div>
                   </div>
                   {isSearching && (
-                    <p className="text-sm text-gray-500">Looking for relevant pages…</p>
+                    <p className="text-sm text-muted-foreground">Looking for relevant pages…</p>
                   )}
                   {!isSearching && results.length === 0 && !error && (
                     <p className="text-sm text-muted-foreground">Try another keyword or hit enter to search the site.</p>
@@ -336,9 +375,11 @@ export function GlobalNavigation() {
                   <ul className="space-y-2">
                     {results.map((result, index) => {
                       const isActive = highlightedIndex === index;
+                      const optionId = `global-search-option-${index}`;
                       return (
                         <li
                           key={`${result.url}-${result.title}`}
+                          id={optionId}
                           role="option"
                           aria-selected={isActive}
                           className={`cursor-pointer rounded-xl border px-3 py-2 text-sm transition ${
@@ -353,9 +394,13 @@ export function GlobalNavigation() {
                           onMouseEnter={() => setHighlightedIndex(index)}
                           data-testid="global-search-result"
                         >
-                          <p className="font-semibold text-foreground">{result.title}</p>
-                          <p className="text-[11px] uppercase tracking-[0.25em] text-muted-foreground">{TYPE_LABELS[result.type]}</p>
-                          <p className="text-sm text-muted-foreground line-clamp-2">{result.summary}</p>
+                          <p className="font-semibold text-foreground">{highlightText(result.title, query)}</p>
+                          <p className="text-[11px] uppercase tracking-[0.25em] text-muted-foreground">
+                            {TYPE_LABELS[result.type]} · {MATCH_LABELS[result.match]}
+                          </p>
+                          <p className="text-sm text-muted-foreground line-clamp-2">
+                            {highlightText(result.snippet ?? result.summary, query)}
+                          </p>
                           {result.tags.length > 0 && (
                             <div className="mt-2 flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.28em] text-primary">
                               {result.tags.slice(0, 3).map((tag) => (
