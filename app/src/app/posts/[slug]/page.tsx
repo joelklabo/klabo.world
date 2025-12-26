@@ -95,22 +95,48 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
   const nostrstackBaseUrl = env.NOSTRSTACK_BASE_URL ?? env.NEXT_PUBLIC_NOSTRSTACK_BASE_URL ?? '';
   const nostrstackHost = env.NOSTRSTACK_HOST ?? env.NEXT_PUBLIC_NOSTRSTACK_HOST ?? parseLightningAddress(lightningAddress)?.domain;
   const threadId = `post-${post.slug}`;
+  const publishedDate = post.publishDate ?? post.date;
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.summary,
+    datePublished: publishedDate,
+    dateModified: publishedDate,
+    url: canonicalUrl,
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': canonicalUrl,
+    },
+    image: [`${canonicalUrl}/og.png`],
+    keywords: post.tags ?? [],
+    publisher: {
+      '@type': 'Organization',
+      name: 'klabo.world',
+      url: siteUrl,
+    },
+  };
 
   return (
-    <div className="bg-gradient-to-b from-[#0b1020] via-[#0d1428] to-[#0c1326] text-slate-100">
-      <div className="mx-auto max-w-6xl px-6 py-16">
+    <div className="relative min-h-screen overflow-hidden bg-background text-foreground">
+      <div className="pointer-events-none absolute inset-0 opacity-80">
+        <div className="absolute -left-20 -top-10 h-64 w-64 rounded-full bg-primary/15 blur-3xl" />
+        <div className="absolute right-0 top-10 h-72 w-72 rounded-full bg-secondary/18 blur-3xl" />
+      </div>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <div className="relative mx-auto max-w-6xl px-6 py-16">
         <div className="grid gap-10 lg:grid-cols-[3fr_1fr]">
           <section className="min-w-0 space-y-8">
-            <div className="rounded-3xl border border-white/8 bg-white/5 p-8 shadow-[0_24px_70px_rgba(12,19,38,0.55)]">
+            <div className="rounded-3xl border border-border/60 bg-card/80 p-8 shadow-[0_24px_70px_rgba(6,10,20,0.55)]">
               <Link
                 href="/posts"
-                className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.35em] text-amber-200/80 hover:text-amber-100"
+                className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.35em] text-primary hover:text-primary/80"
               >
                 ← Back to posts
               </Link>
               <div className="mt-4 flex flex-col gap-2">
-                <p className="text-xs uppercase tracking-[0.35em] text-slate-400">Published</p>
-                <time className="text-base font-semibold text-white">
+                <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">Published</p>
+                <time className="text-base font-semibold text-foreground">
                   {new Date(post.publishDate ?? post.date).toLocaleDateString(undefined, {
                     month: 'long',
                     day: 'numeric',
@@ -118,20 +144,20 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
                   })}
                 </time>
               </div>
-              <h1 className="mt-6 text-4xl font-semibold leading-tight text-white md:text-5xl">{post.title}</h1>
-              <p className="mt-4 text-lg text-slate-300">{post.summary}</p>
+              <h1 className="mt-6 text-4xl font-semibold leading-tight text-foreground md:text-5xl">{post.title}</h1>
+              <p className="mt-4 text-lg text-muted-foreground">{post.summary}</p>
               <div className="mt-6 flex flex-wrap gap-3">
                 {post.tags?.map((tag) => (
                   <Link
                     key={tag}
                     href={`/posts/tag/${encodeURIComponent(tag)}`}
-                    className="rounded-full border border-amber-200/40 bg-amber-50/5 px-4 py-1 text-[11px] font-semibold uppercase tracking-[0.35em] text-amber-100 transition hover:border-amber-200/70 hover:bg-amber-50/10"
+                    className="rounded-full border border-primary/30 bg-primary/10 px-4 py-1 text-[11px] font-semibold uppercase tracking-[0.35em] text-foreground transition hover:border-primary/70 hover:bg-primary/15"
                   >
                     {tag}
                   </Link>
                 ))}
               </div>
-              <div className="mt-6 flex flex-wrap gap-6 text-xs uppercase tracking-[0.35em] text-slate-400">
+              <div className="mt-6 flex flex-wrap gap-6 text-xs uppercase tracking-[0.35em] text-muted-foreground">
                 <span>{readingTime} min read</span>
                 <span>
                   {previous ? 'Chronological' : 'Latest'} · {posts.length} post{posts.length === 1 ? '' : 's'}
@@ -151,57 +177,57 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
                 host={nostrstackHost ?? undefined}
               />
             )}
-            <div className="rounded-3xl border border-white/8 bg-gradient-to-br from-[#0d162c] to-[#0a1021] p-8 shadow-2xl shadow-black/50">
-              <div className="prose prose-slate max-w-none space-y-8 dark:prose-invert">
+            <div className="rounded-3xl border border-border/60 bg-card/80 p-8 shadow-[0_24px_70px_rgba(6,10,20,0.55)]">
+              <div className="prose max-w-none space-y-8">
                 <MDXContent code={post.body.code} />
               </div>
             </div>
             {widgetsEnabled && (
               <NostrstackComments threadId={threadId} canonicalUrl={canonicalUrl} relays={nostrRelays} />
             )}
-            <div className="grid gap-4 text-sm text-slate-300 sm:grid-cols-2">
+            <div className="grid gap-4 text-sm text-muted-foreground sm:grid-cols-2">
               {previous && (
                 <Link
                   href={`/posts/${previous.slug}`}
-                  className="rounded-3xl border border-white/10 bg-white/5 p-5 transition hover:-translate-y-1 hover:border-amber-200/60 hover:bg-amber-50/5"
+                  className="card-hover-lift rounded-3xl border border-border/60 bg-card/80 p-5"
                 >
-                  <p className="text-[11px] uppercase tracking-[0.35em] text-slate-400">Previous</p>
-                  <p className="mt-2 text-base font-semibold text-white">{previous.title}</p>
+                  <p className="text-[11px] uppercase tracking-[0.35em] text-muted-foreground">Previous</p>
+                  <p className="mt-2 text-base font-semibold text-foreground">{previous.title}</p>
                 </Link>
               )}
               {next && (
                 <Link
                   href={`/posts/${next.slug}`}
-                  className="rounded-3xl border border-white/10 bg-white/5 p-5 transition hover:-translate-y-1 hover:border-amber-200/60 hover:bg-amber-50/5"
+                  className="card-hover-lift rounded-3xl border border-border/60 bg-card/80 p-5"
                 >
-                  <p className="text-[11px] uppercase tracking-[0.35em] text-slate-400">Next</p>
-                  <p className="mt-2 text-base font-semibold text-white">{next.title}</p>
+                  <p className="text-[11px] uppercase tracking-[0.35em] text-muted-foreground">Next</p>
+                  <p className="mt-2 text-base font-semibold text-foreground">{next.title}</p>
                 </Link>
               )}
             </div>
           </section>
           <aside className="space-y-6">
             <div className="sticky top-20 space-y-6">
-              <div className="space-y-4 rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl shadow-black/50">
-                <h2 className="text-xs font-semibold uppercase tracking-[0.35em] text-slate-400">Post Details</h2>
-                <p className="text-sm text-slate-300">{post.summary}</p>
-                <dl className="space-y-3 text-xs uppercase tracking-[0.35em] text-slate-400">
+              <div className="space-y-4 rounded-3xl border border-border/60 bg-card/80 p-6 shadow-[0_24px_70px_rgba(6,10,20,0.55)]">
+                <h2 className="text-xs font-semibold uppercase tracking-[0.35em] text-muted-foreground">Post Details</h2>
+                <p className="text-sm text-muted-foreground">{post.summary}</p>
+                <dl className="space-y-3 text-xs uppercase tracking-[0.35em] text-muted-foreground">
                   <div>
-                    <dt className="text-[10px] text-slate-500">Published</dt>
-                    <dd className="text-sm text-white">{new Date(post.date).toLocaleDateString()}</dd>
+                    <dt className="text-[10px] text-muted-foreground/70">Published</dt>
+                    <dd className="text-sm text-foreground">{new Date(post.date).toLocaleDateString()}</dd>
                   </div>
                   <div>
-                    <dt className="text-[10px] text-slate-500">Reading time</dt>
-                    <dd className="text-sm text-white">{readingTime} mins</dd>
+                    <dt className="text-[10px] text-muted-foreground/70">Reading time</dt>
+                    <dd className="text-sm text-foreground">{readingTime} mins</dd>
                   </div>
                 </dl>
                 <div>
-                  <p className="text-[11px] uppercase tracking-[0.35em] text-slate-500">Quick tags</p>
+                  <p className="text-[11px] uppercase tracking-[0.35em] text-muted-foreground/70">Quick tags</p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {post.tags?.map((tag) => (
                       <span
                         key={tag}
-                        className="rounded-full border border-amber-200/30 bg-amber-50/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.35em] text-amber-100"
+                        className="rounded-full border border-primary/25 bg-primary/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.35em] text-foreground"
                       >
                         {tag}
                       </span>
