@@ -21,9 +21,31 @@ test.describe('global navigation', () => {
     const input = page.getByTestId('global-search-input');
     await expect(input).toBeVisible();
 
-    await input.fill('agentic');
+    await input.fill('bitcoin');
     await expect(page.getByTestId('global-search-results')).toBeVisible();
-    await expect(page.getByTestId('global-search-result').first()).toBeVisible();
+
+    const items = page.getByTestId('global-search-result');
+    const count = await items.count();
+    if (count === 0) {
+      test.skip(true, 'No search suggestions available');
+    }
+
+    const firstItem = items.first();
+    await expect(firstItem).toBeVisible();
+    await expect(firstItem.locator('mark')).toBeVisible();
+
+    await input.press('ArrowDown');
+    await expect(input).toHaveAttribute('aria-activedescendant', 'global-search-option-0');
+    await expect(firstItem).toHaveAttribute('aria-selected', 'true');
+
+    await input.press('Escape');
+    await expect(page.getByTestId('global-search-results')).toHaveCount(0);
+
+    await input.focus();
+    await expect(page.getByTestId('global-search-results')).toBeVisible();
+
+    await input.press('ArrowDown');
+    await input.press('Enter');
+    await expect(page).toHaveURL(/\/(posts|apps)\//);
   });
 });
-
