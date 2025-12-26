@@ -42,6 +42,19 @@ Goal: refresh klabo.world so it feels warm, colorful, and playful while keeping 
 - Completed: OKLCH tokens and warm palette in `globals.css`; Manrope + JetBrains Mono swapped in; header/nav, cards, prose, and motion/focus utilities refreshed.
 - Pending: polish the header search dropdown (shadow, 720px max width, shortcut chips) and restyle the `/search` page to match the warm theme; capture final visual QA once search updates land.
 
+## Audit update (2025-12-26)
+- Public UX audit completed. Findings: `/posts*` and `/apps*` still use legacy gradients and amber/slate colors; MDX components are custom-styled with non-token colors; search dropdown and `/search` page have minor drift and accessibility gaps; `globals.css` contains malformed OKLCH values that must be corrected.
+- See `docs/design/public-ux-audit.md` for route-by-route notes and QA checklist.
+
+### Sequencing (updated)
+1) Fix invalid OKLCH tokens and base theme variables in `globals.css`.
+2) Restyle `/posts`, `/posts/tags`, `/posts/tag/[tag]`, and `/posts/[slug]` to use tokenized palette + shared card/chip styles.
+3) Restyle `/apps` and `/apps/[slug]` to use tokenized palette + shared card/CTA styles.
+4) Align MDX components (code blocks, images, blockquotes, tables) to tokenized palette.
+5) Improve search UX: highlights/snippets + ARIA listbox semantics + skip link.
+6) Add sitemap/robots, security headers/CSP, and Web Vitals telemetry.
+7) Re-run visual QA checklist for public routes and update Phase 5 visual checks.
+
 ## Accessibility & Guardrails
 - Contrast: maintain WCAG AA on body text (≥4.5:1) and AA Large on headings/CTA (≥3:1). Keep amber on navy at ≥3.2:1; coral reserved for hover.
 - Focus: 2px outline using accent + 50% opacity overlay; never drop focus rings.

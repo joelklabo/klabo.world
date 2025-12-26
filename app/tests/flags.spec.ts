@@ -77,7 +77,7 @@ function mockRedis(seed: Record<string, string>) {
     return {
       createClient: () => ({
         isOpen: true,
-        connect: vi.fn().mockResolvedValue(),
+        connect: vi.fn(() => Promise.resolve()),
         get: vi.fn((key: string) => Promise.resolve(store.get(key) ?? null)),
         mGet: vi.fn((keys: string[]) => Promise.resolve(keys.map((k) => store.get(k) ?? null))),
         keys: vi.fn((pattern: string) => Promise.resolve(match(pattern))),

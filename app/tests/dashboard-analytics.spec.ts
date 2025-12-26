@@ -76,6 +76,9 @@ describe('dashboard analytics config', () => {
     const state = await loadDashboardChartState(chartDashboard);
 
     expect(state.status).toBe('success');
+    if (state.status !== 'success') {
+      throw new Error('Expected chart state to be success');
+    }
     expect(state.points[0]?.value).toBe(7);
     expect(fetchMock).toHaveBeenCalled();
   });
@@ -107,6 +110,9 @@ describe('dashboard analytics config', () => {
     const state = await loadDashboardLogs(logsDashboard);
 
     expect(state.status).toBe('success');
+    if (state.status !== 'success') {
+      throw new Error('Expected logs state to be success');
+    }
     expect(state.entries[0]?.message).toBe('hello world');
     expect(state.entries[0]?.severity).toBe('Information');
     expect(fetchMock).toHaveBeenCalled();
