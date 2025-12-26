@@ -2,9 +2,12 @@
 
 import { useEffect, useRef, useCallback } from 'react';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+import type { Metric } from 'web-vitals';
+import { onCLS, onFCP, onINP, onLCP, onTTFB } from 'web-vitals';
 
 const ApplicationInsightsConnection = () => {
   const appInsightsRef = useRef<ApplicationInsights | null>(null);
+  const vitalsInitializedRef = useRef(false);
 
   // Initialize Application Insights once
   useEffect(() => {
@@ -18,6 +21,38 @@ const ApplicationInsightsConnection = () => {
       });
       appInsightsRef.current.loadAppInsights();
     }
+  }, []);
+
+  useEffect(() => {
+    const appInsights = appInsightsRef.current;
+    if (!appInsights || vitalsInitializedRef.current) return;
+    const connectionString = process.env.NEXT_PUBLIC_APPLICATIONINSIGHTS_CONNECTION_STRING;
+    if (!connectionString) return;
+
+    vitalsInitializedRef.current = true;
+
+    const path = globalThis.location?.pathname ?? '';
+    const device = globalThis.matchMedia?.('(pointer: coarse)').matches ? 'touch' : 'pointer';
+
+    const reportMetric = (metric: Metric) => {
+      appInsights.trackMetric(
+        { name: `WebVitals.${metric.name}`, average: metric.value },
+        {
+          id: metric.id,
+          rating: metric.rating,
+          delta: metric.delta,
+          navigationType: metric.navigationType,
+          path,
+          device,
+        },
+      );
+    };
+
+    onCLS(reportMetric);
+    onFCP(reportMetric);
+    onINP(reportMetric);
+    onLCP(reportMetric);
+    onTTFB(reportMetric);
   }, []);
 
   // Event handler using useCallback to prevent recreating on every render
