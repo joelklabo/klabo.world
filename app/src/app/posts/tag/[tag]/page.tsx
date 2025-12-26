@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getPostTagCounts, getPosts } from '@/lib/posts';
+import { Button } from '@/components/ui/button';
 
 type Params = { tag: string };
 
@@ -28,44 +29,45 @@ export default async function PostTagPage({ params }: { params: Params | Promise
   }
 
   return (
-    <div className="bg-gradient-to-b from-[#0b1020] via-[#0d1428] to-[#0c1326] text-slate-100">
-      <div className="mx-auto max-w-6xl px-6 py-16">
+    <div className="relative min-h-screen overflow-hidden bg-background text-foreground">
+      <div className="pointer-events-none absolute inset-0 opacity-80">
+        <div className="absolute -left-20 -top-10 h-64 w-64 rounded-full bg-primary/15 blur-3xl" />
+        <div className="absolute right-0 top-10 h-72 w-72 rounded-full bg-secondary/18 blur-3xl" />
+      </div>
+      <div className="relative mx-auto max-w-6xl px-6 py-16">
         <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="space-y-3">
-            <p className="text-xs font-semibold uppercase tracking-[0.35em] text-amber-200/80">Tag</p>
-            <h1 className="text-4xl font-semibold tracking-tight text-white">{tag}</h1>
-            <p className="max-w-2xl text-sm text-slate-400">Posts filed under “{tag}”.</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary">Tag</p>
+            <h1 className="text-4xl font-bold tracking-tight text-foreground">{tag}</h1>
+            <p className="max-w-2xl text-sm text-muted-foreground">Posts filed under “{tag}”.</p>
           </div>
-          <Link
-            href="/posts/tags"
-            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-amber-200/90 transition hover:-translate-y-0.5 hover:border-amber-200/60 hover:bg-amber-50/5 hover:text-amber-100"
-          >
-            ← Back to all tags
-          </Link>
+          <Button asChild variant="outline" size="sm">
+            <Link href="/posts/tags">← Back to all tags</Link>
+          </Button>
         </header>
 
         <div className="mt-10 grid gap-5 sm:grid-cols-2">
           {posts.map((post) => (
             <article
               key={post._id}
-              className="group h-full rounded-2xl border border-white/5 bg-white/5 p-5 shadow-[0_20px_50px_rgba(12,19,38,0.35)] transition hover:-translate-y-1 hover:border-amber-200/40 hover:bg-amber-50/5 hover:shadow-[0_24px_60px_rgba(12,19,38,0.5)]"
+              className="card-hover-lift group h-full rounded-2xl border border-border/60 bg-card/80 p-5 shadow-[0_18px_45px_rgba(6,10,20,0.45)]"
             >
-              <time className="text-xs uppercase tracking-[0.3em] text-slate-400">
+              <time className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
                 {new Date(post.publishDate ?? post.date).toLocaleDateString()}
               </time>
-              <h2 className="mt-3 text-xl font-semibold leading-snug text-white">
-                <Link href={`/posts/${post.slug}`} className="hover:text-amber-100">
+              <h2 className="mt-3 text-xl font-semibold leading-snug text-foreground">
+                <Link href={`/posts/${post.slug}`} className="hover:text-primary">
                   {post.title}
                 </Link>
               </h2>
-              <p className="mt-2 text-sm text-slate-300 line-clamp-3">{post.summary}</p>
+              <p className="mt-2 text-sm text-muted-foreground line-clamp-3">{post.summary}</p>
               {post.tags && post.tags.length > 0 && (
-                <div className="mt-3 flex flex-wrap gap-2 text-[11px] uppercase tracking-[0.3em] text-amber-200/80">
+                <div className="mt-3 flex flex-wrap gap-2 text-[10px] font-semibold uppercase tracking-[0.3em] text-primary">
                   {post.tags.slice(0, 4).map((entry) => (
                     <Link
                       key={entry}
                       href={`/posts/tag/${encodeURIComponent(entry)}`}
-                      className="rounded-full border border-amber-200/30 bg-amber-50/5 px-3 py-1 transition group-hover:border-amber-200/60 group-hover:text-amber-100"
+                      className="rounded-full border border-primary/25 bg-primary/10 px-3 py-1 text-foreground transition hover:border-primary/60 hover:bg-primary/15"
                     >
                       {entry}
                     </Link>

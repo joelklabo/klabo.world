@@ -10,15 +10,15 @@ export default function PostTagsPage() {
   const tags = Object.entries(getPostTagCounts()).sort((a, b) => b[1] - a[1]);
 
   return (
-    <div className="bg-linear-to-b from-[#0b1020] via-[#0d1428] to-[#0c1326] text-slate-100">
-      <div className="mx-auto max-w-6xl px-6 py-16">
-        <p className="text-xs font-semibold uppercase tracking-[0.35em] text-amber-200/80">
-          Tags
-        </p>
-        <h1 className="mt-3 text-4xl font-semibold tracking-tight">
-          Explore by Topic
-        </h1>
-        <p className="mt-3 max-w-2xl text-sm text-slate-400">
+    <div className="relative min-h-screen overflow-hidden bg-background text-foreground">
+      <div className="pointer-events-none absolute inset-0 opacity-80">
+        <div className="absolute -left-20 -top-10 h-64 w-64 rounded-full bg-primary/15 blur-3xl" />
+        <div className="absolute right-0 top-10 h-72 w-72 rounded-full bg-secondary/18 blur-3xl" />
+      </div>
+      <div className="relative mx-auto max-w-6xl px-6 py-16">
+        <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary">Tags</p>
+        <h1 className="mt-3 text-4xl font-bold tracking-tight">Explore by Topic</h1>
+        <p className="mt-3 max-w-2xl text-sm text-muted-foreground">
           Quickly jump into the subjects we write about most—Bitcoin, Lightning,
           Nostr, agents, and more.
         </p>
@@ -27,10 +27,9 @@ export default function PostTagsPage() {
             <Link
               key={tag}
               href={`/posts/tag/${encodeURIComponent(tag)}`}
-              className="rounded-full border border-amber-200/30 bg-amber-50/5 px-4 py-2 text-sm font-semibold uppercase tracking-[0.25em] text-amber-100 transition hover:-translate-y-0.5 hover:border-amber-200/60 hover:text-amber-50 hover:shadow-[0_12px_28px_rgba(12,19,38,0.4)]"
+              className="rounded-full border border-primary/25 bg-primary/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-foreground transition hover:-translate-y-0.5 hover:border-primary/60 hover:bg-primary/15 hover:shadow-[0_12px_28px_rgba(6,10,20,0.4)]"
             >
-              {tag}{" "}
-              <span className="ml-1 text-xs text-amber-200/70">({count})</span>
+              {tag} <span className="ml-1 text-xs text-muted-foreground">({count})</span>
             </Link>
           ))}
         </div>
