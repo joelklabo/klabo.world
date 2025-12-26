@@ -13,16 +13,20 @@ export default function AppsPage() {
   const apps = getApps();
 
   return (
-    <div className="bg-linear-to-b from-[#0b1020] via-[#0d1428] to-[#0c1326] text-slate-100">
-      <div className="mx-auto max-w-6xl px-6 py-16">
+    <div className="relative min-h-screen overflow-hidden bg-background text-foreground">
+      <div className="pointer-events-none absolute inset-0 opacity-80">
+        <div className="absolute -left-20 -top-10 h-64 w-64 rounded-full bg-primary/15 blur-3xl" />
+        <div className="absolute right-0 top-10 h-72 w-72 rounded-full bg-secondary/18 blur-3xl" />
+      </div>
+      <div className="relative mx-auto max-w-6xl px-6 py-16">
         <header className="mb-12 text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.35em] text-amber-200/80">
+          <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary">
             Apps
           </p>
-          <h1 className="mt-3 text-4xl font-semibold tracking-tight">
+          <h1 className="mt-3 text-4xl font-bold tracking-tight">
             Projects & Experiments
           </h1>
-          <p className="mt-4 text-lg text-slate-300">
+          <p className="mt-4 text-lg text-muted-foreground">
             Native apps, command-line tools, and experiments that support
             Bitcoin, Lightning Network, and Nostr workflows.
           </p>
@@ -32,7 +36,7 @@ export default function AppsPage() {
             <Link
               key={app.slug}
               href={`/apps/${app.slug}`}
-              className="rounded-2xl border border-white/8 bg-white/5 p-6 shadow-[0_20px_50px_rgba(12,19,38,0.35)] transition hover:-translate-y-1 hover:border-amber-200/40 hover:bg-amber-50/5 hover:shadow-[0_24px_60px_rgba(12,19,38,0.5)]"
+              className="card-hover-lift rounded-2xl border border-border/60 bg-card/80 p-6 shadow-[0_18px_45px_rgba(6,10,20,0.45)]"
             >
               <div className="flex items-start gap-4">
                 {app.icon && (
@@ -45,16 +49,16 @@ export default function AppsPage() {
                   />
                 )}
                 <div>
-                  <p className="text-xs uppercase tracking-[0.3em] text-slate-400">
+                  <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
                     {new Date(app.publishDate).toLocaleDateString()}
                   </p>
-                  <h2 className="text-2xl font-semibold text-white">
+                  <h2 className="text-2xl font-semibold text-foreground">
                     {app.name}
                   </h2>
-                  <p className="mt-2 text-sm text-slate-300 line-clamp-3">
+                  <p className="mt-2 text-sm text-muted-foreground line-clamp-3">
                     {app.fullDescription}
                   </p>
-                  <div className="mt-3 text-xs text-slate-400">
+                  <div className="mt-3 text-xs text-muted-foreground">
                     Version {app.version}
                   </div>
                 </div>

@@ -39,9 +39,13 @@ export default async function AppDetailPage({
   }
 
   return (
-    <article className="bg-linear-to-b from-[#0b1020] via-[#0d1428] to-[#0c1326] text-slate-100">
-      <div className="mx-auto max-w-4xl px-6 py-16">
-        <div className="rounded-3xl border border-white/8 bg-white/5 p-8 shadow-[0_24px_70px_rgba(12,19,38,0.55)]">
+    <article className="relative min-h-screen overflow-hidden bg-background text-foreground">
+      <div className="pointer-events-none absolute inset-0 opacity-80">
+        <div className="absolute -left-20 -top-10 h-64 w-64 rounded-full bg-primary/15 blur-3xl" />
+        <div className="absolute right-0 top-10 h-72 w-72 rounded-full bg-secondary/18 blur-3xl" />
+      </div>
+      <div className="relative mx-auto max-w-4xl px-6 py-16">
+        <div className="rounded-3xl border border-border/60 bg-card/80 p-8 shadow-[0_24px_70px_rgba(6,10,20,0.55)]">
           <div className="flex items-start gap-4">
             {app.icon && (
               <Image
@@ -53,15 +57,15 @@ export default async function AppDetailPage({
               />
             )}
             <div>
-              <p className="text-xs uppercase tracking-[0.35em] text-amber-200/80">
+              <p className="text-xs uppercase tracking-[0.35em] text-primary">
                 {new Date(app.publishDate).toLocaleDateString()}
               </p>
-              <h1 className="text-4xl font-semibold text-white">{app.name}</h1>
-              <p className="text-sm text-slate-300">Version {app.version}</p>
+              <h1 className="text-4xl font-bold text-foreground">{app.name}</h1>
+              <p className="text-sm text-muted-foreground">Version {app.version}</p>
             </div>
           </div>
 
-          <p className="mt-6 text-lg text-slate-200">{app.fullDescription}</p>
+          <p className="mt-6 text-lg text-muted-foreground">{app.fullDescription}</p>
 
           <div className="mt-6 flex flex-wrap gap-3">
             {app.appStoreURL && (
@@ -86,10 +90,10 @@ export default async function AppDetailPage({
           {app.features?.length ? (
             <section className="mt-10">
               <h2 className="text-2xl font-semibold">Key Features</h2>
-              <ul className="mt-4 space-y-2 text-sm text-slate-200">
+              <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
                 {app.features.map((feature) => (
                   <li key={feature} className="flex items-start gap-2">
-                    <span className="text-amber-300">•</span>
+                    <span className="text-primary">•</span>
                     <span>{feature}</span>
                   </li>
                 ))}
@@ -109,7 +113,7 @@ export default async function AppDetailPage({
                     width={600}
                     height={400}
                     sizes="(max-width: 640px) 100vw, 50vw"
-                    className="rounded-2xl border border-white/10 shadow-lg shadow-black/40"
+                    className="rounded-2xl border border-border/60 shadow-[0_18px_45px_rgba(6,10,20,0.45)]"
                   />
                 ))}
               </div>
