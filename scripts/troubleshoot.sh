@@ -87,6 +87,7 @@ echo "8. Checking DevTools MCP helper..."
 if [ -x "$REPO_ROOT/scripts/devtools-mcp-check.sh" ]; then
     echo "   ✅ DevTools MCP helper available"
     echo "   Run: $REPO_ROOT/scripts/devtools-mcp-check.sh"
+    echo "   Example: $REPO_ROOT/scripts/devtools-mcp-check.sh --timeout 120000 --url http://127.0.0.1:3100"
 else
     echo "   ❌ DevTools MCP helper missing!"
 fi
