@@ -15,7 +15,7 @@ export default async function Home() {
 
   return (
     <div className="bg-background text-foreground">
-      <section className="relative overflow-hidden py-16 sm:py-20">
+      <section className="relative overflow-x-hidden py-16 sm:py-20">
         <div className="relative mx-auto flex max-w-6xl flex-col gap-10 px-6">
           <div className="max-w-3xl space-y-6">
             <h1
