@@ -9,7 +9,7 @@ Follow the same steps locally or in CI:
 1. **Prereqs**
    - Azure CLI logged in with access to `klabo-world-rg` (or federated creds in CI).
    - Docker logged into `ghcr.io/${ORG}` (`docker login ghcr.io`).
-   - CI GHCR auth uses `GITHUB_TOKEN` (actor = `github.actor`, needs `packages: write`) unless `GHCR_PAT` + `GHCR_USERNAME` are set.
+   - CI GHCR auth uses `GITHUB_TOKEN` (actor = `github.actor`, needs `packages: write`). If a PAT is required, update `.github/workflows/deploy.yml` to use `GHCR_USERNAME` + `GHCR_PAT`.
    - Environment variables exported:
      ```
      export CONTAINER_REGISTRY=ghcr.io/joelklabo

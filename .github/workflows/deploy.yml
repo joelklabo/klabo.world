@@ -102,11 +102,10 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          # Prefer a PAT with write:packages if provided; otherwise fall back to the
-          # default GITHUB_TOKEN. This unblocks environments where the workflow token
-          # lacks registry write on GHCR.
-          username: ${{ secrets.GHCR_USERNAME != '' && secrets.GHCR_USERNAME || (secrets.GHCR_PAT != '' && github.repository_owner || github.actor) }}
-          password: ${{ secrets.GHCR_PAT != '' && secrets.GHCR_PAT || secrets.GITHUB_TOKEN }}
+          # Use the workflow token so GHCR auth follows the job permissions.
+          # If a PAT is required, swap to GHCR_USERNAME/GHCR_PAT explicitly.
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push container image
         uses: docker/build-push-action@v6
