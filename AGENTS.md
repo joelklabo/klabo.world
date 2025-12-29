@@ -1,32 +1,6 @@
-# YOUR JOB:
-
-1. Ask `bd ready` what to do
-2. Mark the issue `in_progress`
-3. Work on it
-4. Check your work, run tests
-5. Mark it as 'done'
-6. Create new issues or epics for any necessary work, or improvements, you came across in your work.
-7. Commit
-8. Push
-9. GO BACK TO 1!
-
-# IMPORTANT:
-
-- NEVER ask which issue you should pick next, use your best judgement and pick one.
-- ALWAYS create new issues/epics if you come across something in the course of your work that should be fixed or improved.
-- NEVER give me a summary, or a status report. Just do "Your Job" (See above)
-
-# NOTE:
-- If you ever see this error, run `bd doctor` for next steps:
-    "⚠️  WARNING: JSONL file hash mismatch detected (bd-160)
-     This indicates JSONL and export hashes are out of sync.
-     Clearing export hashes to force full re-export."
-
-# VALID STOP REASONS:
-- stop reasons: `bd ready` (no tasks), unrecoverable error after retries.
-
-# INVALID STOP REASONS:
-- "just reporting progress", "task looks hard", "I've used a lot of tokens", "status update".
+## Skills
+- Skills live under `~/.codex/skills`. Start with `~/.codex/skills/skills-catalog.md`, then open the specific `SKILL.md` referenced there.
+- Apply the relevant skills instead of duplicating their guidance in this file.
 
 ## Quick Context
 - Stack: Next.js 16 (App Router) + React 19, TypeScript 5, Tailwind 4, Contentlayer MDX, Prisma (SQLite default; Postgres optional), optional Redis, Azure Blob Storage, Azure App Service containers.
@@ -45,10 +19,9 @@
 - `pnpm --filter @klaboworld/scripts run export-legacy` and `... run new-post -- --title "My Post"` for content helpers.
 
 ## Workflow Guardrails
-- Start with `bd ready`; create/mark issues as you work and close only after commit/push via `commit-push-watch.sh -m "..." -w "ci|Build, Test, and Deploy to Azure"`.
+- When pushing, prefer `commit-push-watch.sh -m "..." -w "ci|Build, Test, and Deploy to Azure"`.
 - Check previous CI before new work (reattach the commit-push tmux session or `gh run list --limit 5`); fix failures first.
 - Use pnpm from the workspace root (no npm/yarn per package). Keep `.env` aligned with `.env.example`.
-- If `bd doctor` raises warnings: install the pre-push hook, remove extra JSONL (`beads.left.jsonl` vs `issues.jsonl`), and upgrade bd when possible.
 - Update `docs/document-inventory.md` whenever docs move or new ones are added; log improvements as beads issues.
 
 ## Dev Workflow & Services
