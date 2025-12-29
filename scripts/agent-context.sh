@@ -1,12 +1,29 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-cat <<'INFO'
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+NODE_VERSION="$(node -v 2>/dev/null || echo missing)"
+PNPM_VERSION="$(pnpm -v 2>/dev/null || echo missing)"
+REQUIRED_NODE="$(awk '/^nodejs /{print $2}' "$REPO_ROOT/.tool-versions" 2>/dev/null || true)"
+
+cat <<INFO
 KLABO.WORLD – AGENT CONTEXT
 ===========================
-Root: $(pwd)
-Node: $(node -v 2>/dev/null || echo missing)
-PNPM: $(pnpm -v 2>/dev/null || echo missing)
+Root: $REPO_ROOT
+Node: $NODE_VERSION
+PNPM: $PNPM_VERSION
+INFO
+
+if [[ -n "$REQUIRED_NODE" && "$NODE_VERSION" != "missing" ]]; then
+  CURRENT_NODE="${NODE_VERSION#v}"
+  if [[ "$(printf '%s\n' "$CURRENT_NODE" "$REQUIRED_NODE" | sort -V | head -n1)" != "$REQUIRED_NODE" ]]; then
+    echo "Node version warning: expected >= $REQUIRED_NODE (tool-versions), found $CURRENT_NODE"
+    echo "Run: mise install && mise use"
+  fi
+fi
+
+cat <<INFO
 
 Primary commands:
   just bootstrap   # pins pnpm + installs deps

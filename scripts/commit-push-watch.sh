@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
 usage() {
   echo "Usage: $(basename "$0") [-m \"commit message\"] [-w \"workflow|pattern\"]" >&2
   echo "Examples:" >&2
@@ -34,6 +37,18 @@ if [[ -z "$COMMIT_MESSAGE" || $# -gt 0 ]]; then
 fi
 
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+if [[ "${SKIP_NODE_PREFLIGHT:-0}" != "1" ]]; then
+  REQUIRED_NODE="$(awk '/^nodejs /{print $2}' "$REPO_ROOT/.tool-versions" 2>/dev/null || true)"
+  CURRENT_NODE="$(node -v 2>/dev/null || echo missing)"
+  if [[ -n "$REQUIRED_NODE" && "$CURRENT_NODE" != "missing" ]]; then
+    CURRENT_NODE="${CURRENT_NODE#v}"
+    if [[ "$(printf '%s\n' "$CURRENT_NODE" "$REQUIRED_NODE" | sort -V | head -n1)" != "$REQUIRED_NODE" ]]; then
+      echo "⚠️  Node version mismatch: expected >= $REQUIRED_NODE, found $CURRENT_NODE" >&2
+      echo "    Run: mise install && mise use (or set SKIP_NODE_PREFLIGHT=1 to skip)" >&2
+    fi
+  fi
+fi
 
 git add -A
 
