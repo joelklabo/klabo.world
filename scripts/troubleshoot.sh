@@ -82,6 +82,16 @@ else
 fi
 echo ""
 
+# DevTools MCP helper
+echo "8. Checking DevTools MCP helper..."
+if [ -x "$REPO_ROOT/scripts/devtools-mcp-check.sh" ]; then
+    echo "   ✅ DevTools MCP helper available"
+    echo "   Run: $REPO_ROOT/scripts/devtools-mcp-check.sh"
+else
+    echo "   ❌ DevTools MCP helper missing!"
+fi
+echo ""
+
 # Summary
 echo "Summary"
 echo "-------"
