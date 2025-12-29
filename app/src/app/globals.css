@@ -266,6 +266,8 @@ body {
 
 .card-hover-lift {
   transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+  will-change: transform, box-shadow;
+  overflow: visible;
 }
 
 .card-hover-lift:hover {

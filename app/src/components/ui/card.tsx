@@ -1,17 +1,25 @@
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
+import { Surface } from "@/components/ui/surface"
 
-function Card({ className, ...props }: React.ComponentProps<"div">) {
+type CardProps = React.ComponentProps<"div"> & {
+  innerClassName?: string
+}
+
+function Card({ className, innerClassName, children, ...props }: CardProps) {
   return (
-    <div
+    <Surface
       data-slot="card"
-      className={cn(
-        "bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm",
-        className
+      className={cn("card-hover-lift", className)}
+      innerClassName={cn(
+        "bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm overflow-hidden",
+        innerClassName
       )}
       {...props}
-    />
+    >
+      {children}
+    </Surface>
   )
 }
 
