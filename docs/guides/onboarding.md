@@ -368,6 +368,9 @@ Pushes to `main` trigger the “Build, Test, and Deploy to Azure” workflow: li
 **Issue**: Playwright tests fail locally  
 **Fix**: Ensure dev server is running on port 3000 before tests
 
+**Issue**: `pnpm dev` fails with `Watchpack Error (watcher): Error: EMFILE: too many open files, watch`  
+**Fix**: Re-run with polling enabled: `WATCHPACK_POLLING=true CHOKIDAR_USEPOLLING=true pnpm dev`
+
 ## Next Steps
 
 1. ✅ Complete this onboarding guide
