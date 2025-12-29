@@ -3,6 +3,7 @@ import { defineConfig, devices } from '@playwright/test';
 const defaultPort = Number(process.env.PLAYWRIGHT_PORT ?? 3100);
 const defaultBaseUrl = process.env.PLAYWRIGHT_BASE_URL ?? `http://127.0.0.1:${defaultPort}`;
 const defaultDatabaseUrl = process.env.PLAYWRIGHT_DATABASE_URL ?? 'file:../data/app.db';
+const defaultRedisUrl = process.env.PLAYWRIGHT_REDIS_URL ?? '';
 const defaultWorkers = process.env.PLAYWRIGHT_WORKERS
   ? Number(process.env.PLAYWRIGHT_WORKERS)
   : (process.env.PLAYWRIGHT_BASE_URL
@@ -45,6 +46,7 @@ export default defineConfig({
         env: {
           ...process.env,
           DATABASE_URL: defaultDatabaseUrl,
+          REDIS_URL: defaultRedisUrl,
           NEXTAUTH_URL: defaultBaseUrl,
           SITE_URL: defaultBaseUrl,
           ADMIN_EMAIL: process.env.ADMIN_EMAIL ?? 'admin@example.com',
