@@ -54,7 +54,9 @@ export default defineConfig({
           NOSTRSTACK_BASE_URL: process.env.NOSTRSTACK_BASE_URL ?? 'mock',
           NOSTRSTACK_HOST: process.env.NOSTRSTACK_HOST ?? 'mock',
           NOSTRSTACK_RELAYS: process.env.NOSTRSTACK_RELAYS ?? 'mock',
-          NOSTRSTACK_LN_ADDRESS: process.env.NOSTRSTACK_LN_ADDRESS ?? 'alice@mock.test'
+          NOSTRSTACK_LN_ADDRESS: process.env.NOSTRSTACK_LN_ADDRESS ?? 'alice@mock.test',
+          WATCHPACK_POLLING: process.env.WATCHPACK_POLLING ?? 'true',
+          CHOKIDAR_USEPOLLING: process.env.CHOKIDAR_USEPOLLING ?? 'true',
         },
       },
 });
