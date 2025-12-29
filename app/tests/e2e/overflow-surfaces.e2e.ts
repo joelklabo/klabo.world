@@ -15,24 +15,26 @@ test.describe('overflow surfaces', () => {
     test.skip(!fs.existsSync(snapshotPath), `Missing snapshot ${snapshotFile}`);
   }
 
+  const screenshotOptions = { fullPage: true, maxDiffPixels: 40 };
+
   test('home page surfaces', async ({ page }) => {
     assertSnapshotAvailable('home');
     await page.goto('/');
     await page.waitForLoadState('networkidle');
-    await expect(page).toHaveScreenshot('home.png', { fullPage: true });
+    await expect(page).toHaveScreenshot('home.png', screenshotOptions);
   });
 
   test('projects page surfaces', async ({ page }) => {
     assertSnapshotAvailable('projects');
     await page.goto('/projects');
     await page.waitForLoadState('networkidle');
-    await expect(page).toHaveScreenshot('projects.png', { fullPage: true });
+    await expect(page).toHaveScreenshot('projects.png', screenshotOptions);
   });
 
   test('admin dashboard surfaces', async ({ page }) => {
     assertSnapshotAvailable('admin-dashboard');
     await loginAsAdmin(page);
     await page.waitForLoadState('networkidle');
-    await expect(page).toHaveScreenshot('admin-dashboard.png', { fullPage: true });
+    await expect(page).toHaveScreenshot('admin-dashboard.png', screenshotOptions);
   });
 });

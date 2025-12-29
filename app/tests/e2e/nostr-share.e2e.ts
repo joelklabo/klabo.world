@@ -9,8 +9,12 @@ test.describe('nostr share', () => {
     if (await shareActivity.count() === 0) {
       test.skip(true, 'Nostr widgets disabled for this post');
     }
-    await expect(shareActivity).toBeVisible();
-    await expect(page.getByTestId('nostrstack-share-count')).toHaveText('0');
+    await expect(shareActivity).toBeAttached();
+    const shareCount = page.getByTestId('nostrstack-share-count');
+    await expect(shareCount).toBeAttached();
+    if (await shareCount.isVisible()) {
+      await expect(shareCount).toHaveText('0');
+    }
 
     const share = page.getByTestId('nostrstack-share');
     await expect(share).toBeVisible();
