@@ -22,7 +22,6 @@
     "lint:style": "stylelint \"**/*.css\"",
     "lint:deps": "depcruise --config .dependency-cruiser.js app/src",
     "check:all": "pnpm lint:dead && pnpm lint:dupes && pnpm lint:secrets && pnpm lint:style && pnpm lint:deps && pnpm turbo lint",
-    "flags:check": "node scripts/list-expired-flags.js",
     "lint:boundaries": "eslint -c .eslintrc.boundaries.json \"app/**/*.{ts,tsx}\"",
     "prepare": "husky"
   },

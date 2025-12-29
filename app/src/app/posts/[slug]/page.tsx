@@ -4,7 +4,6 @@ import type { Metadata } from 'next';
 import { getPostBySlug, getPosts } from '@/lib/posts';
 import { MDXContent } from '@/components/mdx-content';
 import { env } from '@/lib/env';
-import { getFlag } from '@/lib/flags';
 import { NostrstackActionBar, NostrstackComments, NostrstackOmnoster } from '@/components/nostrstack-widgets';
 
 type Params = { slug: string };
@@ -89,9 +88,7 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
   const nostrRelays =
     post.nostrRelays ??
     parseRelayList(env.NOSTRSTACK_RELAYS ?? env.NEXT_PUBLIC_NOSTRSTACK_RELAYS ?? '');
-  const flag = await getFlag('nostrstack-post-widgets');
-  const flagEnabled = flag.value === true || flag.value === 'on';
-  const widgetsEnabled = flagEnabled && post.nostrstackEnabled !== false;
+  const widgetsEnabled = post.nostrstackEnabled !== false;
   const nostrstackBaseUrl = env.NOSTRSTACK_BASE_URL ?? env.NEXT_PUBLIC_NOSTRSTACK_BASE_URL ?? '';
   const nostrstackHost = env.NOSTRSTACK_HOST ?? env.NEXT_PUBLIC_NOSTRSTACK_HOST ?? parseLightningAddress(lightningAddress)?.domain;
   const threadId = `post-${post.slug}`;

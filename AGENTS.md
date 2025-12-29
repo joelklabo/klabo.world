@@ -72,7 +72,7 @@
 
 ## Docs & Runbooks
 - Inventory: `docs/document-inventory.md`. Onboarding: `docs/guides/onboarding.md`. Pairing: `docs/guides/coding-partners.md`.
-- Key runbooks: `docs/runbooks/admin-content.md`, `docs/runbooks/deployment.md`, `docs/runbooks/observability.md`, `docs/runbooks/feature-flags.md`, `docs/runbooks/rollback.md`, `docs/runbooks/db-recovery.md`.
+- Key runbooks: `docs/runbooks/admin-content.md`, `docs/runbooks/deployment.md`, `docs/runbooks/observability.md`, `docs/runbooks/rollback.md`, `docs/runbooks/db-recovery.md`.
 - Design direction: `docs/design/modernization-plan.md`. Infra layout: `docs/infra/README.md`. Legacy Vapor references live under `docs/vapor/` (reference only).
 
 ## Deploy/Telemetry Quick Hits

@@ -67,7 +67,6 @@ This file is the single source of truth for every Markdown document that should 
 - `turbo-cache.md` – Guidance on enabling Turbo remote cache and reading metrics.
 - `secrets.md` – Secrets management across local env, GitHub Actions, and Azure.
 - `db-recovery.md` – Database recovery steps.
-- `feature-flags.md` – Provider-agnostic feature flag guidance.
 - `github-projects.md` – Refreshing the GitHub projects snapshot used by home + `/projects`.
 - (retired) `build-modularity.md` – superseded by Turbo task changes and build cache epics.
 

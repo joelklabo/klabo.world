@@ -19,8 +19,8 @@ Proposed — targets beads issue `klabw-4ki`.
 - `packages/config` – shared eslint/tsconfig (unchanged).
 - `packages/scripts` – CLIs and deployment helpers (unchanged; ensure isolated build).
 - `packages/ui` – promote to real component library (shadcn primitives + shared form controls, charts stubs).
-- `packages/types` (new) – shared DTOs/flag metadata/tRPC types.
-- `packages/core` (new) – shared server utilities (logger, feature flags, markdown preview, blob storage helpers) to shrink `app/src/lib`.
+- `packages/types` (new) – shared DTOs and tRPC types.
+- `packages/core` (new) – shared server utilities (logger, markdown preview, blob storage helpers) to shrink `app/src/lib`.
 
 ## Turbo pipeline shaping
 - Convert `turbo.json` to per-task pipeline with package-aware outputs:
@@ -34,14 +34,14 @@ Proposed — targets beads issue `klabw-4ki`.
 ## Sequencing
 1. **Unblock baseline**: fix the existing `Textarea` typo so `pnpm --filter app build` passes; record cold build time.  
 2. **Turbo rewrite**: move to package-aware pipeline with explicit outputs/depends; add `--filter ...` examples to AGENTS if needed.  
-3. **Create `packages/types` + `packages/core`**: move flag types/registry, logger, markdown preview, and shared DTOs out of `app/src/lib`.  
+3. **Create `packages/types` + `packages/core`**: move logger, markdown preview, and shared DTOs out of `app/src/lib`.  
 4. **Promote `packages/ui`**: move shared form controls and dashboard widgets; export only typed, tree-shakeable components.  
 5. **Remote cache rollout**: configure Turbo cloud or self-hosted, document env vars, and enable in CI.  
 6. **Re-measure**: capture cold/warm timings for build, lint, test; adjust chunking (e.g., split app build into `app#build:server` / `app#build:client` if needed).  
 7. **Guardrails**: add lint to prevent cross-package deep imports and enforce public API surfaces.
 
 ## Risks / mitigations
-- **Refactor churn**: move code in small, well-tested slices (flags → core; DTOs → types; UI → ui) with Vitest/Playwright coverage.
+- **Refactor churn**: move code in small, well-tested slices (DTOs → types; UI → ui) with Vitest/Playwright coverage.
 - **Cache misses**: ensure outputs are declared; avoid `dependsOn` cycles; pin Node/pnpm (already in `.tool-versions`).
 - **Remote cache secrets**: store tokens in CI secrets; avoid local `.env` leakage.
 
