@@ -8,10 +8,13 @@ test('admin upload image endpoint stores a PNG and returns a public URL', async 
   await page.goto('/admin/compose');
 
   const fixture = path.resolve(__dirname, '../../..', 'test_image.png');
-  const fileInput = page.locator('input[type="file"]').first();
+  const uploadButton = page.getByRole('button', { name: 'Upload image' });
+  await expect(uploadButton).toBeVisible();
+  const fileInput = uploadButton.locator('..').locator('input[type="file"]');
+  await expect(fileInput).toHaveCount(1);
 
   const [response] = await Promise.all([
-    page.waitForResponse((res) => res.url().endsWith('/admin/upload-image') && res.request().method() === 'POST'),
+    page.waitForResponse((res) => res.url().includes('/admin/upload-image') && res.request().method() === 'POST'),
     fileInput.setInputFiles(fixture),
   ]);
 

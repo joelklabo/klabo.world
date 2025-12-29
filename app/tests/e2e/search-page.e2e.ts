@@ -19,7 +19,7 @@ test.describe('search page', () => {
     const firstCard = resultCards.first();
     await expect(firstCard).toBeVisible();
     await expect(firstCard.getByText(/match:/i)).toBeVisible();
-    await expect(firstCard.locator('mark')).toBeVisible();
+    await expect(firstCard.locator('mark').first()).toBeVisible();
   });
 
   test('empty results show empty state', async ({ page }) => {

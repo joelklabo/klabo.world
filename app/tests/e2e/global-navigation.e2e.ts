@@ -32,7 +32,7 @@ test.describe('global navigation', () => {
 
     const firstItem = items.first();
     await expect(firstItem).toBeVisible();
-    await expect(firstItem.locator('mark')).toBeVisible();
+    await expect(firstItem.locator('mark').first()).toBeVisible();
 
     await input.press('ArrowDown');
     await expect(input).toHaveAttribute('aria-activedescendant', 'global-search-option-0');
