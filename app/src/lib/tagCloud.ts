@@ -1,6 +1,6 @@
 import { getPostTagCounts } from './posts';
 
-export type TagCount = { tag: string; count: number };
+type TagCount = { tag: string; count: number };
 
 function toArray(record: Record<string, number>, limit?: number): TagCount[] {
   const entries = Object.entries(record)

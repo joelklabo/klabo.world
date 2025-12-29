@@ -2,7 +2,12 @@
   "$schema": "https://unpkg.com/knip@5/schema.json",
   "workspaces": {
     "app": {
-      "entry": ["src/app/**/*.{ts,tsx}", "next.config.ts", "contentlayer.config.ts"],
+      "entry": [
+        "src/app/**/*.{ts,tsx}",
+        "tests/**/*.ts",
+        "next.config.ts",
+        "contentlayer.config.ts"
+      ],
       "project": ["src/**/*.{ts,tsx}"],
       "ignore": [
         "src/components/ui/card.tsx",
@@ -48,9 +53,7 @@
     "tailwind.config.ts"
   ],
   "ignoreDependencies": [
-    "eslint-config-next",
     "postcss",
-    "autoprefixer",
     "@azure/monitor-opentelemetry-exporter",
     "@opentelemetry/auto-instrumentations-node",
     "@opentelemetry/sdk-node",
@@ -63,7 +66,7 @@
     "@types/react-dom",
     "@klaboworld/config"
   ],
-  "ignoreBinaries": ["just", "eslint"],
+  "ignoreBinaries": ["just", "eslint", "mise"],
   "rules": {
     "exports": "warn",
     "types": "warn",

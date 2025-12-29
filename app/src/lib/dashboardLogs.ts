@@ -11,7 +11,7 @@ const SEVERITY_NUMERIC_MAP: Record<number, string> = {
   5: 'Critical',
 };
 
-export type DashboardLogEntry = {
+type DashboardLogEntry = {
   id: string;
   timestamp: string;
   message: string;

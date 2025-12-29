@@ -2,7 +2,7 @@ import * as React from 'react';
 
 type Variant = 'default' | 'outline' | 'ghost';
 
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant;
 }
 

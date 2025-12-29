@@ -37,7 +37,7 @@ export function getPostTagCounts(): Record<string, number> {
   }, {});
 }
 
-export type AdminPostSummary = {
+type AdminPostSummary = {
   slug: string;
   title: string;
   summary: string;

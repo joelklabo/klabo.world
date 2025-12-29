@@ -15,7 +15,7 @@ export function getAppBySlug(slug: string): AppDoc | undefined {
   return allAppDocs.find((app) => app.slug === slug);
 }
 
-export type AdminApp = {
+type AdminApp = {
   slug: string;
   name: string;
   version: string;

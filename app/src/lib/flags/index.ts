@@ -257,33 +257,6 @@ export async function getFlag(
   return buildEvaluation(key, meta.defaultValue, "default", meta);
 }
 
-export async function getAllFlags(
-  prefix?: string,
-): Promise<Record<string, FlagEvaluation>> {
-  const definitions = flagRegistry.filter(
-    (def) => !prefix || def.key.startsWith(prefix),
-  );
-  const results: Record<string, FlagEvaluation> = {};
-
-  for (const def of definitions) {
-    results[def.key] = await getFlag(def.key);
-  }
-
-  return results;
-}
-
-export async function withFlag<T>(
-  key: string,
-  fn: () => Promise<T>,
-  ctx?: FlagEvaluationContext,
-): Promise<T | null> {
-  const evaluation = await getFlag(key, ctx);
-  if (evaluation.value === true || evaluation.value === "on") {
-    return fn();
-  }
-  return null;
-}
-
 export function listExpiredFlags(referenceDate = new Date()): FlagDefinition[] {
   return flagRegistry.filter((def) => new Date(def.expiry) < referenceDate);
 }

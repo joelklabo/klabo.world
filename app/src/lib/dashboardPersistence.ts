@@ -5,7 +5,7 @@ import { resolveContentSubdir } from '@klaboworld/core/server/contentPaths';
 import { deleteRepoFile, fetchRepoFile, upsertRepoFile } from '@klaboworld/core/server/github';
 import { env } from './env';
 
-export type DashboardType = 'chart' | 'logs' | 'embed' | 'link';
+type DashboardType = 'chart' | 'logs' | 'embed' | 'link';
 
 export type DashboardInput = {
   title: string;

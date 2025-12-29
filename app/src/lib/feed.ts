@@ -9,7 +9,7 @@ function absoluteUrl(path: string): string {
   return `${base}${path.startsWith('/') ? path : `/${path}`}`;
 }
 
-export function getFeedItems(limit = 20) {
+function getFeedItems(limit = 20) {
   return getPosts().slice(0, limit).map((post) => ({
     id: absoluteUrl(post.url),
     url: absoluteUrl(post.url),

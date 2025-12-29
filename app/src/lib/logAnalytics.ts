@@ -7,7 +7,7 @@ type LogAnalyticsTable = {
   rows: unknown[][];
 };
 
-export type LogAnalyticsQueryResult = {
+type LogAnalyticsQueryResult = {
   tables: LogAnalyticsTable[];
 };
 

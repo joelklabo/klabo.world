@@ -9,7 +9,7 @@ export type DashboardChartPoint = {
   value: number;
 };
 
-export type DashboardChartState =
+type DashboardChartState =
   | { status: 'disabled'; reason: string }
   | { status: 'empty'; reason: string }
   | { status: 'error'; message: string }
