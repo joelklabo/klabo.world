@@ -1,5 +1,6 @@
 import { GitHubProject } from "@/lib/github-projects";
 import { cn } from "@/lib/utils";
+import { Surface } from "@/components/ui/surface";
 import { ArrowUpRight, GitFork, Star } from "lucide-react";
 
 function formatProjectDate(value: string) {
@@ -69,11 +70,12 @@ export function GitHubProjectsShowcase({
   } as const;
 
   return (
-    <div
+    <Surface
       className={cn(
-        "overflow-hidden rounded-3xl border border-border/70 bg-card/70 shadow-[0_18px_50px_rgba(6,10,20,0.4)]",
+        "rounded-3xl shadow-[0_18px_50px_rgba(6,10,20,0.4)]",
         className,
       )}
+      innerClassName="overflow-hidden rounded-3xl border border-border/70 bg-card/70"
     >
       <div className="grid gap-0 md:grid-cols-[1.2fr_0.8fr] md:divide-x md:divide-border/40">
         <a
@@ -257,6 +259,6 @@ export function GitHubProjectsShowcase({
           })}
         </div>
       </div>
-    </div>
+    </Surface>
   );
 }

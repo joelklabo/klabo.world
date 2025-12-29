@@ -4,6 +4,7 @@ import { auth } from '@/lib/nextAuth';
 import { LoginForm } from '../login-form';
 import { getPostsForAdmin } from '@/lib/posts';
 import { Button } from '@/components/ui/button';
+import { Surface } from '@/components/ui/surface';
 
 export const dynamic = 'force-dynamic';
 
@@ -37,7 +38,10 @@ export default async function AdminLanding({ searchParams }: { searchParams?: Ad
           <Link href={'/admin/compose' as Route}>Compose post</Link>
         </Button>
       </div>
-      <div className="overflow-hidden rounded-2xl border border-border/60 bg-card shadow-[0_20px_45px_rgba(6,10,20,0.35)]">
+      <Surface
+        className="rounded-2xl shadow-[0_20px_45px_rgba(6,10,20,0.35)]"
+        innerClassName="overflow-hidden rounded-2xl border border-border/60 bg-card"
+      >
         <table className="min-w-full divide-y divide-border/60 text-sm">
           <thead className="bg-background/80 text-left">
             <tr>
@@ -70,7 +74,7 @@ export default async function AdminLanding({ searchParams }: { searchParams?: Ad
           </tbody>
         </table>
         {posts.length === 0 && <p className="px-6 py-10 text-center text-sm text-muted-foreground">No posts yet.</p>}
-      </div>
+      </Surface>
     </div>
   );
 }

@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { Route } from 'next';
 import React, { useState, type ReactNode } from 'react';
+import { Surface } from '@/components/ui/surface';
 
 const warmPrismTheme: PrismTheme = {
   plain: {
@@ -137,7 +138,10 @@ function ProseImage(props: { src?: string | null; alt?: string; title?: string }
   return (
     <figure className="group relative my-10">
       <Link href={src as Route} target="_blank" rel="noreferrer" className="pointer-events-auto">
-        <div className="relative overflow-hidden rounded-[32px] border border-border/60 bg-card/80 shadow-[0_24px_60px_rgba(6,10,20,0.55)] transition hover:-translate-y-1.5 hover:shadow-[0_30px_50px_rgba(6,10,20,0.7)]">
+        <Surface
+          className="relative rounded-[32px] shadow-[0_24px_60px_rgba(6,10,20,0.55)] transition hover:-translate-y-1.5 hover:shadow-[0_30px_50px_rgba(6,10,20,0.7)]"
+          innerClassName="relative overflow-hidden rounded-[32px] border border-border/60 bg-card/80"
+        >
           <Image
             src={src}
             alt={alt ?? 'Illustration'}
@@ -148,7 +152,7 @@ function ProseImage(props: { src?: string | null; alt?: string; title?: string }
             className="w-full max-h-[70vh] object-contain transition duration-300 group-hover:scale-105 md:max-h-[80vh]"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/60 opacity-0 transition group-hover:opacity-100" />
-        </div>
+        </Surface>
       </Link>
       {(alt || title) && (
         <figcaption className="mt-3 text-xs uppercase tracking-[0.4em] text-muted-foreground">
@@ -174,10 +178,13 @@ const components = {
   img: ProseImage,
   blockquote: BlockQuote,
   table: (props: { children: ReactNode }) => (
-    <div className="relative overflow-hidden rounded-2xl border border-border/60 bg-card/80 shadow-[0_24px_60px_rgba(6,10,20,0.45)]">
+    <Surface
+      className="rounded-2xl shadow-[0_24px_60px_rgba(6,10,20,0.45)]"
+      innerClassName="overflow-hidden rounded-2xl border border-border/60 bg-card/80"
+    >
       {/* eslint-disable-next-line sonarjs/table-header */}
       <table className="min-w-full divide-y divide-border/60 bg-background/40" {...props} />
-    </div>
+    </Surface>
   ),
   thead: (props: { children: ReactNode }) => (
     <thead className="bg-background/80 text-xs uppercase tracking-[0.28em] text-muted-foreground" {...props} />

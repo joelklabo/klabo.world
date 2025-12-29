@@ -3,6 +3,7 @@
 import { useOptimistic } from 'react';
 import Link from 'next/link';
 import { type Dashboard } from '@/lib/dashboards';
+import { Surface } from '@/components/ui/surface';
 
 type DashboardListProps = {
   initialDashboards: Dashboard[];
@@ -12,7 +13,10 @@ export function DashboardList({ initialDashboards }: DashboardListProps) {
   const [dashboards] = useOptimistic(initialDashboards);
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-border/60 bg-card shadow-[0_20px_45px_rgba(6,10,20,0.35)]">
+    <Surface
+      className="rounded-2xl shadow-[0_20px_45px_rgba(6,10,20,0.35)]"
+      innerClassName="overflow-hidden rounded-2xl border border-border/60 bg-card"
+    >
       <table className="min-w-full divide-y divide-border/60">
         <thead className="bg-background/80">
           <tr>
@@ -79,6 +83,6 @@ export function DashboardList({ initialDashboards }: DashboardListProps) {
           )}
         </tbody>
       </table>
-    </div>
+    </Surface>
   );
 }
