@@ -45,7 +45,7 @@ if [[ "${SKIP_NODE_PREFLIGHT:-0}" != "1" ]]; then
     CURRENT_NODE="${CURRENT_NODE#v}"
     if [[ "$(printf '%s\n' "$CURRENT_NODE" "$REQUIRED_NODE" | sort -V | head -n1)" != "$REQUIRED_NODE" ]]; then
       echo "⚠️  Node version mismatch: expected >= $REQUIRED_NODE, found $CURRENT_NODE" >&2
-      echo "    Run: mise install && mise use (or set SKIP_NODE_PREFLIGHT=1 to skip)" >&2
+      echo "    Run: just bootstrap (or: mise install && mise use). Set SKIP_NODE_PREFLIGHT=1 to skip." >&2
     fi
   fi
 fi

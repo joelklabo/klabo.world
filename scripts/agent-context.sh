@@ -19,7 +19,7 @@ if [[ -n "$REQUIRED_NODE" && "$NODE_VERSION" != "missing" ]]; then
   CURRENT_NODE="${NODE_VERSION#v}"
   if [[ "$(printf '%s\n' "$CURRENT_NODE" "$REQUIRED_NODE" | sort -V | head -n1)" != "$REQUIRED_NODE" ]]; then
     echo "Node version warning: expected >= $REQUIRED_NODE (tool-versions), found $CURRENT_NODE"
-    echo "Run: mise install && mise use"
+    echo "Run: just bootstrap (or: mise install && mise use)"
   fi
 fi
 
