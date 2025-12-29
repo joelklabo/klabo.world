@@ -105,7 +105,7 @@ jobs:
           # Prefer a PAT with write:packages if provided; otherwise fall back to the
           # default GITHUB_TOKEN. This unblocks environments where the workflow token
           # lacks registry write on GHCR.
-          username: ${{ secrets.GHCR_USERNAME != '' && secrets.GHCR_USERNAME || github.repository_owner }}
+          username: ${{ secrets.GHCR_USERNAME != '' && secrets.GHCR_USERNAME || (secrets.GHCR_PAT != '' && github.repository_owner || github.actor) }}
           password: ${{ secrets.GHCR_PAT != '' && secrets.GHCR_PAT || secrets.GITHUB_TOKEN }}
 
       - name: Build and push container image
