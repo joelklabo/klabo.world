@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { Metadata } from 'next';
+import type { Metadata, Route } from 'next';
 import { getDashboards } from '@/lib/dashboards';
 import { Button } from '@/components/ui/button';
 import { Surface } from '@/components/ui/surface';
@@ -84,7 +84,7 @@ export default function DashboardsPage() {
                     ) : (
                       <Link
                         className="text-xs font-semibold uppercase tracking-[0.3em] text-primary hover:text-primary/80"
-                        href={link}
+                        href={link as Route}
                       >
                         View details →
                       </Link>
