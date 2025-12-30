@@ -184,10 +184,7 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
               </div>
             </div>
             {widgetsEnabled && (
-              <ClientErrorBoundary
-                fallback={nostrActionFallback}
-                onError={(error) => console.error('Nostr action bar error:', error)}
-              >
+              <ClientErrorBoundary fallback={nostrActionFallback}>
                 <NostrstackActionBar
                   slug={post.slug}
                   title={post.title}
@@ -207,10 +204,7 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
               </div>
             </div>
             {widgetsEnabled && (
-              <ClientErrorBoundary
-                fallback={nostrCommentsFallback}
-                onError={(error) => console.error('Nostr comments error:', error)}
-              >
+              <ClientErrorBoundary fallback={nostrCommentsFallback}>
                 <NostrstackComments threadId={threadId} canonicalUrl={canonicalUrl} relays={nostrRelays} />
               </ClientErrorBoundary>
             )}
@@ -266,10 +260,7 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
               </div>
 
               {widgetsEnabled && (
-                <ClientErrorBoundary
-                  fallback={nostrOmnosterFallback}
-                  onError={(error) => console.error('Nostr omnoster error:', error)}
-                >
+                <ClientErrorBoundary fallback={nostrOmnosterFallback}>
                   <NostrstackOmnoster slug={post.slug} canonicalUrl={canonicalUrl} relays={nostrRelays} />
                 </ClientErrorBoundary>
               )}
