@@ -5,6 +5,7 @@ import { Component, type ReactNode } from 'react';
 type ClientErrorBoundaryProps = {
   children: ReactNode;
   fallback?: ReactNode;
+  label?: string;
   onError?: (error: Error) => void;
 };
 
@@ -20,6 +21,8 @@ export class ClientErrorBoundary extends Component<ClientErrorBoundaryProps, Cli
   }
 
   componentDidCatch(error: Error) {
+    const label = this.props.label ? ` (${this.props.label})` : '';
+    console.error(`ClientErrorBoundary${label}`, error);
     this.props.onError?.(error);
   }
 

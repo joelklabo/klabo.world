@@ -136,6 +136,13 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
     </div>
   );
 
+  const mdxFallback = (
+    <div className="rounded-3xl border border-amber-200/30 bg-amber-50/10 p-6 text-sm text-amber-100/90 shadow-[0_24px_70px_rgba(12,19,38,0.45)]">
+      <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-100/80">Post body</p>
+      <p className="mt-3">The post content failed to render. Try refreshing the page.</p>
+    </div>
+  );
+
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-background text-foreground">
       <div className="pointer-events-none absolute inset-0 opacity-80">
@@ -200,7 +207,9 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
             )}
             <div className="rounded-3xl border border-border/60 bg-card/80 p-8 shadow-[0_24px_70px_rgba(6,10,20,0.55)]">
               <div className="prose max-w-none space-y-8">
-                <MDXContent code={post.body.code} />
+                <ClientErrorBoundary label="MDXContent" fallback={mdxFallback}>
+                  <MDXContent code={post.body.code} />
+                </ClientErrorBoundary>
               </div>
             </div>
             {widgetsEnabled && (
