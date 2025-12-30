@@ -113,10 +113,12 @@ function Paragraph({ children, ...props }: { children: ReactNode; [key: string]:
   const unwrapFigure = () => {
     if (Array.isArray(children)) {
       const onlyChild = children.find(Boolean);
-      if (React.isValidElement(onlyChild) && onlyChild.type === 'figure') {
+      if (React.isValidElement(onlyChild) && (onlyChild.type === 'figure' || onlyChild.type === ProseImage)) {
         return onlyChild;
       }
     } else if (React.isValidElement(children) && children.type === 'figure') {
+      return children;
+    } else if (React.isValidElement(children) && children.type === ProseImage) {
       return children;
     }
     return null;
