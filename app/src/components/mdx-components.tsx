@@ -64,7 +64,6 @@ function ProseImage(props: {
             height={900}
             sizes="(max-width: 768px) 100vw, 800px"
             className="w-full max-h-[70vh] object-contain transition duration-300 group-hover:scale-105 md:max-h-[80vh]"
-            loading={priority ? 'eager' : 'lazy'}
             priority={priority}
           />
           {showBadge && (
