@@ -1,11 +1,12 @@
-"use client";
-
 /* eslint-disable react-hooks/static-components */
 
-import { useMDXComponent } from 'next-contentlayer/hooks';
+import { cache } from 'react';
+import { getMDXComponent } from 'next-contentlayer/hooks';
 import { components } from './mdx-components';
 
+const getMDXComponentCached = cache((code: string) => getMDXComponent(code));
+
 export function MDXContent({ code }: { code: string }) {
-  const Component = useMDXComponent(code);
+  const Component = getMDXComponentCached(code);
   return <Component components={components} />;
 }
