@@ -19,6 +19,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: withBaseUrl('/posts/tags'), changeFrequency: 'monthly', priority: 0.4 },
     { url: withBaseUrl('/apps'), changeFrequency: 'monthly', priority: 0.6 },
     { url: withBaseUrl('/projects'), changeFrequency: 'weekly', priority: 0.6 },
+    { url: withBaseUrl('/dashboards'), changeFrequency: 'weekly', priority: 0.5 },
+    { url: withBaseUrl('/about'), changeFrequency: 'monthly', priority: 0.4 },
     { url: withBaseUrl('/search'), changeFrequency: 'weekly', priority: 0.3 },
     { url: withBaseUrl('/rss.xml'), changeFrequency: 'weekly', priority: 0.2 },
   ];

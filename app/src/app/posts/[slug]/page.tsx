@@ -3,6 +3,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { formatPostDate, getPostBySlug, getPosts } from '@/lib/posts';
 import { MDXContent } from '@/components/mdx-content';
+import { ClientErrorBoundary } from '@/components/client-error-boundary';
 import { env } from '@/lib/env';
 import { NostrstackActionBar, NostrstackComments, NostrstackOmnoster } from '@/components/nostrstack-widgets';
 
@@ -114,6 +115,27 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
     },
   };
 
+  const nostrActionFallback = (
+    <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_24px_70px_rgba(12,19,38,0.45)]">
+      <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-100/80">Support & Share</p>
+      <p className="mt-3 text-sm text-slate-300">Nostr widgets are temporarily unavailable.</p>
+    </div>
+  );
+
+  const nostrCommentsFallback = (
+    <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_24px_70px_rgba(12,19,38,0.45)]">
+      <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-100/80">Comments (Nostr)</p>
+      <p className="mt-3 text-sm text-slate-300">Comments are temporarily unavailable.</p>
+    </div>
+  );
+
+  const nostrOmnosterFallback = (
+    <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_24px_70px_rgba(12,19,38,0.45)]">
+      <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-100/80">Omnoster</p>
+      <p className="mt-3 text-sm text-slate-300">The share feed is temporarily unavailable.</p>
+    </div>
+  );
+
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-background text-foreground">
       <div className="pointer-events-none absolute inset-0 opacity-80">
@@ -162,17 +184,22 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
               </div>
             </div>
             {widgetsEnabled && (
-              <NostrstackActionBar
-                slug={post.slug}
-                title={post.title}
-                summary={post.summary}
-                canonicalUrl={canonicalUrl}
-                lightningAddress={lightningAddress}
-                nostrPubkey={nostrPubkey ?? undefined}
-                relays={nostrRelays}
-                baseUrl={nostrstackBaseUrl}
-                host={nostrstackHost ?? undefined}
-              />
+              <ClientErrorBoundary
+                fallback={nostrActionFallback}
+                onError={(error) => console.error('Nostr action bar error:', error)}
+              >
+                <NostrstackActionBar
+                  slug={post.slug}
+                  title={post.title}
+                  summary={post.summary}
+                  canonicalUrl={canonicalUrl}
+                  lightningAddress={lightningAddress}
+                  nostrPubkey={nostrPubkey ?? undefined}
+                  relays={nostrRelays}
+                  baseUrl={nostrstackBaseUrl}
+                  host={nostrstackHost ?? undefined}
+                />
+              </ClientErrorBoundary>
             )}
             <div className="rounded-3xl border border-border/60 bg-card/80 p-8 shadow-[0_24px_70px_rgba(6,10,20,0.55)]">
               <div className="prose max-w-none space-y-8">
@@ -180,7 +207,12 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
               </div>
             </div>
             {widgetsEnabled && (
-              <NostrstackComments threadId={threadId} canonicalUrl={canonicalUrl} relays={nostrRelays} />
+              <ClientErrorBoundary
+                fallback={nostrCommentsFallback}
+                onError={(error) => console.error('Nostr comments error:', error)}
+              >
+                <NostrstackComments threadId={threadId} canonicalUrl={canonicalUrl} relays={nostrRelays} />
+              </ClientErrorBoundary>
             )}
             <div className="grid gap-4 text-sm text-muted-foreground sm:grid-cols-2">
               {previous && (
@@ -234,7 +266,12 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
               </div>
 
               {widgetsEnabled && (
-                <NostrstackOmnoster slug={post.slug} canonicalUrl={canonicalUrl} relays={nostrRelays} />
+                <ClientErrorBoundary
+                  fallback={nostrOmnosterFallback}
+                  onError={(error) => console.error('Nostr omnoster error:', error)}
+                >
+                  <NostrstackOmnoster slug={post.slug} canonicalUrl={canonicalUrl} relays={nostrRelays} />
+                </ClientErrorBoundary>
               )}
             </div>
           </aside>
