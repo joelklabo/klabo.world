@@ -30,11 +30,13 @@ function Paragraph({ children, ...props }: { children: ReactNode; [key: string]:
       if (onlyChild.type === 'figure' || onlyChild.type === ProseImage) {
         return onlyChild;
       }
-      if (
-        typeof onlyChild.type === 'function' &&
-        onlyChild.type.displayName === MDX_IMAGE_DISPLAY_NAME
-      ) {
-        return onlyChild;
+      if (typeof onlyChild.type === 'function') {
+        const displayName = (
+          onlyChild.type as React.JSXElementConstructor<unknown> & { displayName?: string }
+        ).displayName;
+        if (displayName === MDX_IMAGE_DISPLAY_NAME) {
+          return onlyChild;
+        }
       }
     }
   }
