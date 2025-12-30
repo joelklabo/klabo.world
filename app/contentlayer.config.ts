@@ -4,8 +4,6 @@ import {
   type ComputedFields,
 } from 'contentlayer/source-files';
 
-const isDev = process.env.NODE_ENV !== 'production';
-
 const computedFields: ComputedFields = {
   slug: {
     type: 'string',
@@ -91,7 +89,8 @@ export default makeSource({
   disableImportAliasWarning: true,
   mdx: {
     mdxOptions: (opts) => {
-      opts.development = isDev;
+      // Force production MDX output to avoid React 19 dev runtime issues in RSC.
+      opts.development = false;
       return opts;
     },
   },
