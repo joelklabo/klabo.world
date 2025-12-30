@@ -22,7 +22,11 @@ export class ClientErrorBoundary extends Component<ClientErrorBoundaryProps, Cli
 
   componentDidCatch(error: Error) {
     const label = this.props.label ? ` (${this.props.label})` : '';
-    console.error(`ClientErrorBoundary${label}`, error);
+    const message = error?.message ?? String(error);
+    console.error(`ClientErrorBoundary${label}: ${message}`);
+    if (error?.stack) {
+      console.error(error.stack);
+    }
     this.props.onError?.(error);
   }
 
