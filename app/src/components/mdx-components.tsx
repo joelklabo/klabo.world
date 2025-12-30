@@ -5,6 +5,8 @@ import React, { type ReactNode } from 'react';
 import { Surface } from '@/components/ui/surface';
 import { CodeBlock } from '@/components/mdx-code-block';
 
+const MDX_IMAGE_DISPLAY_NAME = 'MdxImage';
+
 function InlineCode(props: { children: ReactNode }) {
   return (
     <code
@@ -15,23 +17,26 @@ function InlineCode(props: { children: ReactNode }) {
 }
 
 function Paragraph({ children, ...props }: { children: ReactNode; [key: string]: unknown }) {
-  const unwrapFigure = () => {
-    if (Array.isArray(children)) {
-      const onlyChild = children.find(Boolean);
-      if (React.isValidElement(onlyChild) && (onlyChild.type === 'figure' || onlyChild.type === ProseImage)) {
+  const normalized = React.Children.toArray(children).filter((child) => {
+    if (typeof child === 'string') {
+      return child.trim().length > 0;
+    }
+    return true;
+  });
+
+  if (normalized.length === 1) {
+    const onlyChild = normalized[0];
+    if (React.isValidElement(onlyChild)) {
+      if (onlyChild.type === 'figure' || onlyChild.type === ProseImage) {
         return onlyChild;
       }
-    } else if (React.isValidElement(children) && children.type === 'figure') {
-      return children;
-    } else if (React.isValidElement(children) && children.type === ProseImage) {
-      return children;
+      if (
+        typeof onlyChild.type === 'function' &&
+        onlyChild.type.displayName === MDX_IMAGE_DISPLAY_NAME
+      ) {
+        return onlyChild;
+      }
     }
-    return null;
-  };
-
-  const figure = unwrapFigure();
-  if (figure) {
-    return figure;
   }
 
   return <p {...props}>{children}</p>;
@@ -97,13 +102,15 @@ type MdxComponentsOptions = {
 
 export function createMdxComponents(options: MdxComponentsOptions = {}) {
   const { markFirstImage } = options;
+  const MdxImage = (props: { src?: string | null; alt?: string; title?: string }) => (
+    <ProseImage {...props} markFirstImage={markFirstImage} />
+  );
+  MdxImage.displayName = MDX_IMAGE_DISPLAY_NAME;
   return {
     pre: ({ children }: { children: ReactNode }) => <CodeBlock>{children}</CodeBlock>,
     code: InlineCode,
     p: Paragraph,
-    img: (props: { src?: string | null; alt?: string; title?: string }) => (
-      <ProseImage {...props} markFirstImage={markFirstImage} />
-    ),
+    img: MdxImage,
     blockquote: BlockQuote,
     table: (props: { children: ReactNode }) => (
       <Surface
