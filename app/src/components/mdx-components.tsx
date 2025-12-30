@@ -37,11 +37,17 @@ function Paragraph({ children, ...props }: { children: ReactNode; [key: string]:
   return <p {...props}>{children}</p>;
 }
 
-function ProseImage(props: { src?: string | null; alt?: string; title?: string }) {
-  const { src, alt, title } = props;
+function ProseImage(props: {
+  src?: string | null;
+  alt?: string;
+  title?: string;
+  markFirstImage?: () => boolean;
+}) {
+  const { src, alt, title, markFirstImage } = props;
   if (!src) {
     return null;
   }
+  const priority = markFirstImage ? markFirstImage() : false;
   return (
     <figure className="group relative my-10">
       <Link href={src as Route} target="_blank" rel="noreferrer" className="pointer-events-auto">
@@ -57,6 +63,8 @@ function ProseImage(props: { src?: string | null; alt?: string; title?: string }
             height={900}
             sizes="(max-width: 768px) 100vw, 800px"
             className="w-full max-h-[70vh] object-contain transition duration-300 group-hover:scale-105 md:max-h-[80vh]"
+            loading={priority ? 'eager' : 'lazy'}
+            priority={priority}
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/60 opacity-0 transition group-hover:opacity-100" />
         </Surface>
@@ -78,37 +86,44 @@ function BlockQuote(props: { children: ReactNode }) {
   );
 }
 
-const components = {
-  pre: ({ children }: { children: ReactNode }) => <CodeBlock>{children}</CodeBlock>,
-  code: InlineCode,
-  p: Paragraph,
-  img: ProseImage,
-  blockquote: BlockQuote,
-  table: (props: { children: ReactNode }) => (
-    <Surface
-      className="rounded-2xl shadow-[0_24px_60px_rgba(6,10,20,0.45)]"
-      innerClassName="overflow-hidden rounded-2xl border border-border/60 bg-card/80"
-    >
-      {/* eslint-disable-next-line sonarjs/table-header */}
-      <table className="min-w-full divide-y divide-border/60 bg-background/40" {...props} />
-    </Surface>
-  ),
-  thead: (props: { children: ReactNode }) => (
-    <thead className="bg-background/80 text-xs uppercase tracking-[0.28em] text-muted-foreground" {...props} />
-  ),
-  th: (props: { children: ReactNode }) => (
-    <th className="border-b border-border/60 px-4 py-3 text-left text-sm font-semibold text-foreground" {...props} />
-  ),
-  td: (props: { children: ReactNode }) => (
-    <td className="border-b border-border/60 px-4 py-3 text-sm text-muted-foreground" {...props} />
-  ),
-  ul: (props: { children: ReactNode }) => (
-    <ul className="space-y-2 pl-5 text-sm text-muted-foreground marker:text-primary/80" {...props} />
-  ),
-  ol: (props: { children: ReactNode }) => (
-    <ol className="space-y-2 pl-5 text-sm text-muted-foreground" {...props} />
-  ),
-  li: (props: { children: ReactNode }) => <li className="leading-relaxed" {...props} />,
+type MdxComponentsOptions = {
+  markFirstImage?: () => boolean;
 };
 
-export { components };
+export function createMdxComponents(options: MdxComponentsOptions = {}) {
+  const { markFirstImage } = options;
+  return {
+    pre: ({ children }: { children: ReactNode }) => <CodeBlock>{children}</CodeBlock>,
+    code: InlineCode,
+    p: Paragraph,
+    img: (props: { src?: string | null; alt?: string; title?: string }) => (
+      <ProseImage {...props} markFirstImage={markFirstImage} />
+    ),
+    blockquote: BlockQuote,
+    table: (props: { children: ReactNode }) => (
+      <Surface
+        className="rounded-2xl shadow-[0_24px_60px_rgba(6,10,20,0.45)]"
+        innerClassName="overflow-hidden rounded-2xl border border-border/60 bg-card/80"
+      >
+        {/* eslint-disable-next-line sonarjs/table-header */}
+        <table className="min-w-full divide-y divide-border/60 bg-background/40" {...props} />
+      </Surface>
+    ),
+    thead: (props: { children: ReactNode }) => (
+      <thead className="bg-background/80 text-xs uppercase tracking-[0.28em] text-muted-foreground" {...props} />
+    ),
+    th: (props: { children: ReactNode }) => (
+      <th className="border-b border-border/60 px-4 py-3 text-left text-sm font-semibold text-foreground" {...props} />
+    ),
+    td: (props: { children: ReactNode }) => (
+      <td className="border-b border-border/60 px-4 py-3 text-sm text-muted-foreground" {...props} />
+    ),
+    ul: (props: { children: ReactNode }) => (
+      <ul className="space-y-2 pl-5 text-sm text-muted-foreground marker:text-primary/80" {...props} />
+    ),
+    ol: (props: { children: ReactNode }) => (
+      <ol className="space-y-2 pl-5 text-sm text-muted-foreground" {...props} />
+    ),
+    li: (props: { children: ReactNode }) => <li className="leading-relaxed" {...props} />,
+  };
+}
