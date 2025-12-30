@@ -4,6 +4,10 @@ import matter from 'gray-matter';
 import { allPosts, type Post } from 'contentlayer/generated';
 import { getPostsDirectory } from './postPersistence';
 
+function getContentlayerPosts(): Post[] {
+  return Array.isArray(allPosts) ? allPosts : [];
+}
+
 function getPublishDate(post: Post): Date {
   return new Date(post.publishDate ?? post.date);
 }
@@ -12,9 +16,25 @@ function isPublished(post: Post, now = new Date()): boolean {
   return getPublishDate(post) <= now;
 }
 
+export function formatPostDate(
+  value: string | Date | null | undefined,
+  options?: Intl.DateTimeFormatOptions,
+): string {
+  if (!value) return '';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return typeof value === 'string' ? value : '';
+  }
+  try {
+    return date.toLocaleDateString(undefined, options);
+  } catch {
+    return date.toISOString().slice(0, 10);
+  }
+}
+
 export function getPosts(options: { includeUnpublished?: boolean } = {}): Post[] {
   const now = new Date();
-  return [...allPosts]
+  return [...getContentlayerPosts()]
     .filter((post) => options.includeUnpublished || isPublished(post, now))
     .sort((a, b) => getPublishDate(b).getTime() - getPublishDate(a).getTime());
 }
@@ -24,7 +44,7 @@ export function getRecentPosts(limit = 3): Post[] {
 }
 
 export function getPostBySlug(slug: string): Post | undefined {
-  return allPosts.find((post) => post.slug === slug);
+  return getContentlayerPosts().find((post) => post.slug === slug);
 }
 
 export function getPostTagCounts(): Record<string, number> {

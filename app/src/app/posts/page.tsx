@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Metadata } from 'next';
-import { getPosts } from '@/lib/posts';
+import { formatPostDate, getPosts } from '@/lib/posts';
 import { Button } from '@/components/ui/button';
 import { ViewTransitionLink } from '@/components/view-transition-link';
 
@@ -35,7 +35,7 @@ export default function PostsIndex() {
             <li key={post._id}>
               <article className="card-hover-lift group h-full rounded-2xl border border-border/60 bg-card/80 p-5 shadow-[0_18px_45px_rgba(6,10,20,0.45)]">
                 <div className="flex items-center justify-between text-xs uppercase tracking-[0.3em] text-muted-foreground">
-                  <time>{new Date(post.publishDate ?? post.date).toLocaleDateString()}</time>
+                  <time>{formatPostDate(post.publishDate ?? post.date)}</time>
                   {post.tags?.[0] ? (
                     <Link
                       href={`/posts/tag/${encodeURIComponent(post.tags[0])}`}

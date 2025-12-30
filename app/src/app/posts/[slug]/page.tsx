@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { getPostBySlug, getPosts } from '@/lib/posts';
+import { formatPostDate, getPostBySlug, getPosts } from '@/lib/posts';
 import { MDXContent } from '@/components/mdx-content';
 import { env } from '@/lib/env';
 import { NostrstackActionBar, NostrstackComments, NostrstackOmnoster } from '@/components/nostrstack-widgets';
@@ -134,7 +134,7 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
               <div className="mt-4 flex flex-col gap-2">
                 <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">Published</p>
                 <time className="text-base font-semibold text-foreground">
-                  {new Date(post.publishDate ?? post.date).toLocaleDateString(undefined, {
+                  {formatPostDate(post.publishDate ?? post.date, {
                     month: 'long',
                     day: 'numeric',
                     year: 'numeric',
@@ -211,7 +211,7 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
                 <dl className="space-y-3 text-xs uppercase tracking-[0.35em] text-muted-foreground">
                   <div>
                     <dt className="text-[10px] text-muted-foreground/70">Published</dt>
-                    <dd className="text-sm text-foreground">{new Date(post.date).toLocaleDateString()}</dd>
+                    <dd className="text-sm text-foreground">{formatPostDate(post.date)}</dd>
                   </div>
                   <div>
                     <dt className="text-[10px] text-muted-foreground/70">Reading time</dt>
