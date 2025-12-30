@@ -48,8 +48,9 @@ function ProseImage(props: {
     return null;
   }
   const priority = markFirstImage ? markFirstImage() : false;
+  const showBadge = priority && process.env.NODE_ENV !== 'production';
   return (
-    <figure className="group relative my-10">
+    <figure className="group relative my-10" data-hero-image={priority ? 'true' : undefined}>
       <Link href={src as Route} target="_blank" rel="noreferrer" className="pointer-events-auto">
         <Surface
           className="relative rounded-[32px] shadow-[0_24px_60px_rgba(6,10,20,0.55)] transition hover:-translate-y-1.5 hover:shadow-[0_30px_50px_rgba(6,10,20,0.7)]"
@@ -66,6 +67,11 @@ function ProseImage(props: {
             loading={priority ? 'eager' : 'lazy'}
             priority={priority}
           />
+          {showBadge && (
+            <span className="absolute left-4 top-4 rounded-full border border-primary/50 bg-primary/15 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.35em] text-primary shadow-[0_10px_25px_rgba(6,10,20,0.4)]">
+              Hero
+            </span>
+          )}
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/60 opacity-0 transition group-hover:opacity-100" />
         </Surface>
       </Link>
