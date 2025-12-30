@@ -19,7 +19,7 @@
 - `pnpm --filter @klaboworld/scripts run export-legacy` and `... run new-post -- --title "My Post"` for content helpers.
 
 ## Workflow Guardrails
-- When pushing, prefer `commit-push-watch.sh -m "..." -w "ci|Build, Test, and Deploy to Azure"`.
+- When pushing, prefer `git commit` + `git push`; verify recent CI with `gh run list --limit 5`.
 - Check previous CI before new work (reattach the commit-push tmux session or `gh run list --limit 5`); fix failures first.
 - Use pnpm from the workspace root (no npm/yarn per package). Keep `.env` aligned with `.env.example`.
 - Update `docs/document-inventory.md` whenever docs move or new ones are added; log improvements as beads issues.

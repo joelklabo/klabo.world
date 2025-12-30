@@ -282,13 +282,14 @@ just load-test     # Smoke test (optional)
 
 ### 6. Commit and Push
 
-Use the helper so CI is tracked automatically:
+Commit and push your change:
 
 ```bash
-./scripts/commit-push-watch.sh "feat: add new feature" "ci|Build, Test, and Deploy to Azure"
+git commit -m "feat: add new feature"
+git push
 ```
 
-This stages all changes, commits, pushes `HEAD` to the current branch, and opens a tmux CI watcher.
+Check CI in GitHub or with `gh run list --limit 5`.
 
 ### 7. (If using PRs)
 
@@ -376,7 +377,7 @@ Pushes to `main` trigger the “Build, Test, and Deploy to Azure” workflow: li
 1. ✅ Complete this onboarding guide
 2. ✅ Run `just dev` and explore http://localhost:3000
 3. ✅ Run `bd ready` and pick a P1/P2 from the ready list.
-4. ✅ Make a change, commit with `commit-push-watch.sh`, and ensure CI passes.
+4. ✅ Make a change, commit + push, then confirm CI in GitHub or `gh run list`.
 5. ✅ Join the team discussions and ask questions
 
 Welcome to the team! 🚀
