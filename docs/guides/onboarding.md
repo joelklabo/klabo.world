@@ -120,6 +120,8 @@ Expected output:
 - ✅ Docker status (OK if not running - optional)
 - ✅ All dependencies installed
 
+If you see PNPM warnings about an unsupported engine, run `mise install` (or `mise use`) to ensure Node 24.11.1 is active before rerunning tests.
+
 ## Understanding the Codebase
 
 ### Repository Structure

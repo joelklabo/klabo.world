@@ -16,6 +16,7 @@ This initiative closes the gap between the automated Playwright smoke checks we 
 
 ## Phase 2 – Automated Playwright Suite Expansion
 1. **Configurable base URL**: `playwright.config.ts` now prefers `PLAYWRIGHT_BASE_URL` when you want to point at staging/production, and otherwise spins up its own dev server on `http://127.0.0.1:3100` with a dedicated SQLite database + `NEXTAUTH_URL` override so tests can run without touching whatever dev server (port 3000) you keep open for manual QA. (If you already have `pnpm dev` running, either stop it or set `PLAYWRIGHT_BASE_URL=http://127.0.0.1:3000` because Next.js only allows one dev instance per project at a time.) If Playwright fails with a `app/.next/dev/lock` error, stop the running dev server (or confirm no process is bound to the port), delete the lock file, and rerun the suite.
+   - **Warning noise**: If you see `NO_COLOR` ignored due to `FORCE_COLOR`, it is a harmless Playwright/webServer log warning. You can silence it by running Playwright with `FORCE_COLOR=0` (or unset `NO_COLOR`). Treat other warnings as actionable unless explicitly documented as safe to ignore. If `pnpm` warns about an unsupported engine, install the pinned Node version via `mise` before rerunning.
 2. **Public site specs**
    - Home/posts/apps/search page assertions (hero text, tag clouds, pagination).
    - Link audit: `await expect(page.locator('a[href*="localhost"])).toHaveCount(0)` and custom reporter that fails when any anchor or script URL contains non-production hosts.
