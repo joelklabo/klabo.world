@@ -1,9 +1,15 @@
 import Link from "next/link";
 import type { Route } from "next";
 import { env } from "@/lib/env";
-import { getRecentPosts } from "@/lib/posts";
+import { getApps } from "@/lib/apps";
+import { getDashboards } from "@/lib/dashboards";
 import { getFeaturedGitHubProjects } from "@/lib/github-projects";
+import { getPosts, getRecentPosts } from "@/lib/posts";
+import { getPostTagCloud } from "@/lib/tagCloud";
 import { GitHubProjectsShowcase } from "@/components/github-projects-showcase";
+import { HomeQuickLinks } from "@/components/home-quick-links";
+import { HomeStats } from "@/components/home-stats";
+import { HomeTopics } from "@/components/home-topics";
 import { Button } from "@/components/ui/button";
 import { ViewTransitionLink } from "@/components/view-transition-link";
 
@@ -12,12 +18,90 @@ export const revalidate = 3600;
 export default async function Home() {
   const recentPosts = getRecentPosts(2);
   const projects = await getFeaturedGitHubProjects(env.GITHUB_OWNER, 4);
+  const postCount = getPosts().length;
+  const appCount = getApps().length;
+  const dashboardCount = getDashboards().length;
+  const topics = getPostTagCloud(6);
+  const hasTopics = topics.length > 0;
+
+  const stats = [
+    {
+      label: "Posts",
+      value: postCount,
+      helper: "Notes",
+      href: "/posts",
+      analyticsEvent: "ui.home.stat_click",
+      analyticsLabel: "posts",
+    },
+    {
+      label: "Apps",
+      value: appCount,
+      helper: "Experiments",
+      href: "/apps",
+      analyticsEvent: "ui.home.stat_click",
+      analyticsLabel: "apps",
+    },
+    {
+      label: "Dashboards",
+      value: dashboardCount,
+      helper: "Signals",
+      href: "/dashboards",
+      analyticsEvent: "ui.home.stat_click",
+      analyticsLabel: "dashboards",
+    },
+    {
+      label: "Repos",
+      value: projects.length,
+      helper: "Featured",
+      href: "/projects",
+      analyticsEvent: "ui.home.stat_click",
+      analyticsLabel: "projects",
+    },
+  ];
+
+  const quickLinks = [
+    {
+      label: "Writing",
+      helper: "All posts",
+      href: "/posts",
+      analyticsEvent: "ui.home.quick_link",
+      analyticsLabel: "writing",
+    },
+    {
+      label: "Projects",
+      helper: "GitHub work",
+      href: "/projects",
+      analyticsEvent: "ui.home.quick_link",
+      analyticsLabel: "projects",
+    },
+    {
+      label: "Apps",
+      helper: "Experiments",
+      href: "/apps",
+      analyticsEvent: "ui.home.quick_link",
+      analyticsLabel: "apps",
+    },
+    {
+      label: "Dashboards",
+      helper: "Signals",
+      href: "/dashboards",
+      analyticsEvent: "ui.home.quick_link",
+      analyticsLabel: "dashboards",
+    },
+    {
+      label: "Search",
+      helper: "Find posts",
+      href: "/search",
+      analyticsEvent: "ui.home.quick_link",
+      analyticsLabel: "search",
+    },
+  ];
 
   return (
     <div className="bg-background text-foreground">
       <section className="relative overflow-x-hidden py-16 sm:py-20">
         <div className="relative mx-auto flex max-w-6xl flex-col gap-10 px-6">
-          <div className="max-w-3xl space-y-6">
+          <div className="max-w-3xl space-y-5">
             <h1
               className="text-4xl font-bold tracking-tight text-foreground md:text-5xl"
               data-testid="home-hero-title"
@@ -26,10 +110,19 @@ export default async function Home() {
               rails.
             </h1>
             <p className="text-base text-muted-foreground md:text-lg">
-              Bitcoin, Lightning, Nostr, agentic engineering. Practical writing
-              and small tools—built so future me (and you) can move faster with
-              fewer regressions.
+              Practical notes and small tools for Bitcoin, Lightning, Nostr, and
+              agentic engineering.
             </p>
+            <div className="flex flex-wrap gap-2 text-[10px] font-semibold uppercase tracking-[0.28em] text-muted-foreground">
+              {["Bitcoin", "Lightning", "Nostr", "Agentic systems"].map((topic) => (
+                <span
+                  key={topic}
+                  className="rounded-full border border-border/60 bg-background/70 px-3 py-1 text-foreground"
+                >
+                  {topic}
+                </span>
+              ))}
+            </div>
             <div className="flex flex-wrap items-center gap-3">
               <Button asChild size="lg">
                 <Link
@@ -61,6 +154,39 @@ export default async function Home() {
         </div>
       </section>
 
+      <section className="pb-12 sm:pb-16">
+        <div className="mx-auto max-w-6xl space-y-8 px-6" data-testid="home-section-overview">
+          <div className="flex flex-col gap-2">
+            <h2 className="text-xl font-semibold text-foreground">At a glance</h2>
+            <p className="text-sm text-muted-foreground">Counts + shortcuts.</p>
+          </div>
+
+          <HomeStats stats={stats} itemTestId="home-stat-item" />
+
+          <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+            <div className="space-y-4">
+              <h3 className="text-sm font-semibold uppercase tracking-[0.28em] text-muted-foreground">
+                Quick links
+              </h3>
+              <HomeQuickLinks links={quickLinks} itemTestId="home-quick-link" />
+            </div>
+            {hasTopics ? (
+              <div className="space-y-4">
+                <h3 className="text-sm font-semibold uppercase tracking-[0.28em] text-muted-foreground">
+                  Topics
+                </h3>
+                <HomeTopics
+                  topics={topics.map((topic) => ({
+                    tag: topic.tag,
+                    count: topic.count,
+                  }))}
+                />
+              </div>
+            ) : null}
+          </div>
+        </div>
+      </section>
+
       <section className="pb-16 sm:pb-20">
         <div className="mx-auto max-w-6xl px-6">
           <div className="grid gap-10 md:grid-cols-2">
@@ -71,7 +197,7 @@ export default async function Home() {
                     Latest writing
                   </h2>
                   <p className="text-sm text-muted-foreground">
-                    Deep dives and implementation notes.
+                    Deep dives, distilled.
                   </p>
                 </div>
                 <Button
@@ -129,7 +255,7 @@ export default async function Home() {
                     Recent GitHub work
                   </h2>
                   <p className="text-sm text-muted-foreground">
-                    A small selection of repos I&apos;ve shipped recently.
+                    Recently shipped repos.
                   </p>
                 </div>
                 <Button
