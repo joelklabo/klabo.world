@@ -33,6 +33,7 @@ This file is the single source of truth for every Markdown document that should 
 
 ### docs/design
 - `modernization-plan.md` – Warm/playful redesign direction, tokens, typography, and implementation steps.
+- `landing-page-info-dense.md` – Info-dense landing page hierarchy, copy reduction, and analytics notes.
 - `landing-page-ux-review.md` – Deep UX review + simplification decisions for the landing page.
 - `tokens.md` – Current typography/spacing/radius token defaults and drift notes.
 - `public-ux-audit.md` – Public route audit findings + visual QA checklist.
