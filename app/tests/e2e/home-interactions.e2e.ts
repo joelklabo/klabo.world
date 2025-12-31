@@ -18,6 +18,20 @@ test.describe('home page interactions', () => {
     await expect(page).toHaveURL(/\/projects/);
   });
 
+  test('overview sections show stats, quick links, and topics', async ({ page }) => {
+    await page.goto('/');
+
+    await expect(page.getByTestId('home-section-overview')).toBeVisible();
+    await expect(page.getByTestId('home-stat-item').first()).toBeVisible();
+    await expect(page.getByTestId('home-quick-link').first()).toBeVisible();
+
+    const topicsSection = page.getByTestId('home-section-topics');
+    if (await topicsSection.count()) {
+      await expect(topicsSection).toBeVisible();
+      await expect(page.getByTestId('home-topic-chip').first()).toBeVisible();
+    }
+  });
+
   test('writing and GitHub cards are navigable', async ({ page }) => {
     await page.goto('/');
 

@@ -21,6 +21,15 @@ test.describe('public content routes', () => {
     await expect(page.getByTestId('home-hero-title')).toBeVisible();
     await expect(page.getByTestId('home-cta-writing')).toHaveAttribute('href', '/posts');
     await expect(page.getByTestId('home-cta-projects')).toHaveAttribute('href', '/projects');
+    await expect(page.getByTestId('home-section-overview')).toBeVisible();
+    await expect(page.getByTestId('home-stat-item').first()).toBeVisible();
+    await expect(page.getByTestId('home-quick-link').first()).toBeVisible();
+
+    const topicsSection = page.getByTestId('home-section-topics');
+    if (await topicsSection.count()) {
+      await expect(topicsSection).toBeVisible();
+      await expect(page.getByTestId('home-topic-chip').first()).toBeVisible();
+    }
     await expect(page.getByTestId('home-section-writing')).toBeVisible();
     await expect(page.getByTestId('home-writing-post').first()).toBeVisible();
     await expect(page.getByTestId('home-section-projects')).toBeVisible();
