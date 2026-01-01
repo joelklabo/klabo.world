@@ -16,8 +16,14 @@ const baseProdEnv = {
   NEXTAUTH_SECRET: 'super-secret',
 };
 
+const disableSqliteOverrides = () => {
+  process.env.CI = 'false';
+  process.env.ALLOW_SQLITE_IN_PROD = 'false';
+};
+
 describe('loadEnv production guardrails', () => {
   it('throws when DATABASE_URL uses SQLite in production', () => {
+    disableSqliteOverrides();
     expect(() =>
       loadEnv({
         ...baseProdEnv,
@@ -27,6 +33,7 @@ describe('loadEnv production guardrails', () => {
   });
 
   it('allows SQLite in production when explicitly overridden', () => {
+    process.env.CI = 'false';
     expect(() =>
       loadEnv({
         ...baseProdEnv,
