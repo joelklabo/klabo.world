@@ -54,6 +54,11 @@ jobs:
         run: mkdir -p tmp/uploads
       - name: Prepare data dir
         run: mkdir -p app/data
+      - name: Write production env overrides
+        run: |
+          cat <<EOF > app/.env.production.local
+          NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+          EOF
       - name: Apply Prisma schema
         run: pnpm --filter app exec prisma db push
       - name: Generate Contentlayer artifacts

@@ -44,6 +44,7 @@ describe('loadEnv production guardrails', () => {
   });
 
   it('throws when NEXTAUTH_SECRET is the dev default', () => {
+    disableSqliteOverrides();
     expect(() =>
       loadEnv({
         ...baseProdEnv,

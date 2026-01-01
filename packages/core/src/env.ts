@@ -101,10 +101,11 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): Env {
   const nodeEnv = typeof source.NODE_ENV === 'string' ? source.NODE_ENV : process.env.NODE_ENV ?? 'development';
   if (nodeEnv === 'production') {
     const databaseUrl = data.DATABASE_URL.trim();
+    const isCiEnv = readBooleanEnv(process.env.CI);
     const allowSqliteInProd =
       data.ALLOW_SQLITE_IN_PROD ||
       readBooleanEnv(process.env.ALLOW_SQLITE_IN_PROD) ||
-      readBooleanEnv(process.env.CI);
+      isCiEnv;
     if (databaseUrl.startsWith('file:') && !allowSqliteInProd) {
       throw new Error('Unsafe production configuration: DATABASE_URL uses SQLite. Set ALLOW_SQLITE_IN_PROD=true to override.');
     }
