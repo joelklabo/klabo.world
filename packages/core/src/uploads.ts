@@ -15,21 +15,55 @@ export interface UploadConfig {
   container?: string;
 }
 
+export type UploadScanStatus = 'processing' | 'clean' | 'quarantined' | 'scan_failed';
+export type UploadScanPolicy = 'fail-open' | 'fail-closed';
+
+export interface UploadMetadata {
+  scanStatus?: UploadScanStatus;
+  scanPolicy?: UploadScanPolicy;
+  scanRequestedAt?: string;
+}
+
 export interface UploadResult {
   filename: string;
   path: string;
   url: string;
+  metadata?: UploadMetadata;
 }
 
-export async function writeLocalUpload(config: UploadConfig, filename: string, buffer: Buffer): Promise<UploadResult> {
+function toBlobMetadata(metadata?: UploadMetadata): Record<string, string> | undefined {
+  if (!metadata) return undefined;
+  const entries: Record<string, string> = {};
+  if (metadata.scanStatus) entries.scanstatus = metadata.scanStatus;
+  if (metadata.scanPolicy) entries.scanpolicy = metadata.scanPolicy;
+  if (metadata.scanRequestedAt) entries.scanrequestedat = metadata.scanRequestedAt;
+  return Object.keys(entries).length > 0 ? entries : undefined;
+}
+
+export async function writeLocalUpload(
+  config: UploadConfig,
+  filename: string,
+  buffer: Buffer,
+  metadata?: UploadMetadata,
+): Promise<UploadResult> {
   const path = `${config.uploadsDir}/${filename}`;
   const fs = await import('node:fs/promises');
   await fs.mkdir(config.uploadsDir, { recursive: true });
   await fs.writeFile(path, buffer);
-  return { filename, path, url: `/uploads/${filename}` };
+  if (metadata) {
+    const metadataPath = `${config.uploadsDir}/${filename}.metadata.json`;
+    await fs.writeFile(metadataPath, JSON.stringify(metadata, null, 2));
+  }
+  return { filename, path, url: `/uploads/${filename}`, metadata };
 }
 
-export async function writeBlobUpload(config: UploadConfig, filename: string, buffer: Buffer, mimeType: string) {
+export async function writeBlobUpload(
+  config: UploadConfig,
+  filename: string,
+  buffer: Buffer,
+  mimeType: string,
+  metadata?: UploadMetadata,
+) {
   if (!config.accountName || !config.accountKey || !config.container) {
     throw new Error('Azure storage credentials missing');
   }
@@ -38,8 +72,41 @@ export async function writeBlobUpload(config: UploadConfig, filename: string, bu
     accountKey: config.accountKey,
     container: config.container,
   });
-  const url = await uploadBuffer(containerClient, filename, buffer, mimeType);
-  return { filename, path: filename, url };
+  const url = await uploadBuffer(containerClient, filename, buffer, mimeType, toBlobMetadata(metadata));
+  return { filename, path: filename, url, metadata };
+}
+
+export interface PromoteUploadConfig {
+  accountName: string;
+  accountKey: string;
+  sourceContainer: string;
+  destinationContainer: string;
+}
+
+export async function promoteBlobUpload(
+  config: PromoteUploadConfig,
+  filename: string,
+  metadata?: UploadMetadata,
+): Promise<UploadResult> {
+  const sourceClient = createBlobContainerClient({
+    accountName: config.accountName,
+    accountKey: config.accountKey,
+    container: config.sourceContainer,
+  });
+  const destinationClient = createBlobContainerClient({
+    accountName: config.accountName,
+    accountKey: config.accountKey,
+    container: config.destinationContainer,
+  });
+  await destinationClient.createIfNotExists();
+  const sourceBlob = sourceClient.getBlobClient(filename);
+  const destinationBlob = destinationClient.getBlockBlobClient(filename);
+  const poller = await destinationBlob.beginCopyFromURL(sourceBlob.url);
+  await poller.pollUntilDone();
+  if (metadata) {
+    await destinationBlob.setMetadata(toBlobMetadata(metadata));
+  }
+  return { filename, path: filename, url: destinationBlob.url, metadata };
 }
 
 function sanitizeFilename(originalName: string) {

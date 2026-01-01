@@ -32,7 +32,12 @@ export async function POST(request: Request) {
       span.setAttributes({ 'upload.size': file.size, 'upload.type': file.type });
       return handleImageUpload(file);
     });
-    return NextResponse.json({ url: result.url, filename: result.filename, storage: result.storage });
+    return NextResponse.json({
+      url: result.url,
+      filename: result.filename,
+      storage: result.storage,
+      status: result.status,
+    });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Upload failed';
     return NextResponse.json({ error: message }, { status: 400 });

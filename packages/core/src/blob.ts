@@ -17,9 +17,10 @@ export async function uploadBuffer(
   filename: string,
   buffer: Buffer,
   mimeType: string,
+  metadata?: Record<string, string>,
 ) {
   await containerClient.createIfNotExists();
   const blockBlob = containerClient.getBlockBlobClient(filename);
-  await blockBlob.uploadData(buffer, { blobHTTPHeaders: { blobContentType: mimeType } });
+  await blockBlob.uploadData(buffer, { blobHTTPHeaders: { blobContentType: mimeType }, metadata });
   return blockBlob.url;
 }

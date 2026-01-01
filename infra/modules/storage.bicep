@@ -14,6 +14,7 @@ param enableHns bool = false
 param containers array = [
   'public-assets'
   'draft-uploads'
+  'quarantine-uploads'
 ]
 
 resource storage 'Microsoft.Storage/storageAccounts@2023-01-01' = {
