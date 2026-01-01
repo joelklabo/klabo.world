@@ -9,9 +9,11 @@ import {
   writeBlobUpload,
   writeLocalUpload,
 } from '@klaboworld/core/server/uploads';
+import sharp from 'sharp';
 import { env } from './env';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+const EXIF_STRIP_MIMES = new Set<SupportedImageMime>(['image/jpeg', 'image/png', 'image/webp']);
 
 const AZURE_CONFIGURED = Boolean(env.AZURE_STORAGE_ACCOUNT && env.AZURE_STORAGE_KEY);
 
@@ -47,6 +49,24 @@ function assertValidFile(file: File) {
   }
 }
 
+async function stripImageMetadata(buffer: Buffer, mime: SupportedImageMime) {
+  if (!EXIF_STRIP_MIMES.has(mime)) return buffer;
+  try {
+    if (mime === 'image/jpeg') {
+      return await sharp(buffer, { failOnError: true }).jpeg({ quality: 100 }).toBuffer();
+    }
+    if (mime === 'image/png') {
+      return await sharp(buffer, { failOnError: true }).png({ compressionLevel: 9 }).toBuffer();
+    }
+    if (mime === 'image/webp') {
+      return await sharp(buffer, { failOnError: true }).webp({ quality: 100 }).toBuffer();
+    }
+    return buffer;
+  } catch (error) {
+    throw new Error('Unable to process image metadata. The file may be corrupt.', { cause: error });
+  }
+}
+
 export async function handleImageUpload(file: File) {
   const declaredMime = getDeclaredMimeType(file);
   assertValidFile(file);
@@ -61,6 +81,7 @@ export async function handleImageUpload(file: File) {
   }
   const extension = extensionForMime(detectedMime);
   const filename = buildFilename(file.name || `upload.${extension}`, extension);
+  const sanitizedBuffer = await stripImageMetadata(buffer, detectedMime);
 
   if (AZURE_CONFIGURED) {
     const result = await writeBlobUpload(
@@ -72,7 +93,7 @@ export async function handleImageUpload(file: File) {
         container: env.AZURE_STORAGE_CONTAINER ?? 'uploads',
       },
       filename,
-      buffer,
+      sanitizedBuffer,
       detectedMime,
     );
     return { url: result.url, filename: result.filename, storage: 'azure' as const };
@@ -83,7 +104,7 @@ export async function handleImageUpload(file: File) {
   const result = await writeLocalUpload(
     { uploadsDir, uploadsContainerUrl: env.UPLOADS_CONTAINER_URL },
     filename,
-    buffer,
+    sanitizedBuffer,
   );
   return { url: buildLocalUrl(result.filename), filename: result.filename, storage: 'local' as const };
 }
