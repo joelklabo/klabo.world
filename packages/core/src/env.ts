@@ -11,28 +11,41 @@ const optionalUrl = z.preprocess(
   z.union([z.string().url(), z.literal('mock')]).optional(),
 );
 
-const booleanFlag = (label: string) =>
-  z.preprocess((value) => {
-    if (value == null) {
+const TRUTHY_VALUES = new Set(['1', 'true', 'yes', 'y', 'on']);
+const FALSY_VALUES = new Set(['0', 'false', 'no', 'n', 'off']);
+
+const coerceBooleanFlag = (value: unknown): boolean | undefined => {
+  if (value == null) {
+    return false;
+  }
+  if (typeof value === 'boolean') {
+    return value;
+  }
+  if (typeof value === 'string') {
+    const normalized = value.trim().toLowerCase();
+    if (normalized === '') {
       return false;
     }
-    if (typeof value === 'boolean') {
-      return value;
+    if (TRUTHY_VALUES.has(normalized)) {
+      return true;
     }
-    if (typeof value === 'string') {
-      const normalized = value.trim().toLowerCase();
-      if (normalized === '') {
-        return false;
-      }
-      if (['1', 'true', 'yes', 'y', 'on'].includes(normalized)) {
-        return true;
-      }
-      if (['0', 'false', 'no', 'n', 'off'].includes(normalized)) {
-        return false;
-      }
+    if (FALSY_VALUES.has(normalized)) {
+      return false;
+    }
+  }
+  return undefined;
+};
+
+const booleanFlag = (label: string) =>
+  z.preprocess((value) => {
+    const parsed = coerceBooleanFlag(value);
+    if (parsed !== undefined) {
+      return parsed;
     }
     return value;
   }, z.boolean({ message: `${label} must be true or false` }).default(false));
+
+const readBooleanEnv = (value: string | undefined) => coerceBooleanFlag(value) ?? false;
 
 const schema = z.object({
   DATABASE_URL: z.string().default('file:../data/app.db'),
@@ -88,7 +101,11 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): Env {
   const nodeEnv = typeof source.NODE_ENV === 'string' ? source.NODE_ENV : process.env.NODE_ENV ?? 'development';
   if (nodeEnv === 'production') {
     const databaseUrl = data.DATABASE_URL.trim();
-    if (databaseUrl.startsWith('file:') && !data.ALLOW_SQLITE_IN_PROD) {
+    const allowSqliteInProd =
+      data.ALLOW_SQLITE_IN_PROD ||
+      readBooleanEnv(process.env.ALLOW_SQLITE_IN_PROD) ||
+      readBooleanEnv(process.env.CI);
+    if (databaseUrl.startsWith('file:') && !allowSqliteInProd) {
       throw new Error('Unsafe production configuration: DATABASE_URL uses SQLite. Set ALLOW_SQLITE_IN_PROD=true to override.');
     }
     if (data.NEXTAUTH_SECRET.trim() === 'dev-secret') {
