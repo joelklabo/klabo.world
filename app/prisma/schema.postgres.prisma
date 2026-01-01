@@ -3,8 +3,7 @@ generator client {
 }
 
 datasource db {
-  // SQLite default; use schema.postgres.prisma for Postgres migrations.
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 

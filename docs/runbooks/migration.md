@@ -11,21 +11,25 @@ Use this runbook to move production from the App Service–mounted SQLite databa
 ## Dry run (staging or local)
 1. **Snapshot SQLite** – download a fresh copy from production (see `docs/runbooks/db-recovery.md`).
 2. **Prepare Postgres** – start Postgres locally (`docker compose -f docker-compose.dev.yml up -d db`) or use the staging DB.
-3. **Apply schema**:
+3. **Preview migration commands**:
    ```bash
-   DATABASE_URL="<postgres-url>" pnpm --filter app exec prisma migrate deploy
+   DATABASE_URL="<postgres-url>" ./scripts/migrate-to-postgres.sh --dry-run
    ```
-4. **Import data** (preferred):
+4. **Apply schema**:
+   ```bash
+   DATABASE_URL="<postgres-url>" ./scripts/migrate-to-postgres.sh
+   ```
+5. **Import data** (preferred):
    ```bash
    pgloader sqlite:///path/to/app.db "<postgres-url>"
    ```
-5. **Verify counts** – compare SQLite vs Postgres for key tables (Admin, Session, Account, RateLimitEntry, VerificationToken).
-6. **Smoke test** – `SMOKE_BASE_URL=<staging-url> ./scripts/deploy-smoke.sh`.
+6. **Verify counts** – compare SQLite vs Postgres for key tables (Admin, Session, Account, RateLimitEntry, VerificationToken).
+7. **Smoke test** – `SMOKE_BASE_URL=<staging-url> ./scripts/deploy-smoke.sh`.
 
 ## Production cutover
 1. **Schedule downtime** – pause admin writes and communicate the window.
 2. **Backup SQLite** – capture `/home/site/wwwroot/data/app.db` via Kudu.
-3. **Apply schema** – run `prisma migrate deploy` against Postgres using the production `DATABASE_URL`.
+3. **Apply schema** – run `DATABASE_URL="<postgres-url>" ./scripts/migrate-to-postgres.sh`.
 4. **Import data** – use `pgloader` (or the approved import tool) with the backup file.
 5. **Swap `DATABASE_URL`** – set App Service `DATABASE_URL` to Postgres and remove/disable `ALLOW_SQLITE_IN_PROD`.
 6. **Restart + validate** – restart the app, run `scripts/deploy-smoke.sh`, and confirm admin login + content access.
