@@ -27,10 +27,11 @@ function escapeRegExp(value: string) {
   return value.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\\$&`);
 }
 
-function highlightText(text: string, query: string) {
-  if (!query) return text;
+function highlightText(text: string | null | undefined, query: string) {
+  const safeText = typeof text === 'string' ? text : '';
+  if (!query || safeText.length === 0) return safeText;
   const pattern = new RegExp(`(${escapeRegExp(query)})`, 'ig');
-  const parts = text.split(pattern);
+  const parts = safeText.split(pattern);
   return parts.map((part, index) => {
     if (part.toLowerCase() === query.toLowerCase()) {
       return (
@@ -111,13 +112,13 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                   </span>
                 </div>
                 <h2 className="mt-1 text-2xl font-semibold text-foreground">
-                  {highlightText(result.title, query)}
+                  {highlightText(result.title ?? '', query)}
                 </h2>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  {highlightText(result.snippet ?? result.summary, query)}
+                  {highlightText(result.snippet ?? result.summary ?? '', query)}
                 </p>
                 <div className="mt-3 flex flex-wrap gap-2 text-[11px] uppercase tracking-[0.28em] text-primary">
-                  {result.tags.slice(0, 5).map((tag) => (
+                  {(result.tags ?? []).slice(0, 5).map((tag) => (
                     <span key={tag} className="rounded-full border border-primary/25 bg-primary/10 px-3 py-1 text-foreground">
                       {tag}
                     </span>

@@ -103,8 +103,8 @@ export function searchContent(term: string): SearchResult[] {
       return [
         {
           type: 'post' as const,
-          title: post.title,
-          summary: post.summary,
+          title: post.title ?? '',
+          summary: post.summary ?? '',
           url: post.url,
           tags: includeTags(post.tags),
           match: match.match,
