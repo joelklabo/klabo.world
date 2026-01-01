@@ -1,18 +1,24 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { allAppDocs, type AppDoc } from 'contentlayer/generated';
-import { getAppsDirectory } from './appPersistence';
+type AppsDirectoryLoader = () => Promise<string>;
+
+const resolveAppsDirectory: AppsDirectoryLoader = async () => {
+  const { getAppsDirectory } = await import('./appPersistence');
+  return getAppsDirectory();
+};
 
 function getPublishDate(app: AppDoc): Date {
   return new Date(app.publishDate);
 }
 
 export function getApps(): AppDoc[] {
-  return [...allAppDocs].sort((a, b) => getPublishDate(b).getTime() - getPublishDate(a).getTime());
+  const apps = Array.isArray(allAppDocs) ? allAppDocs : [];
+  return [...apps].sort((a, b) => getPublishDate(b).getTime() - getPublishDate(a).getTime());
 }
 
 export function getAppBySlug(slug: string): AppDoc | undefined {
-  return allAppDocs.find((app) => app.slug === slug);
+  return Array.isArray(allAppDocs) ? allAppDocs.find((app) => app.slug === slug) : undefined;
 }
 
 type AdminApp = {
@@ -44,7 +50,7 @@ function normalizeAdminApp(app: AppDoc): AdminApp {
 }
 
 async function readDiskApps(exclude: Set<string>): Promise<AdminApp[]> {
-  const dir = getAppsDirectory();
+  const dir = await resolveAppsDirectory();
   try {
     const files = await fs.readdir(dir);
     const results: AdminApp[] = [];
@@ -90,7 +96,8 @@ export async function getEditableAppBySlug(slug: string): Promise<AdminApp | und
   if (contentlayerApp) {
     return normalizeAdminApp(contentlayerApp);
   }
-  const filePath = path.join(getAppsDirectory(), `${slug}.json`);
+  const dir = await resolveAppsDirectory();
+  const filePath = path.join(dir, `${slug}.json`);
   try {
     const raw = await fs.readFile(filePath, 'utf8');
     const parsed = JSON.parse(raw) as Partial<AdminApp>;

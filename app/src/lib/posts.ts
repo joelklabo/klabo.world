@@ -2,7 +2,12 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import matter from 'gray-matter';
 import { allPosts, type Post } from 'contentlayer/generated';
-import { getPostsDirectory } from './postPersistence';
+type PostsDirectoryLoader = () => Promise<string>;
+
+const resolvePostsDirectory: PostsDirectoryLoader = async () => {
+  const { getPostsDirectory } = await import('./postPersistence');
+  return getPostsDirectory();
+};
 
 function getContentlayerPosts(): Post[] {
   return Array.isArray(allPosts) ? allPosts : [];
@@ -80,7 +85,7 @@ export type EditablePost = AdminPostSummary & {
 };
 
 async function readDiskPosts(exclude: Set<string>): Promise<AdminPostSummary[]> {
-  const postsDir = getPostsDirectory();
+  const postsDir = await resolvePostsDirectory();
   try {
     const files = await fs.readdir(postsDir);
     const entries: AdminPostSummary[] = [];
@@ -164,7 +169,8 @@ export async function getEditablePostBySlug(slug: string): Promise<EditablePost 
       body: contentlayerPost.body.raw,
     };
   }
-  const filePath = path.join(getPostsDirectory(), `${slug}.mdx`);
+  const postsDir = await resolvePostsDirectory();
+  const filePath = path.join(postsDir, `${slug}.mdx`);
   try {
     const raw = await fs.readFile(filePath, 'utf8');
     const parsed = matter(raw);
