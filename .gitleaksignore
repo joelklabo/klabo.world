@@ -1,0 +1,3 @@
+# Gitleaks ignore file (fingerprints).
+# Add fingerprints for confirmed false positives.
+# Example: <commit_sha>:path/to/file:rule-id:line

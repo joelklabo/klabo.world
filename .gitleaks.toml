@@ -1,0 +1,10 @@
+title = "KlaboWorld Gitleaks configuration"
+
+[extend]
+useDefault = true
+
+[allowlist]
+regexes = [
+  '''ghp_YOUR_TOKEN_HERE''',
+  '''ghp_your_actual_token_here''',
+]
