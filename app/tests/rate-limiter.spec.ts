@@ -21,6 +21,7 @@ afterEach(() => {
 
 describe('consumeRateLimit', () => {
   it('returns retryAfterSeconds based on limiter response', async () => {
+    restoreEnv = setRateLimitEnv({ RATE_LIMIT_TRUSTED_PROXY_HOPS: '1' });
     const consumeSpy = vi
       .spyOn(rateLimiter, 'consume')
       .mockRejectedValue({ msBeforeNext: 1200, remainingPoints: 0, consumedPoints: 10 });
@@ -33,12 +34,13 @@ describe('consumeRateLimit', () => {
   });
 
   it('skips rate limiting when bypass token matches', async () => {
-    restoreEnv = setRateLimitEnv({ RATE_LIMIT_BYPASS_TOKEN: 'bypass-me' });
+    restoreEnv = setRateLimitEnv({ RATE_LIMIT_BYPASS_TOKEN: 'bypass-me', RATE_LIMIT_TRUSTED_PROXY_HOPS: '1' });
 
     const consumeSpy = vi.spyOn(rateLimiter, 'consume');
     const forwardedFor = [5, 6, 7, 8].join('.');
     const result = await consumeRateLimit({
       request: makeRequest({ 'x-rate-limit-bypass': 'bypass-me', 'x-forwarded-for': forwardedFor }),
+      sessionKey: 'admin-user-1',
     });
 
     expect(result).toEqual({ allowed: true });

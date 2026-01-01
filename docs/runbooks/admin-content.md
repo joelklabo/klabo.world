@@ -64,6 +64,8 @@ The contexts feature was removed on 2025-12-02. Existing pages/routes are gone; 
 - Local dev: files land under `public/uploads`. The helper auto-builds URLs like `/uploads/<uuid>.png` (immediately available because `public/` is statically served).
 - Azure production: set `AZURE_STORAGE_ACCOUNT`, `AZURE_STORAGE_KEY`, `AZURE_STORAGE_CONTAINER` (defaults to `uploads`). URLs will be full blob URLs.
 - Limits: 10 MB max size; MIME types restricted to JPEG/PNG/GIF/WebP.
+- Rate limit bypass (ops only): set `RATE_LIMIT_BYPASS_TOKEN` and send `x-rate-limit-bypass` with an authenticated admin session; rotate the token per `docs/runbooks/secrets.md`.
+- For audit-friendly IPs, set `RATE_LIMIT_TRUSTED_PROXY_HOPS` to match your trusted proxy chain.
 
 ## Markdown Preview
 - Compose/edit screens include a **Preview Markdown** button powered by `/admin/markdown-preview`. Use it to sanity-check embeddings before publishing.

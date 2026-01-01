@@ -16,6 +16,7 @@ This document describes how we manage secrets across local development, CI, and 
 | `NEXTAUTH_SECRET` | Session/JWT encryption for NextAuth. | Auto-generated string for prod; local default `dev-secret`. |
 | `DATABASE_URL` | Prisma connection string. | Local default `file:./data/app.db`; set to `file:/home/site/wwwroot/data/app.db` (or Postgres) in Azure. |
 | `REDIS_URL` | Rate limiter store. | Leave blank for in-memory; set to `redis://localhost:6379` when running the docker-compose service. |
+| `RATE_LIMIT_BYPASS_TOKEN` | Optional admin upload rate limit bypass token (header: `x-rate-limit-bypass`). | Store in Key Vault/App Service settings; rotate regularly. |
 | `UPLOADS_DIR` / `AZURE_STORAGE_*` | Control where uploads land. | Local `public/uploads`; prod should point to persistent storage or Blob container. |
 | `APPLICATIONINSIGHTS_CONNECTION_STRING` | Enables OTel → Azure Monitor. | Optional locally; required in prod for telemetry. |
 | `GITHUB_TOKEN`, `GITHUB_OWNER`, `GITHUB_REPO` | GitHub Content API credentials for post/app writes in production. | Omit locally to force filesystem writes. |
@@ -35,6 +36,15 @@ Requires Node 24.11.1+ (the repo’s pinned version) for `--experimental-strip-t
 Use these guardrail flags when needed:
 - `ALLOW_SQLITE_IN_PROD` (default false): allows SQLite in production for exceptional cases.
 - `UPLOADS_REQUIRE_DURABLE` (default false): enforce Azure storage credentials for durable uploads.
+
+## Rate limit bypass token
+- `RATE_LIMIT_BYPASS_TOKEN` enables an operational bypass for admin upload rate limiting.
+- The bypass is only honored with an authenticated admin session and the `x-rate-limit-bypass` header.
+- Rotate by updating Key Vault/App Service settings, restart the app, and share the new header value via secure channels only.
+
+## Trusted proxy IP extraction
+- `RATE_LIMIT_TRUSTED_PROXY_HOPS` controls how many proxy hops to trust when extracting IPs for rate limit/audit logs.
+- Set to `0` to ignore forwarded headers entirely; set to `1+` when running behind a trusted proxy (App Service, CDN).
 
 ## Azure Key Vault References
 For production, add secrets to Azure Key Vault (one per key), then reference them from App Service app settings:

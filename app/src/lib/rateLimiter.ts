@@ -20,25 +20,69 @@ export const rateLimiter = createRateLimiter({
 
 export type RateLimitResult = { allowed: true } | { allowed: false; retryAfterSeconds: number };
 
+function getForwardedForIp(forwarded: string, trustedProxyHops: number): string | null {
+  const addresses = forwarded
+    .split(',')
+    .map((address) => address.trim())
+    .filter(Boolean);
+  if (addresses.length === 0) {
+    return null;
+  }
+  if (trustedProxyHops <= 0) {
+    return null;
+  }
+  if (addresses.length <= trustedProxyHops) {
+    return addresses[0] ?? null;
+  }
+  const index = Math.max(0, addresses.length - trustedProxyHops - 1);
+  return addresses[index] ?? null;
+}
+
+function getTrustedProxyHops(): number {
+  const parsed = Number.parseInt(process.env.RATE_LIMIT_TRUSTED_PROXY_HOPS ?? '0', 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
+}
+
 function getClientIp(request: Request): string | null {
+  const trustedProxyHops = getTrustedProxyHops();
+  if (trustedProxyHops <= 0) {
+    return null;
+  }
   const forwarded = request.headers.get('x-forwarded-for');
   if (forwarded) {
-    const first = forwarded.split(',')[0]?.trim();
-    if (first) {
-      return first;
+    const ip = getForwardedForIp(forwarded, trustedProxyHops);
+    if (ip) {
+      return ip;
     }
   }
   const realIp = request.headers.get('x-real-ip') ?? request.headers.get('cf-connecting-ip');
   return realIp?.trim() || null;
 }
 
-function isRateLimitBypassed(request: Request): boolean {
+function isRateLimitBypassed({
+  request,
+  sessionKey,
+  scope,
+}: {
+  request: Request;
+  sessionKey?: string | null;
+  scope: string;
+}): boolean {
   const bypassToken = process.env.RATE_LIMIT_BYPASS_TOKEN?.trim();
   if (!bypassToken) {
     return false;
   }
+  const identity = sessionKey?.trim();
+  if (!identity) {
+    return false;
+  }
   const header = request.headers.get(RATE_LIMIT_BYPASS_HEADER);
-  return typeof header === 'string' && header.trim() === bypassToken;
+  if (!(typeof header === 'string' && header.trim() === bypassToken)) {
+    return false;
+  }
+  const clientIp = getClientIp(request) ?? 'unknown';
+  console.warn('[rateLimiter] bypass used', { scope, sessionKey: identity, ip: clientIp });
+  return true;
 }
 
 function buildRateLimitKey({
@@ -75,7 +119,7 @@ export async function consumeRateLimit({
   points?: number;
   scope?: string;
 }): Promise<RateLimitResult> {
-  if (isRateLimitBypassed(request)) {
+  if (isRateLimitBypassed({ request, sessionKey, scope })) {
     return { allowed: true };
   }
 

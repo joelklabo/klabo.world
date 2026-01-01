@@ -63,12 +63,12 @@ This file is the single source of truth for every Markdown document that should 
 - `slos.md` – Service Level Objectives for key user journeys.
 
 ### docs/runbooks
-- `admin-content.md` – Publishing, uploads, admin smoke tests.
+- `admin-content.md` – Publishing, uploads, admin smoke tests, and rate limit bypass guidance.
 - `deployment.md` – Deployment runbook and checks.
 - `observability.md` – Enabling Application Insights locally/Azure and verifying spans.
 - `rollback.md` – Rollback procedure.
 - `turbo-cache.md` – Guidance on enabling Turbo remote cache and reading metrics.
-- `secrets.md` – Secrets management across local env, GitHub Actions, and Azure.
+- `secrets.md` – Secrets management across local env, GitHub Actions, and Azure (rate limit bypass token + proxy config).
 - `migration.md` – Postgres migration runbook (cutover + rollback).
 - `db-recovery.md` – Database recovery steps.
 - `github-projects.md` – Refreshing the GitHub projects snapshot used by home + `/projects`.

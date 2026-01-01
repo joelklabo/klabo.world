@@ -1,6 +1,7 @@
 export type RateLimitEnv = {
   RATE_LIMIT_BYPASS_TOKEN?: string;
   RATE_LIMIT_REDIS_FAILURE_MODE?: string;
+  RATE_LIMIT_TRUSTED_PROXY_HOPS?: string;
 };
 
 export function setRateLimitEnv(env: RateLimitEnv) {
