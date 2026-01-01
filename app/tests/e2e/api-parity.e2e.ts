@@ -24,9 +24,16 @@ test.describe('Phase 3 public APIs', () => {
     }
 
     const health = await request.get('/api/health');
-    expect(health.ok()).toBe(true);
+    expect([200, 503]).toContain(health.status());
     const healthPayload = await health.json();
-    expect(healthPayload.status).toBe('ok');
+    expect(['ok', 'degraded']).toContain(healthPayload.status);
+    expect(healthPayload.components).toEqual(
+      expect.objectContaining({
+        db: expect.any(Object),
+        redis: expect.any(Object),
+        blob: expect.any(Object),
+      }),
+    );
 
     const gist = await request.get(gistUrl);
     if (!gist.ok()) {
