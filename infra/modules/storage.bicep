@@ -24,7 +24,7 @@ resource storage 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   }
   kind: 'StorageV2'
   properties: {
-    allowBlobPublicAccess: true
+    allowBlobPublicAccess: false
     minimumTlsVersion: 'TLS1_2'
     supportsHttpsTrafficOnly: true
     isHnsEnabled: enableHns
@@ -34,7 +34,7 @@ resource storage 'Microsoft.Storage/storageAccounts@2023-01-01' = {
 resource blobContainers 'Microsoft.Storage/storageAccounts/blobServices/containers@2023-01-01' = [for containerName in containers: {
   name: '${storage.name}/default/${containerName}'
   properties: {
-    publicAccess: containerName == 'public-assets' ? 'Blob' : 'None'
+    publicAccess: 'None'
   }
 }]
 
