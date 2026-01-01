@@ -41,11 +41,13 @@ function scoreMatch(match: SearchResult['match']): number {
   }
 }
 
-function firstIndexOf(text: string, term: string) {
+function firstIndexOf(text: string | null | undefined, term: string) {
+  if (typeof text !== 'string' || text.length === 0) return -1;
   return text.toLowerCase().indexOf(term);
 }
 
-function buildSnippet(text: string, term: string, maxLength = 140) {
+function buildSnippet(text: string | null | undefined, term: string, maxLength = 140) {
+  if (typeof text !== 'string' || text.length === 0) return '';
   const index = firstIndexOf(text, term);
   if (index < 0) {
     return text.slice(0, maxLength).trim();
@@ -69,8 +71,8 @@ function findPostMatch(post: ReturnType<typeof getPosts>[number], term: string) 
   if (post.tags?.some((tag) => firstIndexOf(tag, term) >= 0)) {
     return { match: 'tags' as const, snippet: post.tags?.join(', ') };
   }
-  if (firstIndexOf(post.body.raw, term) >= 0) {
-    return { match: 'body' as const, snippet: buildSnippet(post.body.raw, term) };
+  if (firstIndexOf(post.body?.raw, term) >= 0) {
+    return { match: 'body' as const, snippet: buildSnippet(post.body?.raw, term) };
   }
   return null;
 }
@@ -89,50 +91,55 @@ function findAppMatch(app: ReturnType<typeof getApps>[number], term: string) {
 }
 
 export function searchContent(term: string): SearchResult[] {
-  const normalized = normalize(term);
-  if (normalized.length < MIN_QUERY_LENGTH) {
+  try {
+    const normalized = normalize(term);
+    if (normalized.length < MIN_QUERY_LENGTH) {
+      return [];
+    }
+
+    const postResults: SearchResult[] = getPosts().flatMap((post) => {
+      const match = findPostMatch(post, normalized);
+      if (!match) return [];
+      return [
+        {
+          type: 'post' as const,
+          title: post.title,
+          summary: post.summary,
+          url: post.url,
+          tags: includeTags(post.tags),
+          match: match.match,
+          snippet: match.snippet,
+        },
+      ];
+    });
+
+    const appResults: SearchResult[] = getApps().flatMap((app) => {
+      const match = findAppMatch(app, normalized);
+      if (!match) return [];
+      return [
+        {
+          type: 'app' as const,
+          title: app.name,
+          summary: app.fullDescription ?? '',
+          url: app.url,
+          tags: includeTags(app.features),
+          match: match.match,
+          snippet: match.snippet,
+        },
+      ];
+    });
+
+    const combined = [...postResults, ...appResults].map((result) => ({
+      result,
+      score: scoreMatch(result.match),
+    }));
+
+    return combined
+      .sort((a, b) => a.score - b.score || a.result.title.localeCompare(b.result.title))
+      .slice(0, 10)
+      .map(({ result }) => result);
+  } catch (error) {
+    console.error('Search index error', { error, term });
     return [];
   }
-
-  const postResults: SearchResult[] = getPosts().flatMap((post) => {
-    const match = findPostMatch(post, normalized);
-    if (!match) return [];
-    return [
-      {
-        type: 'post' as const,
-        title: post.title,
-        summary: post.summary,
-        url: post.url,
-        tags: includeTags(post.tags),
-        match: match.match,
-        snippet: match.snippet,
-      },
-    ];
-  });
-
-  const appResults: SearchResult[] = getApps().flatMap((app) => {
-    const match = findAppMatch(app, normalized);
-    if (!match) return [];
-    return [
-      {
-        type: 'app' as const,
-        title: app.name,
-        summary: app.fullDescription,
-        url: app.url,
-        tags: includeTags(app.features),
-        match: match.match,
-        snippet: match.snippet,
-      },
-    ];
-  });
-
-  const combined = [...postResults, ...appResults].map((result) => ({
-    result,
-    score: scoreMatch(result.match),
-  }));
-
-  return combined
-    .sort((a, b) => a.score - b.score || a.result.title.localeCompare(b.result.title))
-    .slice(0, 10)
-    .map(({ result }) => result);
 }
