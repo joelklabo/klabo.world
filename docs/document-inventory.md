@@ -20,6 +20,7 @@ This file is the single source of truth for every Markdown document that should 
 - `0008-api-layer.md` – tRPC for internal/admin APIs, REST for public surfaces.
 - `0009-monorepo-modularization.md` – Modular build strategy and measurable targets.
 - `0010-upload-av-policy.md` – Upload anti-malware policy (quarantine + scanning).
+- `0011-contentlayer-decision.md` – Contentlayer remediation decision (pin/patch vs migrate).
 
 ### docs/azure
 - `auth-setup.md` – Azure CLI authorization setup for deployment scripts.
