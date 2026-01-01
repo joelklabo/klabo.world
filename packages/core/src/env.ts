@@ -32,7 +32,7 @@ const booleanFlag = (label: string) =>
       }
     }
     return value;
-  }, z.boolean({ invalid_type_error: `${label} must be true or false` }).default(false));
+  }, z.boolean({ message: `${label} must be true or false` }).default(false));
 
 const schema = z.object({
   DATABASE_URL: z.string().default('file:../data/app.db'),
