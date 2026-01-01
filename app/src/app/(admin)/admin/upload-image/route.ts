@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { requireAdminSession } from '@/lib/adminSession';
+import { consumeRateLimit } from '@/lib/rateLimiter';
 import { handleImageUpload } from '@/lib/uploads';
 import { withSpan } from '@/lib/telemetry';
 
@@ -8,7 +9,18 @@ export const runtime = 'nodejs';
 export const maxDuration = 60;
 
 export async function POST(request: Request) {
-  await requireAdminSession();
+  const session = await requireAdminSession();
+  const rateLimit = await consumeRateLimit({
+    request,
+    sessionKey: session.user?.email,
+    scope: 'admin-upload',
+  });
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { error: 'Too many uploads. Please try again later.', retryAfter: rateLimit.retryAfterSeconds },
+      { status: 429, headers: { 'Retry-After': String(rateLimit.retryAfterSeconds) } },
+    );
+  }
   const formData = await request.formData();
   const file = formData.get('file');
   if (!(file instanceof File)) {
