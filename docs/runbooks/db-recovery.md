@@ -33,4 +33,9 @@ Current production still uses the App Service–mounted SQLite file (`/home/site
 3. **Re-seed admin** – the app automatically seeds `Admin` when it boots, but you can run `pnpm --filter app exec prisma db push` and `pnpm --filter @klaboworld/scripts run create-admin` if necessary.
 4. **Cleanup** – once satisfied, delete the temporary restore server, or use it to replace the primary.
 
+### Migration rollback notes
+- If a Postgres cutover fails, revert to the SQLite backup and set `DATABASE_URL=file:/home/site/wwwroot/data/app.db`, then restart the app.
+- For Postgres rollback, use PITR (step 1) and then swap the connection string.
+- See `docs/runbooks/migration.md` for the full cutover checklist.
+
 Always capture evidence (timestamps, command logs) in `docs/verifications/` after recovery exercises.

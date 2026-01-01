@@ -69,6 +69,7 @@ This file is the single source of truth for every Markdown document that should 
 - `rollback.md` – Rollback procedure.
 - `turbo-cache.md` – Guidance on enabling Turbo remote cache and reading metrics.
 - `secrets.md` – Secrets management across local env, GitHub Actions, and Azure.
+- `migration.md` – Postgres migration runbook (cutover + rollback).
 - `db-recovery.md` – Database recovery steps.
 - `github-projects.md` – Refreshing the GitHub projects snapshot used by home + `/projects`.
 - (retired) `build-modularity.md` – superseded by Turbo task changes and build cache epics.
