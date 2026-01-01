@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import type { Route } from 'next';
 import { useEffect, useMemo, useState } from 'react';
 import type { SearchResult } from '@/lib/search';
 
@@ -114,7 +115,7 @@ export default function SearchResults({ query }: SearchResultsProps) {
       {safeResults.map((result) => (
         <Link
           key={`${result.type}-${result.url}`}
-          href={result.url}
+          href={result.url as Route}
           className="block rounded-2xl border border-border/70 bg-gradient-to-r from-card/90 to-background/80 p-5 shadow-[0_20px_50px_rgba(6,10,20,0.45)] transition hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-[0_24px_60px_rgba(6,10,20,0.55)]"
         >
           <div className="flex flex-wrap items-center gap-3 text-[11px] uppercase tracking-[0.35em] text-muted-foreground">
