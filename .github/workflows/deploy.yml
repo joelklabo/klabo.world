@@ -83,6 +83,8 @@ jobs:
         run: |
           cat <<EOF > app/.env.production.local
           NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+          DATABASE_URL=${DATABASE_URL}
+          ALLOW_SQLITE_IN_PROD=${ALLOW_SQLITE_IN_PROD}
           EOF
 
       - name: Apply Prisma schema
