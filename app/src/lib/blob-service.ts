@@ -6,6 +6,10 @@ const containerName = process.env.AZURE_STORAGE_CONTAINER ?? 'uploads';
 
 let containerClient: ReturnType<typeof createBlobContainerClient> | null = null;
 
+export function isBlobConfigured() {
+  return Boolean(accountName && accountKey);
+}
+
 export function getBlobClient() {
   if (!accountName || !accountKey) {
     throw new Error('Azure storage credentials missing');
@@ -18,6 +22,14 @@ export function getBlobClient() {
     });
   }
   return containerClient;
+}
+
+export async function probeBlobContainer() {
+  const container = getBlobClient();
+  const exists = await container.exists();
+  if (!exists) {
+    throw new Error(`Blob container "${containerName}" does not exist`);
+  }
 }
 
 export async function uploadBuffer(filename: string, buffer: Buffer, mimeType: string) {
