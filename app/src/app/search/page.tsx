@@ -55,6 +55,13 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const resolvedSearchParams: SearchParams = searchParams ? await Promise.resolve(searchParams) : {};
   const query = normalizeParam(resolvedSearchParams.q).trim();
   const results = query.length >= 2 ? searchContent(query) : [];
+  const safeResults = results.filter(
+    (result) =>
+      typeof result.url === 'string' &&
+      result.url.startsWith('/') &&
+      typeof result.title === 'string' &&
+      result.title.trim().length > 0,
+  );
 
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-background text-foreground">
@@ -96,10 +103,10 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         {query.length >= 2 && (
           <div className="space-y-4">
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
-              {results.length} result{results.length === 1 ? '' : 's'} for “{query}”
+              {safeResults.length} result{safeResults.length === 1 ? '' : 's'} for “{query}”
             </p>
-            {results.length === 0 && <p className="text-sm text-muted-foreground">No results for “{query}”.</p>}
-            {results.map((result) => (
+            {safeResults.length === 0 && <p className="text-sm text-muted-foreground">No results for “{query}”.</p>}
+            {safeResults.map((result) => (
               <Link
                 key={`${result.type}-${result.url}`}
                 href={result.url as Route}

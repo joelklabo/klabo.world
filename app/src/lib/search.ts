@@ -21,6 +21,18 @@ function includeTags(tags?: string[]): string[] {
   return tags?.map((tag) => tag.trim()).filter(Boolean) ?? [];
 }
 
+function asText(value: unknown): string {
+  return typeof value === 'string' ? value : '';
+}
+
+function isNonEmptyString(value: unknown): value is string {
+  return typeof value === 'string' && value.trim().length > 0;
+}
+
+function isValidUrl(value: unknown): value is string {
+  return typeof value === 'string' && value.startsWith('/');
+}
+
 function scoreMatch(match: SearchResult['match']): number {
   switch (match) {
     case 'title': {
@@ -100,12 +112,18 @@ export function searchContent(term: string): SearchResult[] {
     const postResults: SearchResult[] = getPosts().flatMap((post) => {
       const match = findPostMatch(post, normalized);
       if (!match) return [];
+      const title = asText(post.title);
+      const summary = asText(post.summary);
+      const url = post.url;
+      if (!isNonEmptyString(title) || !isValidUrl(url)) {
+        return [];
+      }
       return [
         {
           type: 'post' as const,
-          title: post.title ?? '',
-          summary: post.summary ?? '',
-          url: post.url,
+          title,
+          summary,
+          url,
           tags: includeTags(post.tags),
           match: match.match,
           snippet: match.snippet,
@@ -116,12 +134,18 @@ export function searchContent(term: string): SearchResult[] {
     const appResults: SearchResult[] = getApps().flatMap((app) => {
       const match = findAppMatch(app, normalized);
       if (!match) return [];
+      const title = asText(app.name);
+      const summary = asText(app.fullDescription);
+      const url = app.url;
+      if (!isNonEmptyString(title) || !isValidUrl(url)) {
+        return [];
+      }
       return [
         {
           type: 'app' as const,
-          title: app.name,
-          summary: app.fullDescription ?? '',
-          url: app.url,
+          title,
+          summary,
+          url,
           tags: includeTags(app.features),
           match: match.match,
           snippet: match.snippet,
