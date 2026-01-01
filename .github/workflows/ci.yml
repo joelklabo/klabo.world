@@ -21,6 +21,7 @@ jobs:
       ADMIN_PASSWORD: change-me
       NEXTAUTH_SECRET: test-secret
       DATABASE_URL: file:../data/app.db
+      ALLOW_SQLITE_IN_PROD: "true"
       UPLOADS_DIR: ./tmp/uploads
     steps:
       - uses: actions/checkout@v4
