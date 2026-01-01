@@ -1,5 +1,11 @@
 import { randomUUID } from 'node:crypto';
 import { createBlobContainerClient, uploadBuffer } from './blob';
+export {
+  detectImageMimeType,
+  extensionForMime,
+  isSupportedImageMime,
+  type SupportedImageMime,
+} from './uploads-signatures';
 
 export interface UploadConfig {
   uploadsDir: string;
@@ -36,7 +42,23 @@ export async function writeBlobUpload(config: UploadConfig, filename: string, bu
   return { filename, path: filename, url };
 }
 
-export function buildFilename(originalName: string) {
-  const ext = originalName.includes('.') ? `.${originalName.split('.').pop()}` : '';
-  return `${randomUUID()}${ext}`;
+function sanitizeFilename(originalName: string) {
+  const base = originalName.replaceAll('\\', '/').split('/').pop() ?? '';
+  const cleaned = base.replace(/[^a-zA-Z0-9._-]/g, '-').replace(/-+/g, '-');
+  return cleaned.replace(/^[-.]+/, '').replace(/[-.]+$/, '');
+}
+
+function normalizeExtension(extension?: string) {
+  if (!extension) return '';
+  return extension.toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+export function buildFilename(originalName: string, extensionOverride?: string) {
+  const safeName = sanitizeFilename(originalName);
+  const base = safeName.includes('.') ? safeName.slice(0, safeName.lastIndexOf('.')) : safeName;
+  const extFromName = safeName.includes('.') ? safeName.slice(safeName.lastIndexOf('.') + 1) : '';
+  const extension = normalizeExtension(extensionOverride ?? extFromName);
+  const safeBase = base || 'upload';
+  const uniqueBase = `${safeBase}-${randomUUID()}`;
+  return extension ? `${uniqueBase}.${extension}` : uniqueBase;
 }

@@ -1,18 +1,17 @@
-import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { buildFilename, writeBlobUpload, writeLocalUpload } from '@klaboworld/core/server/uploads';
+import {
+  buildFilename,
+  detectImageMimeType,
+  extensionForMime,
+  isSupportedImageMime,
+  type SupportedImageMime,
+  writeBlobUpload,
+  writeLocalUpload,
+} from '@klaboworld/core/server/uploads';
 import { env } from './env';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
-
-const MIME_EXTENSION: Record<string, string> = {
-  'image/png': 'png',
-  'image/jpeg': 'jpg',
-  'image/jpg': 'jpg',
-  'image/gif': 'gif',
-  'image/webp': 'webp',
-};
 
 const AZURE_CONFIGURED = Boolean(env.AZURE_STORAGE_ACCOUNT && env.AZURE_STORAGE_KEY);
 
@@ -29,27 +28,39 @@ function buildLocalUrl(filename: string): string {
   return `/uploads/${filename}`;
 }
 
-function getMimeType(file: File) {
-  const mime = file.type?.toLowerCase();
-  if (!mime || !MIME_EXTENSION[mime]) {
+function getDeclaredMimeType(file: File): SupportedImageMime | null {
+  const rawMime = file.type?.toLowerCase();
+  if (!rawMime) return null;
+  const normalizedMime = rawMime === 'image/jpg' ? 'image/jpeg' : rawMime;
+  if (!isSupportedImageMime(normalizedMime)) {
     throw new Error('Unsupported file type. Allowed: JPEG, PNG, GIF, WebP.');
   }
-  return mime;
+  return normalizedMime;
 }
 
 function assertValidFile(file: File) {
+  if (file.size <= 0) {
+    throw new Error('File is empty.');
+  }
   if (file.size > MAX_FILE_SIZE) {
     throw new Error('File too large. Maximum size is 10MB.');
   }
 }
 
 export async function handleImageUpload(file: File) {
-  const mime = getMimeType(file);
+  const declaredMime = getDeclaredMimeType(file);
   assertValidFile(file);
-  const extension = MIME_EXTENSION[mime];
-  const filename = buildFilename(`${crypto.randomUUID()}.${extension}`);
   const arrayBuffer = await file.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
+  const detectedMime = detectImageMimeType(buffer);
+  if (!detectedMime) {
+    throw new Error('Unsupported file type. Allowed: JPEG, PNG, GIF, WebP.');
+  }
+  if (declaredMime && declaredMime !== detectedMime) {
+    throw new Error('File content does not match the declared file type.');
+  }
+  const extension = extensionForMime(detectedMime);
+  const filename = buildFilename(file.name || `upload.${extension}`, extension);
 
   if (AZURE_CONFIGURED) {
     const result = await writeBlobUpload(
@@ -62,7 +73,7 @@ export async function handleImageUpload(file: File) {
       },
       filename,
       buffer,
-      mime,
+      detectedMime,
     );
     return { url: result.url, filename: result.filename, storage: 'azure' as const };
   }
