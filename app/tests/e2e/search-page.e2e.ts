@@ -8,6 +8,10 @@ test.describe('search page', () => {
 
   test('results render highlights and match labels', async ({ page }) => {
     await page.goto('/search?q=bitcoin');
+    await page.waitForResponse((response) => {
+      const url = new URL(response.url());
+      return url.pathname === '/api/search' && url.searchParams.get('q') === 'bitcoin';
+    });
 
     const resultCards = page.locator('a[href^="/posts/"], a[href^="/apps/"]');
     const count = await resultCards.count();
@@ -24,6 +28,10 @@ test.describe('search page', () => {
 
   test('empty results show empty state', async ({ page }) => {
     await page.goto('/search?q=unlikelyquerystring');
+    await page.waitForResponse((response) => {
+      const url = new URL(response.url());
+      return url.pathname === '/api/search' && url.searchParams.get('q') === 'unlikelyquerystring';
+    });
     await expect(page.getByText(/no results/i)).toBeVisible();
   });
 });
