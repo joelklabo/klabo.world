@@ -19,6 +19,7 @@ This file is the single source of truth for every Markdown document that should 
 - `0007-renovate-dependency-updates.md` – Renovate with auto-merge for safe updates.
 - `0008-api-layer.md` – tRPC for internal/admin APIs, REST for public surfaces.
 - `0009-monorepo-modularization.md` – Modular build strategy and measurable targets.
+- `0010-upload-av-policy.md` – Upload anti-malware policy (quarantine + scanning).
 
 ### docs/azure
 - `auth-setup.md` – Azure CLI authorization setup for deployment scripts.
@@ -73,6 +74,7 @@ This file is the single source of truth for every Markdown document that should 
 
 ### docs/security
 - `migration.md` – Security migration notes (moved from repo root).
+- `upload-threat-model.md` – Upload pipeline threat model and mitigations.
 
 ### docs/testing
 - `ui-testing-plan.md` – Playwright/Vitest strategy.
