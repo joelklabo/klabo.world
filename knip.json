@@ -49,6 +49,7 @@
     "**/generated/**",
     "app/.contentlayer/**",
     "scripts/load-smoke.js",
+    "scripts/validate-env.ts",
     "contentlayer.config.ts",
     "tailwind.config.ts"
   ],

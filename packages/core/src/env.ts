@@ -11,6 +11,29 @@ const optionalUrl = z.preprocess(
   z.union([z.string().url(), z.literal('mock')]).optional(),
 );
 
+const booleanFlag = (label: string) =>
+  z.preprocess((value) => {
+    if (value == null) {
+      return false;
+    }
+    if (typeof value === 'boolean') {
+      return value;
+    }
+    if (typeof value === 'string') {
+      const normalized = value.trim().toLowerCase();
+      if (normalized === '') {
+        return false;
+      }
+      if (['1', 'true', 'yes', 'y', 'on'].includes(normalized)) {
+        return true;
+      }
+      if (['0', 'false', 'no', 'n', 'off'].includes(normalized)) {
+        return false;
+      }
+    }
+    return value;
+  }, z.boolean({ invalid_type_error: `${label} must be true or false` }).default(false));
+
 const schema = z.object({
   DATABASE_URL: z.string().default('file:../data/app.db'),
   REDIS_URL: optionalUrl,
@@ -21,6 +44,8 @@ const schema = z.object({
   AZURE_STORAGE_ACCOUNT: z.string().optional(),
   AZURE_STORAGE_KEY: z.string().optional(),
   AZURE_STORAGE_CONTAINER: z.string().optional(),
+  ALLOW_SQLITE_IN_PROD: booleanFlag('ALLOW_SQLITE_IN_PROD'),
+  UPLOADS_REQUIRE_DURABLE: booleanFlag('UPLOADS_REQUIRE_DURABLE'),
   NEXTAUTH_SECRET: z.string().default('dev-secret'),
   APPLICATIONINSIGHTS_CONNECTION_STRING: z.string().optional(),
   GITHUB_TOKEN: z.string().optional(),
@@ -47,6 +72,10 @@ const schema = z.object({
 
 export type Env = z.infer<typeof schema>;
 
+function isBlank(value?: string | null) {
+  return !value || value.trim() === '';
+}
+
 export function loadEnv(source: NodeJS.ProcessEnv = process.env): Env {
   const parsed = schema.safeParse(source);
 
@@ -56,6 +85,21 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): Env {
   }
 
   const data = parsed.data;
+  const nodeEnv = typeof source.NODE_ENV === 'string' ? source.NODE_ENV : process.env.NODE_ENV ?? 'development';
+  if (nodeEnv === 'production') {
+    const databaseUrl = data.DATABASE_URL.trim();
+    if (databaseUrl.startsWith('file:') && !data.ALLOW_SQLITE_IN_PROD) {
+      throw new Error('Unsafe production configuration: DATABASE_URL uses SQLite. Set ALLOW_SQLITE_IN_PROD=true to override.');
+    }
+    if (data.NEXTAUTH_SECRET.trim() === 'dev-secret') {
+      throw new Error('Unsafe production configuration: NEXTAUTH_SECRET is set to the dev default.');
+    }
+    if (data.UPLOADS_REQUIRE_DURABLE) {
+      if (isBlank(data.AZURE_STORAGE_ACCOUNT) || isBlank(data.AZURE_STORAGE_KEY)) {
+        throw new Error('Durable uploads require AZURE_STORAGE_ACCOUNT and AZURE_STORAGE_KEY to be set.');
+      }
+    }
+  }
   for (const [key, value] of Object.entries(data)) {
     if (typeof value === 'string' && !(key in process.env)) {
       process.env[key] = value;

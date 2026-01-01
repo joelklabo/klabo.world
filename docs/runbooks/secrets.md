@@ -20,6 +20,22 @@ This document describes how we manage secrets across local development, CI, and 
 | `APPLICATIONINSIGHTS_CONNECTION_STRING` | Enables OTel → Azure Monitor. | Optional locally; required in prod for telemetry. |
 | `GITHUB_TOKEN`, `GITHUB_OWNER`, `GITHUB_REPO` | GitHub Content API credentials for post/app writes in production. | Omit locally to force filesystem writes. |
 
+## Guardrails & Validation
+Production boot now enforces safety checks in `loadEnv`:
+- `DATABASE_URL` cannot use `file:` SQLite URLs unless `ALLOW_SQLITE_IN_PROD=true`.
+- `NEXTAUTH_SECRET` cannot be the dev default (`dev-secret`).
+- If `UPLOADS_REQUIRE_DURABLE=true`, then `AZURE_STORAGE_ACCOUNT` + `AZURE_STORAGE_KEY` must be set.
+
+Run the validator locally to catch misconfigurations early:
+```bash
+NODE_ENV=production node --experimental-strip-types scripts/validate-env.ts
+```
+Requires Node 24.11.1+ (the repo’s pinned version) for `--experimental-strip-types`.
+
+Use these guardrail flags when needed:
+- `ALLOW_SQLITE_IN_PROD` (default false): allows SQLite in production for exceptional cases.
+- `UPLOADS_REQUIRE_DURABLE` (default false): enforce Azure storage credentials for durable uploads.
+
 ## Azure Key Vault References
 For production, add secrets to Azure Key Vault (one per key), then reference them from App Service app settings:
 ```bash
