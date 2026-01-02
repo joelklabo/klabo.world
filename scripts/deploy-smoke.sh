@@ -20,6 +20,11 @@ fetch_http_200() {
   local attempt=1
   local status=""
   local rc=0
+  local allow_500=false
+
+  if [[ "$url" == */api/health ]]; then
+    allow_500=true
+  fi
 
   while (( attempt <= MAX_ATTEMPTS )); do
     set +e
@@ -38,7 +43,7 @@ fetch_http_200() {
       return 0
     fi
 
-    if [[ "$rc" -ne 0 || "$status" == "000" || "$status" == "502" || "$status" == "503" || "$status" == "504" ]]; then
+    if [[ "$rc" -ne 0 || "$status" == "000" || "$status" == "502" || "$status" == "503" || "$status" == "504" || ( "$allow_500" == true && "$status" == "500" ) ]]; then
       log "WARN: Attempt ${attempt}/${MAX_ATTEMPTS} failed for ${url} (curl=${rc}, status=${status}). Retrying..."
       attempt=$((attempt + 1))
       sleep "$RETRY_DELAY_SECONDS"
