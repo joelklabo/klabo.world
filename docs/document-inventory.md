@@ -97,7 +97,7 @@ This file is the single source of truth for every Markdown document that should 
 - Phase 3: `phase3-apis.md` – Public API parity checks.
 - Phase 4: `phase4-playwright-smoke.md` – Playwright smoke coverage.
 - Phase 5: `phase5-data-validation.md`, `phase5-load-test.md`, `phase5-monitoring.md`, `phase5-smoke.md`, `phase5-smoke-local.md`, `phase5-stakeholder-approval.md`, `phase5-visual-checks.md` – Final cutover data/latency/visual validations (visual checks include follow-up to enable `/search` GET in production).
-- Assets: `screenshots/home.png`, `posts-list.png`, `post-detail.png`, `search-dropdown.png`, `landing-page/home-desktop.png`, `landing-page/home-mobile.png` supporting Phase 1 visual checks + landing page refresh.
+- Assets: `screenshots/home.png`, `posts-list.png`, `post-detail.png`, `search-dropdown.png`, `landing-page/home-desktop.png`, `landing-page/home-mobile.png`, `screenshots/hardening/uploads/rate-limit.png`, `screenshots/hardening/uploads/invalid-file.png`, `screenshots/hardening/uploads/quarantine.png` supporting Phase 1 visual checks + landing page refresh.
 
 ### docs/vapor (legacy reference only)
 - (retired 2025-12-01) `index.md`, `folder-structure.md`, `routing.md`, `controllers.md`, `middleware.md`, `content.md`, `testing.md`, `docker.md`, `leaf-getting-started.md` – Legacy Swift/Vapor guides removed; Next.js stack is canonical.

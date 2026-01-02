@@ -21,7 +21,9 @@ test('admin upload image endpoint stores a PNG and returns a public URL', async 
   const payload = await response.json();
   expect(payload.url).toBeTruthy();
   expect(typeof payload.storage).toBe('string');
-  await expect(page.getByText(/^Uploaded!/)).toBeVisible();
+  const statusMessage =
+    payload.status === 'processing' ? /Upload queued for scanning/i : /^Uploaded!/;
+  await expect(page.getByText(statusMessage)).toBeVisible();
 
   if (payload.storage === 'local' && payload.filename) {
     const uploadsDir = path.join(process.cwd(), 'public', 'uploads');

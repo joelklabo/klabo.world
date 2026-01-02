@@ -18,7 +18,7 @@ type Props = {
   uploadButtonTestId?: string;
 };
 
-type Status = 'idle' | 'uploading' | 'success' | 'error';
+type Status = 'idle' | 'uploading' | 'success' | 'error' | 'rate-limited' | 'quarantined';
 
 export function ImageUploadField({
   name,
@@ -33,6 +33,7 @@ export function ImageUploadField({
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState<string | null>(null);
   const [uploadedPath, setUploadedPath] = useState<string | null>(defaultValue || null);
+  const [retryAfterSeconds, setRetryAfterSeconds] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleUpload = useCallback(async (file: File) => {
@@ -40,6 +41,7 @@ export function ImageUploadField({
     formData.append('file', file);
     setStatus('uploading');
     setError(null);
+    setRetryAfterSeconds(null);
     try {
       const response = await fetch('/admin/upload-image', {
         method: 'POST',
@@ -47,12 +49,38 @@ export function ImageUploadField({
         credentials: 'include',
       });
       const data = await response.json().catch(() => ({}));
-      if (!response.ok || !data?.url) {
-        throw new Error(data?.error || 'Upload failed');
+      if (!response.ok) {
+        if (response.status === 429) {
+          const retryAfterHeader = response.headers.get('Retry-After');
+          const retryAfterValue =
+            typeof data?.retryAfter === 'number'
+              ? data.retryAfter
+              : retryAfterHeader
+                ? Number.parseInt(retryAfterHeader, 10)
+                : null;
+          if (Number.isFinite(retryAfterValue)) {
+            setRetryAfterSeconds(retryAfterValue);
+          }
+          setError(data?.error || 'Too many uploads. Please try again later.');
+          setStatus('rate-limited');
+          return;
+        }
+        const message = data?.error || 'Upload failed';
+        const formattedMessage = response.status === 400 ? `Invalid file: ${message}` : message;
+        setError(formattedMessage);
+        setStatus('error');
+        return;
+      }
+      if (!data?.url) {
+        throw new Error('Upload failed');
       }
       setValue(data.url);
       setUploadedPath(data.url);
-      setStatus('success');
+      if (data?.status === 'processing') {
+        setStatus('quarantined');
+      } else {
+        setStatus('success');
+      }
     } catch (uploadError) {
       setError(uploadError instanceof Error ? uploadError.message : 'Upload failed');
       setStatus('error');
@@ -99,6 +127,17 @@ export function ImageUploadField({
         <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={onFileChange} />
         {status === 'uploading' && <span className="text-muted-foreground">Uploading…</span>}
         {status === 'success' && uploadedPath && <span className="text-primary">Uploaded! {uploadedPath}</span>}
+        {status === 'quarantined' && (
+          <span className="text-amber-600">
+            Upload queued for scanning. We will publish the asset once it clears.
+          </span>
+        )}
+        {status === 'rate-limited' && (
+          <span className="text-amber-600">
+            {error ?? 'Upload rate limit reached.'}
+            {retryAfterSeconds ? ` Try again in ${retryAfterSeconds}s.` : ''}
+          </span>
+        )}
         {status === 'error' && error && <span className="text-destructive">{error}</span>}
       </div>
     </div>
