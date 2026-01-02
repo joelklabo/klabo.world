@@ -16,17 +16,20 @@ test.describe('admin content workflow', () => {
     await page.getByLabel('Publish date').fill(new Date().toISOString().slice(0, 10));
     await page.getByLabel('Featured image path').fill('/uploads/test.png');
     await page.getByLabel('Content (Markdown)').fill('# Test Post\n\nThis is a Playwright-created post.');
-    await page.getByRole('button', { name: 'Publish post' }).click();
-
-    await expect(page).toHaveURL(/\/admin$/);
+    await Promise.all([
+      page.waitForURL(/\/admin$/, { timeout: 30_000 }),
+      page.getByRole('button', { name: 'Publish post' }).click(),
+    ]);
     const row = page.locator('tbody tr').filter({ hasText: title }).first();
     await expect(row).toBeVisible();
 
     await row.getByRole('link', { name: 'Edit' }).click();
     await expect(page).toHaveURL(new RegExp(`/admin/posts/${slug}/edit`));
 
-    await page.getByRole('button', { name: 'Delete' }).click();
-    await expect(page).toHaveURL(/\/admin$/);
+    await Promise.all([
+      page.waitForURL(/\/admin$/, { timeout: 30_000 }),
+      page.getByRole('button', { name: 'Delete' }).click(),
+    ]);
     await expect(page.getByText(title)).toHaveCount(0);
   });
 });

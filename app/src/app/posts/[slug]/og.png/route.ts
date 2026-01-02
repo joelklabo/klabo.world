@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 import { allPosts } from 'contentlayer/generated';
 import { createElement } from 'react';
-import { env } from '@/lib/env';
+import { getPublicSiteUrl } from '@/lib/public-env';
 
 export const runtime = 'nodejs';
 export const revalidate = 86_400;
@@ -21,7 +21,7 @@ export async function GET(_req: Request, context: { params: Params | Promise<Par
   const summary = clampText(post?.summary ?? 'Read the latest writing on klabo.world.', 180);
   const tags = (post?.tags ?? []).slice(0, 4);
 
-  const site = new URL(env.SITE_URL);
+  const site = new URL(getPublicSiteUrl());
   site.pathname = '';
 
   const logoMark = createElement(

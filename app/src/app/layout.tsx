@@ -3,10 +3,12 @@ import { JetBrains_Mono, Manrope } from 'next/font/google';
 import './globals.css';
 import { GlobalNavigation } from './components/global-navigation';
 import ApplicationInsightsConnection from './components/ApplicationInsights';
-import { env } from '@/lib/env';
+import { getPublicSiteUrl } from '@/lib/public-env';
+
+const siteUrl = getPublicSiteUrl();
 
 export const metadata: Metadata = {
-  metadataBase: new URL(env.SITE_URL),
+  metadataBase: new URL(siteUrl),
   title: {
     template: '%s • klabo.world',
     default: 'klabo.world • Bitcoin, Lightning, Nostr & Agentic Engineering',
@@ -15,14 +17,14 @@ export const metadata: Metadata = {
     'klabo.world covers Bitcoin, Lightning, Nostr, and agentic engineering with tutorials, project updates, and AI context libraries.',
 	  openGraph: {
 	    type: 'website',
-	    url: env.SITE_URL,
+	    url: siteUrl,
 	    siteName: 'klabo.world',
 	    title: 'klabo.world • Bitcoin, Lightning, Nostr & Agentic Engineering',
 	    description:
 	      'klabo.world covers Bitcoin, Lightning, Nostr, and agentic engineering with tutorials, project updates, and AI context libraries.',
 	    images: [
 	      {
-	        url: new URL('/og.png', env.SITE_URL),
+	        url: new URL('/og.png', siteUrl),
 	        width: 1200,
 	        height: 630,
 	        alt: 'klabo.world',
@@ -35,7 +37,7 @@ export const metadata: Metadata = {
 	    title: 'klabo.world • Bitcoin, Lightning, Nostr & Agentic Engineering',
 	    description:
 	      'klabo.world covers Bitcoin, Lightning, Nostr, and agentic engineering with tutorials, project updates, and AI context libraries.',
-	    images: [new URL('/og.png', env.SITE_URL)],
+	    images: [new URL('/og.png', siteUrl)],
 	  },
 };
 

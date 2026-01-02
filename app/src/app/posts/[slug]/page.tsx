@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import { formatPostDate, getPostBySlug, getPosts } from '@/lib/posts';
 import { MDXContent } from '@/components/mdx-content';
 import { ClientErrorBoundary } from '@/components/client-error-boundary';
-import { env } from '@/lib/env';
+import { getPublicNostrstackConfig, getPublicSiteUrl } from '@/lib/public-env';
 import { NostrstackActionBar, NostrstackComments, NostrstackOmnoster } from '@/components/nostrstack-widgets';
 
 type Params = { slug: string };
@@ -37,38 +37,39 @@ export async function generateMetadata({ params }: { params: Params | Promise<Pa
     return { title: 'Post not found' };
   }
 
+  const siteUrl = getPublicSiteUrl();
   const canonicalPath = `/posts/${post.slug}`;
   const publishedTime = post.publishDate ?? post.date;
 
-	  return {
-	    title: post.title,
-	    description: post.summary,
-	    alternates: { canonical: canonicalPath },
-	    openGraph: {
-	      type: 'article',
-	      url: canonicalPath,
-	      title: post.title,
-	      description: post.summary,
-	      publishedTime,
-	      tags: post.tags ?? [],
-	      images: [
-	        {
-	          url: new URL(`${canonicalPath}/og.png`, env.SITE_URL),
-	          width: 1200,
-	          height: 630,
-	          alt: post.title,
-	          type: 'image/png',
-	        },
-	      ],
-	    },
-	    twitter: {
-	      card: 'summary_large_image',
-	      title: post.title,
-	      description: post.summary,
-	      images: [new URL(`${canonicalPath}/og.png`, env.SITE_URL)],
-	    },
-	  };
-	}
+  return {
+    title: post.title,
+    description: post.summary,
+    alternates: { canonical: canonicalPath },
+    openGraph: {
+      type: 'article',
+      url: canonicalPath,
+      title: post.title,
+      description: post.summary,
+      publishedTime,
+      tags: post.tags ?? [],
+      images: [
+        {
+          url: new URL(`${canonicalPath}/og.png`, siteUrl),
+          width: 1200,
+          height: 630,
+          alt: post.title,
+          type: 'image/png',
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.summary,
+      images: [new URL(`${canonicalPath}/og.png`, siteUrl)],
+    },
+  };
+}
 
 export default async function PostPage({ params }: { params: Params | Promise<Params> }) {
   const resolvedParams = await Promise.resolve(params as Params);
@@ -81,17 +82,15 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
   const previous = posts[index - 1];
   const next = posts[index + 1];
   const readingTime = Math.max(1, Math.round((post.body.raw.split(/\s+/).length ?? 0) / 200));
-  const siteUrl = env.SITE_URL.replace(/\/$/, '');
+  const siteUrl = getPublicSiteUrl();
   const canonicalUrl = `${siteUrl}/posts/${post.slug}`;
-  const lightningAddress =
-    post.lightningAddress ?? env.NOSTRSTACK_LN_ADDRESS ?? env.NEXT_PUBLIC_NOSTRSTACK_LN_ADDRESS ?? null;
-  const nostrPubkey = post.nostrPubkey ?? env.NOSTRSTACK_NOSTR_PUBKEY ?? env.NEXT_PUBLIC_NOSTRSTACK_PUBKEY ?? null;
-  const nostrRelays =
-    post.nostrRelays ??
-    parseRelayList(env.NOSTRSTACK_RELAYS ?? env.NEXT_PUBLIC_NOSTRSTACK_RELAYS ?? '');
+  const nostrstackConfig = getPublicNostrstackConfig();
+  const lightningAddress = post.lightningAddress ?? nostrstackConfig.lightningAddress ?? null;
+  const nostrPubkey = post.nostrPubkey ?? nostrstackConfig.nostrPubkey ?? null;
+  const nostrRelays = post.nostrRelays ?? parseRelayList(nostrstackConfig.relays ?? '');
   const widgetsEnabled = post.nostrstackEnabled !== false;
-  const nostrstackBaseUrl = env.NOSTRSTACK_BASE_URL ?? env.NEXT_PUBLIC_NOSTRSTACK_BASE_URL ?? '';
-  const nostrstackHost = env.NOSTRSTACK_HOST ?? env.NEXT_PUBLIC_NOSTRSTACK_HOST ?? parseLightningAddress(lightningAddress)?.domain;
+  const nostrstackBaseUrl = nostrstackConfig.baseUrl ?? '';
+  const nostrstackHost = nostrstackConfig.host ?? parseLightningAddress(lightningAddress)?.domain;
   const threadId = `post-${post.slug}`;
   const publishedDate = post.publishDate ?? post.date;
   const jsonLd = {
