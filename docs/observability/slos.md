@@ -20,6 +20,8 @@ We have identified the following key user journeys:
 | | Availability of the search API | 99.9% |
 | **Admin content management** | 95th percentile of admin form submission response time | < 1000ms |
 | | Availability of the admin interface | 99.5% |
+| **Health checks** | Availability of `/api/health` | 99.9% |
+| **Upload pipeline** | Successful upload request rate (5xx) | 99.0% |
 
 ## Rate limiter telemetry
 

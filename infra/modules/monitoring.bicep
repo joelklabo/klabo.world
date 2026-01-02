@@ -150,5 +150,79 @@ resource errorRateAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
   }
 }
 
+resource healthFailureAlert 'Microsoft.Insights/scheduledQueryRules@2023-12-01' = {
+  name: '${baseName}-health-failure-alert'
+  location: resourceGroup().location
+  properties: {
+    description: 'Alert when /api/health reports failures.'
+    enabled: true
+    severity: 1
+    evaluationFrequency: 'PT5M'
+    windowSize: 'PT5M'
+    scopes: [
+      logAnalytics.id
+    ]
+    criteria: {
+      allOf: [
+        {
+          query: '''
+            AppRequests
+            | where Url has "/api/health"
+            | where Success == false
+            | summarize Count = count()
+          '''
+          timeAggregation: 'Count'
+          operator: 'GreaterThan'
+          threshold: 0
+          failingPeriods: {
+            minFailingPeriodsToAlert: 2
+            numberOfEvaluationPeriods: 2
+          }
+        }
+      ]
+    }
+    actions: {
+      actionGroups: [
+        actionGroup.id
+      ]
+    }
+  }
+}
+
+resource uploadFailureAlert 'Microsoft.Insights/scheduledQueryRules@2023-12-01' = {
+  name: '${baseName}-upload-failure-alert'
+  location: resourceGroup().location
+  properties: {
+    description: 'Alert on repeated upload failures (5xx) from /admin/upload-image.'
+    enabled: true
+    severity: 2
+    evaluationFrequency: 'PT5M'
+    windowSize: 'PT10M'
+    scopes: [
+      logAnalytics.id
+    ]
+    criteria: {
+      allOf: [
+        {
+          query: '''
+            AppRequests
+            | where Url has "/admin/upload-image"
+            | where toint(ResultCode) >= 500
+            | summarize Count = count()
+          '''
+          timeAggregation: 'Count'
+          operator: 'GreaterThan'
+          threshold: 3
+        }
+      ]
+    }
+    actions: {
+      actionGroups: [
+        actionGroup.id
+      ]
+    }
+  }
+}
+
 output appInsightsConnectionString string = appInsights.properties.ConnectionString
 output logAnalyticsId string = logAnalytics.id

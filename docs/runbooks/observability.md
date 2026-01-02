@@ -65,6 +65,14 @@ This guide explains how klabo.world emits telemetry via OpenTelemetry + Azure Mo
 
 Keep this runbook updated as we add logging/metrics/dashboards (e.g., when we wire in structured logging or Application Insights dashboards).
 
+## Alerting: Health + Uploads
+- **Health check failures**: Log alert triggers when `/api/health` returns failures in consecutive windows.
+  - Triage: check recent deploys, then hit `/api/health` and inspect component statuses (db/redis/blob).
+  - If DB/Redis/Blob is failing, confirm credentials and service availability before restarting the app.
+- **Upload error spikes**: Log alert triggers on repeated 5xx responses from `/admin/upload-image`.
+  - Triage: check storage credentials/quarantine containers and scan pipeline logs.
+  - Confirm rate limit and upload guards aren’t misconfigured (e.g., missing durable storage vars).
+
 ## Log Analytics Queries
 - Set `LOG_ANALYTICS_WORKSPACE_ID` and `LOG_ANALYTICS_SHARED_KEY` (primary key) to unlock the helper at `app/src/lib/logAnalytics.ts`.
 - `runLogAnalyticsQuery(query, { timespan })` signs the request with the shared key and POSTs to `https://api.loganalytics.io/v1/workspaces/<workspace>/query`. Use it from server actions when you need KQL results (users/day, error lists, etc.).
