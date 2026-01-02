@@ -61,9 +61,11 @@ The contexts feature was removed on 2025-12-02. Existing pages/routes are gone; 
 6. Delete buttons remove the MDX file (local or GitHub depending on environment). As with other admin actions, Playwright coverage belongs in `app/tests/e2e/admin-content.e2e.ts` until dedicated specs are added.
 
 ## Uploads Cheat Sheet
-- Local dev: files land under `public/uploads`. The helper auto-builds URLs like `/uploads/<uuid>.png` (immediately available because `public/` is statically served).
-- Azure production: set `AZURE_STORAGE_ACCOUNT`, `AZURE_STORAGE_KEY`, `AZURE_STORAGE_CONTAINER` (defaults to `uploads`). URLs will be full blob URLs.
-- Limits: 10 MB max size; MIME types restricted to JPEG/PNG/GIF/WebP.
+- Local dev: uploads land under `public/uploads/quarantine`. The UI shows “Upload queued for scanning” while the asset is in quarantine.
+- Azure production: set `AZURE_STORAGE_ACCOUNT`, `AZURE_STORAGE_KEY`, and `AZURE_STORAGE_CONTAINER` (defaults to `uploads`). New files first write to the quarantine container (`UPLOADS_QUARANTINE_CONTAINER`, default `quarantine-uploads`) and are promoted after scanning.
+- Public delivery: serve cleared assets via SAS URLs or CDN; keep containers private.
+- Validation: 10 MB max size; MIME/signature checks enforce JPEG/PNG/GIF/WebP. Mismatches surface as “Invalid file: …” errors in the UI.
+- Rate limits: 10 uploads per minute per admin session; 429 responses include `Retry-After` and show an amber warning in the UI.
 - Rate limit bypass (ops only): set `RATE_LIMIT_BYPASS_TOKEN` and send `x-rate-limit-bypass` with an authenticated admin session; rotate the token per `docs/runbooks/secrets.md`.
 - For audit-friendly IPs, set `RATE_LIMIT_TRUSTED_PROXY_HOPS` to match your trusted proxy chain.
 
@@ -83,7 +85,9 @@ The contexts feature was removed on 2025-12-02. Existing pages/routes are gone; 
 
 ## Troubleshooting
 - **Login fails**: ensure `ADMIN_EMAIL`/`ADMIN_PASSWORD` match a seeded admin. Delete the `Admin` table row or update via Prisma if needed.
-- **Uploads fail**: check `UPLOADS_DIR` permissions; inspect `app/src/lib/uploads.ts` logs. For Azure, verify storage env vars and container name.
+- **Uploads fail**: check `UPLOADS_DIR` permissions; inspect `app/src/lib/uploads.ts` logs. For Azure, verify storage env vars and container name. 400 responses usually indicate invalid file type/signature.
+- **Uploads stuck in quarantine**: confirm the malware scanning provider is running and can access the quarantine container; verify scan metadata and promotion jobs.
+- **Rate limit (429)**: wait for the `Retry-After` window to elapse or use the ops bypass token; avoid rapid batch uploads during testing.
 - **GitHub errors**: confirm Content API token scopes (repo contents) and that the configured owner/repo exist.
 - **Playwright**: delete `app/test-results` and re-run with `DEBUG=pw:api` for verbose logs.
 

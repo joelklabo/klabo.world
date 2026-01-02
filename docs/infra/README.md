@@ -49,4 +49,11 @@ The deployment outputs include the resource group ID, VNet ID, storage account I
 > **Notes**
 > - Default app runtime uses SQLite at `file:/home/site/wwwroot/data/app.db`; Postgres is provisioned but not yet the primary. Populate `DATABASE_URL` with the Postgres connection string when you’re ready to migrate.
 > - Blob uploads default to Azure Storage; set `AZURE_STORAGE_ACCOUNT`, `AZURE_STORAGE_KEY`, and `AZURE_STORAGE_CONTAINER` in App Service settings. If absent, uploads write to `public/uploads` on the container FS (non-durable).
+> - Storage accounts should have public access disabled. Keep containers private and serve public assets via SAS URLs or a CDN endpoint tied to the uploads container.
+> - New uploads land in the quarantine container (`UPLOADS_QUARANTINE_CONTAINER`, default `quarantine-uploads`) until scanning clears them for promotion.
 > - The GitHub Actions deploy workflow builds/pushes the container and runs `scripts/deploy-smoke.sh`; keep parameter files in `infra/envs/` in sync with App Service settings.
+
+## Storage Access Strategy
+- **Private by default:** Disable public blob access at the account level and keep containers private.
+- **Public delivery:** Use SAS tokens or Azure CDN for assets that must be public. Configure `UPLOADS_CONTAINER_URL` to point at the CDN/SAS URL used by the app.
+- **Quarantine flow:** All new uploads write to the quarantine container and are promoted only after malware scanning completes.
