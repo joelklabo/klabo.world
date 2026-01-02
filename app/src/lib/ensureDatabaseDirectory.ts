@@ -1,12 +1,22 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { env } from './env';
 
-export function ensureDatabaseDirectory(url: string = env.DATABASE_URL) {
-  if (!url.startsWith('file:')) {
+const DEFAULT_SQLITE_URL = 'file:../data/app.db';
+let warnedDefaultUrl = false;
+
+export function ensureDatabaseDirectory(url?: string) {
+  const databaseUrl = url ?? process.env.DATABASE_URL ?? DEFAULT_SQLITE_URL;
+  if (!process.env.DATABASE_URL) {
+    process.env.DATABASE_URL = databaseUrl;
+    if (!warnedDefaultUrl) {
+      warnedDefaultUrl = true;
+      console.warn('DATABASE_URL not set; falling back to default SQLite path.');
+    }
+  }
+  if (!databaseUrl.startsWith('file:')) {
     return;
   }
-  const rawPath = url.replace(/^file:/, '');
+  const rawPath = databaseUrl.replace(/^file:/, '');
   const resolvedPath = rawPath.startsWith('/') ? rawPath : path.join(process.cwd(), rawPath);
   const dir = path.dirname(resolvedPath);
   try {
