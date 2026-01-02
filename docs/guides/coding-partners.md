@@ -14,3 +14,7 @@ This checklist summarizes the final verification work (Phase 5) before switching
 - Freeze the legacy Swift App Service after cutover.
 
 Keep this file in sync with the verification docs when new approvals arrive.
+
+## Tooling Notes (Oracle Reviews)
+- If the oracle script fails due to Claude model errors, rerun with `skip_claude=1` to force Gemini-only feedback.
+- Example: `skip_claude=1 ~/.codex/skills/oracle/scripts/oracle.sh -p "<summary>"`
