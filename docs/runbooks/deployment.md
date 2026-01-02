@@ -25,6 +25,7 @@ Follow the same steps locally or in CI:
      export AZURE_SLOT_NAME=staging
      export DATABASE_URL=file:/home/site/wwwroot/data/app.db   # or postgres URL
      export SMOKE_BASE_URL=https://klabo.world
+     export NEXTAUTH_SECRET=... # required for BuildKit secret during docker build
      ```
 2. **Build & push** – run the script:
    ```bash
@@ -33,6 +34,7 @@ Follow the same steps locally or in CI:
    It will:
    - `pnpm --filter app build`
    - `docker build -t ${IMAGE} .` + `docker push` (BuildKit secret required)
+     - Deploy script passes `NEXTAUTH_SECRET` via BuildKit secret when it is exported.
      - Example manual build: `NEXTAUTH_SECRET=... docker buildx build --secret id=NEXTAUTH_SECRET,env=NEXTAUTH_SECRET -t ${IMAGE} .`
      - `.env.local` / `.env.production.local` are ignored by Docker build context; pass secrets via `--secret`.
    - `pnpm --filter app exec prisma migrate deploy` when `DATABASE_URL` is set

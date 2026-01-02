@@ -31,14 +31,19 @@ const imageTag = required('IMAGE_TAG', process.env.GITHUB_SHA);
 const slotName = process.env.AZURE_SLOT_NAME ?? 'staging';
 const webAppName = required('AZURE_WEBAPP_NAME');
 const resourceGroup = required('AZURE_RESOURCE_GROUP');
+const nextauthSecret = required('NEXTAUTH_SECRET');
 const image = `${containerRegistry}/${imageName}:${imageTag}`;
 const latestTag = process.env.IMAGE_LATEST_TAG ? `${containerRegistry}/${imageName}:${process.env.IMAGE_LATEST_TAG}` : undefined;
 
 // Build the application (ensures Next.js standalone output is fresh)
 run('pnpm', ['--filter', 'app', 'build'], { cwd: workspaceRoot, env: { ...process.env, NODE_ENV: 'production' } });
 
-// Build and push the container image
-run('docker', ['build', '-t', image, '.'], { cwd: workspaceRoot });
+// Build and push the container image (BuildKit secret required by Dockerfile)
+run(
+  'docker',
+  ['build', '--secret', 'id=NEXTAUTH_SECRET,env=NEXTAUTH_SECRET', '-t', image, '.'],
+  { cwd: workspaceRoot, env: { ...process.env, NEXTAUTH_SECRET: nextauthSecret, DOCKER_BUILDKIT: '1' } },
+);
 if (latestTag) {
   run('docker', ['tag', image, latestTag]);
 }
