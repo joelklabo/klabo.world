@@ -25,9 +25,19 @@ COPY . .
 COPY --from=deps /app/node_modules ./node_modules
 RUN pnpm install --frozen-lockfile --unsafe-perm
 RUN mkdir -p app/data
-RUN pnpm --filter app exec prisma generate
-RUN NODE_ENV=production pnpm --filter app exec contentlayer build
-RUN NODE_ENV=production pnpm --filter app build
+ARG DATABASE_URL=file:../data/app.db
+ARG ALLOW_SQLITE_IN_PROD=true
+ENV DATABASE_URL=$DATABASE_URL
+ENV ALLOW_SQLITE_IN_PROD=$ALLOW_SQLITE_IN_PROD
+RUN --mount=type=secret,id=NEXTAUTH_SECRET \
+  if [ ! -s /run/secrets/NEXTAUTH_SECRET ]; then \
+    echo "NEXTAUTH_SECRET build secret is required. Provide --secret id=NEXTAUTH_SECRET." >&2; \
+    exit 1; \
+  fi; \
+  export NEXTAUTH_SECRET="$(cat /run/secrets/NEXTAUTH_SECRET)" \
+  && pnpm --filter app exec prisma generate \
+  && NODE_ENV=production pnpm --filter app exec contentlayer build \
+  && NODE_ENV=production pnpm --filter app build
 
 FROM base AS runner
 ENV NODE_ENV=production

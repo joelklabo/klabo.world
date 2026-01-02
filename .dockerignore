@@ -7,3 +7,7 @@ node_modules/
 app/.next/
 app/node_modules/
 packages/**/node_modules/
+.env.production.local
+app/.env.production.local
+.env.local
+app/.env.local
