@@ -28,6 +28,7 @@ Follow the same steps locally or in CI:
      export NEXTAUTH_SECRET=... # required for BuildKit secret during docker build
    ```
    - If running on SQLite in App Service, set `WEBSITES_ENABLE_APP_SERVICE_STORAGE=true` and keep the App Service plan capacity at `1` (SQLite is not safe for multi-instance writes). Move to Postgres before scaling out.
+   - Run `./scripts/verify-appservice-settings.sh` to confirm the App Service guardrails in `infra/modules/appService.bicep` (CI runs this check on every push).
    - Local builds (`pnpm --filter app build` / `pnpm turbo build --filter=app`) treat `NODE_ENV=production`; make sure `NEXTAUTH_SECRET` is not the dev default.
 2. **Build & push** – run the script:
    ```bash

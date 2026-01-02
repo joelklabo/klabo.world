@@ -25,6 +25,8 @@ jobs:
       UPLOADS_DIR: ./tmp/uploads
     steps:
       - uses: actions/checkout@v4
+      - name: Verify App Service SQLite guard
+        run: ./scripts/verify-appservice-settings.sh
       - uses: pnpm/action-setup@v3
         with:
           version: 10.22.0
