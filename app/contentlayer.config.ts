@@ -3,6 +3,11 @@ import {
   makeSource,
   type ComputedFields,
 } from 'contentlayer/source-files';
+import path from 'node:path';
+
+const cwd = process.cwd();
+const repoRoot = path.basename(cwd) === 'app' ? path.resolve(cwd, '..') : cwd;
+const contentRoot = path.join(repoRoot, 'content');
 
 const computedFields: ComputedFields = {
   slug: {
@@ -83,7 +88,7 @@ export const DashboardDoc = defineDocumentType(() => ({
 }));
 
 export default makeSource({
-  contentDirPath: '../content',
+  contentDirPath: contentRoot,
   contentDirExclude: ['README.md'],
   documentTypes: [Post, AppDoc, DashboardDoc],
   disableImportAliasWarning: true,

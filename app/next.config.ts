@@ -1,8 +1,9 @@
 import path from "node:path";
-import { withContentlayer } from "next-contentlayer";
+import { createContentlayerPlugin } from "next-contentlayer";
 import type { NextConfig } from "next";
 
 const isDev = process.env.NODE_ENV === "development";
+const withContentlayer = createContentlayerPlugin({ configPath: "./contentlayer.config.ts" });
 
 const contentSecurityPolicy = [
   "default-src 'self'",
