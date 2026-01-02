@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env tsx
 
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');

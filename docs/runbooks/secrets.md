@@ -30,9 +30,9 @@ Production boot now enforces safety checks in `loadEnv`:
 
 Run the validator locally to catch misconfigurations early:
 ```bash
-NODE_ENV=production node --experimental-strip-types scripts/validate-env.ts
+NODE_ENV=production pnpm validate:env
 ```
-Requires Node 24.11.1+ (the repo’s pinned version) for `--experimental-strip-types`.
+Uses the repo-pinned toolchain (Node 24.11.1+ and `tsx`) without experimental flags.
 
 Use these guardrail flags when needed:
 - `ALLOW_SQLITE_IN_PROD` (default false): allows SQLite in production for exceptional cases.
