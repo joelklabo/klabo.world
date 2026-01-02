@@ -85,7 +85,7 @@ Edit `.env` with your preferred editor. The defaults work for local development:
 
 ```env
 DATABASE_URL=file:../data/app.db       # SQLite (no Docker needed)
-REDIS_URL=                             # Leave blank for in-memory rate limiting
+REDIS_URL=                             # Leave blank for in-memory rate limiting (expect Redis ECONNREFUSED logs)
 UPLOADS_DIR=public/uploads
 NEXTAUTH_SECRET=dev-secret             # Change in production
 ADMIN_EMAIL=admin@example.com
@@ -93,6 +93,8 @@ ADMIN_PASSWORD=change-me               # Plain text OK for dev
 ```
 
 Note: production builds (for example `pnpm turbo build --filter=app`) validate `NEXTAUTH_SECRET` and will fail if it is left as `dev-secret`. Use a temporary override (e.g., `NEXTAUTH_SECRET=local-build-secret`) for local builds, then revert.
+
+If `REDIS_URL` is blank, the rate limiter falls back to in-memory mode and logs Redis ECONNREFUSED warnings. Start Redis (`docker compose -f docker-compose.dev.yml up -d redis`) to silence the warnings.
 
 **Optional Azure Monitoring** (leave blank for local dev):
 ```env
@@ -372,6 +374,9 @@ Pushes to `main` trigger the “Build, Test, and Deploy to Azure” workflow: li
 
 **Issue**: Contentlayer build errors  
 **Fix**: Run `cd app && pnpm contentlayer build` manually to see full errors
+
+**Issue**: Redis ECONNREFUSED warnings in dev logs  
+**Fix**: Start Redis via Docker or keep `REDIS_URL` blank and ignore the expected fallback logs
 
 **Issue**: Playwright tests fail locally  
 **Fix**: Ensure dev server is running on port 3000 before tests

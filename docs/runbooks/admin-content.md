@@ -88,6 +88,7 @@ The contexts feature was removed on 2025-12-02. Existing pages/routes are gone; 
 - **Uploads fail**: check `UPLOADS_DIR` permissions; inspect `app/src/lib/uploads.ts` logs. For Azure, verify storage env vars and container name. 400 responses usually indicate invalid file type/signature.
 - **Uploads stuck in quarantine**: confirm the malware scanning provider is running and can access the quarantine container; verify scan metadata and promotion jobs.
 - **Rate limit (429)**: wait for the `Retry-After` window to elapse or use the ops bypass token; avoid rapid batch uploads during testing.
+- **Redis ECONNREFUSED warnings**: expected when `REDIS_URL` is unset; start the Redis container or set `REDIS_URL` to silence fallback logs.
 - **GitHub errors**: confirm Content API token scopes (repo contents) and that the configured owner/repo exist.
 - **Playwright**: delete `app/test-results` and re-run with `DEBUG=pw:api` for verbose logs.
 
