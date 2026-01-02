@@ -15,6 +15,12 @@ Code references:
 - `app/src/lib/auth.ts`
 - `app/src/app/api/auth/[...nextauth]/route.ts`
 
+## Session policy
+
+- Sessions use JWTs with a 12-hour max age.
+- Tokens refresh every hour when active (session update age = 1 hour).
+- NextAuth’s built-in CSRF protection remains enabled for credential sign-ins.
+
 ## Required environment variables
 
 - `ADMIN_EMAIL`

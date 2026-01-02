@@ -7,6 +7,7 @@ This repository has migrated from the legacy Swift/Vapor stack to a Next.js + Pr
 - Admin auth uses NextAuth Credentials provider.
 - The admin user record is stored in the database.
 - `ADMIN_PASSWORD` can be provided as plaintext or bcrypt hash; plaintext is hashed before storage.
+- Sessions are JWT-based with a 12-hour max age and 1-hour refresh window; admin mutations require server-side session checks and NextAuth’s CSRF protection remains enabled.
 
 See `docs/azure/authentication-upgrade.md` for details.
 

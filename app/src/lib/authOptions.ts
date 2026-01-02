@@ -3,9 +3,17 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import { ensureAdminSeeded, verifyAdminCredentials } from './auth';
 import { env } from './env';
 
+const ONE_HOUR = 60 * 60;
+const TWELVE_HOURS = 12 * ONE_HOUR;
+
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt',
+    maxAge: TWELVE_HOURS,
+    updateAge: ONE_HOUR,
+  },
+  jwt: {
+    maxAge: TWELVE_HOURS,
   },
   secret: env.NEXTAUTH_SECRET,
   pages: {
