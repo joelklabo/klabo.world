@@ -27,6 +27,7 @@ Follow the same steps locally or in CI:
      export SMOKE_BASE_URL=https://klabo.world
      export NEXTAUTH_SECRET=... # required for BuildKit secret during docker build
      ```
+   - Local builds (`pnpm --filter app build` / `pnpm turbo build --filter=app`) treat `NODE_ENV=production`; make sure `NEXTAUTH_SECRET` is not the dev default.
 2. **Build & push** – run the script:
    ```bash
    pnpm --filter @klaboworld/scripts run deploy

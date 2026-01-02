@@ -92,6 +92,8 @@ ADMIN_EMAIL=admin@example.com
 ADMIN_PASSWORD=change-me               # Plain text OK for dev
 ```
 
+Note: production builds (for example `pnpm turbo build --filter=app`) validate `NEXTAUTH_SECRET` and will fail if it is left as `dev-secret`. Use a temporary override (e.g., `NEXTAUTH_SECRET=local-build-secret`) for local builds, then revert.
+
 **Optional Azure Monitoring** (leave blank for local dev):
 ```env
 APPLICATIONINSIGHTS_CONNECTION_STRING=
@@ -364,6 +366,9 @@ Pushes to `main` trigger the “Build, Test, and Deploy to Azure” workflow: li
 
 **Issue**: Port 3000 already in use  
 **Fix**: Kill existing process with `lsof -ti:3000 | xargs kill -9`
+
+**Issue**: `pnpm turbo build --filter=app` fails due to `NEXTAUTH_SECRET=dev-secret`  
+**Fix**: Temporarily set a non-dev secret for the build (`NEXTAUTH_SECRET=local-build-secret`) and restore afterward
 
 **Issue**: Contentlayer build errors  
 **Fix**: Run `cd app && pnpm contentlayer build` manually to see full errors
