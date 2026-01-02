@@ -105,12 +105,24 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): Env {
   if (nodeEnv === 'production') {
     const databaseUrl = data.DATABASE_URL.trim();
     const isCiEnv = readBooleanEnv(process.env.CI);
+    const azureSiteName = typeof source.WEBSITE_SITE_NAME === 'string' ? source.WEBSITE_SITE_NAME.trim() : '';
+    const azureInstanceId = typeof source.WEBSITE_INSTANCE_ID === 'string' ? source.WEBSITE_INSTANCE_ID.trim() : '';
+    const isAzureAppService = Boolean(azureSiteName || azureInstanceId);
+    const rawAllowSqlite = typeof source.ALLOW_SQLITE_IN_PROD === 'string' ? source.ALLOW_SQLITE_IN_PROD.trim().toLowerCase() : '';
+    const hasExplicitSqliteOverride = rawAllowSqlite !== '';
+    const explicitlyDisabledSqlite = hasExplicitSqliteOverride && FALSY_VALUES.has(rawAllowSqlite);
     const allowSqliteInProd =
       data.ALLOW_SQLITE_IN_PROD ||
       readBooleanEnv(process.env.ALLOW_SQLITE_IN_PROD) ||
       isCiEnv;
     if (databaseUrl.startsWith('file:') && !allowSqliteInProd) {
-      throw new Error('Unsafe production configuration: DATABASE_URL uses SQLite. Set ALLOW_SQLITE_IN_PROD=true to override.');
+      if (isAzureAppService && !explicitlyDisabledSqlite) {
+        console.warn(
+          'ALLOW_SQLITE_IN_PROD not set; allowing SQLite in production on Azure App Service. Set ALLOW_SQLITE_IN_PROD=true to suppress this warning.',
+        );
+      } else {
+        throw new Error('Unsafe production configuration: DATABASE_URL uses SQLite. Set ALLOW_SQLITE_IN_PROD=true to override.');
+      }
     }
     if (data.NEXTAUTH_SECRET.trim() === 'dev-secret' && !isCiEnv) {
       throw new Error('Unsafe production configuration: NEXTAUTH_SECRET is set to the dev default.');

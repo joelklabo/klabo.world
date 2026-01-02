@@ -1120,6 +1120,9 @@ export function NostrstackComments({ threadId, relays, canonicalUrl }: CommentsP
       ) : null)}
       <form className="space-y-3" onSubmit={handleSubmit}>
         <textarea
+          id="nostr-comment"
+          name="nostr-comment"
+          aria-label="Add a comment via Nostr"
           value={content}
           onChange={(e) => setContent(e.target.value)}
           rows={3}

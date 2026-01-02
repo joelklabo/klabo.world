@@ -43,6 +43,29 @@ describe('loadEnv production guardrails', () => {
     ).not.toThrow();
   });
 
+  it('allows SQLite in production on Azure App Service without override', () => {
+    disableSqliteOverrides();
+    expect(() =>
+      loadEnv({
+        ...baseProdEnv,
+        DATABASE_URL: 'file:../data/app.db',
+        WEBSITE_SITE_NAME: 'klabo-world-app',
+      }),
+    ).not.toThrow();
+  });
+
+  it('still throws on Azure when SQLite is explicitly disabled', () => {
+    disableSqliteOverrides();
+    expect(() =>
+      loadEnv({
+        ...baseProdEnv,
+        DATABASE_URL: 'file:../data/app.db',
+        WEBSITE_SITE_NAME: 'klabo-world-app',
+        ALLOW_SQLITE_IN_PROD: 'false',
+      }),
+    ).toThrow(/DATABASE_URL uses SQLite/i);
+  });
+
   it('throws when NEXTAUTH_SECRET is the dev default', () => {
     disableSqliteOverrides();
     expect(() =>
