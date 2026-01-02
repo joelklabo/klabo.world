@@ -1,12 +1,15 @@
 import { createRateLimiter } from '@klaboworld/core/server/rateLimiter';
 import { RateLimiterRes } from 'rate-limiter-flexible';
 import { env } from './env';
+import { incrementCounter } from './telemetry';
 
 const RATE_LIMIT_SCOPE = 'admin-upload';
 const RATE_LIMIT_POINTS = 10;
 const RATE_LIMIT_DURATION_SECONDS = 60;
 const RATE_LIMIT_BYPASS_HEADER = 'x-rate-limit-bypass';
 const DEFAULT_RETRY_AFTER_SECONDS = 60;
+const RATE_LIMIT_DECISION_METRIC = 'rate_limit_decision_total';
+const RATE_LIMIT_FALLBACK_METRIC = 'rate_limit_fallback_total';
 
 const redisFailureMode =
   process.env.RATE_LIMIT_REDIS_FAILURE_MODE?.toLowerCase() === 'fail-closed' ? 'fail-closed' : 'memory';
@@ -16,6 +19,16 @@ export const rateLimiter = createRateLimiter({
   points: RATE_LIMIT_POINTS,
   durationSeconds: RATE_LIMIT_DURATION_SECONDS,
   redisFailureMode,
+  onRedisFallback: (context, error) => {
+    incrementCounter(RATE_LIMIT_FALLBACK_METRIC, 1, {
+      scope: RATE_LIMIT_SCOPE,
+      mode: redisFailureMode,
+      context,
+    });
+    if (error) {
+      console.warn('[rateLimiter] redis fallback signal', { context });
+    }
+  },
 });
 
 export type RateLimitResult = { allowed: true } | { allowed: false; retryAfterSeconds: number };
@@ -120,19 +133,23 @@ export async function consumeRateLimit({
   scope?: string;
 }): Promise<RateLimitResult> {
   if (isRateLimitBypassed({ request, sessionKey, scope })) {
+    incrementCounter(RATE_LIMIT_DECISION_METRIC, 1, { status: 'bypassed', scope });
     return { allowed: true };
   }
 
   const key = buildRateLimitKey({ request, sessionKey, scope });
   try {
     await rateLimiter.consume(key, points);
+    incrementCounter(RATE_LIMIT_DECISION_METRIC, 1, { status: 'allowed', scope });
     return { allowed: true };
   } catch (error) {
     if (isRateLimiterRes(error)) {
       const retryAfterSeconds = Math.max(1, Math.ceil(error.msBeforeNext / 1000));
+      incrementCounter(RATE_LIMIT_DECISION_METRIC, 1, { status: 'blocked', scope });
       return { allowed: false, retryAfterSeconds };
     }
     console.error('[rateLimiter] consume failed', error);
+    incrementCounter(RATE_LIMIT_DECISION_METRIC, 1, { status: 'error', scope });
     return { allowed: false, retryAfterSeconds: DEFAULT_RETRY_AFTER_SECONDS };
   }
 }

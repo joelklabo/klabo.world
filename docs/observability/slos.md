@@ -21,6 +21,13 @@ We have identified the following key user journeys:
 | **Admin content management** | 95th percentile of admin form submission response time | < 1000ms |
 | | Availability of the admin interface | 99.5% |
 
+## Rate limiter telemetry
+
+| Metric | Description | Suggested alert |
+| --- | --- | --- |
+| `rate_limit_decision_total{status,scope}` | Counter for rate limit outcomes (`allowed`, `blocked`, `bypassed`, `error`). | Alert if `status="error"` > 0 in 5m or `status="blocked"` spikes above expected baselines per scope. |
+| `rate_limit_fallback_total{scope,mode,context}` | Counter for Redis fallback activation (memory fallback engaged). | Alert if > 0 in 5m; investigate Redis connectivity or config flaps. |
+
 ## Measurement
 
 - **Page Load Time:** Measured using Application Insights frontend performance monitoring.

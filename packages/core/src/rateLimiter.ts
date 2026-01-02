@@ -12,6 +12,8 @@ export interface RateLimiterConfig {
   points?: number;
   durationSeconds?: number;
   redisFailureMode?: RedisFailureMode;
+  onRedisFallback?: (context: string, error?: unknown) => void;
+  onRedisReady?: () => void;
 }
 
 export function createRateLimiter(config: RateLimiterConfig): RateLimiter {
@@ -29,6 +31,7 @@ export function createRateLimiter(config: RateLimiterConfig): RateLimiter {
       redisReady = false;
       if (failureMode === 'memory' && !fallbackLogged) {
         console.warn(`[rateLimiter] Redis unavailable (${context}); using memory fallback.`, error);
+        config.onRedisFallback?.(context, error);
         fallbackLogged = true;
       }
     };
@@ -36,6 +39,7 @@ export function createRateLimiter(config: RateLimiterConfig): RateLimiter {
     redis.on('ready', () => {
       redisReady = true;
       fallbackLogged = false;
+      config.onRedisReady?.();
     });
     redis.on('end', () => markUnavailable('end'));
     redis.on('error', (err) => {

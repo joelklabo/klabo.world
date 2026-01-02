@@ -60,7 +60,7 @@ This file is the single source of truth for every Markdown document that should 
 - (deprecated) Kept empty/reserved; all plans now live as beads issues.
 
 ### docs/observability
-- `slos.md` – Service Level Objectives for key user journeys.
+- `slos.md` – Service Level Objectives for key user journeys and rate-limit telemetry.
 
 ### docs/runbooks
 - `admin-content.md` – Publishing, uploads, admin smoke tests, and rate limit bypass guidance.
