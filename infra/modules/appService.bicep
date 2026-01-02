@@ -30,6 +30,7 @@ resource plan 'Microsoft.Web/serverfarms@2023-12-01' = {
   sku: {
     name: planSku
     tier: 'PremiumV3'
+    capacity: 1
   }
   properties: {
     reserved: true
@@ -55,6 +56,10 @@ resource webApp 'Microsoft.Web/sites@2023-12-01' = {
         {
           name: 'WEBSITES_PORT'
           value: '8080'
+        }
+        {
+          name: 'WEBSITES_ENABLE_APP_SERVICE_STORAGE'
+          value: 'true'
         }
         {
           name: 'SITE_URL'

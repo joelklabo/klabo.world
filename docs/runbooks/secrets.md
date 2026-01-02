@@ -18,6 +18,7 @@ This document describes how we manage secrets across local development, CI, and 
 | `REDIS_URL` | Rate limiter store. | Leave blank for in-memory; set to `redis://localhost:6379` when running the docker-compose service. |
 | `RATE_LIMIT_BYPASS_TOKEN` | Optional admin upload rate limit bypass token (header: `x-rate-limit-bypass`). | Store in Key Vault/App Service settings; rotate regularly. |
 | `UPLOADS_DIR` / `AZURE_STORAGE_*` | Control where uploads land. | Local `public/uploads`; prod should point to persistent storage or Blob container. |
+| `WEBSITES_ENABLE_APP_SERVICE_STORAGE` | App Service flag that mounts persistent `/home` storage (required for SQLite + uploads). | Set `true` for Linux custom containers; otherwise `/home` is ephemeral. |
 | `UPLOADS_QUARANTINE_DIR` / `UPLOADS_QUARANTINE_CONTAINER` | Quarantine destination for uploads awaiting scan. | Defaults to `<UPLOADS_DIR>/quarantine` and `quarantine-uploads`. |
 | `APPLICATIONINSIGHTS_CONNECTION_STRING` | Enables OTel → Azure Monitor. | Optional locally; required in prod for telemetry. |
 | `GITHUB_TOKEN`, `GITHUB_OWNER`, `GITHUB_REPO` | GitHub Content API credentials for post/app writes in production. | Omit locally to force filesystem writes. |
