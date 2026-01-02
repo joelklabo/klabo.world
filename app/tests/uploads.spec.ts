@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import sharp from 'sharp';
 import { describe, expect, it } from 'vitest';
 import { handleImageUpload } from '@/lib/uploads';
 import { env } from '@/lib/env';
@@ -13,11 +14,20 @@ function resolveQuarantineDir() {
   return path.join(resolveUploadsDir(), 'quarantine');
 }
 
-const PNG_FIXTURE = fileURLToPath(new URL('../public/images/logo.png', import.meta.url));
+const FIXTURES_DIR = fileURLToPath(new URL('fixtures/uploads/', import.meta.url));
+const PNG_FIXTURE = path.join(FIXTURES_DIR, 'valid.png');
+const JPEG_FIXTURE = path.join(FIXTURES_DIR, 'valid.jpg');
+const JPEG_EXIF_FIXTURE = path.join(FIXTURES_DIR, 'exif.jpg');
+const INVALID_FIXTURE = path.join(FIXTURES_DIR, 'invalid.bin');
 
 async function createPngFile(): Promise<File> {
   const data = await fs.readFile(PNG_FIXTURE);
   return new File([data], 'test.png', { type: 'image/png' });
+}
+
+async function createFileFromFixture(fixturePath: string, name: string, type: string): Promise<File> {
+  const data = await fs.readFile(fixturePath);
+  return new File([data], name, { type });
 }
 
 function createImageFile(type: string, payloadSize = 4): File {
@@ -45,6 +55,32 @@ describe('handleImageUpload (local mode)', () => {
     const metadata = JSON.parse(await fs.readFile(metadataPath, 'utf8'));
     expect(metadata.scanStatus).toBe('processing');
     await fs.unlink(metadataPath);
+  });
+
+  it('rejects files whose signatures do not match declared type', async () => {
+    const file = await createFileFromFixture(JPEG_FIXTURE, 'spoofed.png', 'image/png');
+    await expect(handleImageUpload(file)).rejects.toThrow(/does not match the declared file type/i);
+  });
+
+  it('strips EXIF metadata from JPEG uploads', async () => {
+    const sourceBuffer = await fs.readFile(JPEG_EXIF_FIXTURE);
+    const sourceMeta = await sharp(sourceBuffer).metadata();
+    expect(sourceMeta.exif).toBeTruthy();
+
+    const file = new File([sourceBuffer], 'exif.jpg', { type: 'image/jpeg' });
+    const result = await handleImageUpload(file);
+    const savedPath = path.join(resolveQuarantineDir(), result.filename);
+    const savedMeta = await sharp(savedPath).metadata();
+    expect(savedMeta.exif).toBeFalsy();
+
+    await fs.unlink(savedPath);
+    const metadataPath = `${savedPath}.metadata.json`;
+    await fs.unlink(metadataPath);
+  });
+
+  it('rejects files with invalid signatures', async () => {
+    const file = await createFileFromFixture(INVALID_FIXTURE, 'invalid.png', 'image/png');
+    await expect(handleImageUpload(file)).rejects.toThrow(/Unsupported file type/i);
   });
 
   it('rejects unsupported mime types', async () => {
