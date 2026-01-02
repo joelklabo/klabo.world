@@ -9,6 +9,9 @@ Follow the same steps locally or in CI:
 1. **Prereqs**
    - Azure CLI logged in with access to `klabo-world-rg` (or federated creds in CI).
    - Docker logged into `ghcr.io/${ORG}` (`docker login ghcr.io`).
+   - BuildKit/buildx enabled (Dockerfile requires a `NEXTAUTH_SECRET` build secret).
+     - Check buildx: `docker buildx ls`
+     - Legacy Docker? Run `docker buildx create --use` to enable BuildKit builds.
    - CI GHCR auth prefers `GHCR_PAT` + `GHCR_USERNAME` (must include `read:packages` + `write:packages`).
      - `GHCR_USERNAME` must match the account that owns the PAT.
      - If `GHCR_PAT` is missing/invalid, the workflow falls back to `GITHUB_TOKEN` and requires package write permissions.
@@ -29,7 +32,9 @@ Follow the same steps locally or in CI:
    ```
    It will:
    - `pnpm --filter app build`
-   - `docker build -t ${IMAGE} .` + `docker push`
+   - `docker build -t ${IMAGE} .` + `docker push` (BuildKit secret required)
+     - Example manual build: `NEXTAUTH_SECRET=... docker buildx build --secret id=NEXTAUTH_SECRET,env=NEXTAUTH_SECRET -t ${IMAGE} .`
+     - `.env.local` / `.env.production.local` are ignored by Docker build context; pass secrets via `--secret`.
    - `pnpm --filter app exec prisma migrate deploy` when `DATABASE_URL` is set
    - `az webapp config container set …` to point the staging slot at the new image
    - Restart the slot and swap into production

@@ -34,6 +34,18 @@ NODE_ENV=production pnpm validate:env
 ```
 Uses the repo-pinned toolchain (Node 24.11.1+ and `tsx`) without experimental flags.
 
+## Docker builds (BuildKit secrets)
+The Dockerfile requires `NEXTAUTH_SECRET` at build time via a BuildKit secret mount.
+
+```bash
+export NEXTAUTH_SECRET=...
+docker buildx build --secret id=NEXTAUTH_SECRET,env=NEXTAUTH_SECRET -t klaboworld:local .
+```
+
+Notes:
+- `.env.local` / `.env.production.local` are not sent to the Docker build context.
+- Use `docker buildx create --use` if your Docker install defaults to the legacy builder.
+
 Use these guardrail flags when needed:
 - `ALLOW_SQLITE_IN_PROD` (default false): allows SQLite in production for exceptional cases.
 - `UPLOADS_REQUIRE_DURABLE` (default false): enforce Azure storage credentials for durable uploads.
