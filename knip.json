@@ -27,7 +27,6 @@
         "@octokit/rest",
         "@trpc/client",
         "import-in-the-middle",
-        "rate-limiter-flexible",
         "react-hook-form",
         "remark-frontmatter",
         "remark-gfm",
