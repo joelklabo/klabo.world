@@ -3,7 +3,6 @@ import path from 'node:path';
 import slugify from 'slugify';
 import { resolveContentSubdir } from '@klaboworld/core/server/contentPaths';
 import { deleteRepoFile, fetchRepoFile, upsertRepoFile } from '@klaboworld/core/server/github';
-import { env } from './env';
 
 type DashboardType = 'chart' | 'logs' | 'embed' | 'link';
 
@@ -22,13 +21,18 @@ export type DashboardInput = {
 
 const DASHBOARDS_DIR = resolveContentSubdir('dashboards');
 const GITHUB_DASHBOARD_DIR = 'content/dashboards';
-const githubConfig = {
-  token: env.GITHUB_TOKEN ?? '',
-  owner: env.GITHUB_OWNER,
-  repo: env.GITHUB_REPO,
-};
 
-function shouldUseGitHub(): boolean {
+async function getGitHubConfig() {
+  const { env } = await import('./env');
+  return {
+    token: env.GITHUB_TOKEN ?? '',
+    owner: env.GITHUB_OWNER,
+    repo: env.GITHUB_REPO,
+  };
+}
+
+async function shouldUseGitHub(): Promise<boolean> {
+  const { env } = await import('./env');
   return process.env.NODE_ENV === 'production' && Boolean(env.GITHUB_TOKEN);
 }
 
@@ -106,6 +110,7 @@ async function writeLocalFile(slug: string, content: string) {
 }
 
 async function writeGitHubFile(slug: string, content: string) {
+  const githubConfig = await getGitHubConfig();
   const relativePath = `${GITHUB_DASHBOARD_DIR}/${slug}.mdx`;
   let sha: string | undefined;
   try {
@@ -128,17 +133,18 @@ export async function createDashboard(input: DashboardInput) {
   const baseSlug = normalizeSlug(input.title);
   const slug = await resolveSlug(baseSlug);
   const markdown = buildMarkdown(slug, input);
-  await (shouldUseGitHub() ? writeGitHubFile(slug, markdown) : writeLocalFile(slug, markdown));
+  await ((await shouldUseGitHub()) ? writeGitHubFile(slug, markdown) : writeLocalFile(slug, markdown));
   return { slug };
 }
 
 export async function updateDashboard(slug: string, input: DashboardInput) {
   const markdown = buildMarkdown(slug, input);
-  await (shouldUseGitHub() ? writeGitHubFile(slug, markdown) : writeLocalFile(slug, markdown));
+  await ((await shouldUseGitHub()) ? writeGitHubFile(slug, markdown) : writeLocalFile(slug, markdown));
 }
 
 export async function deleteDashboard(slug: string) {
-  if (shouldUseGitHub()) {
+  if (await shouldUseGitHub()) {
+    const githubConfig = await getGitHubConfig();
     const relativePath = `${GITHUB_DASHBOARD_DIR}/${slug}.mdx`;
     const existing = await fetchRepoFile(githubConfig, relativePath);
     await deleteRepoFile(githubConfig, relativePath, `chore: delete dashboard ${slug}`, existing.sha);

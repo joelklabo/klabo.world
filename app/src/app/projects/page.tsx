@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { env } from "@/lib/env";
+import { getPublicGitHubOwner } from "@/lib/public-env";
 import {
   getPinnedGitHubProjects,
   getRecentGitHubProjects,
@@ -18,14 +18,15 @@ export const metadata: Metadata = {
 export const revalidate = 3600;
 
 export default async function ProjectsPage() {
+  const githubOwner = getPublicGitHubOwner();
   const [pinned, initialRecent] = await Promise.all([
-    getPinnedGitHubProjects(env.GITHUB_OWNER, 6).catch(() => []),
-    getRecentGitHubProjects(env.GITHUB_OWNER, 18).catch(() => []),
+    getPinnedGitHubProjects(githubOwner, 6).catch(() => []),
+    getRecentGitHubProjects(githubOwner, 18).catch(() => []),
   ]);
 
   let recent = initialRecent;
   if (pinned.length === 0 && recent.length === 0) {
-    recent = await getFeaturedGitHubProjects(env.GITHUB_OWNER, 18);
+    recent = await getFeaturedGitHubProjects(githubOwner, 18);
   }
 
   const hasPinned = pinned.length > 0;
@@ -60,7 +61,7 @@ export default async function ProjectsPage() {
             </Button>
             <Button asChild variant="outline" size="sm">
               <a
-                href={`https://github.com/${env.GITHUB_OWNER}`}
+                href={`https://github.com/${githubOwner}`}
                 target="_blank"
                 rel="noreferrer"
                 data-testid="projects-github-profile"
@@ -111,11 +112,11 @@ export default async function ProjectsPage() {
               GitHub projects are temporarily unavailable. Visit{" "}
               <a
                 className="font-semibold text-primary hover:text-primary/80"
-                href={`https://github.com/${env.GITHUB_OWNER}`}
+                href={`https://github.com/${githubOwner}`}
                 target="_blank"
                 rel="noreferrer"
               >
-                github.com/{env.GITHUB_OWNER}
+                github.com/{githubOwner}
               </a>{" "}
               to browse repos directly.
             </div>

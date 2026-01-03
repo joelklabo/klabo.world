@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { env } from '@/lib/env';
+import { getPublicGitHubOwner } from '@/lib/public-env';
 import { Button } from '@/components/ui/button';
 import { Surface } from '@/components/ui/surface';
 
@@ -10,6 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default function AboutPage() {
+  const githubOwner = getPublicGitHubOwner();
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-background text-foreground">
       <div className="pointer-events-none absolute inset-0 opacity-80">
@@ -71,8 +72,8 @@ export default function AboutPage() {
               Follow along with the code and experiments that power these notes.
             </p>
             <Button asChild variant="link" size="sm" className="mt-3 px-0 text-xs font-semibold uppercase tracking-[0.3em]">
-              <a href={`https://github.com/${env.GITHUB_OWNER}`} target="_blank" rel="noreferrer">
-                github.com/{env.GITHUB_OWNER} →
+              <a href={`https://github.com/${githubOwner}`} target="_blank" rel="noreferrer">
+                github.com/{githubOwner} →
               </a>
             </Button>
           </Surface>

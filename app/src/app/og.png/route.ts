@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og';
 import { createElement } from 'react';
-import { env } from '@/lib/env';
+import { getPublicSiteUrl } from '@/lib/public-env';
 
 export const runtime = 'nodejs';
 export const revalidate = 86_400;
@@ -11,7 +11,7 @@ const primary = '#F5B301';
 const secondary = '#7C3AED';
 
 export async function GET() {
-  const site = new URL(env.SITE_URL);
+  const site = new URL(getPublicSiteUrl());
   site.pathname = '';
 
   const logoMark = createElement(

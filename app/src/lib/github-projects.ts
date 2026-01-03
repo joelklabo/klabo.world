@@ -1,4 +1,4 @@
-import { env } from "@/lib/env";
+import { getPublicGitHubToken } from "@/lib/public-env";
 import { promises as fs } from "node:fs";
 import path from "node:path";
 
@@ -74,8 +74,9 @@ function getGitHubHeaders() {
     Accept: "application/vnd.github+json",
     "X-GitHub-Api-Version": "2022-11-28",
   };
-  if (env.GITHUB_TOKEN) {
-    headers.Authorization = `Bearer ${env.GITHUB_TOKEN}`;
+  const token = getPublicGitHubToken();
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
   }
   return headers;
 }
@@ -152,7 +153,7 @@ export async function getPinnedGitHubProjects(
   owner: string,
   limit = 6,
 ): Promise<GitHubProject[]> {
-  if (!env.GITHUB_TOKEN) {
+  if (!getPublicGitHubToken()) {
     return [];
   }
 

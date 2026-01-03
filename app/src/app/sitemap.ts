@@ -1,10 +1,10 @@
 import type { MetadataRoute } from 'next';
-import { env } from '@/lib/env';
+import { getPublicSiteUrl } from '@/lib/public-env';
 import { getApps } from '@/lib/apps';
 import { getPosts, getPostTagCounts } from '@/lib/posts';
 
 function withBaseUrl(path: string) {
-  const base = env.SITE_URL.replace(/\/$/, '');
+  const base = getPublicSiteUrl();
   return `${base}${path.startsWith('/') ? '' : '/'}${path}`;
 }
 

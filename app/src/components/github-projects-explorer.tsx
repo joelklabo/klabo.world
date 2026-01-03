@@ -115,6 +115,7 @@ export function GitHubProjectsExplorer({ projects, className, cardTestId }: Prop
           <Select
             value={sortKey}
             onValueChange={(value) => setSortKey(value as SortKey)}
+            name="projects-sort"
           >
             <SelectTrigger size="sm" data-testid="projects-sort">
               <SelectValue />

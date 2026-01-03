@@ -1,11 +1,11 @@
-import { env } from './env';
+import { getPublicSiteUrl } from './public-env';
 import { getPosts } from './posts';
 
 const SITE_NAME = 'klabo.world';
 const SITE_DESCRIPTION = 'Bitcoin, Lightning, Nostr & Agentic Engineering insights from klabo.world.';
 
 function absoluteUrl(path: string): string {
-  const base = env.SITE_URL.replace(/\/$/, '');
+  const base = getPublicSiteUrl();
   return `${base}${path.startsWith('/') ? path : `/${path}`}`;
 }
 

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Route } from "next";
-import { env } from "@/lib/env";
+import { getPublicGitHubOwner } from "@/lib/public-env";
 import { getApps } from "@/lib/apps";
 import { getDashboards } from "@/lib/dashboards";
 import { getFeaturedGitHubProjects } from "@/lib/github-projects";
@@ -17,7 +17,8 @@ export const revalidate = 3600;
 
 export default async function Home() {
   const recentPosts = getRecentPosts(2);
-  const projects = await getFeaturedGitHubProjects(env.GITHUB_OWNER, 4);
+  const githubOwner = getPublicGitHubOwner();
+  const projects = await getFeaturedGitHubProjects(githubOwner, 4);
   const postCount = getPosts().length;
   const appCount = getApps().length;
   const dashboardCount = getDashboards().length;
@@ -282,12 +283,12 @@ export default async function Home() {
                   GitHub projects are temporarily unavailable. Visit{" "}
                   <a
                     className="font-semibold text-primary hover:text-primary/80"
-                    href={`https://github.com/${env.GITHUB_OWNER}`}
+                    href={`https://github.com/${githubOwner}`}
                     target="_blank"
                     rel="noreferrer"
                     data-testid="home-projects-github"
                   >
-                    github.com/{env.GITHUB_OWNER}
+                    github.com/{githubOwner}
                   </a>{" "}
                   to browse recent work.
                 </div>
