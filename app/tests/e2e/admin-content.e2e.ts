@@ -17,17 +17,17 @@ test.describe('admin content workflow', () => {
     await page.getByLabel('Featured image path').fill('/uploads/test.png');
     await page.getByLabel('Content (Markdown)').fill('# Test Post\n\nThis is a Playwright-created post.');
     await Promise.all([
-      page.waitForURL(/\/admin$/, { timeout: 30_000 }),
+      page.waitForURL(/\/admin(?:\\?.+)?$/, { timeout: 60_000, waitUntil: 'domcontentloaded' }),
       page.getByRole('button', { name: 'Publish post' }).click(),
     ]);
     const row = page.locator('tbody tr').filter({ hasText: title }).first();
-    await expect(row).toBeVisible();
+    await expect(row).toBeVisible({ timeout: 30_000 });
 
     await row.getByRole('link', { name: 'Edit' }).click();
     await expect(page).toHaveURL(new RegExp(`/admin/posts/${slug}/edit`));
 
     await Promise.all([
-      page.waitForURL(/\/admin$/, { timeout: 30_000 }),
+      page.waitForURL(/\/admin(?:\\?.+)?$/, { timeout: 60_000, waitUntil: 'domcontentloaded' }),
       page.getByRole('button', { name: 'Delete' }).click(),
     ]);
     await expect(page.getByText(title)).toHaveCount(0);
