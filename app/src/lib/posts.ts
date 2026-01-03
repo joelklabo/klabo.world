@@ -28,6 +28,16 @@ export function normalizePostSlug(value: string): string {
   return normalized;
 }
 
+const aliasWarningKeys = new Set<string>();
+let cachedAliasIndex: Map<string, Post> | null = null;
+let cachedAliasPosts: Post[] | null = null;
+
+function warnAliasOnce(key: string, message: string) {
+  if (aliasWarningKeys.has(key)) return;
+  aliasWarningKeys.add(key);
+  console.warn(message);
+}
+
 function isPublished(post: Post, now = new Date()): boolean {
   return getPublishDate(post) <= now;
 }
@@ -59,24 +69,68 @@ export function getRecentPosts(limit = 3): Post[] {
   return getPosts().slice(0, limit);
 }
 
-function matchesPostSlug(post: Post, slug: string): boolean {
-  const normalizedSlug = normalizePostSlug(slug);
-  const canonicalSlug = normalizePostSlug(post.slug);
-  if (canonicalSlug === normalizedSlug) return true;
-  if (!Array.isArray(post.aliases)) return false;
-  return post.aliases.some((alias) => {
-    if (typeof alias !== 'string') return false;
-    const normalizedAlias = normalizePostSlug(alias);
-    return normalizedAlias !== canonicalSlug && normalizedAlias === normalizedSlug;
-  });
+function buildAliasIndex(posts: Post[]): Map<string, Post> {
+  const aliasIndex = new Map<string, Post>();
+  const canonicalSlugs = new Set(posts.map((post) => normalizePostSlug(post.slug)));
+  const sortedPosts = [...posts].sort((a, b) =>
+    normalizePostSlug(a.slug).localeCompare(normalizePostSlug(b.slug)),
+  );
+
+  for (const post of sortedPosts) {
+    const canonicalSlug = normalizePostSlug(post.slug);
+    const aliases = Array.isArray(post.aliases) ? post.aliases : [];
+    for (const alias of aliases) {
+      if (typeof alias !== 'string') continue;
+      const normalizedAlias = normalizePostSlug(alias);
+      if (!normalizedAlias) continue;
+      if (normalizedAlias === canonicalSlug) {
+        warnAliasOnce(
+          `alias-self:${canonicalSlug}`,
+          `Post "${post.slug}" declares alias "${alias}" that matches its own slug.`,
+        );
+        continue;
+      }
+      if (canonicalSlugs.has(normalizedAlias)) {
+        warnAliasOnce(
+          `alias-canonical:${normalizedAlias}`,
+          `Post "${post.slug}" declares alias "${alias}" that collides with canonical slug "${normalizedAlias}".`,
+        );
+        continue;
+      }
+      const existing = aliasIndex.get(normalizedAlias);
+      if (existing) {
+        warnAliasOnce(
+          `alias-duplicate:${normalizedAlias}`,
+          `Alias "${alias}" is declared by both "${existing.slug}" and "${post.slug}".`,
+        );
+        continue;
+      }
+      aliasIndex.set(normalizedAlias, post);
+    }
+  }
+
+  return aliasIndex;
+}
+
+function getAliasIndex(posts: Post[]): Map<string, Post> {
+  if (process.env.NODE_ENV === 'test' || process.env.VITEST) {
+    return buildAliasIndex(posts);
+  }
+  if (cachedAliasIndex && cachedAliasPosts === posts) {
+    return cachedAliasIndex;
+  }
+  cachedAliasPosts = posts;
+  cachedAliasIndex = buildAliasIndex(posts);
+  return cachedAliasIndex;
 }
 
 export function getPostBySlug(slug: string): Post | undefined {
   const normalizedSlug = normalizePostSlug(slug);
   const posts = getContentlayerPosts();
+  const aliasIndex = getAliasIndex(posts);
   const directMatch = posts.find((post) => normalizePostSlug(post.slug) === normalizedSlug);
   if (directMatch) return directMatch;
-  return posts.find((post) => matchesPostSlug(post, normalizedSlug));
+  return aliasIndex.get(normalizedSlug);
 }
 
 export function getPostTagCounts(): Record<string, number> {
