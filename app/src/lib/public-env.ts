@@ -8,7 +8,6 @@ if (shouldEnforceServerOnly) {
 
 const FALLBACK_SITE_URL = 'https://klabo.world';
 const FALLBACK_GITHUB_OWNER = 'joelklabo';
-const FALLBACK_GITHUB_REPO = 'KlaboWorld';
 
 function normalizeUrl(value: string): string {
   const trimmed = value.trim();
@@ -33,11 +32,6 @@ export function getPublicSiteUrl(): string {
 export function getPublicGitHubOwner(): string {
   const raw = process.env.GITHUB_OWNER ?? process.env.NEXT_PUBLIC_GITHUB_OWNER ?? FALLBACK_GITHUB_OWNER;
   return normalizeString(raw, FALLBACK_GITHUB_OWNER);
-}
-
-export function getPublicGitHubRepo(): string {
-  const raw = process.env.GITHUB_REPO ?? process.env.NEXT_PUBLIC_GITHUB_REPO ?? FALLBACK_GITHUB_REPO;
-  return normalizeString(raw, FALLBACK_GITHUB_REPO);
 }
 
 export function getPublicGitHubToken(): string | undefined {
