@@ -46,6 +46,30 @@ const eslintConfig = defineConfig([
       "sonarjs/no-os-command-from-path": "off",
     }
   },
+  {
+    files: ["src/app/**", "src/components/**"],
+    // Prevent server-only env access in UI code; allow API routes and server actions.
+    ignores: ["src/app/api/**", "src/app/**/actions.ts", "src/app/**/actions.tsx"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            {
+              name: "@/lib/env",
+              message: "Use public-env helpers in public app code; env is restricted to API routes and server actions.",
+            },
+            {
+              name: "@klaboworld/core",
+              importNames: ["loadEnv"],
+              message: "Do not call loadEnv in app routes; use public-env helpers or server actions instead.",
+            },
+          ],
+          patterns: ["**/lib/env"],
+        },
+      ],
+    },
+  },
   unicorn.configs['flat/recommended'],
   {
     plugins: {
