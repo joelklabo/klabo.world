@@ -41,6 +41,7 @@ export const Post = defineDocumentType(() => ({
     date: { type: 'date', required: true },
     publishDate: { type: 'date', required: false },
     tags: { type: 'list', of: { type: 'string' }, required: false },
+    aliases: { type: 'list', of: { type: 'string' }, required: false, default: [] },
     featuredImage: { type: 'string', required: false },
     lightningAddress: { type: 'string', required: false },
     nostrPubkey: { type: 'string', required: false },

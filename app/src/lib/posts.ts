@@ -17,6 +17,17 @@ function getPublishDate(post: Post): Date {
   return new Date(post.publishDate ?? post.date);
 }
 
+export function normalizePostSlug(value: string): string {
+  let normalized = value.trim().toLowerCase();
+  while (normalized.startsWith('/')) {
+    normalized = normalized.slice(1);
+  }
+  while (normalized.endsWith('/')) {
+    normalized = normalized.slice(0, -1);
+  }
+  return normalized;
+}
+
 function isPublished(post: Post, now = new Date()): boolean {
   return getPublishDate(post) <= now;
 }
@@ -48,8 +59,24 @@ export function getRecentPosts(limit = 3): Post[] {
   return getPosts().slice(0, limit);
 }
 
+function matchesPostSlug(post: Post, slug: string): boolean {
+  const normalizedSlug = normalizePostSlug(slug);
+  const canonicalSlug = normalizePostSlug(post.slug);
+  if (canonicalSlug === normalizedSlug) return true;
+  if (!Array.isArray(post.aliases)) return false;
+  return post.aliases.some((alias) => {
+    if (typeof alias !== 'string') return false;
+    const normalizedAlias = normalizePostSlug(alias);
+    return normalizedAlias !== canonicalSlug && normalizedAlias === normalizedSlug;
+  });
+}
+
 export function getPostBySlug(slug: string): Post | undefined {
-  return getContentlayerPosts().find((post) => post.slug === slug);
+  const normalizedSlug = normalizePostSlug(slug);
+  const posts = getContentlayerPosts();
+  const directMatch = posts.find((post) => normalizePostSlug(post.slug) === normalizedSlug);
+  if (directMatch) return directMatch;
+  return posts.find((post) => matchesPostSlug(post, normalizedSlug));
 }
 
 export function getPostTagCounts(): Record<string, number> {

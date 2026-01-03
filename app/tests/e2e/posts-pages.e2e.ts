@@ -47,4 +47,13 @@ test.describe('posts pages', () => {
 
     await expect(cards.first().getByRole('heading', { level: 2 })).toBeVisible();
   });
+
+  test('alias slug redirects to canonical post', async ({ page }) => {
+    const response = await page.goto('/posts/introducing-ackchyally', { waitUntil: 'domcontentloaded' });
+    expect(response, 'expected a response for the alias page').not.toBeNull();
+    const responseBody = await response!.text();
+    expect(responseBody).toContain('NEXT_REDIRECT;replace;/posts/introducing-ackchyually;308;');
+    await page.waitForURL(/\/posts\/introducing-ackchyually/);
+    await expect(page.getByRole('heading', { name: /ackchyually/i })).toBeVisible();
+  });
 });

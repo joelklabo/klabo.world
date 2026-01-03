@@ -1,7 +1,7 @@
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { formatPostDate, getPostBySlug, getPosts } from '@/lib/posts';
+import { formatPostDate, getPostBySlug, getPosts, normalizePostSlug } from '@/lib/posts';
 import { MDXContent } from '@/components/mdx-content';
 import { ClientErrorBoundary } from '@/components/client-error-boundary';
 import { getPublicNostrstackConfig, getPublicSiteUrl } from '@/lib/public-env';
@@ -73,15 +73,24 @@ export async function generateMetadata({ params }: { params: Params | Promise<Pa
 
 export default async function PostPage({ params }: { params: Params | Promise<Params> }) {
   const resolvedParams = await Promise.resolve(params as Params);
-  const post = getPostBySlug(resolvedParams.slug);
+  const requestedSlug = resolvedParams.slug;
+  const post = getPostBySlug(requestedSlug);
   if (!post) {
+    notFound();
+  }
+  if (normalizePostSlug(post.slug) !== normalizePostSlug(requestedSlug)) {
+    permanentRedirect(`/posts/${post.slug}`);
+  }
+  const rawBody = post.body?.raw;
+  const bodyCode = post.body?.code;
+  if (!rawBody || !bodyCode) {
     notFound();
   }
   const posts = getPosts();
   const index = posts.findIndex((entry) => entry.slug === post.slug);
   const previous = posts[index - 1];
   const next = posts[index + 1];
-  const readingTime = Math.max(1, Math.round((post.body.raw.split(/\s+/).length ?? 0) / 200));
+  const readingTime = Math.max(1, Math.round(rawBody.split(/\s+/).length / 200));
   const siteUrl = getPublicSiteUrl();
   const canonicalUrl = `${siteUrl}/posts/${post.slug}`;
   const nostrstackConfig = getPublicNostrstackConfig();
@@ -199,7 +208,7 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
             )}
             <div className="rounded-3xl border border-border/60 bg-card/80 p-8 shadow-[0_24px_70px_rgba(6,10,20,0.55)]">
               <div className="prose max-w-none space-y-8">
-                <MDXContent code={post.body.code} />
+                <MDXContent code={bodyCode} />
               </div>
             </div>
             {widgetsEnabled && (
