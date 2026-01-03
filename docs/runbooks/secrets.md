@@ -29,6 +29,20 @@ Production boot now enforces safety checks in `loadEnv`:
 - `NEXTAUTH_SECRET` cannot be the dev default (`dev-secret`).
 - If `UPLOADS_REQUIRE_DURABLE=true`, then `AZURE_STORAGE_ACCOUNT` + `AZURE_STORAGE_KEY` must be set.
 
+### Azure App Service SQLite exception
+When running in Azure App Service (`WEBSITE_SITE_NAME`/`WEBSITE_INSTANCE_ID` set) with `NODE_ENV=production`, `loadEnv` allows SQLite even if `ALLOW_SQLITE_IN_PROD` is unset. It emits a warning so we make an explicit choice:
+- Set `ALLOW_SQLITE_IN_PROD=true` to keep SQLite in Azure and silence the warning.
+- Set `ALLOW_SQLITE_IN_PROD=false` to **block** SQLite in Azure (fails fast at boot).
+
+If you keep SQLite in Azure, also ensure:
+- `WEBSITES_ENABLE_APP_SERVICE_STORAGE=true` so `/home/site/wwwroot` is persisted.
+- App Service plan capacity stays at `1` (SQLite is unsafe for multi-instance writes).
+
+### Remediation options (Azure + production)
+- Prefer Postgres: point `DATABASE_URL` at Postgres and remove SQLite overrides.
+- Allow SQLite explicitly: set `ALLOW_SQLITE_IN_PROD=true` and keep persistence/single instance.
+- Force SQLite off: set `ALLOW_SQLITE_IN_PROD=false` to guarantee boot failure on SQLite.
+
 Run the validator locally to catch misconfigurations early:
 ```bash
 NODE_ENV=production pnpm validate:env
