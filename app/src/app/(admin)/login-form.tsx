@@ -81,11 +81,11 @@ export function LoginForm({ initialError }: LoginFormProps) {
     <>
       {toastMessage && (
         <div className="fixed left-1/2 top-6 z-50 -translate-x-1/2 transform">
-          <div className="flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 shadow-xl" role="alert">
+          <div className="flex items-start gap-3 rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive shadow-xl" role="alert">
             <span>{toastMessage}</span>
             <button
               type="button"
-              className="text-red-500 transition hover:text-red-700"
+              className="min-w-11 min-h-11 flex items-center justify-center text-destructive transition hover:text-destructive/80"
               aria-label="Dismiss error"
               onClick={() => setToastMessage(null)}
             >
@@ -97,31 +97,31 @@ export function LoginForm({ initialError }: LoginFormProps) {
       <form
         method="post"
         action="/api/auth/callback/credentials"
-        className="flex flex-col gap-3 rounded border border-zinc-200 p-4"
+        className="flex flex-col gap-3 rounded border border-border bg-card p-4"
         data-testid="admin-login-form"
       >
         <input type="hidden" name="csrfToken" value={csrfToken} readOnly />
         <input type="hidden" name="callbackUrl" value="/admin" readOnly />
-        <label className="text-sm font-medium text-zinc-600" htmlFor="email">
+        <label className="text-sm font-medium text-muted-foreground" htmlFor="email">
           Email
         </label>
         <input
           id="email"
           name="email"
           type="email"
-          className="rounded border px-3 py-2"
+          className="rounded border border-border bg-card px-3 py-2 text-foreground placeholder-muted-foreground"
           autoComplete="username"
           required
           data-testid="admin-login-email"
         />
-        <label className="text-sm font-medium text-zinc-600" htmlFor="password">
+        <label className="text-sm font-medium text-muted-foreground" htmlFor="password">
           Password
         </label>
         <input
           id="password"
           name="password"
           type="password"
-          className="rounded border px-3 py-2"
+          className="rounded border border-border bg-card px-3 py-2 text-foreground placeholder-muted-foreground"
           autoComplete="current-password"
           required
           data-testid="admin-login-password"
@@ -130,7 +130,7 @@ export function LoginForm({ initialError }: LoginFormProps) {
           {loadingToken ? 'Preparing…' : 'Sign in'}
         </Button>
         {error && (
-          <p className="text-sm text-red-600" role="alert" aria-live="assertive" data-testid="admin-login-error">
+          <p className="text-sm text-destructive" role="alert" aria-live="assertive" data-testid="admin-login-error">
             {error}
           </p>
         )}
