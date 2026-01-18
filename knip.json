@@ -12,7 +12,6 @@
       "ignore": [
         "src/components/ui/card.tsx",
         "src/components/ui/form.tsx",
-        "src/components/pull-quote.tsx",
         "src/components/tweet.tsx",
         "src/components/annotations/index.ts",
         "src/components/annotations/types.ts",
