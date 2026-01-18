@@ -38,7 +38,8 @@
         "baseline-browser-mapping",
         "eslint-import-resolver-typescript",
         "tailwindcss",
-        "tw-animate-css"
+        "tw-animate-css",
+        "react-tweet"
       ]
     },
     "packages/scripts": {
