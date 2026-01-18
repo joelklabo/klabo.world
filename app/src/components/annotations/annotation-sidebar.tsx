@@ -123,7 +123,7 @@ function AnnotationCard({
             <div className="flex justify-end gap-2">
               <button
                 type="button"
-                className="text-xs text-muted-foreground hover:text-foreground"
+                className="rounded px-1 text-xs text-muted-foreground hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
                 onClick={(e) => {
                   e.stopPropagation();
                   setIsReplying(false);
@@ -134,7 +134,7 @@ function AnnotationCard({
               </button>
               <button
                 type="button"
-                className="text-xs text-primary hover:text-primary/80"
+                className="rounded px-1 text-xs text-primary hover:text-primary/80 focus:outline-none focus:ring-2 focus:ring-primary/50"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleSubmitReply();
@@ -153,7 +153,7 @@ function AnnotationCard({
               <>
                 <button
                   type="button"
-                  className="text-xs text-muted-foreground hover:text-foreground"
+                  className="rounded px-1 text-xs text-muted-foreground hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
                   onClick={(e) => {
                     e.stopPropagation();
                     setIsReplying(true);
@@ -163,7 +163,7 @@ function AnnotationCard({
                 </button>
                 <button
                   type="button"
-                  className="text-xs text-green-500 hover:text-green-400"
+                  className="rounded px-1 text-xs text-green-500 hover:text-green-400 focus:outline-none focus:ring-2 focus:ring-green-500/50"
                   onClick={(e) => {
                     e.stopPropagation();
                     onResolve();
@@ -175,7 +175,7 @@ function AnnotationCard({
             )}
             <button
               type="button"
-              className="text-xs text-red-500 hover:text-red-400"
+              className="rounded px-1 text-xs text-red-500 hover:text-red-400 focus:outline-none focus:ring-2 focus:ring-red-500/50"
               onClick={(e) => {
                 e.stopPropagation();
                 if (confirm('Delete this annotation?')) {
