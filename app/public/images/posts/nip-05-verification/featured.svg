@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#14141a"/>
+      <stop offset="100%" stop-color="#0d0d12"/>
+    </linearGradient>
+    <linearGradient id="accent-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5a623"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="glow-strong" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1f1f28" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)" opacity="0.4"/>
+
+  <!-- Decorative circles centered -->
+  <circle cx="600" cy="315" r="200" fill="none" stroke="#1a1a24" stroke-width="1"/>
+  <circle cx="600" cy="315" r="260" fill="none" stroke="#1a1a24" stroke-width="1"/>
+  <circle cx="600" cy="315" r="320" fill="none" stroke="url(#accent-grad)" stroke-width="2" opacity="0.2"/>
+
+  <!-- @ symbol with circle - larger and centered -->
+  <circle cx="580" cy="280" r="130" fill="none" stroke="url(#accent-grad)" stroke-width="6" filter="url(#glow)"/>
+  <text x="580" y="320" text-anchor="middle" font-family="system-ui, sans-serif" font-size="140" fill="url(#accent-grad)" filter="url(#glow)">@</text>
+
+  <!-- Verification checkmark badge - larger -->
+  <circle cx="680" cy="380" r="50" fill="#1a1a2e" stroke="#22c55e" stroke-width="4" filter="url(#glow)"/>
+  <path d="M 655 380 L 672 398 L 710 358" fill="none" stroke="#22c55e" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- NIP-05 label -->
+  <text x="600" y="490" text-anchor="middle" font-family="monospace" font-size="22" fill="#888">NIP-05</text>
+
+  <!-- Decorative sparkles -->
+  <circle cx="420" cy="220" r="4" fill="#f5a623" opacity="0.5"/>
+  <circle cx="780" cy="250" r="3" fill="#22c55e" opacity="0.5"/>
+  <circle cx="450" cy="420" r="3" fill="#f5a623" opacity="0.4"/>
+</svg>

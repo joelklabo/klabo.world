@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#14141a"/>
+      <stop offset="100%" stop-color="#0d0d12"/>
+    </linearGradient>
+    <linearGradient id="accent-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5a623"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1f1f28" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)" opacity="0.4"/>
+
+  <!-- Decorative circles centered -->
+  <circle cx="600" cy="315" r="200" fill="none" stroke="#1a1a24" stroke-width="1"/>
+  <circle cx="600" cy="315" r="260" fill="none" stroke="#1a1a24" stroke-width="1"/>
+  <circle cx="600" cy="315" r="320" fill="none" stroke="url(#accent-grad)" stroke-width="2" opacity="0.2"/>
+
+  <!-- Flow diagram - centered and larger -->
+  <!-- Decide box (highlighted) -->
+  <rect x="400" y="220" width="130" height="55" rx="10" fill="#1a1a2e" stroke="url(#accent-grad)" stroke-width="3" filter="url(#glow)"/>
+  <text x="465" y="255" text-anchor="middle" font-family="system-ui" font-size="20" fill="#e5e5e5">Decide</text>
+
+  <!-- Arrow to Execute -->
+  <line x1="530" y1="248" x2="590" y2="248" stroke="url(#accent-grad)" stroke-width="3"/>
+  <polygon points="590,241 610,248 590,255" fill="#f5a623"/>
+
+  <!-- Execute box -->
+  <rect x="610" y="220" width="130" height="55" rx="10" fill="#1a1a2e" stroke="#444" stroke-width="2"/>
+  <text x="675" y="255" text-anchor="middle" font-family="system-ui" font-size="20" fill="#888">Execute</text>
+
+  <!-- Arrow to right edge -->
+  <line x1="740" y1="248" x2="800" y2="248" stroke="url(#accent-grad)" stroke-width="3"/>
+  <polygon points="800,241 820,248 800,255" fill="#f5a623"/>
+
+  <!-- Evaluate box (highlighted) -->
+  <rect x="500" y="340" width="130" height="55" rx="10" fill="#1a1a2e" stroke="url(#accent-grad)" stroke-width="3" filter="url(#glow)"/>
+  <text x="565" y="375" text-anchor="middle" font-family="system-ui" font-size="20" fill="#e5e5e5">Evaluate</text>
+
+  <!-- Loop arrow back to Decide -->
+  <path d="M 500 368 Q 420 368 420 310 Q 420 280 400 248" fill="none" stroke="url(#accent-grad)" stroke-width="3" stroke-dasharray="8"/>
+  <polygon points="400,255 385,248 400,241" fill="#f5a623"/>
+
+  <!-- Arrow from Execute down to Evaluate -->
+  <path d="M 820 270 Q 820 368 740 368 Q 660 368 630 368" fill="none" stroke="url(#accent-grad)" stroke-width="3"/>
+  <polygon points="630,361 615,368 630,375" fill="#f5a623"/>
+
+  <!-- Decorative sparkles -->
+  <circle cx="350" cy="300" r="4" fill="#f5a623" opacity="0.5"/>
+  <circle cx="750" cy="180" r="3" fill="#f5a623" opacity="0.4"/>
+  <circle cx="380" cy="420" r="3" fill="#f5a623" opacity="0.3"/>
+</svg>

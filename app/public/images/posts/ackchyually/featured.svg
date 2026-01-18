@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#14141a"/>
+      <stop offset="100%" stop-color="#0d0d12"/>
+    </linearGradient>
+    <linearGradient id="accent-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5a623"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1f1f28" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)" opacity="0.4"/>
+
+  <!-- Decorative circles centered -->
+  <circle cx="600" cy="315" r="200" fill="none" stroke="#1a1a24" stroke-width="1"/>
+  <circle cx="600" cy="315" r="260" fill="none" stroke="#1a1a24" stroke-width="1"/>
+  <circle cx="600" cy="315" r="320" fill="none" stroke="url(#accent-grad)" stroke-width="2" opacity="0.2"/>
+
+  <!-- Terminal window - larger and centered -->
+  <rect x="420" y="100" width="300" height="340" rx="12" fill="#1a1a2e" stroke="#444" stroke-width="3"/>
+  <rect x="420" y="100" width="300" height="40" rx="12" fill="#2a2a3e"/>
+  <circle cx="450" cy="120" r="8" fill="#ff5f56"/>
+  <circle cx="478" cy="120" r="8" fill="#ffbd2e"/>
+  <circle cx="506" cy="120" r="8" fill="#27ca40"/>
+
+  <!-- Terminal content - larger -->
+  <text x="445" y="175" font-family="monospace" font-size="15" fill="#888">$ claim</text>
+  <text x="445" y="210" font-family="monospace" font-size="14" fill="#666">"Bitcoin uses SHA128"</text>
+
+  <!-- Correction response - larger -->
+  <text x="445" y="270" font-family="monospace" font-size="18" fill="url(#accent-grad)">ackchyually...</text>
+  <text x="445" y="310" font-family="monospace" font-size="14" fill="#22c55e">Bitcoin uses SHA256</text>
+  <text x="445" y="340" font-family="monospace" font-size="14" fill="#22c55e">(double-hashed)</text>
+
+  <!-- Cursor -->
+  <rect x="445" y="380" width="12" height="20" fill="url(#accent-grad)" opacity="0.8"/>
+
+  <!-- Nerdy glasses icon - larger -->
+  <ellipse cx="560" cy="500" rx="40" ry="22" fill="none" stroke="url(#accent-grad)" stroke-width="3" opacity="0.5"/>
+  <ellipse cx="640" cy="500" rx="40" ry="22" fill="none" stroke="url(#accent-grad)" stroke-width="3" opacity="0.5"/>
+  <line x1="600" y1="500" x2="600" y2="500" stroke="url(#accent-grad)" stroke-width="3" opacity="0.5"/>
+
+  <!-- Decorative sparkles -->
+  <circle cx="370" cy="200" r="4" fill="#f5a623" opacity="0.5"/>
+  <circle cx="760" cy="150" r="3" fill="#22c55e" opacity="0.5"/>
+  <circle cx="350" cy="400" r="3" fill="#f5a623" opacity="0.4"/>
+</svg>

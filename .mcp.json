@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "klaboworld": {
+      "command": "node",
+      "args": ["packages/content/dist/mcp/server.js"],
+      "cwd": "/Users/klabo/Documents/klabo.world"
+    }
+  }
+}

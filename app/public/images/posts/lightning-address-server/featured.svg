@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#14141a"/>
+      <stop offset="100%" stop-color="#0d0d12"/>
+    </linearGradient>
+    <linearGradient id="accent-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5a623"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1f1f28" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)" opacity="0.4"/>
+
+  <!-- Decorative circles centered -->
+  <circle cx="600" cy="315" r="200" fill="none" stroke="#1a1a24" stroke-width="1"/>
+  <circle cx="600" cy="315" r="260" fill="none" stroke="#1a1a24" stroke-width="1"/>
+  <circle cx="600" cy="315" r="320" fill="none" stroke="url(#accent-grad)" stroke-width="2" opacity="0.2"/>
+
+  <!-- Server rack - larger and centered -->
+  <rect x="500" y="100" width="160" height="300" rx="12" fill="#1a1a2e" stroke="#444" stroke-width="3"/>
+
+  <!-- Server slots -->
+  <rect x="520" y="125" width="120" height="40" rx="6" fill="#0a0a0f" stroke="#555"/>
+  <circle cx="620" cy="145" r="8" fill="#22c55e" filter="url(#glow)"/>
+
+  <rect x="520" y="180" width="120" height="40" rx="6" fill="#0a0a0f" stroke="#555"/>
+  <circle cx="620" cy="200" r="8" fill="#22c55e" filter="url(#glow)"/>
+
+  <rect x="520" y="235" width="120" height="40" rx="6" fill="#0a0a0f" stroke="#555"/>
+  <circle cx="620" cy="255" r="8" fill="url(#accent-grad)" filter="url(#glow)"/>
+
+  <!-- Lightning bolt on server - larger -->
+  <path d="M 560 310 L 540 360 L 570 360 L 550 420 L 610 340 L 570 340 L 600 310 Z" fill="url(#accent-grad)" filter="url(#glow)"/>
+
+  <!-- Address box - larger -->
+  <rect x="460" y="440" width="240" height="50" rx="10" fill="#1a1a2e" stroke="url(#accent-grad)" stroke-width="2" filter="url(#glow)"/>
+  <text x="580" y="472" text-anchor="middle" font-family="monospace" font-size="16" fill="url(#accent-grad)">you@domain.com</text>
+
+  <!-- Decorative sparkles -->
+  <circle cx="400" cy="200" r="4" fill="#22c55e" opacity="0.5"/>
+  <circle cx="720" cy="150" r="3" fill="#f5a623" opacity="0.4"/>
+  <circle cx="380" cy="400" r="3" fill="#f5a623" opacity="0.4"/>
+</svg>

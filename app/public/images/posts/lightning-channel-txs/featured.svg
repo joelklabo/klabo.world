@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#14141a"/>
+      <stop offset="100%" stop-color="#0d0d12"/>
+    </linearGradient>
+    <linearGradient id="accent-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5a623"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1f1f28" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)" opacity="0.4"/>
+
+  <!-- Decorative circles centered -->
+  <circle cx="600" cy="315" r="200" fill="none" stroke="#1a1a24" stroke-width="1"/>
+  <circle cx="600" cy="315" r="260" fill="none" stroke="#1a1a24" stroke-width="1"/>
+  <circle cx="600" cy="315" r="320" fill="none" stroke="url(#accent-grad)" stroke-width="2" opacity="0.2"/>
+
+  <!-- Opening tx - larger -->
+  <rect x="520" y="100" width="140" height="55" rx="8" fill="#1a1a2e" stroke="#22c55e" stroke-width="3"/>
+  <text x="590" y="135" text-anchor="middle" font-family="monospace" font-size="16" fill="#22c55e">Open</text>
+
+  <!-- Channel pipe - larger -->
+  <rect x="555" y="155" width="70" height="250" rx="8" fill="#1a1a2e" stroke="url(#accent-grad)" stroke-width="3" filter="url(#glow)"/>
+
+  <!-- Commitment txs inside - larger and more visible -->
+  <rect x="570" y="175" width="40" height="25" rx="4" fill="#f5a623" opacity="0.2"/>
+  <rect x="570" y="210" width="40" height="25" rx="4" fill="#f5a623" opacity="0.3"/>
+  <rect x="570" y="245" width="40" height="25" rx="4" fill="#f5a623" opacity="0.4"/>
+  <rect x="570" y="280" width="40" height="25" rx="4" fill="#f5a623" opacity="0.6"/>
+  <rect x="570" y="315" width="40" height="25" rx="4" fill="#f5a623" opacity="0.8"/>
+  <rect x="570" y="350" width="40" height="25" rx="4" fill="#f5a623"/>
+
+  <!-- Closing tx - larger -->
+  <rect x="520" y="405" width="140" height="55" rx="8" fill="#1a1a2e" stroke="#ef4444" stroke-width="3"/>
+  <text x="590" y="440" text-anchor="middle" font-family="monospace" font-size="16" fill="#ef4444">Close</text>
+
+  <!-- HTLC branching - larger -->
+  <rect x="680" y="260" width="100" height="50" rx="8" fill="#1a1a2e" stroke="#8b5cf6" stroke-width="2"/>
+  <text x="730" y="292" text-anchor="middle" font-family="monospace" font-size="14" fill="#8b5cf6">HTLC</text>
+  <path d="M 625 285 L 680 285" stroke="#8b5cf6" stroke-width="2"/>
+
+  <!-- Labels - larger -->
+  <text x="750" y="135" font-family="system-ui" font-size="14" fill="#666">Funding TX</text>
+  <text x="750" y="375" font-family="system-ui" font-size="14" fill="#666">Commitment TXs</text>
+
+  <!-- Decorative sparkles -->
+  <circle cx="450" cy="200" r="3" fill="#22c55e" opacity="0.5"/>
+  <circle cx="800" cy="180" r="2" fill="#f5a623" opacity="0.4"/>
+  <circle cx="420" cy="400" r="2" fill="#ef4444" opacity="0.4"/>
+</svg>

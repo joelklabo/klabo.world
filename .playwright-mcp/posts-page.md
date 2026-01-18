@@ -1,0 +1,165 @@
+### New console messages
+- [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/c6dbf_next_dist_6c55de75...
+- [LOG] [Fast Refresh] done in 137ms @ http://localhost:3000/_next/static/chunks/c6dbf_next_dist_6c55d...
+
+### Page state
+- Page URL: http://localhost:3000/
+- Page Title: klabo.world • Bitcoin, Lightning, Nostr & Agentic Engineering
+- Page Snapshot:
+```yaml
+- generic [active] [ref=e1]:
+  - link "Skip to content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - link "klabo.world" [ref=e6] [cursor=pointer]:
+        - /url: /
+      - navigation "Primary navigation" [ref=e7]:
+        - link "Writing" [ref=e8] [cursor=pointer]:
+          - /url: /posts
+        - link "Projects" [ref=e9] [cursor=pointer]:
+          - /url: /projects
+      - link "Search" [ref=e12] [cursor=pointer]:
+        - /url: /search
+  - main [ref=e13]:
+    - generic [ref=e61]:
+      - generic [ref=e64]:
+        - paragraph [ref=e67]: Building in public
+        - heading "klabo" [level=1] [ref=e68]
+        - generic [ref=e69]:
+          - paragraph [ref=e71]: AI
+          - paragraph [ref=e74]: iOS
+          - paragraph [ref=e77]: Bitcoin
+          - paragraph [ref=e80]: Lightning
+          - paragraph [ref=e83]: Nostr
+      - generic [ref=e86]:
+        - generic [ref=e87]:
+          - generic [ref=e88]:
+            - generic [ref=e89]:
+              - heading "Latest writing" [level=2] [ref=e90]
+              - paragraph [ref=e91]: Deep dives, distilled.
+            - link "All posts →" [ref=e92] [cursor=pointer]:
+              - /url: /posts
+          - generic [ref=e94]:
+            - 'link "ackchyually: the “ackchyually…” friend for your CLI Dec 14, 2025 A PTY-first shim that remembers what worked (per repo) and suggests fixes when you get the details wrong." [ref=e95] [cursor=pointer]':
+              - /url: /posts/introducing-ackchyually
+              - generic [ref=e96]:
+                - 'heading "ackchyually: the “ackchyually…” friend for your CLI" [level=3] [ref=e97]'
+                - time [ref=e98]: Dec 14, 2025
+              - paragraph [ref=e99]: A PTY-first shim that remembers what worked (per repo) and suggests fixes when you get the details wrong.
+            - link "Agentically Engineering Past Procrastination Sep 24, 2025 How Agentic Engineering helped me to get started instead of dreading difficult work." [ref=e100] [cursor=pointer]:
+              - /url: /posts/agentically-engineering-past-procrastination
+              - generic [ref=e101]:
+                - heading "Agentically Engineering Past Procrastination" [level=3] [ref=e102]
+                - time [ref=e103]: Sep 24, 2025
+              - paragraph [ref=e104]: How Agentic Engineering helped me to get started instead of dreading difficult work.
+            - 'link "iOS Project Claude Code Setup in One Prompt: with xcodebuildmcp Aug 14, 2025 Setup Claude Code with hierarchical CLAUDE.md files, `xcodebuildmcp` integration, slash commands etc. All in one prompt." [ref=e105] [cursor=pointer]':
+              - /url: /posts/ios-project-claude-code-setup-in-one-prompt-with-xcodebuildmcp
+              - generic [ref=e106]:
+                - 'heading "iOS Project Claude Code Setup in One Prompt: with xcodebuildmcp" [level=3] [ref=e107]'
+                - time [ref=e108]: Aug 14, 2025
+              - paragraph [ref=e109]: "Setup Claude Code with hierarchical CLAUDE.md files, `xcodebuildmcp` integration, slash commands etc. All in one prompt."
+        - generic [ref=e110]:
+          - generic [ref=e111]:
+            - generic [ref=e112]:
+              - heading "Recent GitHub work" [level=2] [ref=e113]
+              - paragraph [ref=e114]: Recently shipped repos.
+            - link "All projects →" [ref=e115] [cursor=pointer]:
+              - /url: /projects
+          - generic [ref=e118]:
+            - link "Featured joelklabo/markdowntown-cli markdowntown-cli Updated Jan 8, 2026 markdowntown scan CLI TypeScript" [ref=e119] [cursor=pointer]:
+              - /url: https://github.com/joelklabo/markdowntown-cli
+              - generic [ref=e120]:
+                - generic [ref=e121]:
+                  - generic [ref=e123]: Featured
+                  - generic [ref=e124]:
+                    - generic [ref=e125]: joelklabo/markdowntown-cli
+                    - img [ref=e126]
+                - generic [ref=e129]:
+                  - generic [ref=e130]:
+                    - heading "markdowntown-cli" [level=3] [ref=e131]
+                    - generic [ref=e132]:
+                      - generic [ref=e133]: Updated
+                      - generic [ref=e134]: Jan 8, 2026
+                  - paragraph [ref=e135]: markdowntown scan CLI
+                - generic [ref=e137]: TypeScript
+            - generic [ref=e139]:
+              - link "klabo.world TypeScript Updated Jan 2, 2026" [ref=e140] [cursor=pointer]:
+                - /url: https://github.com/joelklabo/klabo.world
+                - generic [ref=e141]:
+                  - generic [ref=e142]:
+                    - heading "klabo.world" [level=4] [ref=e144]
+                    - generic [ref=e145]:
+                      - generic [ref=e148]: TypeScript
+                      - generic [ref=e149]: Updated Jan 2, 2026
+                  - img [ref=e150]
+              - link "ackchyually Live The annoying coworker for your CLI. Go Updated Dec 17, 2025" [ref=e153] [cursor=pointer]:
+                - /url: https://github.com/joelklabo/ackchyually
+                - generic [ref=e154]:
+                  - generic [ref=e155]:
+                    - generic [ref=e156]:
+                      - heading "ackchyually" [level=4] [ref=e157]
+                      - generic [ref=e158]: Live
+                    - paragraph [ref=e159]: The annoying coworker for your CLI.
+                    - generic [ref=e160]:
+                      - generic [ref=e163]: Go
+                      - generic [ref=e164]: Updated Dec 17, 2025
+                  - img [ref=e165]
+              - link "nostrstack TypeScript Updated Jan 9, 2026" [ref=e168] [cursor=pointer]:
+                - /url: https://github.com/joelklabo/nostrstack
+                - generic [ref=e169]:
+                  - generic [ref=e170]:
+                    - heading "nostrstack" [level=4] [ref=e172]
+                    - generic [ref=e173]:
+                      - generic [ref=e176]: TypeScript
+                      - generic [ref=e177]: Updated Jan 9, 2026
+                  - img [ref=e178]
+  - contentinfo [ref=e16]:
+    - generic [ref=e18]:
+      - generic [ref=e19]:
+        - generic [ref=e20]:
+          - link "klabo.world" [ref=e21] [cursor=pointer]:
+            - /url: /
+          - paragraph [ref=e22]: Bitcoin, Lightning, Nostr & agentic engineering. Tutorials, project updates, and AI context libraries.
+        - generic [ref=e23]:
+          - heading "Navigate" [level=3] [ref=e24]
+          - list [ref=e25]:
+            - listitem [ref=e26]:
+              - link "Writing" [ref=e27] [cursor=pointer]:
+                - /url: /posts
+                - text: Writing
+            - listitem [ref=e28]:
+              - link "Projects" [ref=e29] [cursor=pointer]:
+                - /url: /projects
+                - text: Projects
+            - listitem [ref=e30]:
+              - link "Search" [ref=e31] [cursor=pointer]:
+                - /url: /search
+                - text: Search
+        - generic [ref=e32]:
+          - heading "Connect" [level=3] [ref=e33]
+          - list [ref=e34]:
+            - listitem [ref=e35]:
+              - link "𝔾" [ref=e36] [cursor=pointer]:
+                - /url: https://github.com/klabo
+                - generic [ref=e37]: 𝔾
+            - listitem [ref=e38]:
+              - link "𝕏" [ref=e39] [cursor=pointer]:
+                - /url: https://twitter.com/klabo
+                - generic [ref=e40]: 𝕏
+            - listitem [ref=e41]:
+              - link "₦" [ref=e42] [cursor=pointer]:
+                - /url: https://nostr.band/klabo
+                - generic [ref=e43]: ₦
+      - generic [ref=e45]:
+        - paragraph [ref=e46]: © 2026 klabo.world. all rights reserved.
+        - generic [ref=e47]:
+          - link "Blog" [ref=e48] [cursor=pointer]:
+            - /url: /posts
+          - generic [ref=e49]: ·
+          - link "Projects" [ref=e50] [cursor=pointer]:
+            - /url: /projects
+  - button "Open Next.js Dev Tools" [ref=e56] [cursor=pointer]:
+    - img [ref=e57]
+  - alert [ref=e60]
+```

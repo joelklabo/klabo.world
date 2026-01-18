@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#14141a"/>
+      <stop offset="100%" stop-color="#0d0d12"/>
+    </linearGradient>
+    <linearGradient id="accent-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5a623"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1f1f28" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)" opacity="0.4"/>
+
+  <!-- Decorative circles centered -->
+  <circle cx="600" cy="315" r="200" fill="none" stroke="#1a1a24" stroke-width="1"/>
+  <circle cx="600" cy="315" r="260" fill="none" stroke="#1a1a24" stroke-width="1"/>
+  <circle cx="600" cy="315" r="320" fill="none" stroke="url(#accent-grad)" stroke-width="2" opacity="0.2"/>
+
+  <!-- Data packet - larger and centered -->
+  <rect x="480" y="150" width="200" height="250" rx="12" fill="#1a1a2e" stroke="url(#accent-grad)" stroke-width="3" filter="url(#glow)"/>
+
+  <!-- Binary/data rows - larger text -->
+  <text x="510" y="200" font-family="monospace" font-size="16" fill="#555">01001010</text>
+  <text x="510" y="235" font-family="monospace" font-size="16" fill="#555">11010110</text>
+  <text x="510" y="275" font-family="monospace" font-size="20" font-weight="bold" fill="url(#accent-grad)">CUSTOM</text>
+  <text x="510" y="310" font-family="monospace" font-size="20" font-weight="bold" fill="url(#accent-grad)">DATA</text>
+  <text x="510" y="350" font-family="monospace" font-size="16" fill="#555">10110001</text>
+  <text x="510" y="385" font-family="monospace" font-size="16" fill="#555">01101110</text>
+
+  <!-- Lightning bolt wraps - larger -->
+  <path d="M 440 180 L 410 280 L 450 280 L 420 400" fill="none" stroke="url(#accent-grad)" stroke-width="5" filter="url(#glow)"/>
+  <path d="M 720 180 L 750 280 L 710 280 L 740 400" fill="none" stroke="url(#accent-grad)" stroke-width="5" filter="url(#glow)"/>
+
+  <!-- Arrow showing movement -->
+  <path d="M 580 420 L 580 490" stroke="url(#accent-grad)" stroke-width="3"/>
+  <polygon points="568,490 580,515 592,490" fill="url(#accent-grad)"/>
+
+  <!-- Label -->
+  <text x="580" y="560" text-anchor="middle" font-family="monospace" font-size="16" fill="#888">Keysend TLV</text>
+
+  <!-- Decorative sparkles -->
+  <circle cx="380" cy="250" r="4" fill="#f5a623" opacity="0.5"/>
+  <circle cx="780" cy="200" r="3" fill="#f5a623" opacity="0.5"/>
+</svg>

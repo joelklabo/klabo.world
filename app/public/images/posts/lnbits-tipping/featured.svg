@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#14141a"/>
+      <stop offset="100%" stop-color="#0d0d12"/>
+    </linearGradient>
+    <linearGradient id="accent-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1f1f28" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)" opacity="0.4"/>
+
+  <!-- Decorative circles centered -->
+  <circle cx="600" cy="315" r="200" fill="none" stroke="#1a1a24" stroke-width="1"/>
+  <circle cx="600" cy="315" r="260" fill="none" stroke="#1a1a24" stroke-width="1"/>
+  <circle cx="600" cy="315" r="320" fill="none" stroke="url(#accent-grad)" stroke-width="2" opacity="0.2"/>
+
+  <!-- Tip jar icon - larger and centered -->
+  <path d="M 520 150 L 520 380 Q 520 420 560 420 L 640 420 Q 680 420 680 380 L 680 150 Z" fill="#1a1a2e" stroke="url(#accent-grad)" stroke-width="3" filter="url(#glow)"/>
+  <ellipse cx="600" cy="150" rx="80" ry="25" fill="#1a1a2e" stroke="url(#accent-grad)" stroke-width="3"/>
+
+  <!-- Lightning bolt inside jar - larger -->
+  <path d="M 580 200 L 545 300 L 590 300 L 560 400 L 650 270 L 595 270 L 630 200 Z" fill="url(#accent-grad)" filter="url(#glow)"/>
+
+  <!-- Coins - larger and more prominent -->
+  <ellipse cx="480" cy="480" r="35" ry="14" fill="#f5a623" opacity="0.8"/>
+  <ellipse cx="530" cy="510" r="35" ry="14" fill="#f5a623" opacity="0.6"/>
+  <ellipse cx="680" cy="490" r="35" ry="14" fill="#f5a623" opacity="0.7"/>
+  <ellipse cx="730" cy="470" r="30" ry="12" fill="#f5a623" opacity="0.5"/>
+
+  <!-- LNBits text - larger -->
+  <text x="600" y="560" text-anchor="middle" font-family="system-ui, sans-serif" font-size="24" fill="#888">LNBits</text>
+
+  <!-- Decorative sparkles -->
+  <circle cx="420" cy="250" r="4" fill="#f5a623" opacity="0.5"/>
+  <circle cx="750" cy="200" r="3" fill="#f5a623" opacity="0.4"/>
+</svg>

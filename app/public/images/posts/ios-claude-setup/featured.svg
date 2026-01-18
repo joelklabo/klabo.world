@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#14141a"/>
+      <stop offset="100%" stop-color="#0d0d12"/>
+    </linearGradient>
+    <linearGradient id="accent-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5a623"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="xcode-blue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1f1f28" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)" opacity="0.4"/>
+
+  <!-- Decorative circles centered -->
+  <circle cx="600" cy="315" r="200" fill="none" stroke="#1a1a24" stroke-width="1"/>
+  <circle cx="600" cy="315" r="260" fill="none" stroke="#1a1a24" stroke-width="1"/>
+  <circle cx="600" cy="315" r="320" fill="none" stroke="url(#accent-grad)" stroke-width="2" opacity="0.2"/>
+
+  <!-- iPhone outline - larger and centered -->
+  <rect x="480" y="80" width="160" height="320" rx="26" fill="#1a1a2e" stroke="#555" stroke-width="3"/>
+  <rect x="530" y="95" width="60" height="12" rx="6" fill="#444"/>
+
+  <!-- Xcode-ish icon inside phone - larger -->
+  <rect x="505" y="150" width="110" height="100" rx="12" fill="#0a0a0f" stroke="#444" stroke-width="2"/>
+  <path d="M 535 195 L 560 165 L 585 195 L 560 225 Z" fill="url(#xcode-blue)" opacity="0.9"/>
+  <path d="M 575 210 L 600 240 L 575 240 Z" fill="#10b981" opacity="0.9"/>
+
+  <!-- Claude sparkle - larger -->
+  <circle cx="700" cy="160" r="55" fill="#1a1a2e" stroke="url(#accent-grad)" stroke-width="3" filter="url(#glow)"/>
+  <text x="700" y="175" text-anchor="middle" font-family="system-ui" font-size="40" fill="url(#accent-grad)">✦</text>
+
+  <!-- Connection line -->
+  <path d="M 620 280 Q 680 300 700 220" fill="none" stroke="url(#accent-grad)" stroke-width="3" stroke-dasharray="8"/>
+
+  <!-- MCP text - larger -->
+  <text x="560" y="450" text-anchor="middle" font-family="monospace" font-size="16" fill="#888">xcodebuildmcp</text>
+
+  <!-- Decorative sparkles -->
+  <circle cx="400" cy="200" r="4" fill="#2563eb" opacity="0.5"/>
+  <circle cx="800" cy="150" r="3" fill="#f5a623" opacity="0.5"/>
+  <circle cx="380" cy="380" r="3" fill="#10b981" opacity="0.4"/>
+</svg>

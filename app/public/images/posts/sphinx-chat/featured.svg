@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#14141a"/>
+      <stop offset="100%" stop-color="#0d0d12"/>
+    </linearGradient>
+    <linearGradient id="accent-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5a623"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1f1f28" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)" opacity="0.4"/>
+
+  <!-- Decorative circles centered -->
+  <circle cx="600" cy="315" r="200" fill="none" stroke="#1a1a24" stroke-width="1"/>
+  <circle cx="600" cy="315" r="260" fill="none" stroke="#1a1a24" stroke-width="1"/>
+  <circle cx="600" cy="315" r="320" fill="none" stroke="url(#accent-grad)" stroke-width="2" opacity="0.2"/>
+
+  <!-- Chat bubble 1 - larger -->
+  <rect x="420" y="150" width="160" height="80" rx="20" fill="#1a1a2e" stroke="url(#accent-grad)" stroke-width="3" filter="url(#glow)"/>
+  <polygon points="460,230 490,230 460,260" fill="#1a1a2e" stroke="url(#accent-grad)" stroke-width="3"/>
+  <text x="500" y="200" text-anchor="middle" font-family="system-ui" font-size="22" fill="#e5e5e5">Hello!</text>
+
+  <!-- Lightning path between - larger and more prominent -->
+  <path d="M 520 270 L 500 320 L 540 320 L 510 390" fill="none" stroke="url(#accent-grad)" stroke-width="5" stroke-linecap="round" filter="url(#glow)"/>
+
+  <!-- Chat bubble 2 - larger -->
+  <rect x="540" y="400" width="160" height="80" rx="20" fill="#2a2a4e" stroke="url(#accent-grad)" stroke-width="3" filter="url(#glow)"/>
+  <polygon points="660,400 690,400 660,370" fill="#2a2a4e" stroke="url(#accent-grad)" stroke-width="3"/>
+  <text x="620" y="450" text-anchor="middle" font-family="system-ui" font-size="22" fill="#e5e5e5">Hi! ⚡</text>
+
+  <!-- Sphinx logo hint - larger -->
+  <circle cx="780" cy="315" r="45" fill="none" stroke="url(#accent-grad)" stroke-width="3" opacity="0.6"/>
+  <text x="780" y="330" text-anchor="middle" font-family="system-ui" font-size="32" fill="#f5a623" opacity="0.8">S</text>
+
+  <!-- Decorative sparkles -->
+  <circle cx="350" cy="200" r="4" fill="#f5a623" opacity="0.5"/>
+  <circle cx="750" cy="150" r="3" fill="#f5a623" opacity="0.4"/>
+  <circle cx="380" cy="450" r="3" fill="#f5a623" opacity="0.4"/>
+</svg>

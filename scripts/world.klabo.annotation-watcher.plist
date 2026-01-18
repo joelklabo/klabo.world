@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>world.klabo.annotation-watcher</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/klabo/.local/share/mise/installs/node/24.11.1/bin/node</string>
+        <string>/Users/klabo/Documents/klabo.world/packages/content/dist/watcher/daemon.js</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>/Users/klabo/Documents/klabo.world</string>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/tmp/klabo-watcher.log</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/klabo-watcher.err</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>DATABASE_URL</key>
+        <string>file:/Users/klabo/Documents/klabo.world/app/prisma/dev.db</string>
+        <key>SOCKET_PATH</key>
+        <string>/tmp/klaboworld-annotations.sock</string>
+        <key>POLL_INTERVAL</key>
+        <string>500</string>
+    </dict>
+</dict>
+</plist>

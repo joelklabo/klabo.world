@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#14141a"/>
+      <stop offset="100%" stop-color="#0d0d12"/>
+    </linearGradient>
+    <linearGradient id="accent-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5a623"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="green-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#16a34a"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1f1f28" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)" opacity="0.4"/>
+
+  <!-- Decorative circles centered -->
+  <circle cx="600" cy="315" r="200" fill="none" stroke="#1a1a24" stroke-width="1"/>
+  <circle cx="600" cy="315" r="260" fill="none" stroke="#1a1a24" stroke-width="1"/>
+  <circle cx="600" cy="315" r="320" fill="none" stroke="url(#accent-grad)" stroke-width="2" opacity="0.2"/>
+
+  <!-- Caddy server icon - larger and centered -->
+  <rect x="480" y="100" width="160" height="200" rx="12" fill="#1a1a2e" stroke="url(#green-grad)" stroke-width="3" filter="url(#glow)"/>
+
+  <!-- Server lines -->
+  <line x1="505" y1="145" x2="615" y2="145" stroke="#444" stroke-width="2"/>
+  <line x1="505" y1="190" x2="615" y2="190" stroke="#444" stroke-width="2"/>
+  <line x1="505" y1="235" x2="615" y2="235" stroke="#444" stroke-width="2"/>
+
+  <!-- Caddyfile content - larger -->
+  <text x="510" y="170" font-family="monospace" font-size="14" fill="url(#green-grad)">example.com {</text>
+  <text x="520" y="215" font-family="monospace" font-size="13" fill="#888">reverse_proxy</text>
+  <text x="510" y="260" font-family="monospace" font-size="14" fill="url(#green-grad)">}</text>
+
+  <!-- Lock icon (HTTPS) - larger -->
+  <rect x="660" y="80" width="50" height="45" rx="6" fill="#1a1a2e" stroke="url(#green-grad)" stroke-width="3"/>
+  <rect x="670" y="60" width="30" height="25" rx="10" fill="none" stroke="url(#green-grad)" stroke-width="3"/>
+
+  <!-- NIP-05 arrow - larger -->
+  <path d="M 560 300 L 560 370" stroke="url(#accent-grad)" stroke-width="4"/>
+  <polygon points="548,370 560,395 572,370" fill="url(#accent-grad)"/>
+
+  <!-- nostr.json result - larger -->
+  <rect x="460" y="410" width="200" height="75" rx="10" fill="#1a1a2e" stroke="url(#accent-grad)" stroke-width="2" filter="url(#glow)"/>
+  <text x="560" y="440" text-anchor="middle" font-family="monospace" font-size="13" fill="#888">/.well-known/</text>
+  <text x="560" y="470" text-anchor="middle" font-family="monospace" font-size="16" fill="url(#accent-grad)">nostr.json</text>
+
+  <!-- Decorative sparkles -->
+  <circle cx="400" cy="200" r="4" fill="#22c55e" opacity="0.5"/>
+  <circle cx="750" cy="150" r="3" fill="#f5a623" opacity="0.5"/>
+  <circle cx="380" cy="380" r="3" fill="#f5a623" opacity="0.4"/>
+</svg>

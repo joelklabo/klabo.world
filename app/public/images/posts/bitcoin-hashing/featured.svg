@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#14141a"/>
+      <stop offset="100%" stop-color="#0d0d12"/>
+    </linearGradient>
+    <linearGradient id="accent-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5a623"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="glow-strong" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1f1f28" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)" opacity="0.4"/>
+
+  <!-- Decorative circles centered -->
+  <circle cx="600" cy="315" r="200" fill="none" stroke="#1a1a24" stroke-width="1"/>
+  <circle cx="600" cy="315" r="260" fill="none" stroke="#1a1a24" stroke-width="1"/>
+  <circle cx="600" cy="315" r="320" fill="none" stroke="url(#accent-grad)" stroke-width="2" opacity="0.2"/>
+
+  <!-- Input box -->
+  <rect x="460" y="170" width="120" height="70" rx="10" fill="#1a1a2e" stroke="#444" stroke-width="2"/>
+  <text x="520" y="200" text-anchor="middle" font-family="monospace" font-size="14" fill="#888">Input</text>
+  <text x="520" y="225" text-anchor="middle" font-family="monospace" font-size="12" fill="#666">"hello"</text>
+
+  <!-- Arrow to hash function -->
+  <path d="M 580 205 L 630 205" stroke="url(#accent-grad)" stroke-width="3" filter="url(#glow)"/>
+  <polygon points="630,198 650,205 630,212" fill="#f5a623" filter="url(#glow)"/>
+
+  <!-- Hash function box - larger and prominent -->
+  <rect x="655" y="155" width="130" height="100" rx="12" fill="#1a1a2e" stroke="url(#accent-grad)" stroke-width="3" filter="url(#glow)"/>
+  <text x="720" y="195" text-anchor="middle" font-family="monospace" font-size="20" font-weight="bold" fill="#f5a623">SHA</text>
+  <text x="720" y="225" text-anchor="middle" font-family="monospace" font-size="20" font-weight="bold" fill="#f5a623">256</text>
+
+  <!-- Arrow to output -->
+  <path d="M 720 255 L 720 300" stroke="url(#accent-grad)" stroke-width="3" filter="url(#glow)"/>
+  <polygon points="713,300 720,320 727,300" fill="#f5a623" filter="url(#glow)"/>
+
+  <!-- Output hash - larger -->
+  <rect x="480" y="330" width="360" height="60" rx="10" fill="#1a1a2e" stroke="#22c55e" stroke-width="2"/>
+  <text x="660" y="367" text-anchor="middle" font-family="monospace" font-size="16" fill="#22c55e">00000000000abc123def...</text>
+
+  <!-- Leading zeros highlight -->
+  <text x="660" y="430" text-anchor="middle" font-family="system-ui" font-size="16" fill="#888">Leading zeros = Valid block!</text>
+
+  <!-- Mining nonce loop - larger -->
+  <path d="M 785 205 Q 860 205 860 320 Q 860 420 660 420 Q 480 420 480 280 Q 480 230 460 205" fill="none" stroke="#444" stroke-width="2" stroke-dasharray="6"/>
+  <text x="890" y="320" font-family="system-ui" font-size="14" fill="#666">nonce++</text>
+
+  <!-- Decorative sparkles -->
+  <circle cx="400" cy="250" r="3" fill="#f5a623" opacity="0.5"/>
+  <circle cx="850" cy="180" r="2" fill="#f5a623" opacity="0.4"/>
+  <circle cx="380" cy="380" r="2" fill="#f5a623" opacity="0.3"/>
+</svg>

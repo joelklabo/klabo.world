@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#14141a"/>
+      <stop offset="100%" stop-color="#0d0d12"/>
+    </linearGradient>
+    <linearGradient id="accent-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5a623"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1f1f28" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)" opacity="0.4"/>
+
+  <!-- Decorative circles centered -->
+  <circle cx="600" cy="315" r="200" fill="none" stroke="#1a1a24" stroke-width="1"/>
+  <circle cx="600" cy="315" r="260" fill="none" stroke="#1a1a24" stroke-width="1"/>
+  <circle cx="600" cy="315" r="320" fill="none" stroke="url(#accent-grad)" stroke-width="2" opacity="0.2"/>
+
+  <!-- Robot/Agent head - larger and centered -->
+  <rect x="500" y="130" width="160" height="140" rx="24" fill="#1a1a2e" stroke="url(#accent-grad)" stroke-width="3" filter="url(#glow)"/>
+  <circle cx="545" cy="190" r="20" fill="url(#accent-grad)"/>
+  <circle cx="615" cy="190" r="20" fill="url(#accent-grad)"/>
+  <rect x="530" y="230" width="100" height="14" rx="7" fill="url(#accent-grad)" opacity="0.6"/>
+
+  <!-- Antenna - larger -->
+  <line x1="580" y1="130" x2="580" y2="80" stroke="url(#accent-grad)" stroke-width="3"/>
+  <circle cx="580" cy="70" r="14" fill="url(#accent-grad)" filter="url(#glow)"/>
+
+  <!-- Task list being completed - larger -->
+  <rect x="480" y="300" width="200" height="160" rx="12" fill="#1a1a2e" stroke="#444" stroke-width="2"/>
+
+  <!-- Completed tasks -->
+  <line x1="510" y1="340" x2="650" y2="340" stroke="#22c55e" stroke-width="3"/>
+  <path d="M 510 332 L 522 346 L 545 320" stroke="#22c55e" stroke-width="3" fill="none"/>
+
+  <line x1="510" y1="385" x2="650" y2="385" stroke="#22c55e" stroke-width="3"/>
+  <path d="M 510 377 L 522 391 L 545 365" stroke="#22c55e" stroke-width="3" fill="none"/>
+
+  <!-- In-progress task -->
+  <line x1="510" y1="430" x2="600" y2="430" stroke="#666" stroke-width="3"/>
+  <rect x="510" y="420" width="20" height="20" rx="4" fill="none" stroke="#666" stroke-width="2"/>
+
+  <!-- Decorative sparkles -->
+  <circle cx="400" cy="200" r="4" fill="#f5a623" opacity="0.5"/>
+  <circle cx="750" cy="150" r="3" fill="#22c55e" opacity="0.5"/>
+  <circle cx="380" cy="400" r="3" fill="#f5a623" opacity="0.4"/>
+</svg>

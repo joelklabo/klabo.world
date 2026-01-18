@@ -1,0 +1,39 @@
+[tools]
+node = "24.11.1"
+
+[tasks.watcher-build]
+description = "Build the annotation watcher daemon"
+run = "pnpm --filter @klaboworld/content build"
+
+[tasks.watcher-install]
+description = "Install annotation watcher as launchd service"
+run = """
+cp scripts/world.klabo.annotation-watcher.plist ~/Library/LaunchAgents/
+launchctl load ~/Library/LaunchAgents/world.klabo.annotation-watcher.plist
+echo "Watcher installed and started. Check: launchctl list | grep klabo"
+"""
+
+[tasks.watcher-uninstall]
+description = "Remove annotation watcher launchd service"
+run = """
+launchctl unload ~/Library/LaunchAgents/world.klabo.annotation-watcher.plist 2>/dev/null || true
+rm -f ~/Library/LaunchAgents/world.klabo.annotation-watcher.plist
+echo "Watcher uninstalled"
+"""
+
+[tasks.watcher-restart]
+description = "Restart annotation watcher after code changes"
+run = "launchctl kickstart -k gui/$(id -u)/world.klabo.annotation-watcher"
+
+[tasks.watcher-status]
+description = "Check annotation watcher status"
+run = """
+launchctl list | grep klabo || echo "Watcher not running"
+echo ""
+echo "Recent logs:"
+tail -20 /tmp/klabo-watcher.log 2>/dev/null || echo "No logs yet"
+"""
+
+[tasks.watcher-logs]
+description = "Tail annotation watcher logs"
+run = "tail -f /tmp/klabo-watcher.log"

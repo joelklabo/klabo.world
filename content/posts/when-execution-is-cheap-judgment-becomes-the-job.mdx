@@ -1,0 +1,303 @@
+---
+title: "When Execution Is Cheap, Judgment Becomes the Job"
+summary: "How AI coding tools are changing what programmers actually do — and why protecting your judgment matters more than typing speed."
+date: 2026-01-17
+status: draft
+tags:
+  - ai
+  - programming
+  - claude-code
+  - workflow
+featuredImage: /images/posts/execution-cheap/featured.svg
+nostrstackEnabled: true
+---
+
+*How AI coding tools are changing what programmers actually do*
+
+## Contents
+
+- [Why these tools create a weird kind of anxiety](#why-these-tools-create-a-weird-kind-of-anxiety)
+- [The real bottleneck is choice](#the-real-bottleneck-is-choice)
+- [Old workflow vs new workflow](#old-workflow-vs-new-workflow)
+- [Software is never done](#software-is-never-done-so-you-need-stopping-rules)
+- [The unit of reuse has changed](#the-unit-of-reuse-has-changed)
+- [What level I work at now](#what-level-i-work-at-now)
+- [Code is no longer the interface](#code-is-no-longer-the-interface)
+- [Processes are the new functions](#processes-are-the-new-functions)
+- [Process as function](#process-as-function)
+- [The prompt template that scales](#the-prompt-template-that-actually-scales)
+- [Your real skill is task selection](#your-real-skill-is-task-selection)
+- [How I stop](#how-i-stop)
+- [What a programmer actually does now](#what-a-programmer-actually-does-now)
+
+---
+
+For my entire career "programming" meant typing in code, knowing the IDE, knowing CLI commands, knowing how to access documentation, best practices, edge cases to look out for.
+
+That's all over now.
+
+With tools like Claude Code, my job has shifted from being the one writing the code to deciding what we should work on next.
+
+It feels like I have a room full of engineers, 24 hours a day, just waiting for me to give them something to do.
+
+**All those engineers in that room are doing nothing, and it's your fault.**
+
+---
+
+## Why these tools create a weird kind of anxiety
+
+A pattern shows up fast: low-level anxiety that didn't exist before.
+
+Not because you think you're being replaced.
+
+Because execution is no longer the limiting factor.
+
+You can generate tests, refactors, migrations, benchmarks, doc updates, and experiments faster than you can decide what's worth doing.
+
+You suddenly have more capacity than clarity.
+
+And that pressure shows up in a very specific way: *you don't want to stop*.
+
+You stay up later than usual. You keep "just running one more task." You find yourself trying to come up with things for it to do before you go to bed, or before you leave the house. Not because the work is urgent, but because stopping feels like wasting momentum.
+
+People describe it pretty bluntly:
+
+> "The disorientation isn't from the workload — it's from the decision fatigue."
+> — [Brooke Lacey](https://x.com/brookejlacey)
+
+> "I routinely find myself staying up till midnight or 1am to get in 'just one more session!!'"
+> — [Brian Horakh](https://brianhorakh.medium.com/sleep-hacking-with-claude-f3badde6d81d)
+
+<Tweet id="1998256754157597050" />
+
+It's not addiction exactly — it's something more like over-activation.
+
+Execution continues as long as you keep deciding. The system doesn't get tired.
+
+---
+
+## The real bottleneck is choice
+
+Traditional programming felt hard because thinking and execution were entangled. You thought through the problem while you typed the solution.
+
+Now execution is cheap.
+
+The hard part is deciding:
+- what to build
+- in what order
+- how to scope it so the tool can succeed
+- what "done" even means
+
+The tools don't choose tasks.
+
+I do.
+
+The bottleneck moved from typing speed to decision throughput.
+
+---
+
+## Old workflow vs new workflow
+
+<figure>
+  <img src="/images/posts/execution-cheap/workflow-comparison.svg" alt="Comparison of old linear workflow (Idea → Think+Type → Debug → Commit) versus new iterative workflow (Idea → Decide → Specify → Execute → Evaluate → repeat)" />
+</figure>
+
+The constraint moved upstream.
+
+---
+
+## Software is never done (so you need stopping rules)
+
+Once you internalize that software is effectively never "finished," the anxiety drops.
+
+There's always another improvement you could make.
+
+So the goal isn't to exhaust the task list.
+
+The goal is to:
+- maintain a healthy idea pipeline
+- feed high-leverage work
+- accept that idle capacity is fine
+
+You're not failing if the room is idle.
+
+You're failing if you point it at the wrong work.
+
+---
+
+## The unit of reuse has changed
+
+When I fix a bug now, I rarely start by fixing the bug.
+
+I start by setting up the process that makes the bug easy to fix next time:
+- better repros
+- better tests
+- better observability
+- tighter constraints
+- repeatable workflows
+
+When I was writing code directly, the reusable unit was the function.
+
+Now the reusable unit isn't code.
+
+It's process.
+
+---
+
+## What level I work at now
+
+<figure>
+  <img src="/images/posts/execution-cheap/stack-levels.svg" alt="Stack diagram showing layers from top to bottom: Concepts/Intent, Processes/Workflows, Specs/Prompts, Generated Code, Runtime/Binary. Arrow indicates 'Where you work now' pointing to top layers, 'AI handles this' pointing to bottom layers." />
+</figure>
+
+The interface moved up the stack.
+
+---
+
+## Code is no longer the interface
+
+Looking at code now feels like cracking open a binary:
+- important
+- necessary
+- but not the level I'm operating at most of the time
+
+The interface I'm actually designing is:
+- concepts
+- workflows
+- constraints
+- evaluation loops
+- "definition of done"
+
+The AI produces code the way a compiler produces machine instructions. I still care about the output — I'm just not thinking in keystrokes anymore.
+
+---
+
+## Processes are the new functions
+
+A good AI-friendly process has:
+- a clear purpose
+- defined inputs
+- predictable outputs
+- real reuse value
+
+That's a function.
+
+Except instead of living in a source file, it lives in:
+- prompts
+- scripts
+- tests
+- repo structure
+- conventions
+
+Once you see that, the job starts to make sense again.
+
+---
+
+## Process as function
+
+<div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
+<div className="bg-zinc-900/50 rounded-lg p-4 border border-zinc-800">
+<p className="text-sm font-semibold text-zinc-400 mb-2">BEFORE</p>
+
+```
+fixBug()
+```
+
+</div>
+<div className="bg-zinc-900/50 rounded-lg p-4 border border-amber-500/30">
+<p className="text-sm font-semibold text-amber-500 mb-2">NOW</p>
+
+```
+Bug Fix Process:
+1) Add failing repro test
+2) Ask model to fix until tests pass
+3) Validate behavior + edge cases
+4) Lock regression (test + notes)
+```
+
+</div>
+</div>
+
+---
+
+## The prompt template that actually scales
+
+The fastest way to waste infinite execution is vague requests.
+
+The fastest way to compound execution is a tight spec.
+
+Here's the minimum structure I aim for:
+
+<div className="bg-amber-500/10 border-l-4 border-amber-500 rounded-r-lg p-4 my-6">
+
+**Goal:**
+*What you're trying to accomplish*
+
+**Context:**
+*Where in the repo / what changed recently*
+
+**Constraints:**
+*Don't touch X, keep API stable, perf budget, etc.*
+
+**Acceptance tests:**
+*What must pass / what output should look like*
+
+**Plan:**
+*Small steps, checkpoint after each*
+
+**Stop condition:**
+*When to ask me a question instead of guessing*
+
+</div>
+
+This is the new "typing."
+
+---
+
+## Your real skill is task selection
+
+The leverage now comes from:
+- decomposing work well
+- choosing tasks within the model's strike zone
+- sequencing work so outputs compound
+- knowing when to intervene
+- knowing when to stop
+
+That isn't typing.
+
+That's judgment.
+
+---
+
+## How I stop
+
+I don't stop when the system is "done." It never is.
+
+I stop when:
+- the next task isn't clearly higher leverage than the alternatives
+- my decisions start getting worse
+- I'm generating work faster than I can evaluate it
+- I feel the urge to keep going just because it's "easy"
+
+Execution being cheap doesn't mean attention is.
+
+Protecting judgment is part of the job now.
+
+---
+
+## What a programmer actually does now
+
+**Not primarily:**
+- write code
+- fix bugs
+- type fast
+
+**But:**
+- decide what code should exist
+- design processes that produce it reliably
+- direct execution
+- evaluate results
+
+Execution is no longer the scarce resource.
+
+Clear thinking is.

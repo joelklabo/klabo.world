@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 320" fill="none">
+  <style>
+    .title { font: bold 14px system-ui, sans-serif; fill: #e5e5e5; }
+    .label { font: 13px system-ui, sans-serif; fill: #e5e5e5; }
+    .label-dim { font: 12px system-ui, sans-serif; fill: #888; }
+    .layer { stroke: #333; stroke-width: 1; }
+    .layer-top { fill: #3d2f1e; }
+    .layer-2 { fill: #2d2a1e; }
+    .layer-3 { fill: #1e2a2d; }
+    .layer-4 { fill: #1e1e2d; }
+    .layer-bottom { fill: #1a1a1a; }
+    .highlight { fill: #f5a623; }
+    .bracket { stroke: #f5a623; stroke-width: 2; fill: none; }
+    .bracket-label { font: bold 12px system-ui, sans-serif; fill: #f5a623; }
+  </style>
+
+  <!-- Stack layers -->
+  <rect x="50" y="30" width="300" height="50" class="layer layer-top" rx="4"/>
+  <text x="200" y="60" text-anchor="middle" class="title">Concepts / Intent</text>
+
+  <rect x="50" y="85" width="300" height="50" class="layer layer-2" rx="4"/>
+  <text x="200" y="115" text-anchor="middle" class="title">Processes / Workflows</text>
+
+  <rect x="50" y="140" width="300" height="50" class="layer layer-3" rx="4"/>
+  <text x="200" y="170" text-anchor="middle" class="title">Specs / Prompts</text>
+
+  <rect x="50" y="195" width="300" height="50" class="layer layer-4" rx="4"/>
+  <text x="200" y="225" text-anchor="middle" class="label">Generated Code</text>
+
+  <rect x="50" y="250" width="300" height="50" class="layer layer-bottom" rx="4"/>
+  <text x="200" y="280" text-anchor="middle" class="label-dim">Runtime / Binary</text>
+
+  <!-- Human focus bracket -->
+  <path d="M 370 35 Q 385 35 385 55 L 385 130 Q 385 160 370 160" class="bracket"/>
+  <circle cx="385" cy="97" r="3" class="highlight"/>
+  <text x="400" y="85" class="bracket-label">Where you</text>
+  <text x="400" y="102" class="bracket-label">work now</text>
+
+  <!-- AI focus bracket -->
+  <path d="M 370 200 Q 385 200 385 220 L 385 270 Q 385 295 370 295" class="bracket" style="stroke: #666;"/>
+  <circle cx="385" cy="247" r="3" style="fill: #666;"/>
+  <text x="400" y="240" class="label-dim">AI handles</text>
+  <text x="400" y="257" class="label-dim">this</text>
+
+  <!-- Arrow showing interface moved up -->
+  <line x1="25" y1="280" x2="25" y2="55" stroke="#f5a623" stroke-width="2" stroke-dasharray="4"/>
+  <polygon points="20,55 25,40 30,55" fill="#f5a623"/>
+  <text x="15" y="165" class="bracket-label" transform="rotate(-90, 15, 165)" style="font-size: 11px;">Interface moved up</text>
+</svg>

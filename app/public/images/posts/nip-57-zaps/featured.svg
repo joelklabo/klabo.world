@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#14141a"/>
+      <stop offset="100%" stop-color="#0d0d12"/>
+    </linearGradient>
+    <linearGradient id="accent-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="glow-strong" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1f1f28" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)" opacity="0.4"/>
+
+  <!-- Decorative circles centered -->
+  <circle cx="600" cy="315" r="200" fill="none" stroke="#1a1a24" stroke-width="1"/>
+  <circle cx="600" cy="315" r="260" fill="none" stroke="#1a1a24" stroke-width="1"/>
+  <circle cx="600" cy="315" r="320" fill="none" stroke="url(#accent-grad)" stroke-width="2" opacity="0.2"/>
+
+  <!-- Large ZAP lightning bolt - centered and scaled up -->
+  <path d="M 560 120 L 480 300 L 570 300 L 510 480 L 720 230 L 600 230 L 680 120 Z" fill="url(#accent-grad)" filter="url(#glow-strong)"/>
+
+  <!-- Outer glow ring -->
+  <path d="M 560 120 L 480 300 L 570 300 L 510 480 L 720 230 L 600 230 L 680 120 Z" fill="none" stroke="#fbbf24" stroke-width="6" opacity="0.2" filter="url(#glow-strong)"/>
+
+  <!-- Sats flying out - larger and more prominent -->
+  <circle cx="420" cy="380" r="14" fill="#f5a623" opacity="0.7" filter="url(#glow)"/>
+  <circle cx="380" cy="320" r="10" fill="#f5a623" opacity="0.5" filter="url(#glow)"/>
+  <circle cx="780" cy="280" r="14" fill="#f5a623" opacity="0.7" filter="url(#glow)"/>
+  <circle cx="820" cy="360" r="10" fill="#f5a623" opacity="0.5" filter="url(#glow)"/>
+  <circle cx="440" cy="220" r="11" fill="#f5a623" opacity="0.6" filter="url(#glow)"/>
+  <circle cx="760" cy="420" r="11" fill="#f5a623" opacity="0.6" filter="url(#glow)"/>
+  <circle cx="350" cy="260" r="8" fill="#f5a623" opacity="0.4"/>
+  <circle cx="840" cy="300" r="8" fill="#f5a623" opacity="0.4"/>
+
+  <!-- NIP-57 label -->
+  <text x="600" y="540" text-anchor="middle" font-family="monospace" font-size="20" fill="#888">NIP-57</text>
+</svg>
