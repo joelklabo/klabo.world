@@ -4,6 +4,7 @@ import type { Route } from 'next';
 import React, { type ReactNode } from 'react';
 import { Surface } from '@/components/ui/surface';
 import { CodeBlock } from '@/components/mdx-code-block';
+import { Tweet } from '@/components/tweet';
 
 const MDX_IMAGE_DISPLAY_NAME = 'MdxImage';
 
@@ -139,5 +140,6 @@ export function createMdxComponents(options: MdxComponentsOptions = {}) {
       <ol className="space-y-2 pl-5 text-sm text-muted-foreground list-decimal" {...props} />
     ),
     li: (props: { children: ReactNode }) => <li className="leading-relaxed" {...props} />,
+    Tweet,
   };
 }

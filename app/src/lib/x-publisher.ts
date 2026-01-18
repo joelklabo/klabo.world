@@ -1,11 +1,11 @@
 import { TwitterApi } from 'twitter-api-v2';
 import { env } from './env';
 
-export type PublishResult =
+type PublishResult =
   | { success: true; postId: string }
   | { success: false; error: string };
 
-export type PublishInput = {
+type PublishInput = {
   title: string;
   summary: string;
   url: string;
@@ -33,7 +33,7 @@ export function isXPublishingEnabled(): boolean {
  * Format: "Title\n\nSummary\n\nURL"
  * If too long, truncates summary with ellipsis.
  */
-export function composeTweet(input: PublishInput): string {
+function composeTweet(input: PublishInput): string {
   const { title, summary, url } = input;
 
   // URL always counts as 23 chars regardless of actual length
