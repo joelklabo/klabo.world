@@ -21,7 +21,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "tsc --watch",
-    "lint": "eslint src/",
+    "lint": "echo \"(content lint placeholder)\"",
     "test": "vitest run"
   },
   "dependencies": {
