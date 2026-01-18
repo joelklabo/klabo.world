@@ -106,7 +106,7 @@ export default async function AppDetailPage({
           {app.screenshots?.length ? (
             <section className="mt-10">
               <h2 className="text-2xl font-semibold">Screenshots</h2>
-              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {app.screenshots.map((shot) => (
                   <Image
                     key={shot}

@@ -31,7 +31,7 @@ export default function AppsPage() {
             Bitcoin, Lightning Network, and Nostr workflows.
           </p>
         </header>
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {apps.map((app) => (
             <Link
               key={app.slug}

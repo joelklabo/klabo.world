@@ -163,7 +163,7 @@ export default async function Home() {
 
           <HomeStats stats={stats} itemTestId="home-stat-item" />
 
-          <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.1fr_0.9fr]">
             <div className="space-y-4">
               <h3 className="text-sm font-semibold uppercase tracking-[0.28em] text-muted-foreground">
                 Quick links
@@ -189,7 +189,7 @@ export default async function Home() {
 
       <section className="pb-16 sm:pb-20">
         <div className="mx-auto max-w-6xl px-6">
-          <div className="grid gap-10 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
             <section className="space-y-5" data-testid="home-section-writing">
               <div className="flex items-baseline justify-between gap-4">
                 <div className="space-y-1">

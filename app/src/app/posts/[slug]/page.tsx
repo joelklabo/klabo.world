@@ -152,7 +152,7 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
       </div>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <div className="relative mx-auto max-w-6xl px-6 py-16">
-        <div className="grid gap-10 lg:grid-cols-[3fr_1fr]">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[3fr_1fr]">
           <section className="min-w-0 space-y-8">
             <div className="rounded-3xl border border-border/60 bg-card/80 p-8 shadow-[0_24px_70px_rgba(6,10,20,0.55)]">
               <Link
@@ -217,7 +217,7 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
                 <NostrstackComments threadId={threadId} canonicalUrl={canonicalUrl} relays={nostrRelays} />
               </ClientErrorBoundary>
             )}
-            <div className="grid gap-4 text-sm text-muted-foreground sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 text-sm text-muted-foreground sm:grid-cols-2">
               {previous && (
                 <Link
                   href={`/posts/${previous.slug}`}

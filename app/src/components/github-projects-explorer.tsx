@@ -133,7 +133,7 @@ export function GitHubProjectsExplorer({ projects, className, cardTestId }: Prop
       {visibleProjects.length > 0 ? (
         <div
           key={animationKey}
-          className="grid gap-4 md:grid-cols-3"
+          className="grid grid-cols-1 gap-4 md:grid-cols-3"
           data-testid="projects-grid"
         >
           {visibleProjects.map((project, index) => (

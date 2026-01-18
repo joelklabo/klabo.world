@@ -38,7 +38,7 @@ export function HomeStats({ stats, className, itemTestId = "home-stat-item" }: H
   if (stats.length === 0) return null;
 
   return (
-    <div className={cn("grid gap-4 sm:grid-cols-2 lg:grid-cols-4", className)}>
+    <div className={cn("grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4", className)}>
       {stats.map((stat) => {
         const formattedValue = formatValue(stat.value);
         const content = (

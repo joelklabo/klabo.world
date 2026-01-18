@@ -30,7 +30,7 @@ export default function PostsIndex() {
             <Link href="/posts/tags">Browse tags</Link>
           </Button>
         </header>
-        <ul className="grid gap-5 sm:grid-cols-2">
+        <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           {posts.map((post) => (
             <li key={post._id}>
               <article className="card-hover-lift group h-full rounded-2xl border border-border/60 bg-card/80 p-5 shadow-[0_18px_45px_rgba(6,10,20,0.45)]">

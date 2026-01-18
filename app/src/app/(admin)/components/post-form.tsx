@@ -130,7 +130,7 @@ export function PostForm({ upsertAction, deleteAction, initialData, mode }: Post
         />
         {state.errors?.summary && <p className="text-xs text-destructive">{state.errors.summary.join(', ')}</p>}
       </div>
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="tags">Tags (comma-separated)</Label>
           <Input
@@ -156,7 +156,7 @@ export function PostForm({ upsertAction, deleteAction, initialData, mode }: Post
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">nostrstack</p>
           <p className="text-sm text-muted-foreground">Optional metadata for tips, Nostr share, and comments.</p>
         </div>
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="lightningAddress">Lightning address</Label>
             <Input

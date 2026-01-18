@@ -24,7 +24,7 @@ const warmPrismTheme: PrismTheme = {
 };
 
 const baseCodeStyles =
-  'relative mt-4 rounded-2xl border border-border/60 bg-card/80 p-4 shadow-[0_18px_45px_rgba(6,10,20,0.45)] text-sm leading-relaxed';
+  'relative mt-4 max-w-full rounded-2xl border border-border/60 bg-card/80 p-4 shadow-[0_18px_45px_rgba(6,10,20,0.45)] text-sm leading-relaxed';
 
 export function CodeBlock({ children }: { children: ReactNode }) {
   const child = Array.isArray(children) ? children[0] : children;
@@ -72,7 +72,7 @@ export function CodeBlock({ children }: { children: ReactNode }) {
       </button>
       <Highlight {...defaultProps} code={trimmedCode} language={language} theme={warmPrismTheme}>
         {({ className, style, tokens, getLineProps, getTokenProps }) => (
-          <pre className="mt-10 overflow-x-auto rounded-xl bg-transparent" aria-label={`Code snippet (${language})`}>
+          <pre className="mt-10 max-w-full overflow-x-auto rounded-xl bg-transparent" aria-label={`Code snippet (${language})`}>
             <code className={className} style={{ ...style, paddingTop: '0.5rem' }}>
               {tokens.map((line, lineIndex) => {
                 const lineProps = getLineProps({ line, key: lineIndex });

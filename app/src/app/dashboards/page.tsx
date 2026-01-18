@@ -37,7 +37,7 @@ export default function DashboardsPage() {
         </header>
 
         {dashboards.length > 0 ? (
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {dashboards.map((dashboard) => {
               const link = dashboard.externalUrl ?? dashboard.iframeUrl ?? `/admin/dashboards/${dashboard.slug}`;
               const external = isExternal(link);

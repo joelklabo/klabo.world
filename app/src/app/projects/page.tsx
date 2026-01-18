@@ -84,7 +84,7 @@ export default async function ProjectsPage() {
                 Pinned repos—hand-picked for the best overview.
               </p>
             </div>
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               {pinned.map((project) => (
                 <GitHubProjectCard
                   key={project.fullName}

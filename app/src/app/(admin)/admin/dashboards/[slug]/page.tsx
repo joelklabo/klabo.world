@@ -155,7 +155,7 @@ export default async function DashboardDetailPage({ params }: PageProps) {
         </div>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="rounded-2xl border border-border/60 bg-card p-6 shadow-[0_20px_45px_rgba(6,10,20,0.35)] lg:col-span-2">
           <h2 className="text-lg font-semibold text-foreground">Configuration</h2>
           <p className="text-sm text-muted-foreground">Update metadata, KQL queries, or embed links.</p>

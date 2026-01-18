@@ -253,7 +253,7 @@ export default async function DraftPreviewPage({
           </div>
 
           <div className="mx-auto max-w-6xl px-6 py-12">
-            <div className="grid gap-12 lg:grid-cols-[1fr_280px]">
+            <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_280px]">
               <section className="min-w-0">
                 {/* Content */}
                 <div className="rounded-3xl border border-border/60 bg-gradient-to-b from-card/90 to-card/70 p-8 shadow-[0_24px_70px_rgba(6,10,20,0.55)] md:p-10 lg:p-12">
@@ -300,7 +300,7 @@ export default async function DraftPreviewPage({
             </div>
           </header>
 
-          <div className="grid gap-12 lg:grid-cols-[1fr_280px]">
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_280px]">
             <section className="min-w-0">
               {/* Content Card - Title comes from MDX */}
               <div className="rounded-3xl border border-border/60 bg-gradient-to-b from-card/90 to-card/70 p-8 shadow-[0_24px_70px_rgba(6,10,20,0.55)] md:p-10 lg:p-12">
@@ -360,7 +360,7 @@ export default async function DraftPreviewPage({
             </div>
           )}
 
-          <div className="grid gap-12 lg:grid-cols-[1fr_280px]">
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_280px]">
             <section className="min-w-0">
               <div className="rounded-3xl border border-border/60 bg-gradient-to-b from-card/90 to-card/70 p-8 shadow-[0_24px_70px_rgba(6,10,20,0.55)] md:p-10 lg:p-12">
                 <div className={proseClass}>
@@ -419,7 +419,7 @@ export default async function DraftPreviewPage({
           </header>
 
           <div className="mx-auto max-w-6xl px-6 py-12">
-            <div className="grid gap-12 lg:grid-cols-[1fr_280px]">
+            <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_280px]">
               <section className="min-w-0">
                 <div className="rounded-3xl border border-border/60 bg-gradient-to-b from-card/90 to-card/70 p-8 shadow-[0_24px_70px_rgba(6,10,20,0.55)] md:p-10 lg:p-12">
                   <div className={`${proseClass} prose-no-title`}>
@@ -477,7 +477,7 @@ export default async function DraftPreviewPage({
           </header>
 
           <div className="mx-auto max-w-6xl px-6 py-12">
-            <div className="grid gap-12 lg:grid-cols-[1fr_280px]">
+            <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_280px]">
               <section className="min-w-0">
                 <div className="rounded-3xl border border-border/60 bg-gradient-to-b from-card/90 to-card/70 p-8 shadow-[0_24px_70px_rgba(6,10,20,0.55)] md:p-10 lg:p-12">
                   <div className={proseClass}>

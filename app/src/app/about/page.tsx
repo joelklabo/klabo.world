@@ -37,7 +37,7 @@ export default function AboutPage() {
           </div>
         </header>
 
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           <Surface
             className="rounded-3xl shadow-[0_20px_45px_rgba(6,10,20,0.45)]"
             innerClassName="h-full rounded-3xl border border-border/60 bg-card/80 p-6"

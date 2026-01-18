@@ -77,7 +77,7 @@ export function GitHubProjectsShowcase({
       )}
       innerClassName="overflow-hidden rounded-3xl border border-border/70 bg-card/70"
     >
-      <div className="grid gap-0 md:grid-cols-[1.2fr_0.8fr] md:divide-x md:divide-border/40">
+      <div className="grid grid-cols-1 gap-0 md:grid-cols-[1.2fr_0.8fr] md:divide-x md:divide-border/40">
         <a
           href={featured.url}
           target="_blank"

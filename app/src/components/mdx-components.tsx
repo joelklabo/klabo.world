@@ -117,8 +117,8 @@ export function createMdxComponents(options: MdxComponentsOptions = {}) {
     blockquote: BlockQuote,
     table: (props: { children: ReactNode }) => (
       <Surface
-        className="rounded-2xl shadow-[0_24px_60px_rgba(6,10,20,0.45)]"
-        innerClassName="overflow-hidden rounded-2xl border border-border/60 bg-card/80"
+        className="max-w-full rounded-2xl shadow-[0_24px_60px_rgba(6,10,20,0.45)]"
+        innerClassName="overflow-x-auto rounded-2xl border border-border/60 bg-card/80"
       >
         {/* eslint-disable-next-line sonarjs/table-header */}
         <table className="min-w-full divide-y divide-border/60 bg-background/40" {...props} />

@@ -71,7 +71,7 @@ export function DashboardForm({ action, submitLabel, dashboard, includeSlugField
         <p className="text-xs text-muted-foreground">Shown in the dashboards table and metadata sidebar.</p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         <div className="space-y-2">
           <Label htmlFor="panelType">Panel type</Label>
           <select
@@ -131,7 +131,7 @@ export function DashboardForm({ action, submitLabel, dashboard, includeSlugField
         <p className="text-xs text-muted-foreground">Used for quick filtering. Example: telemetry,prod,errors.</p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="iframeUrl">Iframe URL (for embeds)</Label>
           <Input

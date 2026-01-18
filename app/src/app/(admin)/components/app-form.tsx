@@ -95,7 +95,7 @@ export function AppForm({ upsertAction, deleteAction, initialData, mode }: AppFo
         />
         {state.errors?.name && <p className="text-xs text-destructive">{state.errors.name.join(', ')}</p>}
       </div>
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="version">Version</Label>
           <Input
@@ -143,7 +143,7 @@ export function AppForm({ upsertAction, deleteAction, initialData, mode }: AppFo
           data-testid={`${testIdPrefix}-features`}
         />
       </div>
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="appStoreURL">App Store URL</Label>
           <Input
@@ -169,7 +169,7 @@ export function AppForm({ upsertAction, deleteAction, initialData, mode }: AppFo
         {state.errors?.githubURL && <p className="text-xs text-destructive">{state.errors.githubURL.join(', ')}</p>}
       </div>
       </div>
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <ImageUploadField
           name="icon"
           label="Icon path"
