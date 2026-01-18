@@ -4,6 +4,7 @@ import {
   type ComputedFields,
 } from 'contentlayer/source-files';
 import path from 'node:path';
+import rehypeSlug from 'rehype-slug';
 
 const cwd = process.cwd();
 const repoRoot = path.basename(cwd) === 'app' ? path.resolve(cwd, '..') : cwd;
@@ -102,6 +103,7 @@ export default makeSource({
     mdxOptions: (opts) => {
       // Force production MDX output to avoid React 19 dev runtime issues in RSC.
       opts.development = false;
+      opts.rehypePlugins = [...(opts.rehypePlugins ?? []), rehypeSlug];
       return opts;
     },
   },
