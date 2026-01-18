@@ -61,12 +61,12 @@ export function AppForm({ upsertAction, deleteAction, initialData, mode }: AppFo
   return (
     <form action={formAction} className="space-y-6" data-testid="apps-edit-form">
       {state.message && !state.success && (
-        <div className="rounded-md bg-destructive/15 p-3 text-sm text-destructive">
+        <div className="rounded-md bg-destructive/15 p-3 text-sm text-destructive" role="alert" aria-live="assertive">
           {state.message}
         </div>
       )}
       {deleteState.message && !deleteState.success && (
-        <div className="rounded-md bg-destructive/15 p-3 text-sm text-destructive">
+        <div className="rounded-md bg-destructive/15 p-3 text-sm text-destructive" role="alert" aria-live="assertive">
           {deleteState.message}
         </div>
       )}

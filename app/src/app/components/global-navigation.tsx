@@ -222,7 +222,8 @@ export function GlobalNavigation() {
                 key={item.href}
                 href={item.href as Route}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`block rounded-lg px-3 py-2 text-sm font-semibold transition ${
+                aria-current={pathname === item.href || (item.href !== '/' && pathname.startsWith(`${item.href}/`)) ? 'page' : undefined}
+                className={`block rounded-lg px-3 py-2 text-sm font-semibold motion-safe:transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 ${
                   pathname === item.href || (item.href !== '/' && pathname.startsWith(`${item.href}/`))
                     ? 'bg-primary/10 text-primary'
                     : 'text-muted-foreground hover:text-foreground hover:bg-background/50'
@@ -258,17 +259,18 @@ export function GlobalNavigation() {
         <div className="flex items-center justify-between">
           <Link
             href="/"
-            className="text-lg font-semibold tracking-[0.18em] uppercase text-primary drop-shadow"
+            className="text-lg font-semibold tracking-[0.18em] uppercase text-primary drop-shadow rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
             data-testid="global-nav-logo"
           >
             klabo.world
           </Link>
           <button
             type="button"
-            className="lg:hidden min-h-10 rounded-full border border-border/60 bg-card/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-foreground hover:border-primary/70"
+            className="lg:hidden min-h-11 min-w-11 rounded-full border border-border/60 bg-card/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-foreground hover:border-primary/70 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
             onClick={() => setMobileMenuOpen((prev) => !prev)}
             aria-expanded={mobileMenuOpen}
             aria-controls="global-mobile-nav"
+            aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
           >
             Menu
           </button>
@@ -282,7 +284,8 @@ export function GlobalNavigation() {
               <Link
                 key={item.href}
                 href={item.href as Route}
-                className={`rounded-full px-3 py-1 transition hover:text-primary ${
+                aria-current={isActive ? 'page' : undefined}
+                className={`rounded-full px-3 py-1 motion-safe:transition-colors hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 ${
                   isActive ? 'bg-primary/10 text-primary shadow-[0_8px_24px_rgba(255,191,71,0.15)] border border-primary/30' : ''
                 }`}
                 data-testid={`global-nav-${item.label.toLowerCase()}`}
@@ -303,6 +306,7 @@ export function GlobalNavigation() {
                 autoComplete="off"
                 role="combobox"
                 aria-expanded={showDropdown}
+                aria-haspopup="listbox"
                 aria-controls="global-search-dropdown"
                 aria-autocomplete="list"
                 aria-activedescendant={
@@ -383,7 +387,7 @@ export function GlobalNavigation() {
                           id={optionId}
                           role="option"
                           aria-selected={isActive}
-                          className={`cursor-pointer rounded-xl border px-3 py-2 text-sm transition ${
+                          className={`cursor-pointer rounded-xl border px-3 py-2 text-sm motion-safe:transition-colors ${
                             isActive
                               ? 'border-primary/40 bg-primary/10'
                               : 'border-transparent hover:border-border/50 hover:bg-background/40'
@@ -444,7 +448,7 @@ export function GlobalNavigation() {
           )}
         </div>
       </div>
-      <div id="global-mobile-nav">{mobileNavigation}</div>
+      <nav id="global-mobile-nav" aria-label="Mobile navigation">{mobileNavigation}</nav>
     </header>
   );
 }

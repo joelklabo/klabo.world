@@ -12,7 +12,7 @@ export default async function ComposePage() {
       <div className="mb-8">
         <p className="text-sm uppercase tracking-widest text-primary">Posts</p>
         <h1 className="text-3xl font-bold">Compose New Post</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Write Markdown posts with tags, publish dates, and featured images.</p>
+        <p className="mt-2 text-sm text-muted-foreground text-pretty">Write Markdown posts with tags, publish dates, and featured images.</p>
       </div>
       <PostForm upsertAction={createPostAction} mode="create" />
     </div>

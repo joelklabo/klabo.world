@@ -136,9 +136,11 @@ export function AnnotationPins({ contentRef }: Props) {
           <button
             key={id}
             type="button"
+            aria-label={`Annotation ${annotation.pinNumber}${isResolved ? ' (resolved)' : ''}`}
             className={`
               pointer-events-auto absolute flex size-7 items-center justify-center
-              rounded-full text-xs font-bold shadow-md transition-transform
+              rounded-full text-xs font-bold shadow-md motion-safe:transition-transform
+              focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2
               ${isSelected ? 'scale-125 ring-2 ring-white' : 'hover:scale-110'}
               ${isResolved ? 'opacity-50' : ''}
             `}

@@ -50,7 +50,7 @@ export default async function ProjectsPage() {
             <h1 className="text-4xl font-bold tracking-tight text-foreground text-balance">
               GitHub projects
             </h1>
-            <p className="max-w-2xl text-sm text-muted-foreground">
+            <p className="max-w-2xl text-sm text-muted-foreground text-pretty">
               A curated view of my recent work—repos, experiments, and
               production-grade utilities.
             </p>
@@ -65,8 +65,10 @@ export default async function ProjectsPage() {
                 target="_blank"
                 rel="noreferrer"
                 data-testid="projects-github-profile"
+                aria-label="View GitHub profile (opens in new tab)"
               >
                 GitHub profile
+                <span className="sr-only">(opens in new tab)</span>
               </a>
             </Button>
           </div>
@@ -111,12 +113,13 @@ export default async function ProjectsPage() {
             <div className="rounded-2xl border border-border/60 bg-card p-6 text-sm text-muted-foreground">
               GitHub projects are temporarily unavailable. Visit{" "}
               <a
-                className="font-semibold text-primary hover:text-primary/80"
+                className="font-semibold text-primary hover:text-primary/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded"
                 href={`https://github.com/${githubOwner}`}
                 target="_blank"
                 rel="noreferrer"
               >
                 github.com/{githubOwner}
+                <span className="sr-only">(opens in new tab)</span>
               </a>{" "}
               to browse repos directly.
             </div>

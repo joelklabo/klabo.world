@@ -67,7 +67,7 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
                 }
               }}
               className={cn(
-                'group flex items-center gap-2.5 py-1.5 text-sm motion-safe:transition-[transform,color] motion-safe:duration-200',
+                'group flex items-center gap-2.5 py-1.5 text-sm motion-safe:transition-[transform,color] motion-safe:duration-200 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50',
                 level === 2 ? 'pl-4' : 'pl-6',
                 activeId === id
                   ? '-ml-px border-l-2 border-primary pl-[calc(1rem-1px)] font-medium text-foreground'

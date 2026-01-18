@@ -58,7 +58,7 @@ function ProseImage(props: {
   const showBadge = priority && process.env.NODE_ENV !== 'production';
   return (
     <figure className="group relative my-10" data-hero-image={priority ? 'true' : undefined}>
-      <Link href={src as Route} target="_blank" rel="noreferrer" className="pointer-events-auto">
+      <Link href={src as Route} target="_blank" rel="noreferrer" className="pointer-events-auto focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 rounded-[32px]" aria-label={`View full image: ${alt ?? title ?? 'Illustration'} (opens in new tab)`}>
         <Surface
           className="relative rounded-[32px] shadow-[0_24px_60px_rgba(6,10,20,0.55)] transition-shadow hover:shadow-[0_30px_50px_rgba(6,10,20,0.7)] motion-safe:transition-transform motion-safe:hover:-translate-y-1.5"
           innerClassName="relative overflow-hidden rounded-[32px] border border-border/60 bg-card/80"
@@ -127,16 +127,16 @@ export function createMdxComponents(options: MdxComponentsOptions = {}) {
       <thead className="bg-background/80 text-xs uppercase tracking-[0.28em] text-muted-foreground" {...props} />
     ),
     th: (props: { children: ReactNode }) => (
-      <th className="border-b border-border/60 px-4 py-3 text-left text-sm font-semibold text-foreground" {...props} />
+      <th scope="col" className="border-b border-border/60 px-4 py-3 text-left text-sm font-semibold text-foreground" {...props} />
     ),
     td: (props: { children: ReactNode }) => (
       <td className="border-b border-border/60 px-4 py-3 text-sm text-muted-foreground" {...props} />
     ),
     ul: (props: { children: ReactNode }) => (
-      <ul className="space-y-2 pl-5 text-sm text-muted-foreground marker:text-primary/80" {...props} />
+      <ul className="space-y-2 pl-5 text-sm text-muted-foreground marker:text-primary/80 list-disc" {...props} />
     ),
     ol: (props: { children: ReactNode }) => (
-      <ol className="space-y-2 pl-5 text-sm text-muted-foreground" {...props} />
+      <ol className="space-y-2 pl-5 text-sm text-muted-foreground list-decimal" {...props} />
     ),
     li: (props: { children: ReactNode }) => <li className="leading-relaxed" {...props} />,
   };

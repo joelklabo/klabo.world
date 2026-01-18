@@ -38,9 +38,10 @@ export function PullQuote({ children, author, authorUrl }: PullQuoteProps) {
                   href={authorUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-primary hover:text-primary/80 transition-colors font-semibold"
+                  className="text-primary hover:text-primary/80 motion-safe:transition-colors font-semibold rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                 >
                   {author}
+                  <span className="sr-only"> (opens in new tab)</span>
                 </a>
               ) : (
                 <span className="font-semibold text-primary/90">{author}</span>

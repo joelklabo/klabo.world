@@ -46,12 +46,15 @@ export default async function AdminAppsPage() {
                 <td className="px-6 py-4 font-medium text-foreground">{app.name}</td>
                 <td className="px-6 py-4 text-muted-foreground">{app.version}</td>
                 <td className="px-6 py-4 text-muted-foreground">
-                  {new Date(app.publishDate).toLocaleDateString()}
+                  <time dateTime={new Date(app.publishDate).toISOString()}>
+                    {new Date(app.publishDate).toLocaleDateString()}
+                  </time>
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex gap-3 text-sm">
                     <Link href={`/apps/${app.slug}`} target="_blank" className="inline-block rounded px-3 py-2 font-semibold text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
                       View
+                      <span className="sr-only"> (opens in new tab)</span>
                     </Link>
                     <Link href={`/admin/apps/${app.slug}/edit`} className="inline-block rounded px-3 py-2 font-semibold text-primary hover:text-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
                       Edit

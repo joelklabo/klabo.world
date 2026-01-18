@@ -51,7 +51,8 @@ export function GitHubProjectCard({
         target="_blank"
         rel="noreferrer"
         data-testid={testId}
-        className="block h-full p-5"
+        className="block h-full p-5 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 rounded-2xl"
+        aria-label={`${project.name} on GitHub (opens in new tab)`}
       >
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
@@ -84,8 +85,8 @@ export function GitHubProjectCard({
               <span className="font-medium text-foreground group-hover:text-primary/90 transition-colors">{project.primaryLanguage.name}</span>
             </span>
           ) : null}
-          {starsLabel ? <span className="font-medium tabular-nums">★ {starsLabel}</span> : null}
-          {updatedLabel ? <span>Updated {updatedLabel}</span> : null}
+          {starsLabel ? <span className="font-medium tabular-nums" aria-label={`${starsLabel} GitHub stars`}>★ {starsLabel}</span> : null}
+          {updatedLabel && project.updatedAt ? <time dateTime={project.updatedAt}>Updated {updatedLabel}</time> : null}
         </div>
 
         {topics.length > 0 ? (

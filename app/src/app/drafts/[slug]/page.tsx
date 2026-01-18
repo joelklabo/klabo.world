@@ -57,7 +57,7 @@ export default async function DraftPreviewPage({
           <h1 className="text-xl font-semibold text-blue-100">This post is published</h1>
           <p className="mt-2 text-blue-200">
             This post has already been published. View it at{' '}
-            <Link href={`/posts/${post.slug}`} className="underline hover:text-white">
+            <Link href={`/posts/${post.slug}`} className="underline hover:text-white rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50">
               /posts/{post.slug}
             </Link>
           </p>
@@ -98,7 +98,7 @@ export default async function DraftPreviewPage({
           {annotateMode ? (
             <Link
               href={`/drafts/${post.slug}?layout=${layout}`}
-              className="rounded bg-amber-500/20 px-3 py-1.5 text-sm font-medium text-amber-100 hover:bg-amber-500/30"
+              className="rounded bg-amber-500/20 px-3 py-1.5 text-sm font-medium text-amber-100 hover:bg-amber-500/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/50"
             >
               Exit Annotations
             </Link>
@@ -106,13 +106,13 @@ export default async function DraftPreviewPage({
             <>
               <Link
                 href={`/drafts/${post.slug}?annotate=true`}
-                className="rounded bg-blue-500/20 px-3 py-1.5 text-sm font-medium text-blue-100 hover:bg-blue-500/30"
+                className="rounded bg-blue-500/20 px-3 py-1.5 text-sm font-medium text-blue-100 hover:bg-blue-500/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50"
               >
-                📝 Annotate
+                <span aria-hidden="true">📝 </span>Annotate
               </Link>
               <Link
                 href={`/admin/posts/${post.slug}/edit`}
-                className="rounded bg-amber-500/20 px-3 py-1.5 text-sm font-medium text-amber-100 hover:bg-amber-500/30"
+                className="rounded bg-amber-500/20 px-3 py-1.5 text-sm font-medium text-amber-100 hover:bg-amber-500/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/50"
               >
                 Edit Draft
               </Link>

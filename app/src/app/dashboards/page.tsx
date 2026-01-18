@@ -74,16 +74,17 @@ export default function DashboardsPage() {
                   <div className="mt-5">
                     {external ? (
                       <a
-                        className="text-xs font-semibold uppercase tracking-[0.3em] text-primary hover:text-primary/80"
+                        className="text-xs font-semibold uppercase tracking-[0.3em] text-primary hover:text-primary/80 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                         href={link}
                         target="_blank"
                         rel="noreferrer"
                       >
                         Open dashboard →
+                        <span className="sr-only"> (opens in new tab)</span>
                       </a>
                     ) : (
                       <Link
-                        className="text-xs font-semibold uppercase tracking-[0.3em] text-primary hover:text-primary/80"
+                        className="text-xs font-semibold uppercase tracking-[0.3em] text-primary hover:text-primary/80 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                         href={link as Route}
                       >
                         View details →

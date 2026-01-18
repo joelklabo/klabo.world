@@ -57,13 +57,16 @@ export default async function AdminLanding({ searchParams }: { searchParams?: Ad
               <tr key={post.slug} className="hover:bg-background/40">
                 <td className="px-6 py-4 font-medium text-foreground">{post.title}</td>
                 <td className="px-6 py-4 text-muted-foreground">
-                  {new Date(post.publishDate ?? post.date).toLocaleDateString()}
+                  <time dateTime={new Date(post.publishDate ?? post.date).toISOString()}>
+                    {new Date(post.publishDate ?? post.date).toLocaleDateString()}
+                  </time>
                 </td>
                 <td className="px-6 py-4 text-muted-foreground">{post.tags?.length ? post.tags.join(', ') : '—'}</td>
                 <td className="px-6 py-4 text-sm">
                   <div className="flex gap-3">
                     <Link href={`/posts/${post.slug}` as Route} target="_blank" className="inline-block rounded px-3 py-2 font-semibold text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
                       View
+                      <span className="sr-only"> (opens in new tab)</span>
                     </Link>
                     <Link href={`/admin/posts/${post.slug}/edit` as Route} className="inline-block rounded px-3 py-2 font-semibold text-primary hover:text-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
                       Edit

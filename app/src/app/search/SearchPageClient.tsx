@@ -24,7 +24,7 @@ export default function SearchPageClient() {
           <div className="mb-6 flex flex-col gap-3">
             <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary">Search</p>
             <h1 className="text-4xl font-bold leading-tight text-foreground text-balance">Find posts and apps</h1>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground text-pretty">
               Type two or more characters to see instant results. Use ↑↓ to navigate, Enter to open, Esc to close.
             </p>
           </div>
@@ -43,9 +43,9 @@ export default function SearchPageClient() {
                 Search
               </Button>
               <div className="flex flex-wrap items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-muted-foreground">
-                <kbd className="rounded-full border border-border/60 bg-background/80 px-2 py-1 font-sans">↑↓</kbd>
-                <kbd className="rounded-full border border-border/60 bg-background/80 px-2 py-1 font-sans">Enter</kbd>
-                <kbd className="rounded-full border border-border/60 bg-background/80 px-2 py-1 font-sans">Esc</kbd>
+                <kbd className="rounded-full border border-border/60 bg-background/80 px-2 py-1 font-mono text-[10px]">↑↓</kbd>
+                <kbd className="rounded-full border border-border/60 bg-background/80 px-2 py-1 font-mono text-[10px]">Enter</kbd>
+                <kbd className="rounded-full border border-border/60 bg-background/80 px-2 py-1 font-mono text-[10px]">Esc</kbd>
               </div>
             </div>
           </form>

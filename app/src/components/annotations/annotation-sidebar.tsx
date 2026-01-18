@@ -115,6 +115,7 @@ function AnnotationCard({
               value={replyContent}
               onChange={(e) => setReplyContent(e.target.value)}
               aria-label="Reply to annotation"
+              aria-describedby="reply-keyboard-hint"
               placeholder="Reply..."
               className="mb-2 w-full resize-none rounded border border-border bg-background p-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
               rows={2}
@@ -130,10 +131,11 @@ function AnnotationCard({
               }}
               onClick={(e) => e.stopPropagation()}
             />
+            <p id="reply-keyboard-hint" className="sr-only">Press Cmd+Enter or Ctrl+Enter to submit, Escape to cancel</p>
             <div className="flex justify-end gap-2">
               <button
                 type="button"
-                className="min-h-7 min-w-7 rounded px-2 py-1 text-xs text-muted-foreground hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                className="min-h-9 min-w-9 rounded px-2 py-1 text-xs text-muted-foreground hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                 onClick={(e) => {
                   e.stopPropagation();
                   setIsReplying(false);
@@ -144,7 +146,7 @@ function AnnotationCard({
               </button>
               <button
                 type="button"
-                className="min-h-7 min-w-7 rounded px-2 py-1 text-xs text-primary hover:text-primary/80 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                className="min-h-9 min-w-9 rounded px-2 py-1 text-xs text-primary hover:text-primary/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleSubmitReply();
@@ -163,32 +165,34 @@ function AnnotationCard({
               <>
                 <button
                   type="button"
-                  className="min-h-7 min-w-7 rounded px-2 py-1 text-xs text-muted-foreground hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  data-action="reply"
+                  className="min-h-9 min-w-9 rounded px-2 py-1 text-xs text-muted-foreground hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                   onClick={(e) => {
                     e.stopPropagation();
                     setIsReplying(true);
                   }}
                 >
-                  Reply (r)
+                  Reply <kbd className="ml-1 rounded border border-border bg-background/50 px-1 py-0.5 text-[10px] font-mono">r</kbd>
                 </button>
                 <button
                   type="button"
-                  className="min-h-7 min-w-7 rounded px-2 py-1 text-xs text-green-500 hover:text-green-400 focus:outline-none focus:ring-2 focus:ring-green-500/50"
+                  className="min-h-9 min-w-9 rounded px-2 py-1 text-xs text-green-500 hover:text-green-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500/50"
                   onClick={(e) => {
                     e.stopPropagation();
                     onResolve();
                   }}
                 >
-                  Resolve (Space)
+                  Resolve <kbd className="ml-1 rounded border border-green-500/30 bg-green-500/10 px-1 py-0.5 text-[10px] font-mono">Space</kbd>
                 </button>
               </>
             )}
             <button
               type="button"
-              className="min-h-7 min-w-7 rounded px-2 py-1 text-xs text-red-500 hover:text-red-400 focus:outline-none focus:ring-2 focus:ring-red-500/50"
+              className="min-h-9 min-w-9 rounded px-2 py-1 text-xs text-red-500 hover:text-red-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500/50"
               onClick={(e) => {
                 e.stopPropagation();
-                if (confirm('Delete this annotation?')) {
+                // Using window.confirm for now - consider replacing with accessible modal
+                if (globalThis.confirm('Delete this annotation?')) {
                   onDelete();
                 }
               }}
@@ -246,7 +250,7 @@ export function AnnotationSidebar() {
   }, [selectedId]);
 
   return (
-    <aside className="w-80 shrink-0 border-l border-border bg-card/50">
+    <aside className="w-80 shrink-0 border-l border-border bg-card/50" aria-label="Annotations">
       <div className="sticky top-14 flex h-[calc(100vh-3.5rem)] flex-col">
         {/* Header */}
         <div className="border-b border-border p-4">
@@ -272,7 +276,7 @@ export function AnnotationSidebar() {
                 type="checkbox"
                 checked={showResolved}
                 onChange={(e) => setShowResolved(e.target.checked)}
-                className="rounded border-border"
+                className="rounded border-border focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
               />
               Show resolved
             </label>

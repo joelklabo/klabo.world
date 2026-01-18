@@ -22,17 +22,18 @@ export default function PostTagsPage() {
           Quickly jump into the subjects we write about most—Bitcoin, Lightning,
           Nostr, agents, and more.
         </p>
-        <div className="mt-8 flex flex-wrap gap-3">
+        <ul className="mt-8 flex flex-wrap gap-3" role="list" aria-label="All tags">
           {tags.map(([tag, count]) => (
-            <Link
-              key={tag}
-              href={`/posts/tag/${encodeURIComponent(tag)}`}
-              className="rounded-full border border-primary/25 bg-primary/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-foreground transition-colors hover:border-primary/60 hover:bg-primary/15 motion-safe:transition-transform motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-[0_12px_28px_rgba(6,10,20,0.4)]"
-            >
-              {tag} <span className="ml-1 text-xs text-muted-foreground">({count})</span>
-            </Link>
+            <li key={tag}>
+              <Link
+                href={`/posts/tag/${encodeURIComponent(tag)}`}
+                className="inline-block rounded-full border border-primary/25 bg-primary/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-foreground motion-safe:transition-colors hover:border-primary/60 hover:bg-primary/15 motion-safe:transition-transform motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-[0_12px_28px_rgba(6,10,20,0.4)] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+              >
+                {tag} <span className="ml-1 text-xs text-muted-foreground">({count})</span>
+              </Link>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </div>
   );

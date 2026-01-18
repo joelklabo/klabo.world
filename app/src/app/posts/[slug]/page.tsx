@@ -157,13 +157,14 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
             <div className="rounded-3xl border border-border/60 bg-card/80 p-8 shadow-[0_24px_70px_rgba(6,10,20,0.55)]">
               <Link
                 href="/posts"
-                className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.35em] text-primary hover:text-primary/80"
+                className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.35em] text-primary hover:text-primary/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded"
+                aria-label="Back to all posts"
               >
                 ← Back to posts
               </Link>
               <div className="mt-4 flex flex-col gap-2">
                 <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">Published</p>
-                <time className="text-base font-semibold text-foreground">
+                <time dateTime={new Date(post.publishDate ?? post.date).toISOString()} className="text-base font-semibold text-foreground">
                   {formatPostDate(post.publishDate ?? post.date, {
                     month: 'long',
                     day: 'numeric',
@@ -178,7 +179,7 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
                   <Link
                     key={tag}
                     href={`/posts/tag/${encodeURIComponent(tag)}`}
-                    className="rounded-full border border-primary/30 bg-primary/10 px-4 py-1 text-[11px] font-semibold uppercase tracking-[0.35em] text-foreground transition hover:border-primary/70 hover:bg-primary/15"
+                    className="rounded-full border border-primary/30 bg-primary/10 px-4 py-1 text-[11px] font-semibold uppercase tracking-[0.35em] text-foreground motion-safe:transition-colors hover:border-primary/70 hover:bg-primary/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                   >
                     {tag}
                   </Link>
@@ -220,7 +221,8 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
               {previous && (
                 <Link
                   href={`/posts/${previous.slug}`}
-                  className="card-hover-lift rounded-3xl border border-border/60 bg-card/80 p-5"
+                  className="card-hover-lift rounded-3xl border border-border/60 bg-card/80 p-5 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                  aria-label={`Previous post: ${previous.title}`}
                 >
                   <p className="text-[11px] uppercase tracking-[0.35em] text-muted-foreground">Previous</p>
                   <p className="mt-2 text-base font-semibold text-foreground">{previous.title}</p>
@@ -229,7 +231,8 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
               {next && (
                 <Link
                   href={`/posts/${next.slug}`}
-                  className="card-hover-lift rounded-3xl border border-border/60 bg-card/80 p-5"
+                  className="card-hover-lift rounded-3xl border border-border/60 bg-card/80 p-5 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                  aria-label={`Next post: ${next.title}`}
                 >
                   <p className="text-[11px] uppercase tracking-[0.35em] text-muted-foreground">Next</p>
                   <p className="mt-2 text-base font-semibold text-foreground">{next.title}</p>
@@ -237,11 +240,11 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
               )}
             </div>
           </section>
-          <aside className="space-y-6">
+          <aside className="space-y-6" aria-label="Post sidebar">
             <div className="sticky top-20 space-y-6">
-              <div className="space-y-4 rounded-3xl border border-border/60 bg-card/80 p-6 shadow-[0_24px_70px_rgba(6,10,20,0.55)]">
-                <h2 className="text-xs font-semibold uppercase tracking-[0.35em] text-muted-foreground">Post Details</h2>
-                <p className="text-sm text-muted-foreground">{post.summary}</p>
+              <section className="space-y-4 rounded-3xl border border-border/60 bg-card/80 p-6 shadow-[0_24px_70px_rgba(6,10,20,0.55)]" aria-labelledby="post-details-heading">
+                <h2 className="text-xs font-semibold uppercase tracking-[0.35em] text-muted-foreground" id="post-details-heading">Post Details</h2>
+                <p className="text-sm text-muted-foreground text-pretty">{post.summary}</p>
                 <dl className="space-y-3 text-xs uppercase tracking-[0.35em] text-muted-foreground">
                   <div>
                     <dt className="text-[10px] text-muted-foreground/70">Published</dt>
@@ -253,19 +256,18 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
                   </div>
                 </dl>
                 <div>
-                  <p className="text-[11px] uppercase tracking-[0.35em] text-muted-foreground/70">Quick tags</p>
-                  <div className="mt-3 flex flex-wrap gap-2">
+                  <p className="text-[11px] uppercase tracking-[0.35em] text-muted-foreground/70" id="quick-tags-label">Quick tags</p>
+                  <ul className="mt-3 flex flex-wrap gap-2" role="list" aria-labelledby="quick-tags-label">
                     {post.tags?.map((tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-full border border-primary/25 bg-primary/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.35em] text-foreground"
-                      >
-                        {tag}
-                      </span>
+                      <li key={tag}>
+                        <span className="rounded-full border border-primary/25 bg-primary/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.35em] text-foreground">
+                          {tag}
+                        </span>
+                      </li>
                     ))}
-                  </div>
+                  </ul>
                 </div>
-              </div>
+              </section>
 
               {widgetsEnabled && (
                 <ClientErrorBoundary fallback={nostrOmnosterFallback}>

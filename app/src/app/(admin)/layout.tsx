@@ -20,16 +20,16 @@ export default async function AdminLayout({ children }: { children: ReactNode })
       <header className="border-b border-border/50 bg-background/80 backdrop-blur-xl shadow-[0_20px_40px_rgba(6,10,20,0.35)]">
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-4">
-            <Link href="/admin" className="text-lg font-semibold tracking-[0.18em] uppercase text-primary drop-shadow">
+            <Link href="/admin" className="text-lg font-semibold tracking-[0.18em] uppercase text-primary drop-shadow rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50">
               Admin
             </Link>
             {session?.user && (
-              <nav className="flex flex-wrap items-center gap-2 text-sm font-semibold text-muted-foreground" data-testid="admin-nav">
+              <nav className="flex flex-wrap items-center gap-2 text-sm font-semibold text-muted-foreground" data-testid="admin-nav" aria-label="Admin navigation">
                 {navLinks.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href as Route}
-                    className="rounded-full px-3 py-1 transition hover:bg-primary/10 hover:text-primary"
+                    className="rounded-full px-3 py-1 motion-safe:transition hover:bg-primary/10 hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                     data-testid={`admin-nav-${link.id}`}
                   >
                     {link.label}

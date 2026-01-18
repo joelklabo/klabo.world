@@ -47,7 +47,7 @@ export function HomeQuickLinks({
                 </p>
               ) : null}
             </div>
-            <ArrowUpRight className="size-4 shrink-0 text-muted-foreground/70 transition-colors duration-200 group-hover:text-muted-foreground motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
+            <ArrowUpRight className="size-4 shrink-0 text-muted-foreground/70 motion-safe:transition-[transform,color] motion-safe:duration-200 group-hover:text-muted-foreground motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" aria-hidden="true" />
           </div>
         );
 
@@ -59,9 +59,10 @@ export function HomeQuickLinks({
             data-testid={link.testId ?? itemTestId}
             data-analytics-event={link.analyticsEvent}
             data-analytics-label={link.analyticsLabel}
-            className="group block h-full"
+            className="group block h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 rounded-2xl"
           >
             {content}
+            <span className="sr-only">(opens in new tab)</span>
           </a>
         ) : (
           <Link
@@ -69,7 +70,7 @@ export function HomeQuickLinks({
             data-testid={link.testId ?? itemTestId}
             data-analytics-event={link.analyticsEvent}
             data-analytics-label={link.analyticsLabel}
-            className="group block h-full"
+            className="group block h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 rounded-2xl"
           >
             {content}
           </Link>

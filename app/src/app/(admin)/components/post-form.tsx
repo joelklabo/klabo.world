@@ -49,12 +49,12 @@ export function PostForm({ upsertAction, deleteAction, initialData, mode }: Post
   return (
     <form action={formAction} className="space-y-6">
       {state.message && !state.success && (
-        <div className="rounded-md bg-destructive/15 p-3 text-sm text-destructive">
+        <div className="rounded-md bg-destructive/15 p-3 text-sm text-destructive" role="alert" aria-live="assertive">
           {state.message}
         </div>
       )}
       {deleteState.message && !deleteState.success && (
-        <div className="rounded-md bg-destructive/15 p-3 text-sm text-destructive">
+        <div className="rounded-md bg-destructive/15 p-3 text-sm text-destructive" role="alert" aria-live="assertive">
           {deleteState.message}
         </div>
       )}
@@ -144,12 +144,12 @@ export function PostForm({ upsertAction, deleteAction, initialData, mode }: Post
             placeholder="wss://relay.damus.io, wss://relay.snort.social"
           />
         </div>
-        <label className="flex min-h-10 cursor-pointer items-center gap-3 text-sm text-muted-foreground">
+        <label className="flex min-h-11 cursor-pointer items-center gap-3 text-sm text-muted-foreground">
           <input
             type="checkbox"
             name="nostrstackEnabled"
             defaultChecked={initialData?.nostrstackEnabled !== false}
-            className="size-5 cursor-pointer rounded border-input accent-primary"
+            className="size-5 cursor-pointer rounded border-input accent-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2"
           />
           Enable nostrstack widgets for this post
         </label>

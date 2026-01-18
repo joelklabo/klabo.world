@@ -46,9 +46,9 @@ export function HomeStats({ stats, className, itemTestId = "home-stat-item" }: H
             <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
               {stat.label}
             </p>
-            <div className="text-2xl font-semibold text-foreground tabular-nums sm:text-3xl">
+            <p className="text-2xl font-semibold text-foreground tabular-nums sm:text-3xl" aria-label={`${stat.label}: ${formattedValue}`}>
               {formattedValue}
-            </div>
+            </p>
             {stat.helper ? (
               <p className="text-xs text-muted-foreground">{stat.helper}</p>
             ) : null}
@@ -64,9 +64,10 @@ export function HomeStats({ stats, className, itemTestId = "home-stat-item" }: H
               data-testid={stat.testId ?? itemTestId}
               data-analytics-event={stat.analyticsEvent}
               data-analytics-label={stat.analyticsLabel}
-              className="block h-full"
+              className="block h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 rounded-2xl"
             >
               {content}
+              <span className="sr-only">(opens in new tab)</span>
             </a>
           ) : (
             <Link
@@ -74,7 +75,7 @@ export function HomeStats({ stats, className, itemTestId = "home-stat-item" }: H
               data-testid={stat.testId ?? itemTestId}
               data-analytics-event={stat.analyticsEvent}
               data-analytics-label={stat.analyticsLabel}
-              className="block h-full"
+              className="block h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 rounded-2xl"
             >
               {content}
             </Link>

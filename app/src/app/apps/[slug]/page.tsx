@@ -50,16 +50,16 @@ export default async function AppDetailPage({
             {app.icon && (
               <Image
                 src={app.icon}
-                alt={app.name}
+                alt=""
                 width={64}
                 height={64}
                 className="size-16 rounded-2xl object-cover"
               />
             )}
             <div>
-              <p className="text-xs uppercase tracking-[0.35em] text-primary">
+              <time dateTime={new Date(app.publishDate).toISOString()} className="text-xs uppercase tracking-[0.35em] text-primary">
                 {new Date(app.publishDate).toLocaleDateString()}
-              </p>
+              </time>
               <h1 className="text-4xl font-bold text-foreground">{app.name}</h1>
               <p className="text-sm text-muted-foreground">Version {app.version}</p>
             </div>
@@ -72,6 +72,7 @@ export default async function AppDetailPage({
               <Button asChild size="lg">
                 <a href={app.appStoreURL} target="_blank" rel="noreferrer">
                   View on App Store
+                  <span className="sr-only"> (opens in new tab)</span>
                 </a>
               </Button>
             )}
@@ -79,6 +80,7 @@ export default async function AppDetailPage({
               <Button asChild variant="soft" size="lg">
                 <a href={app.githubURL} target="_blank" rel="noreferrer">
                   View on GitHub
+                  <span className="sr-only"> (opens in new tab)</span>
                 </a>
               </Button>
             )}

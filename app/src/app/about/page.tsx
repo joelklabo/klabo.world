@@ -22,7 +22,7 @@ export default function AboutPage() {
           <div className="space-y-3">
             <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary">About</p>
             <h1 className="text-4xl font-bold tracking-tight text-balance">klabo.world</h1>
-            <p className="max-w-2xl text-sm text-muted-foreground">
+            <p className="max-w-2xl text-sm text-muted-foreground text-pretty">
               A home for practical notes, experiments, and shipping logs around Bitcoin,
               Lightning, Nostr, and agentic engineering.
             </p>
@@ -72,7 +72,7 @@ export default function AboutPage() {
               Follow along with the code and experiments that power these notes.
             </p>
             <Button asChild variant="link" size="sm" className="mt-3 px-0 text-xs font-semibold uppercase tracking-[0.3em]">
-              <a href={`https://github.com/${githubOwner}`} target="_blank" rel="noreferrer">
+              <a href={`https://github.com/${githubOwner}`} target="_blank" rel="noreferrer" aria-label={`Visit GitHub profile for ${githubOwner} (opens in new tab)`}>
                 github.com/{githubOwner} →
               </a>
             </Button>

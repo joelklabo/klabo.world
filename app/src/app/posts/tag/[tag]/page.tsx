@@ -52,27 +52,28 @@ export default async function PostTagPage({ params }: { params: Params | Promise
               key={post._id}
               className="card-hover-lift group h-full rounded-2xl border border-border/60 bg-card/80 p-5 shadow-[0_18px_45px_rgba(6,10,20,0.45)]"
             >
-              <time className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
+              <time dateTime={new Date(post.publishDate ?? post.date).toISOString()} className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
                 {new Date(post.publishDate ?? post.date).toLocaleDateString()}
               </time>
               <h2 className="mt-3 text-xl font-semibold leading-snug text-foreground">
-                <Link href={`/posts/${post.slug}`} className="hover:text-primary">
+                <Link href={`/posts/${post.slug}`} className="hover:text-primary rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50">
                   {post.title}
                 </Link>
               </h2>
-              <p className="mt-2 text-sm text-muted-foreground line-clamp-3">{post.summary}</p>
+              <p className="mt-2 text-sm text-muted-foreground line-clamp-3 text-pretty">{post.summary}</p>
               {post.tags && post.tags.length > 0 && (
-                <div className="mt-3 flex flex-wrap gap-2 text-[10px] font-semibold uppercase tracking-[0.3em] text-primary">
+                <ul className="mt-3 flex flex-wrap gap-2 text-[10px] font-semibold uppercase tracking-[0.3em] text-primary" role="list" aria-label="Post tags">
                   {post.tags.slice(0, 4).map((entry) => (
-                    <Link
-                      key={entry}
-                      href={`/posts/tag/${encodeURIComponent(entry)}`}
-                      className="rounded-full border border-primary/25 bg-primary/10 px-3 py-1.5 text-foreground transition-colors hover:border-primary/60 hover:bg-primary/15"
-                    >
-                      {entry}
-                    </Link>
+                    <li key={entry}>
+                      <Link
+                        href={`/posts/tag/${encodeURIComponent(entry)}`}
+                        className="inline-block rounded-full border border-primary/25 bg-primary/10 px-3 py-1.5 text-foreground motion-safe:transition-colors hover:border-primary/60 hover:bg-primary/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                      >
+                        {entry}
+                      </Link>
+                    </li>
                   ))}
-                </div>
+                </ul>
               )}
             </article>
           ))}

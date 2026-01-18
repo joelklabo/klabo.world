@@ -35,11 +35,11 @@ export default function PostsIndex() {
             <li key={post._id}>
               <article className="card-hover-lift group h-full rounded-2xl border border-border/60 bg-card/80 p-5 shadow-[0_18px_45px_rgba(6,10,20,0.45)]">
                 <div className="flex items-center justify-between text-xs uppercase tracking-[0.3em] text-muted-foreground">
-                  <time>{formatPostDate(post.publishDate ?? post.date)}</time>
+                  <time dateTime={post.publishDate ?? post.date}>{formatPostDate(post.publishDate ?? post.date)}</time>
                   {post.tags?.[0] ? (
                     <Link
                       href={`/posts/tag/${encodeURIComponent(post.tags[0])}`}
-                      className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1.5 text-[10px] font-semibold text-foreground transition-colors hover:border-primary/60 hover:bg-primary/15"
+                      className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1.5 text-[10px] font-semibold text-foreground motion-safe:transition-colors hover:border-primary/60 hover:bg-primary/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                     >
                       {post.tags[0]}
                     </Link>
@@ -54,19 +54,20 @@ export default function PostsIndex() {
                     {post.title}
                   </ViewTransitionLink>
                 </h2>
-                <p className="mt-2 text-sm text-muted-foreground line-clamp-3">{post.summary}</p>
+                <p className="mt-2 text-sm text-muted-foreground text-pretty line-clamp-3">{post.summary}</p>
                 {post.tags && post.tags.length > 0 && (
-                  <div className="mt-3 flex flex-wrap gap-2 text-[10px] font-semibold uppercase tracking-[0.3em] text-primary">
+                  <ul className="mt-3 flex flex-wrap gap-2 text-[10px] font-semibold uppercase tracking-[0.3em] text-primary" role="list" aria-label="Post tags">
                     {post.tags.slice(0, 4).map((tag) => (
-                      <Link
-                        key={tag}
-                        href={`/posts/tag/${encodeURIComponent(tag)}`}
-                        className="rounded-full border border-primary/25 bg-primary/10 px-3 py-1.5 text-foreground transition-colors hover:border-primary/60 hover:bg-primary/15"
-                      >
-                        {tag}
-                      </Link>
+                      <li key={tag}>
+                        <Link
+                          href={`/posts/tag/${encodeURIComponent(tag)}`}
+                          className="inline-block rounded-full border border-primary/25 bg-primary/10 px-3 py-1.5 text-foreground motion-safe:transition-colors hover:border-primary/60 hover:bg-primary/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                        >
+                          {tag}
+                        </Link>
+                      </li>
                     ))}
-                  </div>
+                  </ul>
                 )}
               </article>
             </li>

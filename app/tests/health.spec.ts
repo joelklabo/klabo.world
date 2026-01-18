@@ -23,8 +23,8 @@ beforeEach(() => {
   vi.clearAllMocks();
   resetEnv();
   isBlobConfiguredMock.mockReturnValue(false);
-  probeDatabaseMock.mockResolvedValue();
-  probeBlobContainerMock.mockResolvedValue();
+  probeDatabaseMock.mockResolvedValue(true);
+  probeBlobContainerMock.mockResolvedValue(true);
 });
 
 afterEach(() => {

@@ -86,7 +86,8 @@ export function GitHubProjectsShowcase({
           data-analytics-event="ui.home.github_project"
           data-analytics-label={featured.fullName}
           data-analytics-featured="true"
-          className="group relative block overflow-hidden p-6 transition hover:bg-background/15 focus:outline-none md:p-7"
+          className="group relative block overflow-hidden p-6 motion-safe:transition-colors hover:bg-background/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary/50 md:p-7"
+          aria-label={`${featured.name} - featured project on GitHub (opens in new tab)`}
         >
           <div
             className="pointer-events-none absolute inset-0 opacity-90 motion-safe:transition-opacity motion-safe:duration-200 group-hover:opacity-100"
@@ -109,7 +110,7 @@ export function GitHubProjectsShowcase({
               </div>
               <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.26em] text-muted-foreground">
                 <span className="hidden sm:inline">{featured.fullName}</span>
-                <ArrowUpRight className="size-4 text-muted-foreground transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                <ArrowUpRight className="size-4 text-muted-foreground motion-safe:transition-transform motion-safe:duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
               </div>
             </div>
 
@@ -196,7 +197,8 @@ export function GitHubProjectsShowcase({
                 data-testid={listItemTestId}
                 data-analytics-event="ui.home.github_project"
                 data-analytics-label={project.fullName}
-                className="group block px-5 py-4 transition hover:bg-background/15 focus:outline-none"
+                className="group block px-5 py-4 motion-safe:transition-colors hover:bg-background/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary/50"
+                aria-label={`${project.name} on GitHub (opens in new tab)`}
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0 space-y-2">
@@ -250,15 +252,15 @@ export function GitHubProjectsShowcase({
                           ⑂ {project.forkCount.toLocaleString()}
                         </span>
                       ) : null}
-                      {updatedLabel ? (
-                        <span className="hidden sm:inline">
+                      {updatedLabel && project.updatedAt ? (
+                        <time dateTime={project.updatedAt} className="hidden sm:inline">
                           Updated {updatedLabel}
-                        </span>
+                        </time>
                       ) : null}
                     </div>
                   </div>
 
-                  <ArrowUpRight className="mt-0.5 size-4 shrink-0 text-muted-foreground/70 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-muted-foreground" />
+                  <ArrowUpRight className="mt-0.5 size-4 shrink-0 text-muted-foreground/70 motion-safe:transition-[transform,color] motion-safe:duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-muted-foreground" aria-hidden="true" />
                 </div>
               </a>
             );

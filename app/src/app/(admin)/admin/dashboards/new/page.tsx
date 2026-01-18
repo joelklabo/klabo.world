@@ -17,7 +17,7 @@ export default async function NewDashboardPage() {
         </div>
         <Link
           href="/admin/dashboards"
-          className="text-sm font-semibold text-muted-foreground hover:text-foreground"
+          className="text-sm font-semibold text-muted-foreground hover:text-foreground rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
         >
           ← Back to dashboards
         </Link>

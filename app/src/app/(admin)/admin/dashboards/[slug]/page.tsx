@@ -65,7 +65,7 @@ export default async function DashboardDetailPage({ params }: PageProps) {
         </div>
         <Link
           href="/admin/dashboards"
-          className="text-sm font-semibold text-muted-foreground hover:text-foreground"
+          className="text-sm font-semibold text-muted-foreground hover:text-foreground rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
         >
           ← Back to dashboards
         </Link>
@@ -80,7 +80,9 @@ export default async function DashboardDetailPage({ params }: PageProps) {
               {chartState?.status === "success" && (
                 <p className="text-xs text-muted-foreground">
                   Last refreshed{" "}
-                  {new Date(chartState.refreshedAt).toUTCString()}
+                  <time dateTime={new Date(chartState.refreshedAt).toISOString()}>
+                    {new Date(chartState.refreshedAt).toUTCString()}
+                  </time>
                 </p>
               )}
             </div>
@@ -140,6 +142,7 @@ export default async function DashboardDetailPage({ params }: PageProps) {
                 <Button asChild size="xs" className="mt-4">
                   <a href={linkUrl} target="_blank" rel="noreferrer">
                     Open {getHostname(linkUrl)}
+                    <span className="sr-only"> (opens in new tab)</span>
                   </a>
                 </Button>
               </div>
@@ -212,9 +215,10 @@ export default async function DashboardDetailPage({ params }: PageProps) {
                       href={dashboard.externalUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-primary hover:text-primary/80"
+                      className="text-primary hover:text-primary/80 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                     >
                       {dashboard.externalUrl}
+                      <span className="sr-only"> (opens in new tab)</span>
                     </a>
                   </dd>
                 </div>

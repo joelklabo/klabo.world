@@ -21,13 +21,13 @@ export default function PostError(props: { error: Error; reset: () => void }) {
             <button
               type="button"
               onClick={() => reset()}
-              className="rounded-full border border-primary/40 bg-primary/10 px-5 py-2 text-xs font-semibold uppercase tracking-[0.35em] text-foreground transition hover:border-primary/70 hover:bg-primary/15"
+              className="min-h-11 rounded-full border border-primary/40 bg-primary/10 px-5 py-2 text-xs font-semibold uppercase tracking-[0.35em] text-foreground motion-safe:transition hover:border-primary/70 hover:bg-primary/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
             >
               Try again
             </button>
             <Link
               href="/posts"
-              className="rounded-full border border-white/10 bg-white/5 px-5 py-2 text-xs font-semibold uppercase tracking-[0.35em] text-foreground transition hover:border-white/30 hover:bg-white/10"
+              className="min-h-11 inline-flex items-center rounded-full border border-white/10 bg-white/5 px-5 py-2 text-xs font-semibold uppercase tracking-[0.35em] text-foreground motion-safe:transition hover:border-white/30 hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
             >
               Browse posts
             </Link>

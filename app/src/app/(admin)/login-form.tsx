@@ -85,7 +85,7 @@ export function LoginForm({ initialError }: LoginFormProps) {
             <span>{toastMessage}</span>
             <button
               type="button"
-              className="min-w-11 min-h-11 flex items-center justify-center text-destructive transition hover:text-destructive/80"
+              className="min-w-11 min-h-11 flex items-center justify-center text-destructive motion-safe:transition hover:text-destructive/80 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-destructive/50"
               aria-label="Dismiss error"
               onClick={() => setToastMessage(null)}
             >

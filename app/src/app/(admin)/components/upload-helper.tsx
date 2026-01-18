@@ -68,7 +68,7 @@ export function MarkdownUploadHelper({ buttonTestId, statusTestId }: Props) {
         <input type="file" className="hidden" accept="image/*" ref={inputRef} onChange={onFileChange} aria-label="Upload image and copy URL" />
         {status === 'uploading' && <span className="text-muted-foreground" data-testid={statusTestId} role="status" aria-live="polite">Uploading…</span>}
         {status === 'success' && <span className="text-primary" data-testid={statusTestId} role="status" aria-live="polite">{message}</span>}
-        {status === 'error' && <span className="text-destructive" data-testid={statusTestId} role="status" aria-live="polite">{message}</span>}
+        {status === 'error' && <span className="text-destructive" data-testid={statusTestId} role="alert" aria-live="assertive">{message}</span>}
       </div>
     </div>
   );

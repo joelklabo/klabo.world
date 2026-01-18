@@ -138,7 +138,7 @@ export function ImageUploadField({
             {retryAfterSeconds ? ` Try again in ${retryAfterSeconds}s.` : ''}
           </span>
         )}
-        {status === 'error' && error && <span className="text-destructive">{error}</span>}
+        {status === 'error' && error && <span className="text-destructive" role="alert" aria-live="assertive">{error}</span>}
       </div>
     </div>
   );

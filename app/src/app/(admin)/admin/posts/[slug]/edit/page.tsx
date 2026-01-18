@@ -32,7 +32,7 @@ export default async function EditPostPage({ params }: { params: Promise<Params>
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">Posts</p>
           <h1 className="text-3xl font-bold text-foreground">Edit post</h1>
         </div>
-        <Link href="/admin" className="text-sm font-semibold text-muted-foreground hover:text-foreground">
+        <Link href="/admin" className="text-sm font-semibold text-muted-foreground hover:text-foreground rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50">
           ← Back to dashboard
         </Link>
       </div>

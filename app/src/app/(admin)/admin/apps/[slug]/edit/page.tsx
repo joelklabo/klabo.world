@@ -32,7 +32,7 @@ export default async function EditAppPage({ params }: { params: Promise<{ slug: 
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">Apps</p>
           <h1 className="text-3xl font-bold text-foreground">Edit app</h1>
         </div>
-        <Link href="/admin/apps" className="text-sm font-semibold text-muted-foreground hover:text-foreground">
+        <Link href="/admin/apps" className="text-sm font-semibold text-muted-foreground hover:text-foreground rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50">
           ← Back to apps
         </Link>
       </div>

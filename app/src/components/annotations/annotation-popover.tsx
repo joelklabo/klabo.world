@@ -108,7 +108,7 @@ export function AnnotationPopover() {
             <button
               type="button"
               onClick={() => setPendingAnnotation(null)}
-              className="min-h-9 rounded px-3 py-2 text-sm text-muted-foreground hover:bg-muted"
+              className="min-h-9 rounded px-3 py-2 text-sm text-muted-foreground hover:bg-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
               disabled={isSubmitting}
             >
               Cancel
@@ -117,7 +117,7 @@ export function AnnotationPopover() {
               type="button"
               onClick={handleSubmit}
               disabled={!content.trim() || isSubmitting}
-              className="min-h-9 rounded bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+              className="min-h-9 rounded bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
             >
               {isSubmitting ? 'Saving...' : 'Save'}
             </button>

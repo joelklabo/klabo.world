@@ -36,26 +36,26 @@ export default function AppsPage() {
             <Link
               key={app.slug}
               href={`/apps/${app.slug}`}
-              className="card-hover-lift rounded-2xl border border-border/60 bg-card/80 p-6 shadow-[0_18px_45px_rgba(6,10,20,0.45)]"
+              className="card-hover-lift rounded-2xl border border-border/60 bg-card/80 p-6 shadow-[0_18px_45px_rgba(6,10,20,0.45)] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
             >
               <div className="flex items-start gap-4">
                 {app.icon && (
                   <Image
                     src={app.icon}
-                    alt={app.name}
+                    alt=""
                     width={56}
                     height={56}
                     className="h-14 w-14 rounded-2xl object-cover"
                   />
                 )}
                 <div>
-                  <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
+                  <time dateTime={new Date(app.publishDate).toISOString()} className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
                     {new Date(app.publishDate).toLocaleDateString()}
-                  </p>
+                  </time>
                   <h2 className="text-2xl font-semibold text-foreground">
                     {app.name}
                   </h2>
-                  <p className="mt-2 text-sm text-muted-foreground line-clamp-3">
+                  <p className="mt-2 text-sm text-muted-foreground line-clamp-3 text-pretty">
                     {app.fullDescription}
                   </p>
                   <div className="mt-3 text-xs text-muted-foreground">

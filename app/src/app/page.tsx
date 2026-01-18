@@ -110,20 +110,19 @@ export default async function Home() {
               Notes, playbooks, and projects for shipping on decentralized
               rails.
             </h1>
-            <p className="text-base text-muted-foreground md:text-lg">
+            <p className="text-base text-muted-foreground text-pretty md:text-lg">
               Practical notes and small tools for Bitcoin, Lightning, Nostr, and
               agentic engineering.
             </p>
-            <div className="flex flex-wrap gap-2 text-[10px] font-semibold uppercase tracking-[0.28em] text-muted-foreground">
+            <ul className="flex flex-wrap gap-2 text-[10px] font-semibold uppercase tracking-[0.28em] text-muted-foreground" role="list" aria-label="Main topics">
               {["Bitcoin", "Lightning", "Nostr", "Agentic systems"].map((topic) => (
-                <span
-                  key={topic}
-                  className="rounded-full border border-border/60 bg-background/70 px-3 py-1 text-foreground"
-                >
-                  {topic}
-                </span>
+                <li key={topic}>
+                  <span className="rounded-full border border-border/60 bg-background/70 px-3 py-1 text-foreground">
+                    {topic}
+                  </span>
+                </li>
               ))}
-            </div>
+            </ul>
             <div className="flex flex-wrap items-center gap-3">
               <Button asChild size="lg">
                 <Link
@@ -227,13 +226,13 @@ export default async function Home() {
                       data-testid="home-writing-post"
                       data-analytics-event="ui.home.latest_post"
                       data-analytics-label={post.slug}
-                      className="group block px-5 py-4 transition hover:bg-background/15"
+                      className="group block px-5 py-4 motion-safe:transition-colors hover:bg-background/15"
                     >
                       <div className="flex items-baseline justify-between gap-4">
-                        <h3 className="min-w-0 truncate text-base font-semibold text-foreground transition group-hover:text-primary">
+                        <h3 className="min-w-0 truncate text-base font-semibold text-foreground motion-safe:transition-colors group-hover:text-primary">
                           {post.title}
                         </h3>
-                        <time className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.28em] text-muted-foreground">
+                        <time dateTime={new Date(post.publishDate ?? post.date).toISOString()} className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.28em] text-muted-foreground">
                           {new Date(post.publishDate ?? post.date).toLocaleDateString(
                             undefined,
                             { month: "short", day: "numeric", year: "numeric" },
@@ -282,13 +281,14 @@ export default async function Home() {
                 <div className="rounded-3xl border border-border/70 bg-card/70 p-6 text-sm text-muted-foreground shadow-[0_18px_50px_rgba(6,10,20,0.4)]">
                   GitHub projects are temporarily unavailable. Visit{" "}
                   <a
-                    className="font-semibold text-primary hover:text-primary/80"
+                    className="font-semibold text-primary hover:text-primary/80 motion-safe:transition-colors rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                     href={`https://github.com/${githubOwner}`}
                     target="_blank"
                     rel="noreferrer"
                     data-testid="home-projects-github"
                   >
                     github.com/{githubOwner}
+                    <span className="sr-only"> (opens in new tab)</span>
                   </a>{" "}
                   to browse recent work.
                 </div>

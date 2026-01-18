@@ -20,7 +20,7 @@ export default async function NewAppPage() {
           <h1 className="text-3xl font-bold">Create app listing</h1>
           <p className="mt-2 text-sm text-gray-500">Provide metadata, features, and screenshots for the apps page.</p>
         </div>
-        <Link href="/admin/apps" className="text-sm font-semibold text-gray-500 hover:text-gray-700">
+        <Link href="/admin/apps" className="text-sm font-semibold text-gray-500 hover:text-gray-700 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50">
           ← Back to apps
         </Link>
       </div>

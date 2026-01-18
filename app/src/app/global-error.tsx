@@ -30,7 +30,7 @@ export default function GlobalError({
             <button
               type="button"
               onClick={reset}
-              className="rounded-full bg-amber-500 px-6 py-3 text-sm font-semibold text-slate-900 transition hover:bg-amber-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+              className="min-h-11 rounded-full bg-amber-500 px-6 py-3 text-sm font-semibold text-slate-900 motion-safe:transition-colors hover:bg-amber-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
             >
               Try again
             </button>

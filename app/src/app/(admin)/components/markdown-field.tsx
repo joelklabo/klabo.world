@@ -90,7 +90,7 @@ export function MarkdownField({
           {status === 'loading' ? 'Rendering preview…' : 'Refresh preview'}
         </Button>
         {status === 'success' && (
-          <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold text-foreground">
+          <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold text-foreground" role="status" aria-live="polite">
             Preview updated
           </span>
         )}
