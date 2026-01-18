@@ -12,6 +12,10 @@
       "ignore": [
         "src/components/ui/card.tsx",
         "src/components/ui/form.tsx",
+        "src/components/pull-quote.tsx",
+        "src/components/tweet.tsx",
+        "src/components/annotations/index.ts",
+        "src/components/annotations/types.ts",
         "src/lib/blob-service.ts",
         "src/lib/flags/types.ts",
         "src/lib/github-service.ts",
@@ -41,11 +45,23 @@
     "packages/scripts": {
       "entry": ["src/**/*.ts"],
       "ignore": ["src/refresh-github-projects.ts", "src/verify-contentlayer-schema.ts"]
+    },
+    "packages/content": {
+      "entry": [
+        "src/index.ts",
+        "src/cli/bin.ts",
+        "src/mcp/server.ts",
+        "src/watcher/daemon.ts"
+      ],
+      "project": ["src/**/*.ts"],
+      "ignore": ["dist/**"]
     }
   },
   "ignore": [
     "**/*.d.ts",
     "**/generated/**",
+    "**/dist/**",
+    ".worktrees/**",
     "app/.contentlayer/**",
     "scripts/load-smoke.js",
     "scripts/validate-env.ts",
@@ -64,7 +80,8 @@
     "playwright",
     "require-in-the-middle",
     "@types/react-dom",
-    "@klaboworld/config"
+    "@klaboworld/config",
+    "@klaboworld/core"
   ],
   "ignoreBinaries": ["just", "eslint", "mise", "tar"],
   "rules": {
