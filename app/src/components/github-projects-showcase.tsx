@@ -89,7 +89,7 @@ export function GitHubProjectsShowcase({
           className="group relative block overflow-hidden p-6 transition hover:bg-background/15 focus:outline-none md:p-7"
         >
           <div
-            className="pointer-events-none absolute inset-0 opacity-90 transition-opacity duration-300 group-hover:opacity-100"
+            className="pointer-events-none absolute inset-0 opacity-90 motion-safe:transition-opacity motion-safe:duration-200 group-hover:opacity-100"
             style={featuredBackground}
             aria-hidden="true"
           />
@@ -115,7 +115,7 @@ export function GitHubProjectsShowcase({
 
             <div className="space-y-3">
               <div className="flex items-start justify-between gap-4">
-                <h3 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
+                <h3 className="text-xl font-semibold tracking-tight text-foreground text-balance sm:text-2xl">
                   {featured.name}
                 </h3>
                 {featuredUpdatedLabel ? (
@@ -142,7 +142,7 @@ export function GitHubProjectsShowcase({
               {featured.primaryLanguage ? (
                 <span className="inline-flex items-center gap-2 rounded-full border border-border/50 bg-background/60 px-3 py-1 text-xs font-semibold text-foreground">
                   <span
-                    className="h-2 w-2 rounded-full"
+                    className="size-2 rounded-full"
                     style={{
                       backgroundColor:
                         featured.primaryLanguage.color ??
@@ -221,7 +221,7 @@ export function GitHubProjectsShowcase({
                       {project.primaryLanguage ? (
                         <span className="inline-flex items-center gap-2">
                           <span
-                            className="h-2 w-2 rounded-full"
+                            className="size-2 rounded-full"
                             style={{
                               backgroundColor:
                                 project.primaryLanguage.color ??
@@ -235,12 +235,18 @@ export function GitHubProjectsShowcase({
                         </span>
                       ) : null}
                       {hasStars ? (
-                        <span className="font-medium">
+                        <span
+                          className="font-medium"
+                          aria-label={`${project.stargazerCount.toLocaleString()} GitHub stars`}
+                        >
                           ★ {project.stargazerCount.toLocaleString()}
                         </span>
                       ) : null}
                       {hasForks ? (
-                        <span className="font-medium">
+                        <span
+                          className="font-medium"
+                          aria-label={`${project.forkCount.toLocaleString()} forks`}
+                        >
                           ⑂ {project.forkCount.toLocaleString()}
                         </span>
                       ) : null}

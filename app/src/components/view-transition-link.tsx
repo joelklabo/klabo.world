@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { MouseEvent, ReactNode } from 'react';
+import { cn } from '@/lib/utils';
 
 interface ViewTransitionLinkProps {
   href: string;
@@ -51,7 +52,10 @@ export function ViewTransitionLink({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       href={href as any}
       onClick={handleClick}
-      className={className}
+      className={cn(
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+        className,
+      )}
       prefetch={prefetch}
       {...props}
     >

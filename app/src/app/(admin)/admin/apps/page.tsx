@@ -31,12 +31,13 @@ export default async function AdminAppsPage() {
         innerClassName="overflow-hidden rounded-2xl border border-border/60 bg-card"
       >
         <table className="min-w-full divide-y divide-border/60 text-sm">
+          <caption className="sr-only">Apps list</caption>
           <thead className="bg-background/80 text-left">
             <tr>
-              <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">Name</th>
-              <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">Version</th>
-              <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">Published</th>
-              <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">Actions</th>
+              <th scope="col" className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">Name</th>
+              <th scope="col" className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">Version</th>
+              <th scope="col" className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">Published</th>
+              <th scope="col" className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border/60">
@@ -49,10 +50,10 @@ export default async function AdminAppsPage() {
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex gap-3 text-sm">
-                    <Link href={`/apps/${app.slug}`} target="_blank" className="font-semibold text-muted-foreground hover:text-foreground">
+                    <Link href={`/apps/${app.slug}`} target="_blank" className="inline-block rounded px-3 py-2 font-semibold text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
                       View
                     </Link>
-                    <Link href={`/admin/apps/${app.slug}/edit`} className="font-semibold text-primary hover:text-primary/80">
+                    <Link href={`/admin/apps/${app.slug}/edit`} className="inline-block rounded px-3 py-2 font-semibold text-primary hover:text-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
                       Edit
                     </Link>
                   </div>

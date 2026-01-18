@@ -124,8 +124,8 @@ export function ImageUploadField({
         >
           Upload image
         </Button>
-        <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={onFileChange} />
-        {status === 'uploading' && <span className="text-muted-foreground">Uploading…</span>}
+        <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={onFileChange} aria-label="Upload image file" />
+        {status === 'uploading' && <span className="text-muted-foreground" role="status" aria-live="polite">Uploading…</span>}
         {status === 'success' && uploadedPath && <span className="text-primary">Uploaded! {uploadedPath}</span>}
         {status === 'quarantined' && (
           <span className="text-amber-600">

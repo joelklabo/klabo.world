@@ -10,11 +10,12 @@ function resetEnv() {
 }
 
 function setStrictProdEnv() {
-  process.env.NODE_ENV = 'production';
-  process.env.CI = 'false';
-  process.env.NEXTAUTH_SECRET = 'dev-secret';
-  process.env.DATABASE_URL = 'file:../data/app.db';
-  process.env.VITEST = 'true';
+  const env = process.env as Record<string, string>;
+  env.NODE_ENV = 'production';
+  env.CI = 'false';
+  env.NEXTAUTH_SECRET = 'dev-secret';
+  env.DATABASE_URL = 'file:../data/app.db';
+  env.VITEST = 'true';
 }
 
 afterEach(() => {

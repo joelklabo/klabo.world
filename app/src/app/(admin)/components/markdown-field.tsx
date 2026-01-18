@@ -94,7 +94,7 @@ export function MarkdownField({
             Preview updated
           </span>
         )}
-        {status === 'error' && error && <span className="text-destructive">{error}</span>}
+        {status === 'error' && error && <span className="text-destructive" role="alert">{error}</span>}
       </div>
       {previewHTML && (
         <div className="rounded-2xl border border-border/60 bg-card p-4 shadow-sm">

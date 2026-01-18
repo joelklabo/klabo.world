@@ -31,7 +31,7 @@ export default async function AdminLanding({ searchParams }: { searchParams?: Ad
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">Dashboard</p>
-          <h1 className="text-3xl font-bold text-foreground">Content overview</h1>
+          <h1 className="text-3xl font-bold text-foreground text-balance">Content overview</h1>
           <p className="text-sm text-muted-foreground">Publish and maintain posts.</p>
         </div>
         <Button asChild size="lg">
@@ -43,12 +43,13 @@ export default async function AdminLanding({ searchParams }: { searchParams?: Ad
         innerClassName="overflow-hidden rounded-2xl border border-border/60 bg-card"
       >
         <table className="min-w-full divide-y divide-border/60 text-sm">
+          <caption className="sr-only">Posts list</caption>
           <thead className="bg-background/80 text-left">
             <tr>
-              <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">Title</th>
-              <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">Publish date</th>
-              <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">Tags</th>
-              <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">Actions</th>
+              <th scope="col" className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">Title</th>
+              <th scope="col" className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">Publish date</th>
+              <th scope="col" className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">Tags</th>
+              <th scope="col" className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border/60">
@@ -61,10 +62,10 @@ export default async function AdminLanding({ searchParams }: { searchParams?: Ad
                 <td className="px-6 py-4 text-muted-foreground">{post.tags?.length ? post.tags.join(', ') : '—'}</td>
                 <td className="px-6 py-4 text-sm">
                   <div className="flex gap-3">
-                    <Link href={`/posts/${post.slug}` as Route} target="_blank" className="font-semibold text-muted-foreground hover:text-foreground">
+                    <Link href={`/posts/${post.slug}` as Route} target="_blank" className="inline-block rounded px-3 py-2 font-semibold text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
                       View
                     </Link>
-                    <Link href={`/admin/posts/${post.slug}/edit` as Route} className="font-semibold text-primary hover:text-primary/80">
+                    <Link href={`/admin/posts/${post.slug}/edit` as Route} className="inline-block rounded px-3 py-2 font-semibold text-primary hover:text-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
                       Edit
                     </Link>
                   </div>

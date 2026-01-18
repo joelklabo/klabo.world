@@ -70,7 +70,7 @@ export default function RootLayout({
           Skip to content
         </a>
         <GlobalNavigation />
-        <main id="main-content" className="min-h-screen">
+        <main id="main-content" className="min-h-dvh">
           {children}
         </main>
         <ApplicationInsightsConnection />

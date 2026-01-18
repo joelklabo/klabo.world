@@ -95,7 +95,7 @@ export function ImageListUploadField({
         >
           Upload + append URL
         </Button>
-        <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={onFileChange} />
+        <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={onFileChange} aria-label="Upload image files" />
         {status === 'uploading' && <span className="text-muted-foreground">Uploading…</span>}
         {status === 'success' && <span className="text-muted-foreground">Added latest upload.</span>}
         {status === 'error' && error && <span className="text-destructive">{error}</span>}

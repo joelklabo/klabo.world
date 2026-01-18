@@ -67,7 +67,7 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
                 }
               }}
               className={cn(
-                'group flex items-center gap-2.5 py-1.5 text-sm transition-all duration-200',
+                'group flex items-center gap-2.5 py-1.5 text-sm motion-safe:transition-[transform,color] motion-safe:duration-200',
                 level === 2 ? 'pl-4' : 'pl-6',
                 activeId === id
                   ? '-ml-px border-l-2 border-primary pl-[calc(1rem-1px)] font-medium text-foreground'
@@ -75,7 +75,7 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
               )}
             >
               <span className={cn(
-                'inline-flex h-6 w-6 items-center justify-center rounded-sm text-xs font-semibold transition-all duration-200',
+                'inline-flex h-6 w-6 items-center justify-center rounded-sm text-xs font-semibold motion-safe:transition-[transform,background-color,color] motion-safe:duration-200',
                 activeId === id
                   ? 'bg-primary text-primary-foreground shadow-md shadow-primary/30 scale-110'
                   : 'bg-primary/10 text-primary/70 group-hover:bg-primary/20 group-hover:text-primary group-hover:shadow-sm group-hover:shadow-primary/20'

@@ -10,9 +10,9 @@ export default async function ComposePage() {
   return (
     <div className="mx-auto max-w-4xl px-6 py-10">
       <div className="mb-8">
-        <p className="text-sm uppercase tracking-widest text-indigo-500">Posts</p>
+        <p className="text-sm uppercase tracking-widest text-primary">Posts</p>
         <h1 className="text-3xl font-bold">Compose New Post</h1>
-        <p className="mt-2 text-sm text-gray-500">Write Markdown posts with tags, publish dates, and featured images.</p>
+        <p className="mt-2 text-sm text-muted-foreground">Write Markdown posts with tags, publish dates, and featured images.</p>
       </div>
       <PostForm upsertAction={createPostAction} mode="create" />
     </div>

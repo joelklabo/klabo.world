@@ -44,7 +44,7 @@ export function GitHubProjectCard({
         "group h-full rounded-2xl shadow-[0_18px_45px_rgba(6,10,20,0.45)] card-hover-lift",
         className,
       )}
-      innerClassName="rounded-2xl border border-border/50 bg-card/80 transition-[border-color,background-color,box-shadow] duration-300 group-hover:border-primary/60 group-hover:bg-card group-hover:shadow-[inset_0_0_20px_rgba(184,136,54,0.08)]"
+      innerClassName="rounded-2xl border border-border/50 bg-card/80 motion-safe:transition-[border-color,background-color,box-shadow] motion-safe:duration-200 group-hover:border-primary/60 group-hover:bg-card group-hover:shadow-[inset_0_0_20px_rgba(184,136,54,0.08)]"
     >
       <a
         href={project.url}
@@ -75,7 +75,7 @@ export function GitHubProjectCard({
           {project.primaryLanguage ? (
             <span className="inline-flex items-center gap-2.5">
               <span
-                className="relative h-2.5 w-2.5 rounded-full shadow-lg shadow-current/20 transition-transform duration-200 group-hover:scale-125"
+                className="relative h-2.5 w-2.5 rounded-full shadow-lg shadow-current/20 motion-safe:transition-transform motion-safe:duration-200 group-hover:scale-125"
                 style={{
                   backgroundColor: project.primaryLanguage.color ?? "var(--muted-foreground)",
                 }}

@@ -39,7 +39,7 @@ export default async function AppDetailPage({
   }
 
   return (
-    <article className="relative min-h-screen overflow-x-hidden bg-background text-foreground">
+    <article className="relative min-h-dvh overflow-x-hidden bg-background text-foreground">
       <div className="pointer-events-none absolute inset-0 opacity-80">
         <div className="absolute -left-20 -top-10 h-64 w-64 rounded-full bg-primary/15 blur-3xl" />
         <div className="absolute right-0 top-10 h-72 w-72 rounded-full bg-secondary/18 blur-3xl" />
@@ -53,7 +53,7 @@ export default async function AppDetailPage({
                 alt={app.name}
                 width={64}
                 height={64}
-                className="h-16 w-16 rounded-2xl object-cover"
+                className="size-16 rounded-2xl object-cover"
               />
             )}
             <div>

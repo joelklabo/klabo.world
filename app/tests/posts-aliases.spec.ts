@@ -23,6 +23,7 @@ const makePost = (slug: string, aliases: string[] = []): Post => ({
   summary: '',
   date: '2025-01-01T00:00:00.000Z',
   publishDate: '2025-01-01T00:00:00.000Z',
+  status: 'published',
   tags: [],
   aliases,
   featuredImage: undefined,

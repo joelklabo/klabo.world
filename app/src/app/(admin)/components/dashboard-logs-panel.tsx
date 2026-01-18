@@ -147,6 +147,7 @@ export function DashboardLogsPanel({
           value={searchInput}
           onChange={(event) => setSearchInput(event.target.value)}
           className="flex-1 rounded-full"
+          aria-label="Filter logs"
         />
         <select
           value={severity}
@@ -154,6 +155,7 @@ export function DashboardLogsPanel({
             setSeverity(event.target.value as SeverityFilter)
           }
           className="h-9 rounded-full border border-input bg-background px-4 py-2 text-sm text-foreground focus-visible:border-ring focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          aria-label="Filter by severity level"
         >
           {severityOptions.map((option) => (
             <option key={option.value} value={option.value}>
@@ -166,7 +168,7 @@ export function DashboardLogsPanel({
         </Button>
       </div>
 
-      <div className="text-xs text-muted-foreground">
+      <div className="text-xs text-muted-foreground" role="status" aria-live="polite">
         {isLoading ? "Refreshing…" : statusDescription}
         {state?.status === "success" && (
           <span className="ml-2">

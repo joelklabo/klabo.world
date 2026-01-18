@@ -177,7 +177,7 @@ export function AnnotationHighlights({ contentRef }: Props) {
             key={`${id}-${i}`}
             role="button"
             tabIndex={0}
-            className="pointer-events-auto absolute cursor-pointer transition-opacity focus:outline-none focus:ring-2 focus:ring-primary/50"
+            className="pointer-events-auto absolute cursor-pointer motion-safe:transition-opacity motion-safe:duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50"
             style={{
               top: rect.top,
               left: rect.left,

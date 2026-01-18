@@ -18,18 +18,19 @@ export function DashboardList({ initialDashboards }: DashboardListProps) {
       innerClassName="overflow-hidden rounded-2xl border border-border/60 bg-card"
     >
       <table className="min-w-full divide-y divide-border/60">
+        <caption className="sr-only">Dashboards list</caption>
         <thead className="bg-background/80">
           <tr>
-            <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
+            <th scope="col" className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
               Title
             </th>
-            <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
+            <th scope="col" className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
               Type
             </th>
-            <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
+            <th scope="col" className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
               Tags
             </th>
-            <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
+            <th scope="col" className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
               Actions
             </th>
           </tr>
@@ -63,7 +64,7 @@ export function DashboardList({ initialDashboards }: DashboardListProps) {
               <td className="px-4 py-4 text-sm">
                 <Link
                   href={`/admin/dashboards/${dashboard.slug}`}
-                  className="font-semibold text-primary hover:text-primary/80"
+                  className="inline-block rounded px-3 py-2 font-semibold text-primary hover:text-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
                   View
                 </Link>

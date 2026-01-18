@@ -16,7 +16,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   const session = await auth();
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-dvh bg-background text-foreground">
       <header className="border-b border-border/50 bg-background/80 backdrop-blur-xl shadow-[0_20px_40px_rgba(6,10,20,0.35)]">
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-4">

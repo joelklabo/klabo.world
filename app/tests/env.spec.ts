@@ -28,7 +28,7 @@ describe('loadEnv production guardrails', () => {
       loadEnv({
         ...baseProdEnv,
         DATABASE_URL: 'file:../data/app.db',
-      }),
+      } as NodeJS.ProcessEnv),
     ).toThrow(/DATABASE_URL uses SQLite/i);
   });
 
@@ -39,7 +39,7 @@ describe('loadEnv production guardrails', () => {
         ...baseProdEnv,
         DATABASE_URL: 'file:../data/app.db',
         ALLOW_SQLITE_IN_PROD: 'true',
-      }),
+      } as NodeJS.ProcessEnv),
     ).not.toThrow();
   });
 
@@ -50,7 +50,7 @@ describe('loadEnv production guardrails', () => {
         ...baseProdEnv,
         DATABASE_URL: 'file:../data/app.db',
         WEBSITE_SITE_NAME: 'klabo-world-app',
-      }),
+      } as NodeJS.ProcessEnv),
     ).not.toThrow();
   });
 
@@ -62,7 +62,7 @@ describe('loadEnv production guardrails', () => {
         DATABASE_URL: 'file:../data/app.db',
         WEBSITE_SITE_NAME: 'klabo-world-app',
         ALLOW_SQLITE_IN_PROD: 'false',
-      }),
+      } as NodeJS.ProcessEnv),
     ).toThrow(/DATABASE_URL uses SQLite/i);
   });
 
@@ -72,7 +72,7 @@ describe('loadEnv production guardrails', () => {
       loadEnv({
         ...baseProdEnv,
         NEXTAUTH_SECRET: 'dev-secret',
-      }),
+      } as NodeJS.ProcessEnv),
     ).toThrow(/NEXTAUTH_SECRET/i);
   });
 
@@ -81,7 +81,7 @@ describe('loadEnv production guardrails', () => {
       loadEnv({
         ...baseProdEnv,
         UPLOADS_REQUIRE_DURABLE: 'true',
-      }),
+      } as NodeJS.ProcessEnv),
     ).toThrow(/AZURE_STORAGE_ACCOUNT/i);
   });
 
@@ -92,7 +92,7 @@ describe('loadEnv production guardrails', () => {
         UPLOADS_REQUIRE_DURABLE: 'true',
         AZURE_STORAGE_ACCOUNT: 'account',
         AZURE_STORAGE_KEY: 'key',
-      }),
+      } as NodeJS.ProcessEnv),
     ).not.toThrow();
   });
 });
