@@ -137,8 +137,8 @@ export function AnnotationPins({ contentRef }: Props) {
             key={id}
             type="button"
             className={`
-              pointer-events-auto absolute flex h-6 w-6 items-center justify-center
-              rounded-full text-xs font-bold shadow-md transition-all
+              pointer-events-auto absolute flex size-7 items-center justify-center
+              rounded-full text-xs font-bold shadow-md transition-transform
               ${isSelected ? 'scale-125 ring-2 ring-white' : 'hover:scale-110'}
               ${isResolved ? 'opacity-50' : ''}
             `}

@@ -150,6 +150,7 @@ export function AppForm({ upsertAction, deleteAction, initialData, mode }: AppFo
             id="appStoreURL"
           name="appStoreURL"
           type="url"
+          autoComplete="url"
           defaultValue={initialData?.appStoreURL ?? ''}
           data-testid={`${testIdPrefix}-appstore`}
         />
@@ -161,6 +162,7 @@ export function AppForm({ upsertAction, deleteAction, initialData, mode }: AppFo
             id="githubURL"
           name="githubURL"
           type="url"
+          autoComplete="url"
           defaultValue={initialData?.githubURL ?? ''}
           data-testid={`${testIdPrefix}-github`}
         />

@@ -6,7 +6,7 @@ export default function NotFound() {
       <p className="text-xs font-semibold uppercase tracking-[0.35em] text-amber-200/80">
         404
       </p>
-      <h1 className="mt-3 text-4xl font-semibold tracking-tight text-white">
+      <h1 className="mt-3 text-4xl font-semibold tracking-tight text-white text-balance">
         Page not found
       </h1>
       <p className="mt-4 max-w-md text-lg text-slate-300">
@@ -15,13 +15,13 @@ export default function NotFound() {
       <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
         <Link
           href="/"
-          className="rounded-full bg-amber-500 px-6 py-3 text-sm font-semibold text-slate-900 transition hover:bg-amber-400"
+          className="rounded-full bg-amber-500 px-6 py-3 text-sm font-semibold text-slate-900 transition hover:bg-amber-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
         >
           Go home
         </Link>
         <Link
           href="/posts"
-          className="rounded-full border border-white/20 px-6 py-3 text-sm font-semibold text-white transition hover:border-amber-200/70 hover:text-amber-100"
+          className="rounded-full border border-white/20 px-6 py-3 text-sm font-semibold text-white transition hover:border-amber-200/70 hover:text-amber-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
         >
           Browse posts
         </Link>

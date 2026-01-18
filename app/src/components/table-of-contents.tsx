@@ -34,7 +34,7 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
 
     // Observe all headings
     for (const { id } of headings) {
-      const element = document.getElementById(id);
+      const element = document.querySelector(`#${CSS.escape(id)}`);
       if (element) {
         observer.observe(element);
       }
@@ -59,7 +59,7 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
               href={`#${id}`}
               onClick={(e) => {
                 e.preventDefault();
-                const element = document.getElementById(id);
+                const element = document.querySelector(`#${CSS.escape(id)}`);
                 if (element) {
                   element.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   // Update URL without scroll
@@ -82,7 +82,7 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
               )}>
                 {String(index + 1).padStart(2, '0')}
               </span>
-              <span className="transition-all duration-200 group-hover:translate-x-0.5">
+              <span className="transition-colors duration-200 motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5">
                 {text}
               </span>
             </a>

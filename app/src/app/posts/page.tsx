@@ -21,7 +21,7 @@ export default function PostsIndex() {
         <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="space-y-3">
             <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary">Writing</p>
-            <h1 className="text-4xl font-bold tracking-tight">Posts</h1>
+            <h1 className="text-4xl font-bold tracking-tight text-balance">Posts</h1>
             <p className="max-w-2xl text-sm text-muted-foreground">
               Long-form guides, experiments, and notes pulled straight from Contentlayer.
             </p>
@@ -39,12 +39,12 @@ export default function PostsIndex() {
                   {post.tags?.[0] ? (
                     <Link
                       href={`/posts/tag/${encodeURIComponent(post.tags[0])}`}
-                      className="rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-foreground transition hover:border-primary/60 hover:bg-primary/15"
+                      className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1.5 text-[10px] font-semibold text-foreground transition-colors hover:border-primary/60 hover:bg-primary/15"
                     >
                       {post.tags[0]}
                     </Link>
                   ) : (
-                    <span className="rounded-full border border-border/60 bg-background/60 px-2 py-0.5 text-[10px] text-muted-foreground">
+                    <span className="rounded-full border border-border/60 bg-background/60 px-3 py-1.5 text-[10px] text-muted-foreground">
                       Post
                     </span>
                   )}
@@ -61,7 +61,7 @@ export default function PostsIndex() {
                       <Link
                         key={tag}
                         href={`/posts/tag/${encodeURIComponent(tag)}`}
-                        className="rounded-full border border-primary/25 bg-primary/10 px-3 py-1 text-foreground transition hover:border-primary/60 hover:bg-primary/15"
+                        className="rounded-full border border-primary/25 bg-primary/10 px-3 py-1.5 text-foreground transition-colors hover:border-primary/60 hover:bg-primary/15"
                       >
                         {tag}
                       </Link>

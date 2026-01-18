@@ -17,7 +17,7 @@ export default function PostTagsPage() {
       </div>
       <div className="relative mx-auto max-w-6xl px-6 py-16">
         <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary">Tags</p>
-        <h1 className="mt-3 text-4xl font-bold tracking-tight">Explore by Topic</h1>
+        <h1 className="mt-3 text-4xl font-bold tracking-tight text-balance">Explore by Topic</h1>
         <p className="mt-3 max-w-2xl text-sm text-muted-foreground">
           Quickly jump into the subjects we write about most—Bitcoin, Lightning,
           Nostr, agents, and more.
@@ -27,7 +27,7 @@ export default function PostTagsPage() {
             <Link
               key={tag}
               href={`/posts/tag/${encodeURIComponent(tag)}`}
-              className="rounded-full border border-primary/25 bg-primary/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-foreground transition hover:-translate-y-0.5 hover:border-primary/60 hover:bg-primary/15 hover:shadow-[0_12px_28px_rgba(6,10,20,0.4)]"
+              className="rounded-full border border-primary/25 bg-primary/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] text-foreground transition-colors hover:border-primary/60 hover:bg-primary/15 motion-safe:transition-transform motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-[0_12px_28px_rgba(6,10,20,0.4)]"
             >
               {tag} <span className="ml-1 text-xs text-muted-foreground">({count})</span>
             </Link>

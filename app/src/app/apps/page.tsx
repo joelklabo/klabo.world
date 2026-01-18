@@ -23,7 +23,7 @@ export default function AppsPage() {
           <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary">
             Apps
           </p>
-          <h1 className="mt-3 text-4xl font-bold tracking-tight">
+          <h1 className="mt-3 text-4xl font-bold tracking-tight text-balance">
             Projects & Experiments
           </h1>
           <p className="mt-4 text-lg text-muted-foreground">

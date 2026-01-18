@@ -61,7 +61,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" style={{ colorScheme: 'dark' }}>
       <body className={`${manrope.variable} ${jetbrains.variable} antialiased bg-background text-foreground`}>
         <a
           href="#main-content"

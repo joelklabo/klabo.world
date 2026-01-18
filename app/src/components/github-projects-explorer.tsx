@@ -80,7 +80,7 @@ export function GitHubProjectsExplorer({ projects, className, cardTestId }: Prop
             aria-pressed={language === "all"}
             data-testid="projects-filter-all"
             className={cn(
-              "rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.26em] transition",
+              "rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.26em] transition-colors",
               language === "all"
                 ? "border-primary/35 bg-primary/10 text-foreground shadow-[0_12px_30px_rgba(255,191,71,0.10)]"
                 : "border-border/55 bg-card/60 text-muted-foreground hover:border-primary/35 hover:bg-background/30 hover:text-foreground",
@@ -97,7 +97,7 @@ export function GitHubProjectsExplorer({ projects, className, cardTestId }: Prop
               aria-pressed={language === lang}
               data-testid="projects-filter-language"
               className={cn(
-                "rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.26em] transition",
+                "rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.26em] transition-colors",
                 language === lang
                   ? "border-primary/35 bg-primary/10 text-foreground shadow-[0_12px_30px_rgba(255,191,71,0.10)]"
                   : "border-border/55 bg-card/60 text-muted-foreground hover:border-primary/35 hover:bg-background/30 hover:text-foreground",

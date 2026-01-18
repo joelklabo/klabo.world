@@ -26,7 +26,7 @@ export default function DashboardsPage() {
         <header className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div className="space-y-3">
             <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary">Dashboards</p>
-            <h1 className="text-4xl font-bold tracking-tight">Operational snapshots</h1>
+            <h1 className="text-4xl font-bold tracking-tight text-balance">Operational snapshots</h1>
             <p className="max-w-2xl text-sm text-muted-foreground">
               Read-only cards that track key health, traffic, and performance signals.
             </p>

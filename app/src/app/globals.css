@@ -200,7 +200,7 @@ body {
     border: none;
     padding: 0;
     font-size: 0.95em;
-    color: oklch(86% 0.15 80deg);
+    color: oklch(92% 0.02 250deg);
   }
 
   .prose img,

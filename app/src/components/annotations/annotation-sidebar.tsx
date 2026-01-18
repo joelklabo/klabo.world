@@ -48,14 +48,24 @@ function AnnotationCard({
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onSelect();
+    }
+  };
+
   return (
     <div
+      role="button"
+      tabIndex={0}
       className={`
-        rounded-lg border transition-all cursor-pointer
+        rounded-lg border transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/50
         ${isSelected ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'}
         ${isResolved ? 'opacity-60' : ''}
       `}
       onClick={onSelect}
+      onKeyDown={handleKeyDown}
     >
       <div className="p-3">
         {/* Header */}
@@ -106,7 +116,7 @@ function AnnotationCard({
               onChange={(e) => setReplyContent(e.target.value)}
               aria-label="Reply to annotation"
               placeholder="Reply..."
-              className="mb-2 w-full resize-none rounded border border-border bg-background p-2 text-sm focus:border-primary focus:outline-none"
+              className="mb-2 w-full resize-none rounded border border-border bg-background p-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
               rows={2}
               onKeyDown={(e) => {
                 e.stopPropagation();
@@ -123,7 +133,7 @@ function AnnotationCard({
             <div className="flex justify-end gap-2">
               <button
                 type="button"
-                className="rounded px-1 text-xs text-muted-foreground hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                className="min-h-7 min-w-7 rounded px-2 py-1 text-xs text-muted-foreground hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
                 onClick={(e) => {
                   e.stopPropagation();
                   setIsReplying(false);
@@ -134,7 +144,7 @@ function AnnotationCard({
               </button>
               <button
                 type="button"
-                className="rounded px-1 text-xs text-primary hover:text-primary/80 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                className="min-h-7 min-w-7 rounded px-2 py-1 text-xs text-primary hover:text-primary/80 focus:outline-none focus:ring-2 focus:ring-primary/50"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleSubmitReply();
@@ -153,7 +163,7 @@ function AnnotationCard({
               <>
                 <button
                   type="button"
-                  className="rounded px-1 text-xs text-muted-foreground hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  className="min-h-7 min-w-7 rounded px-2 py-1 text-xs text-muted-foreground hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
                   onClick={(e) => {
                     e.stopPropagation();
                     setIsReplying(true);
@@ -163,7 +173,7 @@ function AnnotationCard({
                 </button>
                 <button
                   type="button"
-                  className="rounded px-1 text-xs text-green-500 hover:text-green-400 focus:outline-none focus:ring-2 focus:ring-green-500/50"
+                  className="min-h-7 min-w-7 rounded px-2 py-1 text-xs text-green-500 hover:text-green-400 focus:outline-none focus:ring-2 focus:ring-green-500/50"
                   onClick={(e) => {
                     e.stopPropagation();
                     onResolve();
@@ -175,7 +185,7 @@ function AnnotationCard({
             )}
             <button
               type="button"
-              className="rounded px-1 text-xs text-red-500 hover:text-red-400 focus:outline-none focus:ring-2 focus:ring-red-500/50"
+              className="min-h-7 min-w-7 rounded px-2 py-1 text-xs text-red-500 hover:text-red-400 focus:outline-none focus:ring-2 focus:ring-red-500/50"
               onClick={(e) => {
                 e.stopPropagation();
                 if (confirm('Delete this annotation?')) {
@@ -250,7 +260,7 @@ export function AnnotationSidebar() {
           {/* Mode indicator */}
           {mode !== 'view' && (
             <div className="mt-2 rounded bg-primary/10 px-2 py-1 text-xs text-primary">
-              {mode === 'comment' ? '📝 Comment mode (C)' : '🎨 Draw mode (D)'} — Press Esc to exit
+              {mode === 'comment' ? <><span aria-hidden="true">📝</span> Comment mode <kbd className="rounded border border-primary/30 bg-primary/5 px-1 text-[10px]">C</kbd></> : <><span aria-hidden="true">🎨</span> Draw mode <kbd className="rounded border border-primary/30 bg-primary/5 px-1 text-[10px]">D</kbd></>} — Press <kbd className="rounded border border-primary/30 bg-primary/5 px-1 text-[10px]">Esc</kbd> to exit
             </div>
           )}
 

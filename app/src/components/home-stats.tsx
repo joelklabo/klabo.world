@@ -46,7 +46,7 @@ export function HomeStats({ stats, className, itemTestId = "home-stat-item" }: H
             <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
               {stat.label}
             </p>
-            <div className="text-2xl font-semibold text-foreground sm:text-3xl">
+            <div className="text-2xl font-semibold text-foreground tabular-nums sm:text-3xl">
               {formattedValue}
             </div>
             {stat.helper ? (
@@ -87,7 +87,7 @@ export function HomeStats({ stats, className, itemTestId = "home-stat-item" }: H
           <Surface
             key={`${stat.label}-${stat.href ?? "static"}`}
             className="rounded-2xl shadow-[0_18px_45px_rgba(6,10,20,0.35)]"
-            innerClassName="h-full rounded-2xl border border-border/60 bg-card/70 p-5 transition hover:border-primary/40"
+            innerClassName="h-full rounded-2xl border border-border/60 bg-card/70 p-5 transition-colors hover:border-primary/40"
           >
             {inner}
           </Surface>

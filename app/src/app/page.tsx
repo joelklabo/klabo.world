@@ -104,7 +104,7 @@ export default async function Home() {
         <div className="relative mx-auto flex max-w-6xl flex-col gap-10 px-6">
           <div className="max-w-3xl space-y-5">
             <h1
-              className="text-4xl font-bold tracking-tight text-foreground md:text-5xl"
+              className="text-4xl font-bold tracking-tight text-foreground text-balance md:text-5xl"
               data-testid="home-hero-title"
             >
               Notes, playbooks, and projects for shipping on decentralized

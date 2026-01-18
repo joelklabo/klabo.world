@@ -99,8 +99,8 @@ export default function SearchResults({ query }: SearchResultsProps) {
       {status === 'loading' ? (
         <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">Searching…</p>
       ) : (
-        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">
-          {safeResults.length} result{safeResults.length === 1 ? '' : 's'} for “{query}”
+        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground tabular-nums">
+          {safeResults.length} result{safeResults.length === 1 ? '' : 's'} for &ldquo;{query}&rdquo;
         </p>
       )}
 
@@ -109,14 +109,14 @@ export default function SearchResults({ query }: SearchResultsProps) {
       )}
 
       {status !== 'loading' && status !== 'error' && safeResults.length === 0 && (
-        <p className="text-sm text-muted-foreground">No results for “{query}”.</p>
+        <p className="text-sm text-muted-foreground">No results for &ldquo;{query}&rdquo;.</p>
       )}
 
       {safeResults.map((result) => (
         <Link
           key={`${result.type}-${result.url}`}
           href={result.url as Route}
-          className="block rounded-2xl border border-border/70 bg-gradient-to-r from-card/90 to-background/80 p-5 shadow-[0_20px_50px_rgba(6,10,20,0.45)] transition hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-[0_24px_60px_rgba(6,10,20,0.55)]"
+          className="block rounded-2xl border border-border/70 bg-gradient-to-r from-card/90 to-background/80 p-5 shadow-[0_20px_50px_rgba(6,10,20,0.45)] transition-colors hover:border-primary/50 motion-safe:transition-transform motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-[0_24px_60px_rgba(6,10,20,0.55)]"
         >
           <div className="flex flex-wrap items-center gap-3 text-[11px] uppercase tracking-[0.35em] text-muted-foreground">
             <span>{result.type}</span>

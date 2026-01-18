@@ -117,6 +117,7 @@ export function PostForm({ upsertAction, deleteAction, initialData, mode }: Post
               id="lightningAddress"
               name="lightningAddress"
               type="email"
+              autoComplete="email"
               defaultValue={initialData?.lightningAddress ?? ''}
               placeholder="joel@nostrstack.lol"
             />
@@ -143,12 +144,12 @@ export function PostForm({ upsertAction, deleteAction, initialData, mode }: Post
             placeholder="wss://relay.damus.io, wss://relay.snort.social"
           />
         </div>
-        <label className="flex items-center gap-2 text-sm text-muted-foreground">
+        <label className="flex min-h-10 cursor-pointer items-center gap-3 text-sm text-muted-foreground">
           <input
             type="checkbox"
             name="nostrstackEnabled"
             defaultChecked={initialData?.nostrstackEnabled !== false}
-            className="h-4 w-4 rounded border-input"
+            className="size-5 cursor-pointer rounded border-input accent-primary"
           />
           Enable nostrstack widgets for this post
         </label>

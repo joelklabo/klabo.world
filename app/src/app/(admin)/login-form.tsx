@@ -109,7 +109,7 @@ export function LoginForm({ initialError }: LoginFormProps) {
           id="email"
           name="email"
           type="email"
-          className="rounded border border-border bg-card px-3 py-2 text-foreground placeholder-muted-foreground"
+          className="rounded border border-border bg-card px-3 py-2 text-foreground placeholder-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/50"
           autoComplete="username"
           required
           data-testid="admin-login-email"
@@ -121,7 +121,7 @@ export function LoginForm({ initialError }: LoginFormProps) {
           id="password"
           name="password"
           type="password"
-          className="rounded border border-border bg-card px-3 py-2 text-foreground placeholder-muted-foreground"
+          className="rounded border border-border bg-card px-3 py-2 text-foreground placeholder-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/50"
           autoComplete="current-password"
           required
           data-testid="admin-login-password"

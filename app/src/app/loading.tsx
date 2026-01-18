@@ -1,7 +1,8 @@
 export default function Loading() {
   return (
-    <div className="flex min-h-[50vh] items-center justify-center">
-      <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+    <div className="flex min-h-[50vh] items-center justify-center" role="status" aria-label="Loading">
+      <div className="size-8 animate-spin rounded-full border-4 border-primary border-t-transparent" aria-hidden="true" />
+      <span className="sr-only">Loading...</span>
     </div>
   );
 }

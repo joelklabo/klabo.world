@@ -79,7 +79,7 @@ export function DashboardForm({ action, submitLabel, dashboard, includeSlugField
           name="panelType"
           required
           defaultValue={dashboard?.panelType ?? 'chart'}
-          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex h-10 w-full cursor-pointer rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground ring-offset-background focus-visible:border-ring focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50"
           data-testid="dashboard-panel-type"
         >
           {panelTypeOptions.map((option) => (
@@ -136,6 +136,7 @@ export function DashboardForm({ action, submitLabel, dashboard, includeSlugField
           <Label htmlFor="iframeUrl">Iframe URL (for embeds)</Label>
           <Input
             type="url"
+            autoComplete="url"
             id="iframeUrl"
             name="iframeUrl"
             placeholder="https://portal.azure.com/..."
@@ -150,6 +151,7 @@ export function DashboardForm({ action, submitLabel, dashboard, includeSlugField
           <Label htmlFor="externalUrl">External link</Label>
           <Input
             type="url"
+            autoComplete="url"
             id="externalUrl"
             name="externalUrl"
             placeholder="https://appsmith.com/apps/..."

@@ -47,7 +47,7 @@ export function HomeQuickLinks({
                 </p>
               ) : null}
             </div>
-            <ArrowUpRight className="size-4 shrink-0 text-muted-foreground/70 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-muted-foreground" />
+            <ArrowUpRight className="size-4 shrink-0 text-muted-foreground/70 transition-colors duration-200 group-hover:text-muted-foreground motion-safe:transition-transform motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-0.5" />
           </div>
         );
 
@@ -79,7 +79,7 @@ export function HomeQuickLinks({
           <Surface
             key={`${link.label}-${link.href}`}
             className="rounded-2xl shadow-[0_18px_45px_rgba(6,10,20,0.35)]"
-            innerClassName="h-full rounded-2xl border border-border/60 bg-card/70 p-4 transition hover:border-primary/40"
+            innerClassName="h-full rounded-2xl border border-border/60 bg-card/70 p-4 transition-colors hover:border-primary/40"
           >
             {inner}
           </Surface>

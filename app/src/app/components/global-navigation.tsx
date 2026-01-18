@@ -265,7 +265,7 @@ export function GlobalNavigation() {
           </Link>
           <button
             type="button"
-            className="lg:hidden rounded-full border border-border/60 bg-card/70 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-foreground hover:border-primary/70"
+            className="lg:hidden min-h-10 rounded-full border border-border/60 bg-card/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-foreground hover:border-primary/70"
             onClick={() => setMobileMenuOpen((prev) => !prev)}
             aria-expanded={mobileMenuOpen}
             aria-controls="global-mobile-nav"
@@ -300,6 +300,7 @@ export function GlobalNavigation() {
                 ref={inputRef}
                 type="search"
                 name="global-search"
+                autoComplete="off"
                 role="combobox"
                 aria-expanded={showDropdown}
                 aria-controls="global-search-dropdown"
@@ -355,9 +356,9 @@ export function GlobalNavigation() {
                   <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
                     <span>{statusMessage}</span>
                     <div className="flex flex-wrap items-center gap-1 text-[10px] font-semibold">
-                      <span className="rounded-full border border-border/50 bg-background/70 px-2 py-1 text-[10px] tracking-[0.28em]">↑↓</span>
-                      <span className="rounded-full border border-border/50 bg-background/70 px-2 py-1 text-[10px] tracking-[0.28em]">Enter</span>
-                      <span className="rounded-full border border-border/50 bg-background/70 px-2 py-1 text-[10px] tracking-[0.28em]">Esc</span>
+                      <kbd className="rounded-full border border-border/50 bg-background/70 px-2 py-1 text-[10px] font-sans tracking-[0.28em]">↑↓</kbd>
+                      <kbd className="rounded-full border border-border/50 bg-background/70 px-2 py-1 text-[10px] font-sans tracking-[0.28em]">Enter</kbd>
+                      <kbd className="rounded-full border border-border/50 bg-background/70 px-2 py-1 text-[10px] font-sans tracking-[0.28em]">Esc</kbd>
                       {focusedResult ? (
                         <span className="ml-2 text-[10px] tracking-[0.25em] text-primary">{TYPE_LABELS[focusedResult.type]}</span>
                       ) : null}

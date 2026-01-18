@@ -60,7 +60,7 @@ function ProseImage(props: {
     <figure className="group relative my-10" data-hero-image={priority ? 'true' : undefined}>
       <Link href={src as Route} target="_blank" rel="noreferrer" className="pointer-events-auto">
         <Surface
-          className="relative rounded-[32px] shadow-[0_24px_60px_rgba(6,10,20,0.55)] transition hover:-translate-y-1.5 hover:shadow-[0_30px_50px_rgba(6,10,20,0.7)]"
+          className="relative rounded-[32px] shadow-[0_24px_60px_rgba(6,10,20,0.55)] transition-shadow hover:shadow-[0_30px_50px_rgba(6,10,20,0.7)] motion-safe:transition-transform motion-safe:hover:-translate-y-1.5"
           innerClassName="relative overflow-hidden rounded-[32px] border border-border/60 bg-card/80"
         >
           <Image
@@ -70,7 +70,7 @@ function ProseImage(props: {
             width={1600}
             height={900}
             sizes="(max-width: 768px) 100vw, 800px"
-            className="w-full max-h-[70vh] object-contain transition duration-300 group-hover:scale-105 md:max-h-[80vh]"
+            className="w-full max-h-[70vh] object-contain transition-opacity duration-300 motion-safe:transition-transform motion-safe:group-hover:scale-105 md:max-h-[80vh]"
             priority={priority}
           />
           {showBadge && (

@@ -9,7 +9,8 @@ export type Heading = {
  * Call this on the server with the raw MDX content.
  */
 export function extractHeadings(rawContent: string): Heading[] {
-  const headingRegex = /^#{2,3}\s+(.+)$/gm;
+  // eslint-disable-next-line sonarjs/slow-regex -- Input is trusted MDX content with short headings
+  const headingRegex = /^#{2,3}\s+([^\n]+)$/gm;
   const headings: Heading[] = [];
 
   let match;

@@ -178,14 +178,14 @@ function AvatarStack({
         <div
           key={pubkey}
           style={{ '--dx': `${index * 10}px` } as CSSProperties}
-          className="-ml-2 transition-transform duration-300 ease-out group-hover:translate-x-[var(--dx)]"
+          className="-ml-2 motion-safe:transition-transform motion-safe:duration-300 motion-safe:ease-out motion-safe:group-hover:translate-x-[var(--dx)]"
         >
           <Avatar pubkey={pubkey} profile={profiles[pubkey]} size={size} className="ring-2 ring-[#0d1428]" />
         </div>
       ))}
       {extra > 0 ? (
         <div
-          className="-ml-2 transition-transform duration-300 ease-out group-hover:translate-x-[var(--dx)]"
+          className="-ml-2 motion-safe:transition-transform motion-safe:duration-300 motion-safe:ease-out motion-safe:group-hover:translate-x-[var(--dx)]"
           style={{ '--dx': `${items.length * 10}px` } as CSSProperties}
         >
           <div
@@ -726,7 +726,7 @@ export function NostrstackActionBar({
           data-testid="nostrstack-tip"
           onClick={handleTip}
           disabled={!lightning || (!baseUrl && !mockMode) || tipState === 'loading'}
-          className="rounded-full bg-amber-500 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-amber-400 disabled:cursor-not-allowed disabled:bg-amber-200/50"
+          className="min-h-10 rounded-full bg-amber-500 px-4 py-2 text-sm font-semibold text-slate-900 transition-colors hover:bg-amber-400 disabled:cursor-not-allowed disabled:bg-amber-200/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0d1428]"
         >
           {tipState === 'loading' ? 'Generating…' : (lightning ? 'Send sats' : 'Lightning missing')}
         </button>
@@ -739,7 +739,7 @@ export function NostrstackActionBar({
             status === 'connecting' ||
             (status !== 'mock' && connections.length === 0)
           }
-          className="rounded-full border border-white/20 px-4 py-2 text-sm font-semibold text-white transition hover:border-amber-200/70 hover:text-amber-100 disabled:cursor-not-allowed disabled:opacity-60"
+          className="min-h-10 rounded-full border border-white/20 px-4 py-2 text-sm font-semibold text-white transition-colors hover:border-amber-200/70 hover:text-amber-100 disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0d1428]"
         >
           {shareState === 'posting' ? 'Posting…' : 'Share to Nostr'}
         </button>
@@ -751,7 +751,7 @@ export function NostrstackActionBar({
             <button
               type="button"
               onClick={retry}
-              className="rounded-full border border-rose-200/30 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.25em] text-rose-100 hover:bg-rose-100/10"
+              className="min-h-8 rounded-full border border-rose-200/30 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.25em] text-rose-100 transition-colors hover:bg-rose-100/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-400/50"
             >
               Retry
             </button>
@@ -807,7 +807,7 @@ export function NostrstackActionBar({
 
           <a
             href="#omnoster"
-            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.3em] text-amber-100/80 transition hover:-translate-y-0.5 hover:border-amber-200/50 hover:bg-amber-50/10 hover:text-amber-100"
+            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.3em] text-amber-100/80 transition-colors hover:border-amber-200/50 hover:bg-amber-50/10 hover:text-amber-100 motion-safe:transition-transform motion-safe:hover:-translate-y-0.5"
           >
             View feed →
           </a>
@@ -948,7 +948,7 @@ export function NostrstackOmnoster({
               <button
                 type="button"
                 onClick={retry}
-                className="rounded-full border border-rose-200/30 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.25em] text-rose-100 transition hover:bg-rose-100/10"
+                className="min-h-9 rounded-full border border-rose-200/30 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.25em] text-rose-100 transition-colors hover:bg-rose-100/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-400/50"
               >
                 Retry
               </button>
@@ -974,7 +974,7 @@ export function NostrstackOmnoster({
                   <li
                     key={eventId ?? `${ev.pubkey}-${ev.created_at}`}
                     data-testid="nostrstack-omnoster-item"
-                    className="group rounded-2xl border border-white/10 bg-white/5 p-4 shadow-[0_18px_45px_rgba(12,19,38,0.35)] transition hover:-translate-y-0.5 hover:border-amber-200/40 hover:bg-amber-50/5 hover:shadow-[0_22px_55px_rgba(12,19,38,0.5)] animate-in fade-in slide-in-from-bottom-2 duration-300"
+                    className="group rounded-2xl border border-white/10 bg-white/5 p-4 shadow-[0_18px_45px_rgba(12,19,38,0.35)] transition-colors hover:border-amber-200/40 hover:bg-amber-50/5 motion-safe:transition-transform motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-[0_22px_55px_rgba(12,19,38,0.5)] motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-2 motion-safe:duration-300"
                   >
                     <div className="flex items-start gap-3">
                       <Avatar pubkey={ev.pubkey} profile={profile} size={36} className="shrink-0" />
@@ -1010,7 +1010,7 @@ export function NostrstackOmnoster({
                 type="button"
                 onClick={() => setExpanded((value) => !value)}
                 data-testid="nostrstack-omnoster-toggle"
-                className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.3em] text-slate-200 transition hover:-translate-y-0.5 hover:border-amber-200/50 hover:bg-amber-50/10"
+                className="inline-flex min-h-9 items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.3em] text-slate-200 transition-colors hover:border-amber-200/50 hover:bg-amber-50/10 motion-safe:transition-transform motion-safe:hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/50"
               >
                 {expanded ? 'Show less' : 'Show all'}
               </button>
@@ -1112,7 +1112,7 @@ export function NostrstackComments({ threadId, relays, canonicalUrl }: CommentsP
           <button
             type="button"
             onClick={retry}
-            className="rounded-full border border-rose-200/30 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.25em] text-rose-100 hover:bg-rose-100/10"
+            className="min-h-8 rounded-full border border-rose-200/30 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.25em] text-rose-100 transition-colors hover:bg-rose-100/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-400/50"
           >
             Retry
           </button>
@@ -1127,14 +1127,14 @@ export function NostrstackComments({ threadId, relays, canonicalUrl }: CommentsP
           onChange={(e) => setContent(e.target.value)}
           rows={3}
           placeholder="Add a comment via Nostr"
-          className="w-full rounded-2xl border border-white/20 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-slate-400 focus:border-amber-200/60 focus:outline-none"
+          className="w-full rounded-2xl border border-white/20 bg-white/5 px-4 py-3 text-base sm:text-sm text-white placeholder:text-slate-400 focus:border-amber-200/60 focus:outline-none focus:ring-2 focus:ring-amber-200/30"
         />
         <div className="flex items-center justify-between text-sm text-slate-400">
           <button
             type="submit"
             disabled={posting || (status === 'connecting' && !isMockMode) || (connections.length === 0 && !isMockMode) || !signerState.hasSigner}
             data-testid="nostrstack-comment-submit"
-            className="rounded-full bg-white/10 px-4 py-2 font-semibold text-white transition hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-60"
+            className="min-h-10 rounded-full bg-white/10 px-4 py-2 font-semibold text-white transition-colors hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/50"
           >
             {posting ? 'Posting…' : 'Post comment'}
           </button>

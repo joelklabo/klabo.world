@@ -47,7 +47,7 @@ export default async function ProjectsPage() {
             <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary">
               Projects
             </p>
-            <h1 className="text-4xl font-bold tracking-tight text-foreground">
+            <h1 className="text-4xl font-bold tracking-tight text-foreground text-balance">
               GitHub projects
             </h1>
             <p className="max-w-2xl text-sm text-muted-foreground">

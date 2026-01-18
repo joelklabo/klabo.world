@@ -44,7 +44,7 @@ export function HomeTopics({
             data-testid={topic.testId ?? itemTestId}
             data-analytics-event={topic.analyticsEvent ?? "ui.home.topic"}
             data-analytics-label={topic.analyticsLabel ?? topic.tag}
-            className="group inline-flex max-w-full items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.25em] text-foreground transition hover:-translate-y-0.5 hover:border-primary/60 hover:bg-primary/15 hover:shadow-[0_12px_28px_rgba(6,10,20,0.4)]"
+            className="group inline-flex max-w-full items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.25em] text-foreground transition-colors hover:border-primary/60 hover:bg-primary/15 motion-safe:transition-transform motion-safe:hover:-translate-y-0.5 motion-safe:hover:shadow-[0_12px_28px_rgba(6,10,20,0.4)]"
           >
             <span className="max-w-[10rem] truncate">{topic.tag}</span>
             {countLabel ? (

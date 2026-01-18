@@ -21,7 +21,7 @@ export default function AboutPage() {
         <header className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div className="space-y-3">
             <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary">About</p>
-            <h1 className="text-4xl font-bold tracking-tight">klabo.world</h1>
+            <h1 className="text-4xl font-bold tracking-tight text-balance">klabo.world</h1>
             <p className="max-w-2xl text-sm text-muted-foreground">
               A home for practical notes, experiments, and shipping logs around Bitcoin,
               Lightning, Nostr, and agentic engineering.

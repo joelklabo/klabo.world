@@ -38,7 +38,7 @@ export default async function PostTagPage({ params }: { params: Params | Promise
         <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="space-y-3">
             <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary">Tag</p>
-            <h1 className="text-4xl font-bold tracking-tight text-foreground">{tag}</h1>
+            <h1 className="text-4xl font-bold tracking-tight text-foreground text-balance">{tag}</h1>
             <p className="max-w-2xl text-sm text-muted-foreground">Posts filed under “{tag}”.</p>
           </div>
           <Button asChild variant="outline" size="sm">
@@ -67,7 +67,7 @@ export default async function PostTagPage({ params }: { params: Params | Promise
                     <Link
                       key={entry}
                       href={`/posts/tag/${encodeURIComponent(entry)}`}
-                      className="rounded-full border border-primary/25 bg-primary/10 px-3 py-1 text-foreground transition hover:border-primary/60 hover:bg-primary/15"
+                      className="rounded-full border border-primary/25 bg-primary/10 px-3 py-1.5 text-foreground transition-colors hover:border-primary/60 hover:bg-primary/15"
                     >
                       {entry}
                     </Link>

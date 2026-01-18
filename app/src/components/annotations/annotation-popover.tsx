@@ -97,18 +97,18 @@ export function AnnotationPopover() {
           onChange={(e) => setContent(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Add a comment..."
-          className="mb-2 min-h-[80px] w-full resize-none rounded border border-border bg-background p-2 text-sm focus:border-primary focus:outline-none"
+          className="mb-2 min-h-[80px] w-full resize-none rounded border border-border bg-background p-2 text-base sm:text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
           disabled={isSubmitting}
         />
         <div className="flex items-center justify-between">
           <span className="text-xs text-muted-foreground">
-            ⌘+Enter to save, Esc to cancel
+            <kbd className="rounded border border-border bg-muted/50 px-1 font-sans text-[10px]">⌘</kbd>+<kbd className="rounded border border-border bg-muted/50 px-1 font-sans text-[10px]">Enter</kbd> to save, <kbd className="rounded border border-border bg-muted/50 px-1 font-sans text-[10px]">Esc</kbd> to cancel
           </span>
           <div className="flex gap-2">
             <button
               type="button"
               onClick={() => setPendingAnnotation(null)}
-              className="rounded px-3 py-1 text-sm text-muted-foreground hover:bg-muted"
+              className="min-h-9 rounded px-3 py-2 text-sm text-muted-foreground hover:bg-muted"
               disabled={isSubmitting}
             >
               Cancel
@@ -117,7 +117,7 @@ export function AnnotationPopover() {
               type="button"
               onClick={handleSubmit}
               disabled={!content.trim() || isSubmitting}
-              className="rounded bg-primary px-3 py-1 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+              className="min-h-9 rounded bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
             >
               {isSubmitting ? 'Saving...' : 'Save'}
             </button>

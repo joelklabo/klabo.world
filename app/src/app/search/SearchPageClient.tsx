@@ -23,7 +23,7 @@ export default function SearchPageClient() {
         <div className="rounded-3xl border border-border/60 bg-card/80 px-6 py-5 shadow-[0_20px_50px_rgba(6,10,20,0.45)]">
           <div className="mb-6 flex flex-col gap-3">
             <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary">Search</p>
-            <h1 className="text-4xl font-bold leading-tight text-foreground">Find posts and apps</h1>
+            <h1 className="text-4xl font-bold leading-tight text-foreground text-balance">Find posts and apps</h1>
             <p className="text-sm text-muted-foreground">
               Type two or more characters to see instant results. Use ↑↓ to navigate, Enter to open, Esc to close.
             </p>
@@ -32,8 +32,10 @@ export default function SearchPageClient() {
             <input
               type="search"
               name="q"
+              autoComplete="off"
               defaultValue={query}
               placeholder="agents, swift, vicechips..."
+              aria-label="Search posts and apps"
               className="w-full rounded-2xl border border-border/60 bg-card/80 px-5 py-3 text-lg text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/40 shadow-[0_18px_40px_rgba(6,10,20,0.5)]"
             />
             <div className="flex flex-wrap items-center gap-3">
@@ -41,9 +43,9 @@ export default function SearchPageClient() {
                 Search
               </Button>
               <div className="flex flex-wrap items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-muted-foreground">
-                <span className="rounded-full border border-border/60 bg-background/80 px-2 py-1">↑↓</span>
-                <span className="rounded-full border border-border/60 bg-background/80 px-2 py-1">Enter</span>
-                <span className="rounded-full border border-border/60 bg-background/80 px-2 py-1">Esc</span>
+                <kbd className="rounded-full border border-border/60 bg-background/80 px-2 py-1 font-sans">↑↓</kbd>
+                <kbd className="rounded-full border border-border/60 bg-background/80 px-2 py-1 font-sans">Enter</kbd>
+                <kbd className="rounded-full border border-border/60 bg-background/80 px-2 py-1 font-sans">Esc</kbd>
               </div>
             </div>
           </form>

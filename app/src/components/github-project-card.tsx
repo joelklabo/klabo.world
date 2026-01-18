@@ -44,7 +44,7 @@ export function GitHubProjectCard({
         "group h-full rounded-2xl shadow-[0_18px_45px_rgba(6,10,20,0.45)] card-hover-lift",
         className,
       )}
-      innerClassName="rounded-2xl border border-border/50 bg-card/80 transition-all duration-300 group-hover:border-primary/60 group-hover:bg-card group-hover:shadow-[inset_0_0_20px_rgba(184,136,54,0.08)]"
+      innerClassName="rounded-2xl border border-border/50 bg-card/80 transition-[border-color,background-color,box-shadow] duration-300 group-hover:border-primary/60 group-hover:bg-card group-hover:shadow-[inset_0_0_20px_rgba(184,136,54,0.08)]"
     >
       <a
         href={project.url}
@@ -84,7 +84,7 @@ export function GitHubProjectCard({
               <span className="font-medium text-foreground group-hover:text-primary/90 transition-colors">{project.primaryLanguage.name}</span>
             </span>
           ) : null}
-          {starsLabel ? <span className="font-medium">★ {starsLabel}</span> : null}
+          {starsLabel ? <span className="font-medium tabular-nums">★ {starsLabel}</span> : null}
           {updatedLabel ? <span>Updated {updatedLabel}</span> : null}
         </div>
 
