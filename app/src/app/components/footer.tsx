@@ -94,19 +94,19 @@ export function Footer() {
             &copy; {currentYear} klabo.world. all rights reserved.
           </p>
           <div className="flex gap-4 text-xs text-muted-foreground/60 uppercase tracking-[0.15em]">
-            <a
+            <Link
               href="/posts"
               className="hover:text-primary transition-colors duration-150"
             >
               Blog
-            </a>
+            </Link>
             <span className="text-border/40">·</span>
-            <a
+            <Link
               href="/projects"
               className="hover:text-primary transition-colors duration-150"
             >
               Projects
-            </a>
+            </Link>
           </div>
         </div>
       </div>

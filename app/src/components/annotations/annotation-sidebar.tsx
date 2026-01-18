@@ -104,6 +104,7 @@ function AnnotationCard({
               ref={replyInputRef}
               value={replyContent}
               onChange={(e) => setReplyContent(e.target.value)}
+              aria-label="Reply to annotation"
               placeholder="Reply..."
               className="mb-2 w-full resize-none rounded border border-border bg-background p-2 text-sm focus:border-primary focus:outline-none"
               rows={2}
@@ -255,8 +256,9 @@ export function AnnotationSidebar() {
 
           {/* Controls */}
           <div className="mt-3 flex items-center gap-2">
-            <label className="flex items-center gap-2 text-sm">
+            <label htmlFor="show-resolved-checkbox" className="flex items-center gap-2 text-sm">
               <input
+                id="show-resolved-checkbox"
                 type="checkbox"
                 checked={showResolved}
                 onChange={(e) => setShowResolved(e.target.checked)}
