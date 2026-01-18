@@ -12,7 +12,6 @@
       "ignore": [
         "src/components/ui/card.tsx",
         "src/components/ui/form.tsx",
-        "src/components/tweet.tsx",
         "src/components/annotations/index.ts",
         "src/components/annotations/types.ts",
         "src/lib/blob-service.ts",
@@ -38,8 +37,7 @@
         "baseline-browser-mapping",
         "eslint-import-resolver-typescript",
         "tailwindcss",
-        "tw-animate-css",
-        "react-tweet"
+        "tw-animate-css"
       ]
     },
     "packages/scripts": {

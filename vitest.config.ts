@@ -14,6 +14,7 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, 'app/src'),
       'contentlayer/generated': path.resolve(__dirname, 'app/.contentlayer/generated/index.mjs'),
+      'react-tweet': path.resolve(__dirname, 'app/tests/mocks/react-tweet.tsx'),
     },
   },
 });
