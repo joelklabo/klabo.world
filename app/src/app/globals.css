@@ -53,8 +53,38 @@ body {
     color: oklch(16% 0.04 260deg);
   }
 
+  /* ============================================
+     SPACING & RHYTHM IMPROVEMENTS
+     Consistent vertical rhythm system for prose
+     ============================================ */
+
   .prose {
     color: oklch(90% 0.02 260deg);
+    max-width: 65ch;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 1.0625rem;
+    line-height: 1.8;
+  }
+
+  .prose p {
+    margin-bottom: 1.5rem;
+  }
+
+  .prose ul,
+  .prose ol {
+    margin: 1.5rem 0;
+    margin-left: 1.5rem;
+    padding-left: 1.5rem;
+  }
+
+  .prose li {
+    margin-bottom: 0.5rem;
+    line-height: 1.8;
+  }
+
+  .prose li:last-child {
+    margin-bottom: 0;
   }
 
   .prose h2,
@@ -64,19 +94,39 @@ body {
     scroll-margin-top: 4rem;
   }
 
-  .prose a {
-    color: oklch(72% 0.16 80deg);
-    font-weight: 650;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 3px;
+  .prose h2 {
+    margin-top: 3rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .prose h3 {
+    margin-top: 2rem;
+    margin-bottom: 0.875rem;
+  }
+
+  .prose h4 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .prose figure {
+    margin: 2.5rem 0;
   }
 
   .prose blockquote {
+    margin: 2rem 0;
     border-left-color: oklch(72% 0.16 80deg / 80%);
     background: oklch(18% 0.035 255deg / 70%);
     padding: 1rem 1.25rem;
     border-radius: 1rem;
     box-shadow: inset 0 0 0 1px oklch(32% 0.02 260deg / 35%);
+  }
+
+  .prose a {
+    color: oklch(72% 0.16 80deg);
+    font-weight: 650;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
   }
 
   .prose code {
@@ -90,6 +140,7 @@ body {
   }
 
   .prose pre {
+    margin: 2rem 0;
     background: oklch(12% 0.03 255deg);
     border: 1px solid oklch(28% 0.02 260deg / 70%);
     border-radius: 1rem;
@@ -118,10 +169,6 @@ body {
     background: rgb(15 23 42 / 50%);
     max-height: 75vh;
     object-fit: contain;
-  }
-
-  .prose figure {
-    @apply space-y-2;
   }
 
   .prose figcaption {
