@@ -29,6 +29,10 @@ const computedFields: ComputedFields = {
       return `/${doc._raw.flattenedPath}`;
     },
   },
+  status: {
+    type: 'string',
+    resolve: (doc) => (doc.publishDate ? 'published' : 'draft'),
+  },
 };
 
 export const Post = defineDocumentType(() => ({
