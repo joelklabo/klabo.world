@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import slugify from 'slugify';
+import matter from 'gray-matter';
 import { resolveContentSubdir } from '@klaboworld/core/server/contentPaths';
 import { deleteRepoFile, fetchRepoFile, upsertRepoFile } from '@klaboworld/core/server/github';
 import { env } from './env';
@@ -12,10 +13,11 @@ type PostInput = {
   body: string;
   featuredImage?: string | null;
   publishDate?: string | null;
-   lightningAddress?: string | null;
-   nostrPubkey?: string | null;
-   nostrRelays?: string[];
-   nostrstackEnabled?: boolean | null;
+  lightningAddress?: string | null;
+  nostrPubkey?: string | null;
+  nostrRelays?: string[];
+  nostrstackEnabled?: boolean | null;
+  xPostId?: string | null;
 };
 
 const POSTS_DIR = resolveContentSubdir('posts');
@@ -88,9 +90,12 @@ function buildMarkdown(slug: string, input: PostInput) {
    if (relaysValue) {
      lines.push(`nostrRelays:${relaysValue}`);
    }
-   if (input.nostrstackEnabled === false) {
-     lines.push('nostrstackEnabled: false');
-   }
+  if (input.nostrstackEnabled === false) {
+    lines.push('nostrstackEnabled: false');
+  }
+  if (input.xPostId) {
+    lines.push(`xPostId: ${JSON.stringify(input.xPostId)}`);
+  }
   lines.push('---', '');
   lines.push(input.body.trim());
   if (!input.body.endsWith('\n')) {
@@ -148,4 +153,33 @@ export async function deletePost(slug: string) {
 
 export function getPostsDirectory() {
   return POSTS_DIR;
+}
+
+/**
+ * Update just the xPostId field of a post without modifying other content.
+ * Reads the existing file, parses frontmatter, updates xPostId, and writes back.
+ */
+export async function updatePostXPostId(slug: string, xPostId: string): Promise<void> {
+  const filePath = path.join(POSTS_DIR, `${slug}.mdx`);
+
+  if (shouldUseGitHub()) {
+    const relativePath = `${GITHUB_POSTS_DIR}/${slug}.mdx`;
+    const existing = await fetchRepoFile(githubConfig, relativePath);
+    const content = Buffer.from(existing.content, 'base64').toString('utf8');
+    const parsed = matter(content);
+    parsed.data.xPostId = xPostId;
+    const updated = matter.stringify(parsed.content, parsed.data);
+    await upsertRepoFile(githubConfig, {
+      path: relativePath,
+      message: `chore: add xPostId to ${slug}`,
+      content: updated,
+      sha: existing.sha,
+    });
+  } else {
+    const content = await fs.readFile(filePath, 'utf8');
+    const parsed = matter(content);
+    parsed.data.xPostId = xPostId;
+    const updated = matter.stringify(parsed.content, parsed.data);
+    await fs.writeFile(filePath, updated, 'utf8');
+  }
 }

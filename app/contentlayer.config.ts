@@ -47,6 +47,7 @@ export const Post = defineDocumentType(() => ({
     nostrPubkey: { type: 'string', required: false },
     nostrRelays: { type: 'list', of: { type: 'string' }, required: false },
     nostrstackEnabled: { type: 'boolean', required: false, default: true },
+    xPostId: { type: 'string', required: false },
   },
   computedFields,
 }));

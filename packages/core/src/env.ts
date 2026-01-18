@@ -84,6 +84,12 @@ const schema = z.object({
   NEXT_PUBLIC_NOSTRSTACK_RELAYS: z.string().optional(),
   NEXT_PUBLIC_NOSTRSTACK_PUBKEY: z.string().optional(),
   NEXT_PUBLIC_NOSTRSTACK_LN_ADDRESS: z.string().optional(),
+  // X (Twitter) API credentials
+  X_API_KEY: z.string().optional(),
+  X_API_SECRET: z.string().optional(),
+  X_ACCESS_TOKEN: z.string().optional(),
+  X_ACCESS_SECRET: z.string().optional(),
+  X_AUTO_POST_ENABLED: booleanFlag('X_AUTO_POST_ENABLED'),
 });
 
 export type Env = z.infer<typeof schema>;
