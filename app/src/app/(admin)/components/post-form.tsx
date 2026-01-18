@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useState, useTransition } from 'react';
 import { useFormStatus } from 'react-dom';
 import { ImageUploadField } from './image-upload-field';
 import { MarkdownField } from './markdown-field';
@@ -9,12 +9,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { type EditablePost } from '@/lib/posts';
-import { type ActionState } from '../admin/posts/actions';
+import { type ActionState, shareToXAction } from '../admin/posts/actions';
 
 type PostFormProps = {
   upsertAction: (state: ActionState, formData: FormData) => Promise<ActionState>;
   deleteAction?: (state: ActionState, formData: FormData) => Promise<ActionState>;
-  initialData?: Partial<EditablePost>;
+  initialData?: Partial<EditablePost> & { xPostId?: string | null };
   mode: 'create' | 'edit';
 };
 
@@ -39,6 +39,52 @@ function DeleteButton({ action }: { action: (payload: FormData) => void }) {
     >
       {pending ? 'Deleting...' : 'Delete'}
     </Button>
+  );
+}
+
+function ShareToXButton({ slug, xPostId }: { slug: string; xPostId?: string | null }) {
+  const [isPending, startTransition] = useTransition();
+  const [currentXPostId, setCurrentXPostId] = useState(xPostId);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleShare = () => {
+    setError(null);
+    startTransition(async () => {
+      const result = await shareToXAction(slug);
+      if (result.success && result.postId) {
+        setCurrentXPostId(result.postId);
+      } else {
+        setError(result.error || 'Failed to share');
+      }
+    });
+  };
+
+  if (currentXPostId) {
+    return (
+      <a
+        href={`https://x.com/i/web/status/${currentXPostId}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-2 rounded-md border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-medium text-primary hover:bg-primary/20"
+      >
+        Shared on X
+      </a>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-1">
+      <Button
+        type="button"
+        variant="outline"
+        size="lg"
+        onClick={handleShare}
+        disabled={isPending}
+      >
+        {isPending ? 'Sharing...' : 'Share to X'}
+      </Button>
+      {error && <p className="text-xs text-destructive">{error}</p>}
+    </div>
   );
 }
 
@@ -168,11 +214,18 @@ export function PostForm({ upsertAction, deleteAction, initialData, mode }: Post
         helperText="Use Preview to validate gist embeds, lists, and MDX components."
         tone="indigo"
       />
-      <div className="flex justify-between">
-        {mode === 'edit' && deleteAction && (
-          <DeleteButton action={deleteFormAction} />
-        )}
-        <SubmitButton label={mode === 'edit' ? 'Save changes' : 'Publish post'} />
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex gap-2">
+          {mode === 'edit' && deleteAction && (
+            <DeleteButton action={deleteFormAction} />
+          )}
+        </div>
+        <div className="flex items-center gap-3">
+          {mode === 'edit' && initialData?.slug && (
+            <ShareToXButton slug={initialData.slug} xPostId={initialData.xPostId} />
+          )}
+          <SubmitButton label={mode === 'edit' ? 'Save changes' : 'Publish post'} />
+        </div>
       </div>
     </form>
   );

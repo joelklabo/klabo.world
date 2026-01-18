@@ -154,6 +154,7 @@ type AdminPostSummary = {
   nostrPubkey?: string | null;
   nostrRelays?: string[];
   nostrstackEnabled?: boolean | null;
+  xPostId?: string | null;
 };
 
 function getAdminPublishDate(post: AdminPostSummary): Date {
@@ -189,6 +190,7 @@ async function readDiskPosts(exclude: Set<string>): Promise<AdminPostSummary[]> 
         : undefined;
       const nostrstackEnabled =
         typeof data.nostrstackEnabled === 'boolean' ? data.nostrstackEnabled : undefined;
+      const xPostId = typeof data.xPostId === 'string' ? data.xPostId : null;
 
       entries.push({
         slug,
@@ -201,6 +203,7 @@ async function readDiskPosts(exclude: Set<string>): Promise<AdminPostSummary[]> 
         nostrPubkey,
         nostrRelays,
         nostrstackEnabled,
+        xPostId,
       });
     }
     return entries;
@@ -224,6 +227,7 @@ export async function getPostsForAdmin(): Promise<AdminPostSummary[]> {
     nostrPubkey: post.nostrPubkey ?? null,
     nostrRelays: post.nostrRelays ?? undefined,
     nostrstackEnabled: typeof post.nostrstackEnabled === 'boolean' ? post.nostrstackEnabled : undefined,
+    xPostId: post.xPostId ?? null,
   }));
   const existing = new Set(basePosts.map((post) => post.slug));
   const diskPosts = await readDiskPosts(existing);
@@ -247,6 +251,7 @@ export async function getEditablePostBySlug(slug: string): Promise<EditablePost 
       nostrPubkey: contentlayerPost.nostrPubkey ?? null,
       nostrRelays: contentlayerPost.nostrRelays ?? undefined,
       nostrstackEnabled: typeof contentlayerPost.nostrstackEnabled === 'boolean' ? contentlayerPost.nostrstackEnabled : undefined,
+      xPostId: contentlayerPost.xPostId ?? null,
       body: contentlayerPost.body.raw,
     };
   }
@@ -268,6 +273,7 @@ export async function getEditablePostBySlug(slug: string): Promise<EditablePost 
       ? data.nostrRelays.map(String).filter(Boolean)
       : undefined;
     const nostrstackEnabled = typeof data.nostrstackEnabled === 'boolean' ? data.nostrstackEnabled : undefined;
+    const xPostId = typeof data.xPostId === 'string' ? data.xPostId : null;
     return {
       slug,
       title,
@@ -280,6 +286,7 @@ export async function getEditablePostBySlug(slug: string): Promise<EditablePost 
       nostrPubkey,
       nostrRelays,
       nostrstackEnabled,
+      xPostId,
       body: parsed.content.trim(),
     };
   } catch (error) {

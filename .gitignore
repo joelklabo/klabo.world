@@ -56,3 +56,4 @@ docs/drafts/
 
 # Sensitive Azure snapshots
 docs/azure/*.json
+.env.local
