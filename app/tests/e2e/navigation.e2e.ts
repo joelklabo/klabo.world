@@ -51,6 +51,7 @@ test.describe('admin navigation', () => {
       { id: 'compose', path: /\/admin\/compose/ },
       { id: 'apps', path: /\/admin\/apps/ },
       { id: 'dashboards', path: /\/admin\/dashboards/ },
+      { id: 'images', path: /\/admin\/images/ },
     ];
 
     for (const { id, path } of adminLinks) {

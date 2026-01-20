@@ -10,6 +10,7 @@ const navLinks = [
   { href: '/admin/compose', label: 'Compose', id: 'compose' },
   { href: '/admin/apps', label: 'Apps', id: 'apps' },
   { href: '/admin/dashboards', label: 'Dashboards', id: 'dashboards' },
+  { href: '/admin/images', label: 'Images', id: 'images' },
 ];
 
 export default async function AdminLayout({ children }: { children: ReactNode }) {
