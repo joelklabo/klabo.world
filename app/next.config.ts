@@ -67,6 +67,7 @@ const nextConfig: NextConfig = {
   },
   webpack(config) {
     config.resolve.alias["contentlayer/generated"] = path.join(process.cwd(), ".contentlayer/generated");
+    config.resolve.alias["contentlayer/generated/index.mjs"] = path.join(process.cwd(), ".contentlayer/generated/index.mjs");
     return config;
   },
 };

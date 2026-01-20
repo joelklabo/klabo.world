@@ -1,0 +1,157 @@
+---
+title: "Taste Is the New Bottleneck"
+summary: "AI makes output cheap; taste is what turns slop into something worth shipping."
+date: 2026-01-20
+tags:
+  - ai
+  - programming
+  - claude-code
+  - workflow
+aliases:
+  - when-execution-is-cheap-judgment-becomes-the-job
+featuredImage: /images/posts/execution-cheap/featured.svg
+nostrstackEnabled: true
+---
+
+For most of my programming life, the job was typing code and knowing weird stuff about the system.
+
+- The language
+- The IDE
+- The CLI
+- The ugly edge case
+
+That era is over. There is a tool that beats me most of the time, for a fraction of the cost.
+
+I can hand it a repo and get a decent PR back before my brain has fully loaded the context.
+
+With tools like Claude Code, execution got cheap.
+
+**Now the job is deciding what to do next.**
+
+**Before:** Thinking ↔ Typing  
+**Now:** Thinking → Directing → Reviewing
+
+## Idle Agent Anxiety
+
+> In my head there is a room full of engineers waiting.
+> They can do almost anything, but they will not do a thing unless I ask.
+
+You can generate tests, refactors, migrations, benchmarks, doc updates, and experiments faster than you can decide what is worth doing.
+
+*You do not want to stop.*
+
+You stay up late. You keep "just running one more task." You catch yourself inventing work before you leave the house.
+
+This is the new anxiety: idle leverage.
+
+<Tweet id="2010728790662807712" />
+
+<Tweet id="2012077109917991142" />
+
+Execution runs as long as you keep deciding. The system does not get tired.
+
+You do.
+
+## The Bottleneck Moved
+
+Programming felt hard because thinking and execution were tangled.
+
+You thought through the problem while you typed the solution.
+
+Now execution is cheap.
+
+The hard part is choosing:
+
+- What to build
+- In what order
+- How to scope it so the tool can succeed
+- What "done" even means
+
+The tools do not choose tasks.
+
+I do.
+
+That is the shift: from typing throughput to decision throughput.
+
+And once the bottleneck is decisions, the reusable unit changes.
+
+## The New Unit of Reuse: Process
+
+When I fix a bug now, I rarely start by fixing the bug.
+
+I start by setting up a process that makes the bug easy to fix next time:
+
+- Better repros
+- Better tests
+- Better observability
+- Tighter constraints
+- A repeatable loop
+
+When I was writing code directly, the reusable unit was the function.
+
+Now the reusable unit is the process.
+
+## What Level I Work At Now
+
+<figure>
+  <img src="/images/posts/execution-cheap/stack-levels.svg" alt="Stack diagram showing layers from top to bottom: Concepts/Intent, Processes/Workflows, Specs/Prompts, Generated Code, Runtime/Binary." />
+</figure>
+
+The interface moved up the stack.
+
+I still care about the code.
+
+Looking at code now is like looking at the binary used to be.
+
+It matters.
+
+But it is no longer where I spend most of my time.
+
+Most of the time I am designing:
+
+- Constraints
+- Workflows
+- Evaluation loops
+- Stop conditions
+
+## A Bug Fix Loop
+
+Here is what "process as function" looks like.
+
+Before (the old, one-off flow):
+
+1. Reproduce it manually
+2. Poke around until you spot the cause
+3. Change code until it "seems" fixed
+4. Ship and hope it does not come back
+
+Now (the transferable loop):
+
+1. Add a failing repro (test or script)
+2. Ask the agent to fix it until the repro passes
+3. Read the diff like a reviewer
+4. Validate behavior + edge cases
+5. Lock the regression (test + notes)
+
+That process is reusable.
+
+It compounds.
+
+## A Simple Rule Of Thumb
+
+- Write the smallest spec you would want to review
+- Run the agent
+- Review the diff like it is someone else's PR
+- Stop when you feel yourself accepting slop
+
+## How I Stop
+
+I do not stop when the system is "done." It never is.
+
+I stop when:
+
+- My decisions start getting worse
+- I am generating work faster than I can evaluate it
+- I feel the urge to keep going just because it is easy
+
+**Your taste is your reputation now. Avoid slop.**

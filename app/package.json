@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "BASELINE_BROWSER_MAPPING_IGNORE_OLD_DATA=true next dev",
+    "dev": "BASELINE_BROWSER_MAPPING_IGNORE_OLD_DATA=true bash -lc 'pnpm exec contentlayer dev --clearCache & next dev --webpack'",
     "build": "BASELINE_BROWSER_MAPPING_IGNORE_OLD_DATA=true next build",
     "start": "next start",
     "lint": "eslint",

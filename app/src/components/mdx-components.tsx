@@ -93,7 +93,11 @@ function ProseImage(props: {
 
 function BlockQuote(props: { children: ReactNode }) {
   return (
-    <blockquote className="rounded-2xl border-l-4 border-primary/70 bg-primary/10 p-5 text-base leading-relaxed text-foreground shadow-[0_14px_32px_rgba(6,10,20,0.4)]">
+    <blockquote className="not-prose relative my-6 overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-br from-primary/15 via-secondary/10 to-transparent px-8 py-7 pl-14 text-base font-medium italic leading-relaxed text-foreground shadow-[0_18px_45px_rgba(6,10,20,0.45)]">
+      <span
+        aria-hidden="true"
+        className="absolute bottom-5 left-5 top-5 w-1.5 rounded-full bg-gradient-to-b from-primary via-primary/70 to-secondary/80"
+      />
       {props.children}
     </blockquote>
   );

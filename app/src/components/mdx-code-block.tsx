@@ -24,7 +24,7 @@ const warmPrismTheme: PrismTheme = {
 };
 
 const baseCodeStyles =
-  'relative mt-4 max-w-full rounded-2xl border border-border/60 bg-card/80 p-4 shadow-[0_18px_45px_rgba(6,10,20,0.45)] text-sm leading-relaxed';
+  'relative mt-4 max-w-full rounded-xl border border-border/20 bg-card/40 px-4 pb-3 pt-9 text-sm leading-relaxed';
 
 export function CodeBlock({ children }: { children: ReactNode }) {
   const child = Array.isArray(children) ? children[0] : children;
@@ -49,31 +49,25 @@ export function CodeBlock({ children }: { children: ReactNode }) {
 
   return (
     <div className={`${baseCodeStyles} relative`}>
-      <div className="absolute left-3 top-3 rounded-full border border-border/60 bg-background/60 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.35em] text-primary">
+      <div className="absolute left-4 top-3 text-[10px] font-semibold uppercase tracking-[0.28em] text-muted-foreground/80">
         {language.toUpperCase()}
       </div>
       <button
         type="button"
         onClick={handleCopy}
         aria-label={copied ? 'Copied to clipboard' : 'Copy code to clipboard'}
-        className="absolute right-3 top-3 flex min-h-11 min-w-11 items-center gap-1 rounded-full border border-border/60 bg-background/60 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.3em] text-muted-foreground motion-safe:transition-colors hover:border-primary/60 hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+        className="absolute right-3 top-2.5 inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground/80 motion-safe:transition-colors hover:bg-background/30 hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
       >
         {copied ? (
-          <>
-            <ClipboardDocumentCheckIcon className="h-4 w-4" aria-hidden="true" />
-            Copied
-          </>
+          <ClipboardDocumentCheckIcon className="h-4 w-4" aria-hidden="true" />
         ) : (
-          <>
-            <ClipboardDocumentIcon className="h-4 w-4" aria-hidden="true" />
-            Copy
-          </>
+          <ClipboardDocumentIcon className="h-4 w-4" aria-hidden="true" />
         )}
       </button>
       <Highlight {...defaultProps} code={trimmedCode} language={language} theme={warmPrismTheme}>
         {({ className, style, tokens, getLineProps, getTokenProps }) => (
-          <pre className="mt-10 max-w-full overflow-x-auto rounded-xl bg-transparent" aria-label={`Code snippet (${language})`}>
-            <code className={className} style={{ ...style, paddingTop: '0.5rem' }}>
+          <pre className="mt-2 max-w-full overflow-x-auto rounded-lg bg-transparent" aria-label={`Code snippet (${language})`}>
+            <code className={className} style={{ ...style, paddingTop: '0.25rem' }}>
               {tokens.map((line, lineIndex) => {
                 const lineProps = getLineProps({ line, key: lineIndex });
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars

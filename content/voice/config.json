@@ -1,6 +1,6 @@
 {
   "postsDir": "content/posts",
-  "exclude": ["when-execution-is-cheap-judgment-becomes-the-job.mdx"],
+  "exclude": ["taste-is-the-new-bottleneck.mdx"],
   "voiceProfilePath": "content/voice/VOICE-PROFILE.json",
   "voiceGuidePath": "content/voice/VOICE-GUIDE.md",
   "llmTellsPath": "content/voice/LLM-TELLS.json",
