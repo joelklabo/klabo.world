@@ -1,0 +1,83 @@
+{
+  "generatedAt": "2026-01-20T18:27:42.532Z",
+  "corpus": {
+    "postCount": 13,
+    "excluded": [
+      "when-execution-is-cheap-judgment-becomes-the-job.mdx"
+    ]
+  },
+  "stats": {
+    "totalWords": 9376,
+    "avgWordsPerPost": 721,
+    "avgSentenceWords": 19.1,
+    "medianSentenceWords": 16.5
+  },
+  "structure": {
+    "avgHeadingsPerPost": 15,
+    "commonHeadings": [
+      {
+        "heading": "Conclusion",
+        "count": 6
+      },
+      {
+        "heading": "Testing",
+        "count": 3
+      },
+      {
+        "heading": "Maintenance",
+        "count": 2
+      },
+      {
+        "heading": "How Agentic Engineering Solves the Starting Problem",
+        "count": 1
+      },
+      {
+        "heading": "Custom Onion-Tunneled TLV Payment Metadata Records",
+        "count": 1
+      },
+      {
+        "heading": "Use Cases",
+        "count": 1
+      },
+      {
+        "heading": "`keysend`",
+        "count": 1
+      },
+      {
+        "heading": "Spinx Chat",
+        "count": 1
+      },
+      {
+        "heading": "How Does Sphinx Relay Turn Transactions into Messages?",
+        "count": 1
+      },
+      {
+        "heading": "What is a `keysend` Payment versus a Regular Payment?",
+        "count": 1
+      },
+      {
+        "heading": "What it does",
+        "count": 1
+      },
+      {
+        "heading": "Installing it",
+        "count": 1
+      },
+      {
+        "heading": "~/.local/share/ackchyually/shims/git",
+        "count": 1
+      },
+      {
+        "heading": "A quick example",
+        "count": 1
+      },
+      {
+        "heading": "Why I’m excited about it",
+        "count": 1
+      }
+    ],
+    "tocUsageRate": 0,
+    "codeBlockRate": 0.69,
+    "blockquoteRate": 0.15
+  }
+}

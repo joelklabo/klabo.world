@@ -1,0 +1,8 @@
+{
+  "postsDir": "content/posts",
+  "exclude": ["when-execution-is-cheap-judgment-becomes-the-job.mdx"],
+  "voiceProfilePath": "content/voice/VOICE-PROFILE.json",
+  "voiceGuidePath": "content/voice/VOICE-GUIDE.md",
+  "llmTellsPath": "content/voice/LLM-TELLS.json",
+  "decisionsPath": "content/voice/decisions.ndjson"
+}

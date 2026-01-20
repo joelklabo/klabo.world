@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "source": {
+    "wikipedia": "https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing",
+    "note": "Heuristics are editable; tune over time. These are signals, not proof."
+  },
+  "rules": [
+    {
+      "id": "puffery-importance",
+      "severity": "warn",
+      "description": "Overstating significance/legacy in generic terms.",
+      "patterns": [
+        "\\b(pivotal|crucial|vital|significant|groundbreaking|indelible|enduring|lasting)\\b",
+        "\\b(underscores|highlights|showcases|exemplifies)\\b",
+        "\\b(testament|serves as|stands as|marks a shift|setting the stage)\\b"
+      ]
+    },
+    {
+      "id": "generic-broader-trends",
+      "severity": "warn",
+      "description": "Generic claims about broader trends without specifics.",
+      "patterns": [
+        "\\b(broader (trend|movement|landscape)|evolving landscape|bigger picture)\\b",
+        "\\b(symboliz(es|ing)|reflect(s|ing) broader)\\b"
+      ]
+    },
+    {
+      "id": "hedge-stack",
+      "severity": "info",
+      "description": "Hedging stacks that reduce conviction.",
+      "patterns": [
+        "\\b(often|typically|generally|somewhat|arguably|in many ways|to some extent)\\b"
+      ]
+    },
+    {
+      "id": "template-conclusion",
+      "severity": "info",
+      "description": "Template-y framing common in assistant prose.",
+      "patterns": [
+        "\\b(in conclusion|to sum up|overall|it is important to note)\\b",
+        "\\b(in today'?s world|at the end of the day)\\b"
+      ]
+    }
+  ]
+}
