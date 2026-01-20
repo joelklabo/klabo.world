@@ -24,6 +24,10 @@ fi
 REPO_ROOT=$(cd "$(dirname "$0")/.." && pwd)
 cd "$REPO_ROOT"
 
+# Normalize frontmatter: this repo treats draft/published via publishDate,
+# and Contentlayer does not define a `status` field.
+perl -0777 -pe 's/^status:.*\n//m' -i "$FILE" 2>/dev/null || true
+
 # 1) Refresh voice artifacts
 pnpm --filter @klaboworld/scripts run voice:profile
 pnpm --filter @klaboworld/scripts run voice:guide
@@ -35,7 +39,7 @@ Rewrite the following MDX blog post in Joel's voice.
 
 Constraints:
 - Output ONLY the full MDX file contents.
-- Preserve the YAML frontmatter keys/values exactly (do not add publishDate).
+- Preserve the YAML frontmatter keys/values exactly (do not add publishDate; do not add status).
 - Preserve any <figure> blocks as-is.
 - Prefer Joel's style: concrete, direct, short punchy lines, no generic puffery.
 - Keep headings and overall structure similar, but tighten wording.
