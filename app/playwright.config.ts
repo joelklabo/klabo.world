@@ -38,7 +38,7 @@ export default defineConfig({
   webServer: process.env.PLAYWRIGHT_BASE_URL
     ? undefined
       : {
-        command: `pnpm dev --hostname 127.0.0.1 --port ${defaultPort}`,
+        command: `pnpm exec prisma db push --skip-generate && pnpm dev --hostname 127.0.0.1 --port ${defaultPort}`,
         url: `http://127.0.0.1:${defaultPort}`,
         reuseExistingServer: false,
         stdout: 'pipe',

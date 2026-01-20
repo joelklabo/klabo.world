@@ -19,7 +19,16 @@ const passthroughKeys = new Set([
   'TMPDIR',
 ]);
 
-const passthroughPrefixes = ['PNPM_', 'NPM_CONFIG_', 'NODE_', 'BASELINE_'];
+const passthroughPrefixes = [
+  'PNPM_',
+  'NPM_CONFIG_',
+  'NODE_',
+  'BASELINE_',
+  'ADMIN_',
+  'NEXTAUTH_',
+  'NOSTRSTACK_',
+  'PLAYWRIGHT_',
+];
 
 const env = { PATH: FIXED_PATH };
 for (const [key, value] of Object.entries(process.env)) {
