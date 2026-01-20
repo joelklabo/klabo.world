@@ -29,15 +29,15 @@ for (const [key, value] of Object.entries(process.env)) {
   }
 }
 
-const PNPM_BIN = '/usr/bin/env';
+const PNPM_BIN = process.env.PNPM_HOME ? `${process.env.PNPM_HOME}/pnpm` : 'pnpm';
 
-const contentlayer = spawn(PNPM_BIN, ['pnpm', 'exec', 'contentlayer', 'dev', '--clearCache'], {
+const contentlayer = spawn(PNPM_BIN, ['exec', 'contentlayer', 'dev', '--clearCache'], {
   stdio: 'inherit',
   shell: false,
   env,
 });
 
-const next = spawn(PNPM_BIN, ['pnpm', 'exec', 'next', 'dev', '--webpack', ...args], {
+const next = spawn(PNPM_BIN, ['exec', 'next', 'dev', '--webpack', ...args], {
   stdio: 'inherit',
   shell: false,
   env,
