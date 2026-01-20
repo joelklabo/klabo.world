@@ -12,4 +12,5 @@ fi
 echo "Starting dev server (host=${HOST} port=${PORT})..."
 
 # Run Next dev in foreground.
-PNPM_HOME=${PNPM_HOME:-$HOME/.local/share/pnpm} mise exec -- pnpm --filter app run dev -- -p "${PORT}" -H "${HOST}"
+# Use `pnpm exec next dev` to avoid argument parsing quirks through nested pnpm scripts.
+PNPM_HOME=${PNPM_HOME:-$HOME/.local/share/pnpm} mise exec -- bash -lc "cd app && pnpm exec next dev -p \"${PORT}\" -H \"${HOST}\""
