@@ -11,6 +11,10 @@ fi
 
 echo "Starting dev server (host=${HOST} port=${PORT})..."
 
+# Ensure Contentlayer artifacts exist before Next boots.
+# The Next plugin typically handles this, but in practice it can race on a fresh clone.
+PNPM_HOME=${PNPM_HOME:-$HOME/.local/share/pnpm} mise exec -- bash -lc "cd app && pnpm exec contentlayer build"
+
 # Run Next dev in foreground.
 # Use `pnpm exec next dev` to avoid argument parsing quirks through nested pnpm scripts.
 PNPM_HOME=${PNPM_HOME:-$HOME/.local/share/pnpm} mise exec -- bash -lc "cd app && pnpm exec next dev -p \"${PORT}\" -H \"${HOST}\""
