@@ -12,4 +12,4 @@ fi
 echo "Starting dev server (host=${HOST} port=${PORT})..."
 
 # Run Next dev in foreground.
-PNPM_HOME=${PNPM_HOME:-$HOME/.local/share/pnpm} mise exec -- pnpm --filter app dev -- --hostname "${HOST}" --port "${PORT}"
+PNPM_HOME=${PNPM_HOME:-$HOME/.local/share/pnpm} mise exec -- pnpm --filter app run dev -- --hostname "${HOST}" --port "${PORT}"
