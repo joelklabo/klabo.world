@@ -6,14 +6,21 @@ if (args[0] === '--') {
   args = args.slice(1);
 }
 
+const env = {
+  ...process.env,
+  PATH: '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
+};
+
 const contentlayer = spawn('pnpm', ['exec', 'contentlayer', 'dev', '--clearCache'], {
   stdio: 'inherit',
   shell: false,
+  env,
 });
 
 const next = spawn('pnpm', ['exec', 'next', 'dev', '--webpack', ...args], {
   stdio: 'inherit',
   shell: false,
+  env,
 });
 
 function shutdown(signal) {
