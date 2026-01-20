@@ -6,10 +6,28 @@ if (args[0] === '--') {
   args = args.slice(1);
 }
 
-const env = {
-  ...process.env,
-  PATH: '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
-};
+const FIXED_PATH = '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin';
+
+const passthroughKeys = new Set([
+  'HOME',
+  'USER',
+  'LOGNAME',
+  'SHELL',
+  'LANG',
+  'LC_ALL',
+  'TERM',
+  'TMPDIR',
+]);
+
+const passthroughPrefixes = ['PNPM_', 'NPM_CONFIG_', 'NODE_', 'BASELINE_'];
+
+const env = { PATH: FIXED_PATH };
+for (const [key, value] of Object.entries(process.env)) {
+  if (value == null) continue;
+  if (passthroughKeys.has(key) || passthroughPrefixes.some((prefix) => key.startsWith(prefix))) {
+    env[key] = value;
+  }
+}
 
 const contentlayer = spawn('pnpm', ['exec', 'contentlayer', 'dev', '--clearCache'], {
   stdio: 'inherit',
