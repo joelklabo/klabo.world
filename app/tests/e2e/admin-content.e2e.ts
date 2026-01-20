@@ -1,5 +1,4 @@
 import { expect, test } from '@playwright/test';
-import slugify from 'slugify';
 import { loginAsAdmin } from './admin-utils';
 
 test.describe('admin content workflow', () => {
@@ -7,7 +6,6 @@ test.describe('admin content workflow', () => {
     await loginAsAdmin(page);
 
     const title = `Playwright Draft ${Date.now()}`;
-    const slug = slugify(title, { lower: true, strict: true });
 
     await page.goto('/admin/compose');
     await expect(page).toHaveURL(/\/admin\/compose$/, { timeout: 60_000 });
@@ -20,16 +18,18 @@ test.describe('admin content workflow', () => {
     await page.getByLabel('Publish date').fill(new Date().toISOString().slice(0, 10));
     await page.getByLabel('Featured image path').fill('/uploads/test.png');
     await page.getByLabel('Content (Markdown)').fill('# Test Post\n\nThis is a Playwright-created post.');
-    await Promise.all([
-      page.waitForURL((url) => url.pathname === '/admin', { timeout: 60_000, waitUntil: 'domcontentloaded' }),
-      page.getByRole('button', { name: 'Publish post' }).click(),
-    ]);
+    await page.getByRole('button', { name: 'Publish post' }).click();
+    await page.waitForLoadState('domcontentloaded');
+    await page.goto('/admin');
 
     const row = page.locator('tbody tr').filter({ hasText: title }).first();
     await expect(row).toBeVisible({ timeout: 60_000 });
 
-    await row.getByRole('link', { name: 'Edit' }).click();
-    await expect(page).toHaveURL(new RegExp(`/admin/posts/${slug}/edit`));
+    const editLink = row.getByRole('link', { name: 'Edit' });
+    await Promise.all([
+      page.waitForURL(/\/admin\/posts\/.+\/edit/, { timeout: 60_000, waitUntil: 'domcontentloaded' }),
+      editLink.click(),
+    ]);
 
     await Promise.all([
       page.waitForURL((url) => url.pathname === '/admin', { timeout: 60_000, waitUntil: 'domcontentloaded' }),

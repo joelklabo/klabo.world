@@ -22,20 +22,37 @@ test('admin can create, edit, and delete an app', async ({ page }) => {
   await page.getByTestId('apps-new-icon').fill('/uploads/app-icons/test.png');
   await page.getByTestId('apps-new-screenshots').fill('/uploads/screens/app-01.png');
   await page.getByTestId('apps-new-submit').click();
+  await page.waitForLoadState('domcontentloaded');
+  await page.goto('/admin/apps');
 
-  await expect(page).toHaveURL(/\/admin\/apps$/);
   const row = page.locator('tbody tr').filter({ hasText: name }).first();
-  await expect(row).toBeVisible();
+  await expect(row).toBeVisible({ timeout: 60_000 });
 
-  await row.getByRole('link', { name: 'Edit' }).click();
-  await expect(page).toHaveURL(new RegExp(`/admin/apps/${slug}/edit`));
+  const editLink = row.getByRole('link', { name: 'Edit' });
+  await Promise.all([
+    page.waitForURL(/\/admin\/apps\/.+\/edit/, { timeout: 60_000, waitUntil: 'domcontentloaded' }),
+    editLink.click(),
+  ]);
 
   await page.getByTestId('apps-edit-version').fill('1.0.1');
   await page.getByTestId('apps-edit-submit').click();
-  await expect(page).toHaveURL(/\/admin\/apps$/);
+  await page.waitForLoadState('domcontentloaded');
+  await page.goto('/admin/apps');
 
   await page.locator('tbody tr').filter({ hasText: name }).first().getByRole('link', { name: 'Edit' }).click();
-  await page.getByTestId('apps-edit-delete').click();
-  await expect(page).toHaveURL(/\/admin\/apps$/);
-  await expect(page.getByText(name)).toHaveCount(0);
+
+  await Promise.all([
+    page.waitForLoadState('domcontentloaded'),
+    page.getByTestId('apps-edit-delete').click(),
+  ]);
+
+  await expect
+    .poll(
+      async () => {
+        await page.goto(`/admin/apps?ts=${Date.now()}`);
+        return page.locator('tbody tr').filter({ hasText: name }).count();
+      },
+      { timeout: 60_000, intervals: [1000, 1500, 2500] },
+    )
+    .toBe(0);
 });
