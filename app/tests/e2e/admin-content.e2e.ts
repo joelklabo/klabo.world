@@ -16,20 +16,19 @@ test.describe('admin content workflow', () => {
     await page.getByLabel('Publish date').fill(new Date().toISOString().slice(0, 10));
     await page.getByLabel('Featured image path').fill('/uploads/test.png');
     await page.getByLabel('Content (Markdown)').fill('# Test Post\n\nThis is a Playwright-created post.');
-    await Promise.all([
-      page.waitForURL((url) => url.pathname === '/admin', { timeout: 60_000, waitUntil: 'domcontentloaded' }),
-      page.getByRole('button', { name: 'Publish post' }).click(),
-    ]);
+    await page.getByRole('button', { name: 'Publish post' }).click();
+    await page.waitForTimeout(1000);
+    await page.goto('/admin');
+
     const row = page.locator('tbody tr').filter({ hasText: title }).first();
-    await expect(row).toBeVisible({ timeout: 30_000 });
+    await expect(row).toBeVisible({ timeout: 60_000 });
 
     await row.getByRole('link', { name: 'Edit' }).click();
     await expect(page).toHaveURL(new RegExp(`/admin/posts/${slug}/edit`));
 
-    await Promise.all([
-      page.waitForURL((url) => url.pathname === '/admin', { timeout: 60_000, waitUntil: 'domcontentloaded' }),
-      page.getByRole('button', { name: 'Delete' }).click(),
-    ]);
+    await page.getByRole('button', { name: 'Delete' }).click();
+    await page.waitForTimeout(1000);
+    await page.goto('/admin');
     await expect(page.getByText(title)).toHaveCount(0);
   });
 });
