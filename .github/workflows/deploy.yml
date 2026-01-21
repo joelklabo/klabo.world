@@ -142,7 +142,7 @@ jobs:
         run: ./scripts/deploy-smoke.sh
 
       - name: Post deploy note to Nostr (relay.damus.io)
-        if: ${{ success() && secrets.NOSTR_KEY != '' }}
+        if: success()
         continue-on-error: true
         id: nostr_primary
         uses: theborakompanioni/nostr-action@d924057c9374edbab5ec565f2b4f7cd66b4a90d3
@@ -152,7 +152,7 @@ jobs:
           content: "✅🚀 klabo.world successfully deployed 🎉🌍"
 
       - name: Post deploy note to Nostr (nos.lol fallback)
-        if: ${{ success() && secrets.NOSTR_KEY != '' && steps.nostr_primary.outcome == 'failure' }}
+        if: ${{ success() && steps.nostr_primary.outcome == 'failure' }}
         continue-on-error: true
         uses: theborakompanioni/nostr-action@d924057c9374edbab5ec565f2b4f7cd66b4a90d3
         with:
