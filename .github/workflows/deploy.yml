@@ -141,6 +141,16 @@ jobs:
           SMOKE_BASE_URL: https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net
         run: ./scripts/deploy-smoke.sh
 
+      - name: Post deploy note to Nostr
+        if: success()
+        uses: theborakompanioni/nostr-action@d924057c9374edbab5ec565f2b4f7cd66b4a90d3
+        with:
+          key: ${{ secrets.NOSTR_KEY }}
+          relays: |
+            wss://relay.damus.io
+            wss://nos.lol
+          content: "✅🚀 klabo.world successfully deployed 🎉🌍"
+
       - name: Capture smoke screenshots
         if: always()
         run: |
