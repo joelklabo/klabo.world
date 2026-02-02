@@ -1,37 +1,26 @@
 [
   {
-    "name": "ackchyually",
-    "fullName": "joelklabo/ackchyually",
-    "description": "The annoying coworker for your CLI.",
-    "url": "https://github.com/joelklabo/ackchyually",
-    "homepageUrl": "https://ackchyually.sh",
+    "name": "buddy",
+    "fullName": "joelklabo/buddy",
+    "description": "Talk to your buddy",
+    "url": "https://github.com/joelklabo/buddy",
+    "homepageUrl": "",
     "stargazerCount": 0,
     "forkCount": 0,
     "isArchived": false,
     "primaryLanguage": {
       "name": "Go",
-      "color": null
+      "color": "#00ADD8"
     },
-    "topics": [],
-    "pushedAt": "2025-12-15T02:28:58Z",
-    "updatedAt": "2025-12-15T02:29:01Z"
-  },
-  {
-    "name": "klabo.world",
-    "fullName": "joelklabo/klabo.world",
-    "description": null,
-    "url": "https://github.com/joelklabo/klabo.world",
-    "homepageUrl": null,
-    "stargazerCount": 0,
-    "forkCount": 0,
-    "isArchived": false,
-    "primaryLanguage": {
-      "name": "TypeScript",
-      "color": null
-    },
-    "topics": [],
-    "pushedAt": "2025-12-15T02:18:24Z",
-    "updatedAt": "2025-12-15T02:18:28Z"
+    "topics": [
+      "agents",
+      "cli",
+      "codex",
+      "go",
+      "nostr"
+    ],
+    "pushedAt": "2025-12-08T23:31:24Z",
+    "updatedAt": "2025-12-02T01:48:19Z"
   },
   {
     "name": "markdowntown",
@@ -44,11 +33,96 @@
     "isArchived": false,
     "primaryLanguage": {
       "name": "TypeScript",
+      "color": "#3178c6"
+    },
+    "topics": [],
+    "pushedAt": "2025-12-30T23:19:11Z",
+    "updatedAt": "2025-12-30T23:19:15Z"
+  },
+  {
+    "name": "klabo.world",
+    "fullName": "joelklabo/klabo.world",
+    "description": null,
+    "url": "https://github.com/joelklabo/klabo.world",
+    "homepageUrl": null,
+    "stargazerCount": 0,
+    "forkCount": 0,
+    "isArchived": false,
+    "primaryLanguage": {
+      "name": "TypeScript",
+      "color": "#3178c6"
+    },
+    "topics": [],
+    "pushedAt": "2026-01-26T06:13:17Z",
+    "updatedAt": "2026-01-21T06:04:40Z"
+  },
+  {
+    "name": "ackchyually",
+    "fullName": "joelklabo/ackchyually",
+    "description": "The annoying coworker for your CLI.",
+    "url": "https://github.com/joelklabo/ackchyually",
+    "homepageUrl": "https://ackchyually.sh",
+    "stargazerCount": 0,
+    "forkCount": 0,
+    "isArchived": false,
+    "primaryLanguage": {
+      "name": "Go",
+      "color": "#00ADD8"
+    },
+    "topics": [],
+    "pushedAt": "2026-01-25T19:03:33Z",
+    "updatedAt": "2025-12-17T23:00:06Z"
+  },
+  {
+    "name": "nostrstack",
+    "fullName": "joelklabo/nostrstack",
+    "description": null,
+    "url": "https://github.com/joelklabo/nostrstack",
+    "homepageUrl": null,
+    "stargazerCount": 0,
+    "forkCount": 0,
+    "isArchived": false,
+    "primaryLanguage": {
+      "name": "TypeScript",
+      "color": "#3178c6"
+    },
+    "topics": [],
+    "pushedAt": "2026-01-31T15:49:56Z",
+    "updatedAt": "2026-01-31T15:50:00Z"
+  },
+  {
+    "name": "markdowntown-cli",
+    "fullName": "joelklabo/markdowntown-cli",
+    "description": "markdowntown scan CLI",
+    "url": "https://github.com/joelklabo/markdowntown-cli",
+    "homepageUrl": null,
+    "stargazerCount": 0,
+    "forkCount": 0,
+    "isArchived": false,
+    "primaryLanguage": {
+      "name": "TypeScript",
       "color": null
     },
     "topics": [],
-    "pushedAt": "2025-12-12T04:55:47Z",
-    "updatedAt": "2025-12-12T04:55:50Z"
+    "pushedAt": "2026-01-26T15:46:57Z",
+    "updatedAt": "2026-01-19T02:01:00Z"
+  },
+  {
+    "name": "SwiftDataValidator",
+    "fullName": "joelklabo/SwiftDataValidator",
+    "description": "A comprehensive validation framework for SwiftData models",
+    "url": "https://github.com/joelklabo/SwiftDataValidator",
+    "homepageUrl": null,
+    "stargazerCount": 2,
+    "forkCount": 0,
+    "isArchived": false,
+    "primaryLanguage": {
+      "name": "Swift",
+      "color": null
+    },
+    "topics": [],
+    "pushedAt": "2025-06-18T05:01:39Z",
+    "updatedAt": "2026-01-13T09:52:27Z"
   },
   {
     "name": "beady",
@@ -59,33 +133,13 @@
     "stargazerCount": 0,
     "forkCount": 0,
     "isArchived": false,
-    "primaryLanguage": null,
-    "topics": [],
-    "pushedAt": "2025-12-05T23:54:42Z",
-    "updatedAt": "2025-12-05T23:54:42Z"
-  },
-  {
-    "name": "buddy",
-    "fullName": "joelklabo/buddy",
-    "description": "Talk to your buddy",
-    "url": "https://github.com/joelklabo/buddy",
-    "homepageUrl": "",
-    "stargazerCount": 0,
-    "forkCount": 0,
-    "isArchived": false,
     "primaryLanguage": {
-      "name": "Go",
+      "name": "TypeScript",
       "color": null
     },
-    "topics": [
-      "agents",
-      "cli",
-      "codex",
-      "go",
-      "nostr"
-    ],
-    "pushedAt": "2025-12-08T23:31:24Z",
-    "updatedAt": "2025-12-02T01:48:19Z"
+    "topics": [],
+    "pushedAt": "2025-12-18T04:26:11Z",
+    "updatedAt": "2025-12-18T04:26:15Z"
   },
   {
     "name": "homebrew-tap",
@@ -137,5 +191,227 @@
     "topics": [],
     "pushedAt": "2025-11-23T23:45:01Z",
     "updatedAt": "2025-11-23T09:28:42Z"
+  },
+  {
+    "name": "ScopeLint",
+    "fullName": "joelklabo/ScopeLint",
+    "description": null,
+    "url": "https://github.com/joelklabo/ScopeLint",
+    "homepageUrl": null,
+    "stargazerCount": 0,
+    "forkCount": 0,
+    "isArchived": false,
+    "primaryLanguage": null,
+    "topics": [],
+    "pushedAt": "2025-11-21T09:52:14Z",
+    "updatedAt": "2025-11-21T09:52:14Z"
+  },
+  {
+    "name": "honk",
+    "fullName": "joelklabo/honk",
+    "description": null,
+    "url": "https://github.com/joelklabo/honk",
+    "homepageUrl": null,
+    "stargazerCount": 0,
+    "forkCount": 0,
+    "isArchived": false,
+    "primaryLanguage": {
+      "name": "Python",
+      "color": null
+    },
+    "topics": [],
+    "pushedAt": "2025-11-20T05:13:17Z",
+    "updatedAt": "2025-11-20T05:13:21Z"
+  },
+  {
+    "name": "planloop",
+    "fullName": "joelklabo/planloop",
+    "description": null,
+    "url": "https://github.com/joelklabo/planloop",
+    "homepageUrl": null,
+    "stargazerCount": 0,
+    "forkCount": 0,
+    "isArchived": false,
+    "primaryLanguage": {
+      "name": "Python",
+      "color": null
+    },
+    "topics": [],
+    "pushedAt": "2025-11-19T00:16:20Z",
+    "updatedAt": "2025-11-19T00:16:25Z"
+  },
+  {
+    "name": "ceye",
+    "fullName": "joelklabo/ceye",
+    "description": null,
+    "url": "https://github.com/joelklabo/ceye",
+    "homepageUrl": null,
+    "stargazerCount": 0,
+    "forkCount": 0,
+    "isArchived": false,
+    "primaryLanguage": {
+      "name": "Go",
+      "color": null
+    },
+    "topics": [],
+    "pushedAt": "2025-11-17T22:25:19Z",
+    "updatedAt": "2025-11-17T22:25:22Z"
+  },
+  {
+    "name": "copilot-research",
+    "fullName": "joelklabo/copilot-research",
+    "description": "Beautiful CLI tool for AI-powered research with learning capabilities",
+    "url": "https://github.com/joelklabo/copilot-research",
+    "homepageUrl": null,
+    "stargazerCount": 0,
+    "forkCount": 0,
+    "isArchived": false,
+    "primaryLanguage": {
+      "name": "Go",
+      "color": null
+    },
+    "topics": [],
+    "pushedAt": "2025-11-17T20:15:30Z",
+    "updatedAt": "2025-11-17T20:15:34Z"
+  },
+  {
+    "name": "SwiftTOON",
+    "fullName": "joelklabo/SwiftTOON",
+    "description": null,
+    "url": "https://github.com/joelklabo/SwiftTOON",
+    "homepageUrl": null,
+    "stargazerCount": 0,
+    "forkCount": 0,
+    "isArchived": false,
+    "primaryLanguage": {
+      "name": "Swift",
+      "color": null
+    },
+    "topics": [],
+    "pushedAt": "2025-11-17T00:58:13Z",
+    "updatedAt": "2025-11-17T00:58:17Z"
+  },
+  {
+    "name": "appmaker",
+    "fullName": "joelklabo/appmaker",
+    "description": "Create production-ready iOS apps with just a name",
+    "url": "https://github.com/joelklabo/appmaker",
+    "homepageUrl": null,
+    "stargazerCount": 1,
+    "forkCount": 0,
+    "isArchived": false,
+    "primaryLanguage": {
+      "name": "Shell",
+      "color": null
+    },
+    "topics": [
+      "app-generator",
+      "cli-tool",
+      "developer-tools",
+      "ios",
+      "swift",
+      "swiftui",
+      "xcode"
+    ],
+    "pushedAt": "2025-06-22T08:15:27Z",
+    "updatedAt": "2025-11-06T23:19:26Z"
+  },
+  {
+    "name": "FlexPilotWorkshop",
+    "fullName": "joelklabo/FlexPilotWorkshop",
+    "description": null,
+    "url": "https://github.com/joelklabo/FlexPilotWorkshop",
+    "homepageUrl": "",
+    "stargazerCount": 2,
+    "forkCount": 1,
+    "isArchived": false,
+    "primaryLanguage": {
+      "name": "ActionScript",
+      "color": null
+    },
+    "topics": [],
+    "pushedAt": "2011-04-04T16:04:49Z",
+    "updatedAt": "2025-09-08T15:10:34Z"
+  },
+  {
+    "name": "nostr-control",
+    "fullName": "joelklabo/nostr-control",
+    "description": "A CLN Plugin you can interact with over Nostr DM",
+    "url": "https://github.com/joelklabo/nostr-control",
+    "homepageUrl": "",
+    "stargazerCount": 21,
+    "forkCount": 2,
+    "isArchived": false,
+    "primaryLanguage": {
+      "name": "JavaScript",
+      "color": null
+    },
+    "topics": [
+      "bitcoin",
+      "cln",
+      "corelightning",
+      "nostr"
+    ],
+    "pushedAt": "2023-05-28T16:26:47Z",
+    "updatedAt": "2025-09-01T06:49:22Z"
+  },
+  {
+    "name": "cln-plugin-js",
+    "fullName": "joelklabo/cln-plugin-js",
+    "description": null,
+    "url": "https://github.com/joelklabo/cln-plugin-js",
+    "homepageUrl": null,
+    "stargazerCount": 1,
+    "forkCount": 1,
+    "isArchived": false,
+    "primaryLanguage": {
+      "name": "JavaScript",
+      "color": null
+    },
+    "topics": [],
+    "pushedAt": "2023-05-10T04:19:06Z",
+    "updatedAt": "2025-09-01T06:49:22Z"
+  },
+  {
+    "name": "nostr-dm-bot",
+    "fullName": "joelklabo/nostr-dm-bot",
+    "description": null,
+    "url": "https://github.com/joelklabo/nostr-dm-bot",
+    "homepageUrl": "",
+    "stargazerCount": 1,
+    "forkCount": 0,
+    "isArchived": false,
+    "primaryLanguage": {
+      "name": "JavaScript",
+      "color": null
+    },
+    "topics": [
+      "nostr"
+    ],
+    "pushedAt": "2023-05-10T04:28:35Z",
+    "updatedAt": "2025-09-01T06:49:21Z"
+  },
+  {
+    "name": "nostrify",
+    "fullName": "joelklabo/nostrify",
+    "description": "Core Lightning plugin that sends events to Nostr",
+    "url": "https://github.com/joelklabo/nostrify",
+    "homepageUrl": "",
+    "stargazerCount": 13,
+    "forkCount": 4,
+    "isArchived": false,
+    "primaryLanguage": {
+      "name": "Python",
+      "color": null
+    },
+    "topics": [
+      "bitcoin",
+      "cln",
+      "core-lightning",
+      "lightning",
+      "nostr"
+    ],
+    "pushedAt": "2023-05-02T19:22:45Z",
+    "updatedAt": "2025-09-01T06:48:40Z"
   }
 ]
