@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { getPublicGitHubOwner } from '@/lib/public-env';
 import { Button } from '@/components/ui/button';
 import { Surface } from '@/components/ui/surface';
+import { LightningNodeCard, LightningTipWidget } from '@/components/lightning';
 
 export const metadata: Metadata = {
   title: 'About',
@@ -78,6 +79,28 @@ export default function AboutPage() {
             </Button>
           </Surface>
         </div>
+
+        {/* Lightning Section */}
+        <section className="space-y-6">
+          <div className="space-y-2">
+            <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary">Lightning Network</p>
+            <h2 className="text-2xl font-bold tracking-tight">Connect & Support</h2>
+            <p className="max-w-2xl text-sm text-muted-foreground">
+              Open a channel to my Lightning node or send a tip via Lightning. All tips go directly to the node with zero fees.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <LightningNodeCard
+              alias="klabo.world"
+              pubkey="0276dc1ed542d0d777b518f1bd05f042847f19f312718cf1303288119a0a789a68"
+              color="#f7931a"
+              host="klabo.world"
+              port={9735}
+            />
+            <LightningTipWidget lightningAddress="joel@klabo.world" />
+          </div>
+        </section>
       </div>
     </div>
   );
