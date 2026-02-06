@@ -6,7 +6,7 @@ import { getApps } from "@/lib/apps";
 export const metadata: Metadata = {
   title: "Apps",
   description:
-    "Projects, tools, and experiments built for Bitcoin, Lightning, and Nostr.",
+    "Projects, tools, and experiments built for Bitcoin and agentic engineering.",
 };
 
 export default function AppsPage() {
@@ -28,7 +28,7 @@ export default function AppsPage() {
           </h1>
           <p className="mt-4 text-lg text-muted-foreground">
             Native apps, command-line tools, and experiments that support
-            Bitcoin, Lightning Network, and Nostr workflows.
+            Bitcoin and agentic engineering workflows.
           </p>
         </header>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">

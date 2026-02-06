@@ -11,17 +11,17 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
     template: '%s • klabo.world',
-    default: 'klabo.world • Bitcoin, Lightning, Nostr & Agentic Engineering',
+    default: 'klabo.world • Bitcoin & Agentic Engineering',
   },
   description:
-    'klabo.world covers Bitcoin, Lightning, Nostr, and agentic engineering with tutorials, project updates, and AI context libraries.',
+    'klabo.world covers Bitcoin and agentic engineering with tutorials, project updates, and AI context libraries.',
 	  openGraph: {
 	    type: 'website',
 	    url: siteUrl,
 	    siteName: 'klabo.world',
-	    title: 'klabo.world • Bitcoin, Lightning, Nostr & Agentic Engineering',
+	    title: 'klabo.world • Bitcoin & Agentic Engineering',
 	    description:
-	      'klabo.world covers Bitcoin, Lightning, Nostr, and agentic engineering with tutorials, project updates, and AI context libraries.',
+	      'klabo.world covers Bitcoin and agentic engineering with tutorials, project updates, and AI context libraries.',
 	    images: [
 	      {
 	        url: new URL('/og.png', siteUrl),
@@ -34,9 +34,9 @@ export const metadata: Metadata = {
 	  },
 	  twitter: {
 	    card: 'summary_large_image',
-	    title: 'klabo.world • Bitcoin, Lightning, Nostr & Agentic Engineering',
+	    title: 'klabo.world • Bitcoin & Agentic Engineering',
 	    description:
-	      'klabo.world covers Bitcoin, Lightning, Nostr, and agentic engineering with tutorials, project updates, and AI context libraries.',
+	      'klabo.world covers Bitcoin and agentic engineering with tutorials, project updates, and AI context libraries.',
 	    images: [new URL('/og.png', siteUrl)],
 	  },
 };

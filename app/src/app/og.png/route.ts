@@ -120,7 +120,7 @@ export async function GET() {
                 lineHeight: 1.06,
               },
             },
-            'Notes, playbooks, and projects for shipping on decentralized rails.',
+            'Notes, playbooks, and projects for shipping software.',
           ),
           createElement(
             'div',
@@ -133,7 +133,7 @@ export async function GET() {
                 maxWidth: 940,
               },
             },
-            'Bitcoin · Lightning · Nostr · Agentic engineering',
+            'Bitcoin · Agentic engineering',
           ),
         ),
         createElement(

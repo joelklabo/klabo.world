@@ -3,20 +3,9 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { formatPostDate, getPostBySlug, getPosts, normalizePostSlug } from '@/lib/posts';
 import { MDXContent } from '@/components/mdx-content';
-import { ClientErrorBoundary } from '@/components/client-error-boundary';
-import { getPublicNostrstackConfig, getPublicSiteUrl } from '@/lib/public-env';
-import { NostrstackComments } from '@/components/nostrstack-widgets';
-import { LightningTipWidget } from '@/components/lightning';
+import { getPublicSiteUrl } from '@/lib/public-env';
 
 type Params = { slug: string };
-
-function parseRelayList(raw?: string | null): string[] {
-  if (!raw) return [];
-  return raw
-    .split(/[,\n]/)
-    .map((item) => item.trim())
-    .filter(Boolean);
-}
 
 export const dynamic = 'force-dynamic';
 
@@ -87,11 +76,6 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
   const readingTime = Math.max(1, Math.round(rawBody.split(/\s+/).length / 200));
   const siteUrl = getPublicSiteUrl();
   const canonicalUrl = `${siteUrl}/posts/${post.slug}`;
-  const nostrstackConfig = getPublicNostrstackConfig();
-  const lightningAddress = post.lightningAddress ?? nostrstackConfig.lightningAddress ?? null;
-  const nostrRelays = post.nostrRelays ?? parseRelayList(nostrstackConfig.relays ?? '');
-  const widgetsEnabled = post.nostrstackEnabled !== false;
-  const threadId = `post-${post.slug}`;
   const publishedDate = post.publishDate ?? post.date;
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -113,13 +97,6 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
       url: siteUrl,
     },
   };
-
-  const nostrCommentsFallback = (
-    <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_24px_70px_rgba(12,19,38,0.45)]">
-      <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-100/80">Comments (Nostr)</p>
-      <p className="mt-3 text-sm text-slate-300">Comments are temporarily unavailable.</p>
-    </div>
-  );
 
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-background text-foreground">
@@ -169,19 +146,11 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
                 </span>
               </div>
             </div>
-            {lightningAddress && (
-              <LightningTipWidget lightningAddress={lightningAddress} namespace={`post:${post.slug}`} />
-            )}
             <div className="rounded-3xl border border-border/60 bg-card/80 p-8 shadow-[0_24px_70px_rgba(6,10,20,0.55)]">
               <div className="prose max-w-none space-y-8">
                 <MDXContent code={bodyCode} />
               </div>
             </div>
-            {widgetsEnabled && (
-              <ClientErrorBoundary fallback={nostrCommentsFallback}>
-                <NostrstackComments threadId={threadId} canonicalUrl={canonicalUrl} relays={nostrRelays} />
-              </ClientErrorBoundary>
-            )}
             <div className="grid grid-cols-1 gap-4 text-sm text-muted-foreground sm:grid-cols-2">
               {previous && (
                 <Link

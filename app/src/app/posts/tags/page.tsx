@@ -19,8 +19,7 @@ export default function PostTagsPage() {
         <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary">Tags</p>
         <h1 className="mt-3 text-4xl font-bold tracking-tight text-balance">Explore by Topic</h1>
         <p className="mt-3 max-w-2xl text-sm text-muted-foreground">
-          Quickly jump into the subjects we write about most—Bitcoin, Lightning,
-          Nostr, agents, and more.
+          Quickly jump into the subjects we write about most—Bitcoin, agents, and more.
         </p>
         <ul className="mt-8 flex flex-wrap gap-3" role="list" aria-label="All tags">
           {tags.map(([tag, count]) => (

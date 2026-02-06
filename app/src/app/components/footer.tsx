@@ -15,7 +15,6 @@ export function Footer() {
   const socialLinks = [
     { label: 'GitHub', href: 'https://github.com/klabo', title: 'GitHub' },
     { label: 'Twitter', href: 'https://twitter.com/klabo', title: 'Twitter / X' },
-    { label: 'Nostr', href: 'https://nostr.band/klabo', title: 'Nostr' },
   ];
 
   return (
@@ -34,7 +33,7 @@ export function Footer() {
               klabo.world
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed text-pretty">
-              Bitcoin, Lightning, Nostr & agentic engineering. Tutorials, project updates, and AI context libraries.
+              Bitcoin & agentic engineering. Tutorials, project updates, and AI context libraries.
             </p>
           </div>
 
@@ -74,9 +73,6 @@ export function Footer() {
                     )}
                     {link.label === 'Twitter' && (
                       <svg className="size-4 motion-safe:group-hover:scale-110 motion-safe:transition-transform motion-safe:duration-200" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                    )}
-                    {link.label === 'Nostr' && (
-                      <svg className="size-4 motion-safe:group-hover:scale-110 motion-safe:transition-transform motion-safe:duration-200" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 3L4 14h7v7l9-11h-7V3z"/></svg>
                     )}
                   </a>
                 </li>
