@@ -5,7 +5,7 @@ import { formatPostDate, getPostBySlug, getPosts, normalizePostSlug } from '@/li
 import { MDXContent } from '@/components/mdx-content';
 import { ClientErrorBoundary } from '@/components/client-error-boundary';
 import { getPublicNostrstackConfig, getPublicSiteUrl } from '@/lib/public-env';
-import { NostrstackComments, NostrstackOmnoster } from '@/components/nostrstack-widgets';
+import { NostrstackComments } from '@/components/nostrstack-widgets';
 import { LightningTipWidget } from '@/components/lightning';
 
 type Params = { slug: string };
@@ -118,13 +118,6 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
     <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_24px_70px_rgba(12,19,38,0.45)]">
       <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-100/80">Comments (Nostr)</p>
       <p className="mt-3 text-sm text-slate-300">Comments are temporarily unavailable.</p>
-    </div>
-  );
-
-  const nostrOmnosterFallback = (
-    <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_24px_70px_rgba(12,19,38,0.45)]">
-      <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-100/80">Omnoster</p>
-      <p className="mt-3 text-sm text-slate-300">The share feed is temporarily unavailable.</p>
     </div>
   );
 
@@ -255,12 +248,6 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
                   </div>
                 )}
               </section>
-
-              {widgetsEnabled && (
-                <ClientErrorBoundary fallback={nostrOmnosterFallback}>
-                  <NostrstackOmnoster slug={post.slug} canonicalUrl={canonicalUrl} relays={nostrRelays} />
-                </ClientErrorBoundary>
-              )}
             </div>
           </aside>
         </div>
