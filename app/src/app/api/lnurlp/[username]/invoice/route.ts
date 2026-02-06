@@ -7,8 +7,12 @@ function toNumber(value: string | null): number | null {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
-export async function GET(request: Request, { params }: { params: { username: string } }) {
-  const username = params.username;
+// All usernames route to the same "joel" pay link in LNbits (wildcard support)
+const LNBITS_PAY_LINK_USERNAME = 'joel';
+
+export async function GET(request: Request, { params }: { params: Promise<{ username: string }> }) {
+  // params.username is preserved for logging/analytics but we use the single pay link
+  const { username: _requestedUsername } = await params;
   const url = new URL(request.url);
   const amount = toNumber(url.searchParams.get('amount'));
   if (!amount || amount <= 0) {
@@ -17,7 +21,8 @@ export async function GET(request: Request, { params }: { params: { username: st
 
   const baseUrl = getLnbitsBaseUrl();
   const headers = buildLnbitsHeaders();
-  const metaRes = await fetch(`${baseUrl}/.well-known/lnurlp/${encodeURIComponent(username)}`, {
+  // Always use the single "joel" pay link for invoice generation
+  const metaRes = await fetch(`${baseUrl}/.well-known/lnurlp/${LNBITS_PAY_LINK_USERNAME}`, {
     headers,
     cache: 'no-store',
   });
