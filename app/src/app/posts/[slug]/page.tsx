@@ -5,16 +5,10 @@ import { formatPostDate, getPostBySlug, getPosts, normalizePostSlug } from '@/li
 import { MDXContent } from '@/components/mdx-content';
 import { ClientErrorBoundary } from '@/components/client-error-boundary';
 import { getPublicNostrstackConfig, getPublicSiteUrl } from '@/lib/public-env';
-import { NostrstackActionBar, NostrstackComments, NostrstackOmnoster } from '@/components/nostrstack-widgets';
+import { NostrstackComments, NostrstackOmnoster } from '@/components/nostrstack-widgets';
+import { LightningTipWidget } from '@/components/lightning';
 
 type Params = { slug: string };
-
-function parseLightningAddress(value?: string | null) {
-  if (!value) return null;
-  const [username, domain] = value.split('@');
-  if (!username || !domain) return null;
-  return { username, domain };
-}
 
 function parseRelayList(raw?: string | null): string[] {
   if (!raw) return [];
@@ -95,11 +89,8 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
   const canonicalUrl = `${siteUrl}/posts/${post.slug}`;
   const nostrstackConfig = getPublicNostrstackConfig();
   const lightningAddress = post.lightningAddress ?? nostrstackConfig.lightningAddress ?? null;
-  const nostrPubkey = post.nostrPubkey ?? nostrstackConfig.nostrPubkey ?? null;
   const nostrRelays = post.nostrRelays ?? parseRelayList(nostrstackConfig.relays ?? '');
   const widgetsEnabled = post.nostrstackEnabled !== false;
-  const nostrstackBaseUrl = nostrstackConfig.baseUrl ?? '';
-  const nostrstackHost = nostrstackConfig.host ?? parseLightningAddress(lightningAddress)?.domain;
   const threadId = `post-${post.slug}`;
   const publishedDate = post.publishDate ?? post.date;
   const jsonLd = {
@@ -122,13 +113,6 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
       url: siteUrl,
     },
   };
-
-  const nostrActionFallback = (
-    <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_24px_70px_rgba(12,19,38,0.45)]">
-      <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-100/80">Support & Share</p>
-      <p className="mt-3 text-sm text-slate-300">Nostr widgets are temporarily unavailable.</p>
-    </div>
-  );
 
   const nostrCommentsFallback = (
     <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_24px_70px_rgba(12,19,38,0.45)]">
@@ -192,20 +176,8 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
                 </span>
               </div>
             </div>
-            {widgetsEnabled && (
-              <ClientErrorBoundary fallback={nostrActionFallback}>
-                <NostrstackActionBar
-                  slug={post.slug}
-                  title={post.title}
-                  summary={post.summary}
-                  canonicalUrl={canonicalUrl}
-                  lightningAddress={lightningAddress}
-                  nostrPubkey={nostrPubkey ?? undefined}
-                  relays={nostrRelays}
-                  baseUrl={nostrstackBaseUrl}
-                  host={nostrstackHost ?? undefined}
-                />
-              </ClientErrorBoundary>
+            {lightningAddress && (
+              <LightningTipWidget lightningAddress={lightningAddress} />
             )}
             <div className="rounded-3xl border border-border/60 bg-card/80 p-8 shadow-[0_24px_70px_rgba(6,10,20,0.55)]">
               <div className="prose max-w-none space-y-8">
