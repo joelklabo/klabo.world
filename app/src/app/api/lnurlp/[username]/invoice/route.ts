@@ -11,8 +11,8 @@ function toNumber(value: string | null): number | null {
 const LNBITS_PAY_LINK_USERNAME = 'joel';
 
 export async function GET(request: Request, { params }: { params: Promise<{ username: string }> }) {
-  // params.username is preserved for logging/analytics but we use the single pay link
-  const { username: _requestedUsername } = await params;
+  // Wildcard: all usernames route to the single pay link; username extracted but not used
+  await params;
   const url = new URL(request.url);
   const amount = toNumber(url.searchParams.get('amount'));
   if (!amount || amount <= 0) {
