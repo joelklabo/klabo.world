@@ -170,7 +170,7 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
               </div>
             </div>
             {lightningAddress && (
-              <LightningTipWidget lightningAddress={lightningAddress} />
+              <LightningTipWidget lightningAddress={lightningAddress} namespace={`post:${post.slug}`} />
             )}
             <div className="rounded-3xl border border-border/60 bg-card/80 p-8 shadow-[0_24px_70px_rgba(6,10,20,0.55)]">
               <div className="prose max-w-none space-y-8">

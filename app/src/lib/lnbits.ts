@@ -15,3 +15,7 @@ export function buildLnbitsHeaders(): Record<string, string> {
   }
   return headers;
 }
+
+export function getLnbitsAdminKey(): string | null {
+  return env.LNBITS_ADMIN_KEY?.trim() || null;
+}

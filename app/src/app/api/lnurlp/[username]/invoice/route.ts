@@ -11,10 +11,12 @@ function toNumber(value: string | null): number | null {
 const LNBITS_PAY_LINK_USERNAME = 'joel';
 
 export async function GET(request: Request, { params }: { params: Promise<{ username: string }> }) {
-  // Wildcard: all usernames route to the single pay link; username extracted but not used
+  // Wildcard: all usernames route to the single pay link
   await params;
   const url = new URL(request.url);
   const amount = toNumber(url.searchParams.get('amount'));
+  const namespace = url.searchParams.get('ns') || 'default';
+  
   if (!amount || amount <= 0) {
     return NextResponse.json({ error: 'invalid_amount' }, { status: 400 });
   }
@@ -36,6 +38,9 @@ export async function GET(request: Request, { params }: { params: Promise<{ user
 
   const callbackUrl = new URL(meta.callback);
   callbackUrl.searchParams.set('amount', String(amount));
+  // Add namespace as comment for tip tracking
+  callbackUrl.searchParams.set('comment', `klabo.world:${namespace}`);
+  
   const invoiceRes = await fetch(callbackUrl.toString(), {
     headers,
     cache: 'no-store',

@@ -98,7 +98,7 @@ export default function AboutPage() {
               host="klabo.world"
               port={9735}
             />
-            <LightningTipWidget lightningAddress="joel@klabo.world" />
+            <LightningTipWidget lightningAddress="joel@klabo.world" namespace="about" />
           </div>
         </section>
       </div>

@@ -81,6 +81,7 @@ const schema = z.object({
   NOSTRSTACK_RELAYS: z.string().optional(),
   LNBITS_BASE_URL: optionalUrl,
   LNBITS_BASIC_AUTH: z.string().optional(),
+  LNBITS_ADMIN_KEY: z.string().optional(),
   NEXT_PUBLIC_NOSTRSTACK_BASE_URL: optionalUrl,
   NEXT_PUBLIC_NOSTRSTACK_HOST: z.string().optional(),
   NEXT_PUBLIC_NOSTRSTACK_RELAYS: z.string().optional(),

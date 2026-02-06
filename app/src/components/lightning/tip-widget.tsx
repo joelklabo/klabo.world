@@ -1,16 +1,22 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { cn } from '@/lib/utils';
 
 type TipState = 'idle' | 'loading' | 'invoice' | 'success' | 'error';
 
+type TipStats = {
+  count: number;
+  totalSats: number;
+  largestTip: number;
+};
+
 type TipWidgetProps = {
   lightningAddress: string;
+  /** Namespace for tracking tips (e.g., 'about', 'post:my-slug') */
+  namespace?: string;
   className?: string;
-  /** Compact mode for embedding in smaller spaces */
-  compact?: boolean;
 };
 
 const PRESET_AMOUNTS = [21, 100, 500, 1000] as const;
@@ -24,12 +30,12 @@ function formatSats(sats: number): string {
   return sats.toString();
 }
 
-async function fetchInvoice(lightningAddress: string, amountSats: number): Promise<string> {
+async function fetchInvoice(lightningAddress: string, amountSats: number, namespace: string): Promise<string> {
   const [username] = lightningAddress.split('@');
   if (!username) throw new Error('Invalid lightning address');
   
   const amountMsat = amountSats * 1000;
-  const res = await fetch(`/api/lnurlp/${encodeURIComponent(username)}/invoice?amount=${amountMsat}`);
+  const res = await fetch(`/api/lnurlp/${encodeURIComponent(username)}/invoice?amount=${amountMsat}&ns=${encodeURIComponent(namespace)}`);
   
   if (!res.ok) {
     const error = await res.json().catch(() => ({}));
@@ -42,6 +48,16 @@ async function fetchInvoice(lightningAddress: string, amountSats: number): Promi
   return invoice;
 }
 
+async function fetchTipStats(namespace: string): Promise<TipStats | null> {
+  try {
+    const res = await fetch(`/api/tip-stats?ns=${encodeURIComponent(namespace)}`);
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
 async function copyToClipboard(text: string): Promise<boolean> {
   try {
     await navigator.clipboard.writeText(text);
@@ -51,13 +67,23 @@ async function copyToClipboard(text: string): Promise<boolean> {
   }
 }
 
-export function LightningTipWidget({ lightningAddress, className }: TipWidgetProps) {
+export function LightningTipWidget({ lightningAddress, namespace = 'default', className }: TipWidgetProps) {
   const [state, setState] = useState<TipState>('idle');
+  const [stats, setStats] = useState<TipStats | null>(null);
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
   const [customAmount, setCustomAmount] = useState('');
   const [invoice, setInvoice] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+
+  // Fetch tip stats on mount and after successful payment
+  useEffect(() => {
+    fetchTipStats(namespace).then(setStats);
+  }, [namespace]);
+
+  const refreshStats = useCallback(() => {
+    fetchTipStats(namespace).then(setStats);
+  }, [namespace]);
 
   const handleAmountSelect = useCallback(async (sats: number) => {
     setSelectedAmount(sats);
@@ -65,14 +91,14 @@ export function LightningTipWidget({ lightningAddress, className }: TipWidgetPro
     setState('loading');
     
     try {
-      const inv = await fetchInvoice(lightningAddress, sats);
+      const inv = await fetchInvoice(lightningAddress, sats, namespace);
       setInvoice(inv);
       setState('invoice');
     } catch (error_) {
       setError(error_ instanceof Error ? error_.message : 'Failed to generate invoice');
       setState('error');
     }
-  }, [lightningAddress]);
+  }, [lightningAddress, namespace]);
 
   const handleCustomSubmit = useCallback(() => {
     const sats = Number.parseInt(customAmount, 10);
@@ -103,7 +129,9 @@ export function LightningTipWidget({ lightningAddress, className }: TipWidgetPro
 
   const handleMarkPaid = useCallback(() => {
     setState('success');
-  }, []);
+    // Refresh stats after a short delay to allow LNbits to process
+    setTimeout(refreshStats, 2000);
+  }, [refreshStats]);
 
   return (
     <div
@@ -130,6 +158,26 @@ export function LightningTipWidget({ lightningAddress, className }: TipWidgetPro
             <p className="text-xs text-muted-foreground">{lightningAddress}</p>
           </div>
         </div>
+
+        {/* Stats Bar */}
+        {stats && stats.count > 0 && (
+          <div className="flex items-center justify-center gap-6 rounded-lg border border-amber-500/10 bg-amber-500/5 px-4 py-2 text-xs">
+            <div className="flex items-center gap-1.5">
+              <span className="text-amber-200/60">Tips:</span>
+              <span className="font-semibold text-amber-100">{stats.count}</span>
+            </div>
+            <div className="h-3 w-px bg-amber-500/20" />
+            <div className="flex items-center gap-1.5">
+              <span className="text-amber-200/60">Total:</span>
+              <span className="font-semibold text-amber-100">{formatSats(stats.totalSats)} sats</span>
+            </div>
+            <div className="h-3 w-px bg-amber-500/20" />
+            <div className="flex items-center gap-1.5">
+              <span className="text-amber-200/60">Largest:</span>
+              <span className="font-semibold text-amber-100">{formatSats(stats.largestTip)} sats</span>
+            </div>
+          </div>
+        )}
 
         {/* Amount Selection */}
         {state === 'idle' && (
