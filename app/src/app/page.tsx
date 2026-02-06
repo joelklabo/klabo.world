@@ -10,6 +10,7 @@ import { GitHubProjectsShowcase } from "@/components/github-projects-showcase";
 import { HomeQuickLinks } from "@/components/home-quick-links";
 import { HomeStats } from "@/components/home-stats";
 import { HomeTopics } from "@/components/home-topics";
+import { HomeLightningSection } from "@/components/lightning";
 import { Button } from "@/components/ui/button";
 import { ViewTransitionLink } from "@/components/view-transition-link";
 
@@ -186,6 +187,8 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      <HomeLightningSection />
 
       <section className="pb-16 sm:pb-20">
         <div className="mx-auto max-w-6xl px-6">
