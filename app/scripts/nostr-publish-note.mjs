@@ -3,12 +3,12 @@ import process from 'node:process';
 
 function parseArgs(argv) {
   const out = { text: '', url: '', relays: '' };
-  for (let i = 0; i < argv.length; i++) {
-    const a = argv[i];
-    if (a === '--text') out.text = argv[++i] ?? '';
-    else if (a === '--url') out.url = argv[++i] ?? '';
-    else if (a === '--relays') out.relays = argv[++i] ?? '';
-  }
+  const textIdx = argv.indexOf('--text');
+  const urlIdx = argv.indexOf('--url');
+  const relaysIdx = argv.indexOf('--relays');
+  if (textIdx !== -1) out.text = argv[textIdx + 1] ?? '';
+  if (urlIdx !== -1) out.url = argv[urlIdx + 1] ?? '';
+  if (relaysIdx !== -1) out.relays = argv[relaysIdx + 1] ?? '';
   return out;
 }
 
