@@ -133,7 +133,7 @@ export async function GET() {
                 maxWidth: 940,
               },
             },
-            'Bitcoin · Agentic engineering',
+            'Bitcoin · Lightning · Agentic engineering',
           ),
         ),
         createElement(

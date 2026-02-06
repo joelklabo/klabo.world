@@ -308,6 +308,9 @@ importers:
       prisma:
         specifier: ^6.19.0
         version: 6.19.0(typescript@5.9.3)
+      qrcode.react:
+        specifier: ^4.2.0
+        version: 4.2.0(react@19.2.0)
       tailwindcss:
         specifier: ^4
         version: 4.1.17
@@ -6692,6 +6695,11 @@ packages:
   qified@0.5.3:
     resolution: {integrity: sha512-kXuQdQTB6oN3KhI6V4acnBSZx8D2I4xzZvn9+wFLLFCoBNQY/sFnCW6c43OL7pOQ2HvGV4lnWIXNmgfp7cTWhQ==}
     engines: {node: '>=20'}
+
+  qrcode.react@4.2.0:
+    resolution: {integrity: sha512-QpgqWi8rD9DsS9EP3z7BT+5lY5SFhsqGjpgW5DY/i3mK4M9DTBNz3ErMi8BWYEfI3L0d8GIbGmcdFAS1uIRGjA==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
   qs@6.14.1:
     resolution: {integrity: sha512-4EK3+xJl8Ts67nLYNwqw/dsFVnCf+qR7RgXSK9jEEm9unao3njwMDdmsdvoKBKHzxd7tCYz5e5M+SnMjdtXGQQ==}
@@ -15649,6 +15657,10 @@ snapshots:
   qified@0.5.3:
     dependencies:
       hookified: 1.14.0
+
+  qrcode.react@4.2.0(react@19.2.0):
+    dependencies:
+      react: 19.2.0
 
   qs@6.14.1:
     dependencies:

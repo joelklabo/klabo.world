@@ -33,7 +33,7 @@ export function Footer() {
               klabo.world
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed text-pretty">
-              Bitcoin & agentic engineering. Tutorials, project updates, and AI context libraries.
+              Bitcoin, Lightning & agentic engineering. Tutorials, project updates, and AI context libraries.
             </p>
           </div>
 

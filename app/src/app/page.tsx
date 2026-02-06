@@ -10,6 +10,7 @@ import { GitHubProjectsShowcase } from "@/components/github-projects-showcase";
 import { HomeQuickLinks } from "@/components/home-quick-links";
 import { HomeStats } from "@/components/home-stats";
 import { HomeTopics } from "@/components/home-topics";
+import { HomeLightningSection } from "@/components/lightning";
 import { Button } from "@/components/ui/button";
 import { ViewTransitionLink } from "@/components/view-transition-link";
 
@@ -110,11 +111,11 @@ export default async function Home() {
               Notes, playbooks, and projects for shipping software.
             </h1>
             <p className="text-base text-muted-foreground text-pretty md:text-lg">
-              Practical notes and small tools for Bitcoin and agentic
+              Practical notes and small tools for Bitcoin, Lightning, and agentic
               engineering.
             </p>
             <ul className="flex flex-wrap gap-2 text-[10px] font-semibold uppercase tracking-[0.28em] text-muted-foreground" role="list" aria-label="Main topics">
-              {["Bitcoin", "Agentic systems"].map((topic) => (
+              {["Bitcoin", "Lightning", "Agentic systems"].map((topic) => (
                 <li key={topic}>
                   <span className="rounded-full border border-border/60 bg-background/70 px-3 py-1 text-foreground">
                     {topic}
@@ -185,6 +186,8 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      <HomeLightningSection />
 
       <section className="pb-16 sm:pb-20">
         <div className="mx-auto max-w-6xl px-6">

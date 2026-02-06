@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { formatPostDate, getPostBySlug, getPosts, normalizePostSlug } from '@/lib/posts';
 import { MDXContent } from '@/components/mdx-content';
 import { getPublicSiteUrl } from '@/lib/public-env';
+import { LightningTipWidget } from '@/components/lightning';
 
 type Params = { slug: string };
 
@@ -76,6 +77,7 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
   const readingTime = Math.max(1, Math.round(rawBody.split(/\s+/).length / 200));
   const siteUrl = getPublicSiteUrl();
   const canonicalUrl = `${siteUrl}/posts/${post.slug}`;
+  const lightningAddress = post.lightningAddress ?? 'joel@klabo.world';
   const publishedDate = post.publishDate ?? post.date;
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -146,6 +148,9 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
                 </span>
               </div>
             </div>
+            {lightningAddress && (
+              <LightningTipWidget lightningAddress={lightningAddress} namespace={`post:${post.slug}`} />
+            )}
             <div className="rounded-3xl border border-border/60 bg-card/80 p-8 shadow-[0_24px_70px_rgba(6,10,20,0.55)]">
               <div className="prose max-w-none space-y-8">
                 <MDXContent code={bodyCode} />
