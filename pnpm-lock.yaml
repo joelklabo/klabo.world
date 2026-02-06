@@ -266,9 +266,6 @@ importers:
       '@types/node':
         specifier: ^20
         version: 20.19.25
-      '@types/qrcode.react':
-        specifier: ^3.0.0
-        version: 3.0.0(react@19.2.0)
       '@types/react':
         specifier: ^19
         version: 19.2.5
@@ -3591,10 +3588,6 @@ packages:
 
   '@types/pg@8.6.1':
     resolution: {integrity: sha512-1Kc4oAGzAl7uqUStZCDvaLFqZrW9qWSjXOmBfdgyBP5La7Us6Mg4GBvRlSoaZMhQF/zSj1C8CtKMBkoiT8eL8w==}
-
-  '@types/qrcode.react@3.0.0':
-    resolution: {integrity: sha512-VPHYhnDfvt4LjlWajpYWRBVqmftEEza3GJVhe8sS5Wew0n4nTkg3+2MYunAiU6t04AZt0s/hkkMovefWeENjAQ==}
-    deprecated: This is a stub types definition. qrcode.react provides its own type definitions, so you do not need this installed.
 
   '@types/react-dom@19.2.3':
     resolution: {integrity: sha512-jp2L/eY6fn+KgVVQAOqYItbF0VY/YApe5Mz2F0aykSO8gx31bYCZyvSeYxCHKvzHG5eZjc+zyaS5BrBWya2+kQ==}
@@ -11654,12 +11647,6 @@ snapshots:
       '@types/node': 20.19.25
       pg-protocol: 1.10.3
       pg-types: 2.2.0
-
-  '@types/qrcode.react@3.0.0(react@19.2.0)':
-    dependencies:
-      qrcode.react: 4.2.0(react@19.2.0)
-    transitivePeerDependencies:
-      - react
 
   '@types/react-dom@19.2.3(@types/react@19.2.5)':
     dependencies:
