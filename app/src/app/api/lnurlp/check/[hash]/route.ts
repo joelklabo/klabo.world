@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getLnbitsBaseUrl, getLnbitsAdminKey } from '@/lib/lnbits';
+import { getLnbitsBaseUrl, getLnbitsAdminKey, buildLnbitsHeaders } from '@/lib/lnbits';
 
 export async function GET(_: Request, { params }: { params: Promise<{ hash: string }> }) {
   const { hash } = await params;
@@ -7,17 +7,20 @@ export async function GET(_: Request, { params }: { params: Promise<{ hash: stri
     return NextResponse.json({ error: 'invalid_hash' }, { status: 400 });
   }
 
+  const baseUrl = getLnbitsBaseUrl();
+
+  // Try admin key first, fall back to basic auth
   const adminKey = getLnbitsAdminKey();
-  if (!adminKey) {
-    return NextResponse.json({ error: 'lnbits_not_configured' }, { status: 503 });
+  const headers: Record<string, string> = { Accept: 'application/json' };
+  if (adminKey) {
+    headers['X-Api-Key'] = adminKey;
+  } else {
+    const basicHeaders = buildLnbitsHeaders();
+    Object.assign(headers, basicHeaders);
   }
 
-  const baseUrl = getLnbitsBaseUrl();
   const res = await fetch(`${baseUrl}/api/v1/payments/${encodeURIComponent(hash)}`, {
-    headers: {
-      Accept: 'application/json',
-      'X-Api-Key': adminKey,
-    },
+    headers,
     cache: 'no-store',
   });
 
