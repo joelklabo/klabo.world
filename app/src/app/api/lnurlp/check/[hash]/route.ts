@@ -9,14 +9,11 @@ export async function GET(_: Request, { params }: { params: Promise<{ hash: stri
 
   const baseUrl = getLnbitsBaseUrl();
 
-  // Try admin key first, fall back to basic auth
+  // LNbits v1.4+ requires basic auth AND wallet API key together
+  const headers = buildLnbitsHeaders();
   const adminKey = getLnbitsAdminKey();
-  const headers: Record<string, string> = { Accept: 'application/json' };
   if (adminKey) {
     headers['X-Api-Key'] = adminKey;
-  } else {
-    const basicHeaders = buildLnbitsHeaders();
-    Object.assign(headers, basicHeaders);
   }
 
   const res = await fetch(`${baseUrl}/api/v1/payments/${encodeURIComponent(hash)}`, {
