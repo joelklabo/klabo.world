@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 
 const NODE_PUBKEY = '0276dc1ed542d0d777b518f1bd05f042847f19f312718cf1303288119a0a789a68';
@@ -33,7 +33,7 @@ async function copyToClipboard(text: string): Promise<boolean> {
 
 type TipState = 'idle' | 'loading' | 'invoice' | 'success' | 'error';
 
-async function fetchInvoice(amountSats: number): Promise<string> {
+async function fetchInvoice(amountSats: number): Promise<{ invoice: string; paymentHash: string | null }> {
   const amountMsat = amountSats * 1000;
   const res = await fetch(`/api/lnurlp/joel/invoice?amount=${amountMsat}&ns=home`);
   if (!res.ok) {
@@ -41,7 +41,8 @@ async function fetchInvoice(amountSats: number): Promise<string> {
     throw new Error(error.error || 'Failed to generate invoice');
   }
   const data = await res.json();
-  return data.pr || data.payment_request;
+  const invoice = data.pr || data.payment_request;
+  return { invoice, paymentHash: data.payment_hash || null };
 }
 
 // Lightning bolt icon
@@ -87,6 +88,7 @@ export function HomeLightningSection({ className }: { className?: string }) {
   const [copiedField, setCopiedField] = useState<'pubkey' | 'address' | 'invoice' | null>(null);
   const [tipState, setTipState] = useState<TipState>('idle');
   const [invoice, setInvoice] = useState<string | null>(null);
+  const [paymentHash, setPaymentHash] = useState<string | null>(null);
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
 
   const nodeUri = `${NODE_PUBKEY}@${NODE_HOST}:${NODE_PORT}`;
@@ -103,8 +105,9 @@ export function HomeLightningSection({ className }: { className?: string }) {
     setSelectedAmount(sats);
     setTipState('loading');
     try {
-      const inv = await fetchInvoice(sats);
-      setInvoice(inv);
+      const result = await fetchInvoice(sats);
+      setInvoice(result.invoice);
+      setPaymentHash(result.paymentHash);
       setTipState('invoice');
     } catch {
       setTipState('error');
@@ -114,6 +117,7 @@ export function HomeLightningSection({ className }: { className?: string }) {
   const handleReset = useCallback(() => {
     setTipState('idle');
     setInvoice(null);
+    setPaymentHash(null);
     setSelectedAmount(null);
   }, []);
 
@@ -121,6 +125,33 @@ export function HomeLightningSection({ className }: { className?: string }) {
     setTipState('success');
     setTimeout(handleReset, 3000);
   }, [handleReset]);
+
+  // Poll for payment confirmation
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  useEffect(() => {
+    if (tipState !== 'invoice' || !paymentHash) return;
+
+    const poll = async () => {
+      try {
+        const res = await fetch(`/api/lnurlp/check/${encodeURIComponent(paymentHash)}`);
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.paid) {
+          setTipState('success');
+          setTimeout(handleReset, 3000);
+        }
+      } catch {
+        // ignore poll errors
+      }
+    };
+
+    poll();
+    pollRef.current = setInterval(poll, 2000);
+
+    return () => {
+      if (pollRef.current) clearInterval(pollRef.current);
+    };
+  }, [tipState, paymentHash, handleReset]);
 
   return (
     <section className={cn('py-8', className)} data-testid="home-lightning-section">

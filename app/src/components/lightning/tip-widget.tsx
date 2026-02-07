@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { cn } from '@/lib/utils';
 
@@ -30,7 +30,7 @@ function formatSats(sats: number): string {
   return sats.toString();
 }
 
-async function fetchInvoice(lightningAddress: string, amountSats: number, namespace: string): Promise<string> {
+async function fetchInvoice(lightningAddress: string, amountSats: number, namespace: string): Promise<{ invoice: string; paymentHash: string | null }> {
   const [username] = lightningAddress.split('@');
   if (!username) throw new Error('Invalid lightning address');
   
@@ -45,7 +45,7 @@ async function fetchInvoice(lightningAddress: string, amountSats: number, namesp
   const data = await res.json();
   const invoice = data.pr || data.payment_request;
   if (!invoice) throw new Error('No invoice in response');
-  return invoice;
+  return { invoice, paymentHash: data.payment_hash || null };
 }
 
 async function fetchTipStats(namespace: string): Promise<TipStats | null> {
@@ -73,6 +73,7 @@ export function LightningTipWidget({ lightningAddress, namespace = 'default', cl
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
   const [customAmount, setCustomAmount] = useState('');
   const [invoice, setInvoice] = useState<string | null>(null);
+  const [paymentHash, setPaymentHash] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
@@ -91,8 +92,9 @@ export function LightningTipWidget({ lightningAddress, namespace = 'default', cl
     setState('loading');
     
     try {
-      const inv = await fetchInvoice(lightningAddress, sats, namespace);
-      setInvoice(inv);
+      const result = await fetchInvoice(lightningAddress, sats, namespace);
+      setInvoice(result.invoice);
+      setPaymentHash(result.paymentHash);
       setState('invoice');
     } catch (error_) {
       setError(error_ instanceof Error ? error_.message : 'Failed to generate invoice');
@@ -123,6 +125,7 @@ export function LightningTipWidget({ lightningAddress, namespace = 'default', cl
     setSelectedAmount(null);
     setCustomAmount('');
     setInvoice(null);
+    setPaymentHash(null);
     setError(null);
     setCopied(false);
   }, []);
@@ -132,6 +135,34 @@ export function LightningTipWidget({ lightningAddress, namespace = 'default', cl
     // Refresh stats after a short delay to allow LNbits to process
     setTimeout(refreshStats, 2000);
   }, [refreshStats]);
+
+  // Poll for payment confirmation when invoice is displayed
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  useEffect(() => {
+    if (state !== 'invoice' || !paymentHash) return;
+
+    const poll = async () => {
+      try {
+        const res = await fetch(`/api/lnurlp/check/${encodeURIComponent(paymentHash)}`);
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.paid) {
+          setState('success');
+          setTimeout(refreshStats, 1000);
+        }
+      } catch {
+        // ignore poll errors
+      }
+    };
+
+    // Start polling every 2 seconds
+    poll();
+    pollRef.current = setInterval(poll, 2000);
+
+    return () => {
+      if (pollRef.current) clearInterval(pollRef.current);
+    };
+  }, [state, paymentHash, refreshStats]);
 
   return (
     <div
