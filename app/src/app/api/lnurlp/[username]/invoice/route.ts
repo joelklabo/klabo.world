@@ -100,5 +100,22 @@ export async function GET(request: Request, { params }: { params: Promise<{ user
     }
   }
 
-  return NextResponse.json(invoice, { headers: { 'Cache-Control': 'no-store' } });
+  return NextResponse.json(invoice, {
+    headers: {
+      'Cache-Control': 'no-store',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, OPTIONS',
+    },
+  });
+}
+
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 204,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Accept',
+    },
+  });
 }

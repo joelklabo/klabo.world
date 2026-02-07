@@ -22,12 +22,22 @@ export async function GET(_: Request, { params }: { params: Promise<{ hash: stri
   });
 
   if (!res.ok) {
-    return NextResponse.json({ paid: false }, { headers: { 'Cache-Control': 'no-store' } });
+    return NextResponse.json({ paid: false }, {
+      headers: {
+        'Cache-Control': 'no-store',
+        'Access-Control-Allow-Origin': '*',
+      },
+    });
   }
 
   const data = (await res.json()) as { paid?: boolean; details?: unknown };
   return NextResponse.json(
     { paid: !!data.paid },
-    { headers: { 'Cache-Control': 'no-store' } },
+    {
+      headers: {
+        'Cache-Control': 'no-store',
+        'Access-Control-Allow-Origin': '*',
+      },
+    },
   );
 }
