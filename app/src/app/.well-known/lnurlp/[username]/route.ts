@@ -6,7 +6,8 @@ import { getPublicSiteUrl } from '@/lib/public-env';
 const LNBITS_PAY_LINK_USERNAME = 'joel';
 
 export async function GET(_: Request, { params }: { params: Promise<{ username: string }> }) {
-  const { username: requestedUsername } = await params;
+  const { username: rawUsername } = await params;
+  const requestedUsername = rawUsername.toLowerCase();
   const baseUrl = getLnbitsBaseUrl();
   const headers = buildLnbitsHeaders();
   
