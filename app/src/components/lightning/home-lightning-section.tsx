@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { QRCodeSVG } from 'qrcode.react';
 import { cn } from '@/lib/utils';
 
 const NODE_PUBKEY = '0276dc1ed542d0d777b518f1bd05f042847f19f312718cf1303288119a0a789a68';
@@ -280,6 +281,13 @@ export function HomeLightningSection({ className }: { className?: string }) {
 
             {tipState === 'invoice' && invoice && (
               <div className="space-y-3">
+                <a
+                  href={`lightning:${invoice}`}
+                  className="mx-auto block w-fit rounded-xl bg-white p-2"
+                  aria-label={`Pay ${selectedAmount} sats`}
+                >
+                  <QRCodeSVG value={invoice.toUpperCase()} size={140} bgColor="#ffffff" fgColor="#000000" />
+                </a>
                 <div className="flex items-center gap-2">
                   <code className="flex-1 truncate rounded bg-background/50 px-2 py-1.5 text-xs font-mono text-foreground/80">
                     {invoice.slice(0, 24)}...
