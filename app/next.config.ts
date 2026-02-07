@@ -60,6 +60,25 @@ const nextConfig: NextConfig = {
 
     return [
       {
+        // LNURL endpoints require CORS per LUD-01
+        source: "/.well-known/lnurlp/:path*",
+        headers: [
+          ...headers,
+          { key: "Access-Control-Allow-Origin", value: "*" },
+          { key: "Access-Control-Allow-Methods", value: "GET, OPTIONS" },
+          { key: "Access-Control-Allow-Headers", value: "Content-Type, Accept" },
+        ],
+      },
+      {
+        source: "/api/lnurlp/:path*",
+        headers: [
+          ...headers,
+          { key: "Access-Control-Allow-Origin", value: "*" },
+          { key: "Access-Control-Allow-Methods", value: "GET, OPTIONS" },
+          { key: "Access-Control-Allow-Headers", value: "Content-Type, Accept" },
+        ],
+      },
+      {
         source: "/(.*)",
         headers,
       },
