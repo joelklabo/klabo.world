@@ -7,13 +7,7 @@ export function getLnbitsBaseUrl(): string {
 }
 
 export function buildLnbitsHeaders(): Record<string, string> {
-  const headers: Record<string, string> = { Accept: 'application/json' };
-  const auth = env.LNBITS_BASIC_AUTH?.trim();
-  if (auth) {
-    const token = Buffer.from(auth, 'utf8').toString('base64');
-    headers.Authorization = `Basic ${token}`;
-  }
-  return headers;
+  return { Accept: 'application/json' };
 }
 
 export function getLnbitsAdminKey(): string | null {
