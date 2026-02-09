@@ -53,8 +53,8 @@ const LNBITS_PAY_LINK_USERNAME = 'joel';
 
 export async function GET(request: Request, { params }: { params: Promise<{ username: string }> }) {
   // Wildcard: all usernames route to the single pay link (normalize to lowercase per LUD-16)
-  const { username: rawUsername } = await params;
-  void rawUsername; // consumed but unused — all routes go to the same pay link
+  const { username: _rawUsername } = await params;
+  // rawUsername consumed but unused — all routes go to the same pay link
   const url = new URL(request.url);
   const amount = toNumber(url.searchParams.get('amount'));
   const namespace = url.searchParams.get('ns') || 'default';
