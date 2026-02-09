@@ -24,7 +24,10 @@ export async function GET(request: NextRequest) {
   }
 
   return Response.json(
-    { names: { [name]: pubkey } },
+    {
+      names: { [name]: pubkey },
+      relays: { [pubkey]: ["wss://nostr.klabo.world"] },
+    },
     { headers: corsHeaders() },
   );
 }
