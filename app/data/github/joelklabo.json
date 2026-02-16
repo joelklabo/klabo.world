@@ -1,37 +1,26 @@
 [
   {
-    "name": "ackchyually",
-    "fullName": "joelklabo/ackchyually",
-    "description": "The annoying coworker for your CLI.",
-    "url": "https://github.com/joelklabo/ackchyually",
-    "homepageUrl": "https://ackchyually.sh",
+    "name": "buddy",
+    "fullName": "joelklabo/buddy",
+    "description": "Talk to your buddy",
+    "url": "https://github.com/joelklabo/buddy",
+    "homepageUrl": "",
     "stargazerCount": 0,
     "forkCount": 0,
     "isArchived": false,
     "primaryLanguage": {
       "name": "Go",
-      "color": null
+      "color": "#00ADD8"
     },
-    "topics": [],
-    "pushedAt": "2025-12-15T02:28:58Z",
-    "updatedAt": "2025-12-15T02:29:01Z"
-  },
-  {
-    "name": "klabo.world",
-    "fullName": "joelklabo/klabo.world",
-    "description": null,
-    "url": "https://github.com/joelklabo/klabo.world",
-    "homepageUrl": null,
-    "stargazerCount": 0,
-    "forkCount": 0,
-    "isArchived": false,
-    "primaryLanguage": {
-      "name": "TypeScript",
-      "color": null
-    },
-    "topics": [],
-    "pushedAt": "2025-12-15T02:18:24Z",
-    "updatedAt": "2025-12-15T02:18:28Z"
+    "topics": [
+      "agents",
+      "cli",
+      "codex",
+      "go",
+      "nostr"
+    ],
+    "pushedAt": "2026-02-12T18:02:14Z",
+    "updatedAt": "2025-12-02T01:48:19Z"
   },
   {
     "name": "markdowntown",
@@ -44,71 +33,68 @@
     "isArchived": false,
     "primaryLanguage": {
       "name": "TypeScript",
-      "color": null
+      "color": "#3178c6"
     },
     "topics": [],
-    "pushedAt": "2025-12-12T04:55:47Z",
-    "updatedAt": "2025-12-12T04:55:50Z"
+    "pushedAt": "2026-02-15T04:34:40Z",
+    "updatedAt": "2026-02-15T04:32:10Z"
   },
   {
-    "name": "beady",
-    "fullName": "joelklabo/beady",
+    "name": "klabo.world",
+    "fullName": "joelklabo/klabo.world",
     "description": null,
-    "url": "https://github.com/joelklabo/beady",
+    "url": "https://github.com/joelklabo/klabo.world",
     "homepageUrl": null,
     "stargazerCount": 0,
     "forkCount": 0,
     "isArchived": false,
-    "primaryLanguage": null,
+    "primaryLanguage": {
+      "name": "TypeScript",
+      "color": "#3178c6"
+    },
     "topics": [],
-    "pushedAt": "2025-12-05T23:54:42Z",
-    "updatedAt": "2025-12-05T23:54:42Z"
+    "pushedAt": "2026-02-15T03:21:54Z",
+    "updatedAt": "2026-02-15T03:21:57Z"
   },
   {
-    "name": "buddy",
-    "fullName": "joelklabo/buddy",
-    "description": "Talk to your buddy",
-    "url": "https://github.com/joelklabo/buddy",
-    "homepageUrl": "",
+    "name": "ackchyually",
+    "fullName": "joelklabo/ackchyually",
+    "description": "The annoying coworker for your CLI.",
+    "url": "https://github.com/joelklabo/ackchyually",
+    "homepageUrl": "https://ackchyually.sh",
     "stargazerCount": 0,
     "forkCount": 0,
     "isArchived": false,
     "primaryLanguage": {
       "name": "Go",
-      "color": null
+      "color": "#00ADD8"
     },
-    "topics": [
-      "agents",
-      "cli",
-      "codex",
-      "go",
-      "nostr"
-    ],
-    "pushedAt": "2025-12-08T23:31:24Z",
-    "updatedAt": "2025-12-02T01:48:19Z"
+    "topics": [],
+    "pushedAt": "2026-02-15T19:03:31Z",
+    "updatedAt": "2026-02-15T00:13:15Z"
   },
   {
-    "name": "homebrew-tap",
-    "fullName": "joelklabo/homebrew-tap",
-    "description": "Homebrew tap for buddy CLI",
-    "url": "https://github.com/joelklabo/homebrew-tap",
+    "name": "nostrstack",
+    "fullName": "joelklabo/nostrstack",
+    "description": null,
+    "url": "https://github.com/joelklabo/nostrstack",
     "homepageUrl": null,
     "stargazerCount": 0,
     "forkCount": 0,
     "isArchived": false,
     "primaryLanguage": {
-      "name": "Ruby",
-      "color": null
+      "name": "TypeScript",
+      "color": "#3178c6"
     },
     "topics": [],
-    "pushedAt": "2025-12-01T20:47:02Z",
-    "updatedAt": "2025-12-01T20:47:06Z"
+    "pushedAt": "2026-02-16T06:23:07Z",
+    "updatedAt": "2026-02-16T06:23:10Z"
   },
   {
-    "name": "TaskTree",
-    "fullName": "joelklabo/TaskTree",
+    "name": "quicktype",
+    "fullName": "joelklabo/quicktype",
     "description": null,
-    "url": "https://github.com/joelklabo/TaskTree",
+    "url": "https://github.com/joelklabo/quicktype",
     "homepageUrl": null,
     "stargazerCount": 0,
     "forkCount": 0,
@@ -118,24 +104,200 @@
       "color": null
     },
     "topics": [],
-    "pushedAt": "2025-12-01T20:28:27Z",
-    "updatedAt": "2025-11-28T20:14:40Z"
+    "pushedAt": "2026-02-15T08:58:25Z",
+    "updatedAt": "2026-02-15T08:57:11Z"
   },
   {
-    "name": "Context",
-    "fullName": "joelklabo/Context",
-    "description": null,
-    "url": "https://github.com/joelklabo/Context",
+    "name": "ndm",
+    "fullName": "joelklabo/ndm",
+    "description": "Send Nostr Direct Messages from the CLI",
+    "url": "https://github.com/joelklabo/ndm",
     "homepageUrl": null,
     "stargazerCount": 0,
     "forkCount": 0,
     "isArchived": false,
     "primaryLanguage": {
-      "name": "Rust",
+      "name": "Go",
       "color": null
     },
     "topics": [],
-    "pushedAt": "2025-11-23T23:45:01Z",
-    "updatedAt": "2025-11-23T09:28:42Z"
+    "pushedAt": "2026-02-14T19:17:00Z",
+    "updatedAt": "2026-02-14T19:17:04Z"
+  },
+  {
+    "name": "brainwash",
+    "fullName": "joelklabo/brainwash",
+    "description": null,
+    "url": "https://github.com/joelklabo/brainwash",
+    "homepageUrl": null,
+    "stargazerCount": 0,
+    "forkCount": 0,
+    "isArchived": false,
+    "primaryLanguage": {
+      "name": "TypeScript",
+      "color": null
+    },
+    "topics": [],
+    "pushedAt": "2026-02-14T18:59:01Z",
+    "updatedAt": "2026-02-14T18:59:05Z"
+  },
+  {
+    "name": "maxbitcoins",
+    "fullName": "joelklabo/maxbitcoins",
+    "description": "Autonomous Bitcoin-earning AI agent",
+    "url": "https://github.com/joelklabo/maxbitcoins",
+    "homepageUrl": null,
+    "stargazerCount": 0,
+    "forkCount": 0,
+    "isArchived": false,
+    "primaryLanguage": {
+      "name": "Python",
+      "color": null
+    },
+    "topics": [],
+    "pushedAt": "2026-02-13T23:21:10Z",
+    "updatedAt": "2026-02-13T23:21:15Z"
+  },
+  {
+    "name": "l402-js",
+    "fullName": "joelklabo/l402-js",
+    "description": "JavaScript client library for L402 (HTTP 402 Payment Required with Lightning Network) - pay-per-request APIs",
+    "url": "https://github.com/joelklabo/l402-js",
+    "homepageUrl": null,
+    "stargazerCount": 0,
+    "forkCount": 0,
+    "isArchived": false,
+    "primaryLanguage": {
+      "name": "TypeScript",
+      "color": null
+    },
+    "topics": [
+      "api",
+      "bitcoin",
+      "http-402",
+      "javascript",
+      "l402",
+      "lightning-network",
+      "pay-per-request",
+      "typescript"
+    ],
+    "pushedAt": "2026-02-13T01:02:53Z",
+    "updatedAt": "2026-02-13T01:02:56Z"
+  },
+  {
+    "name": "l402-go",
+    "fullName": "joelklabo/l402-go",
+    "description": "Go client library for L402 (HTTP 402 Payment Required with Lightning Network) - pay-per-request APIs",
+    "url": "https://github.com/joelklabo/l402-go",
+    "homepageUrl": null,
+    "stargazerCount": 0,
+    "forkCount": 0,
+    "isArchived": false,
+    "primaryLanguage": {
+      "name": "Go",
+      "color": null
+    },
+    "topics": [
+      "api",
+      "bitcoin",
+      "go",
+      "golang",
+      "http-402",
+      "l402",
+      "lightning-network"
+    ],
+    "pushedAt": "2026-02-12T20:46:57Z",
+    "updatedAt": "2026-02-12T20:45:17Z"
+  },
+  {
+    "name": "wot-scoring",
+    "fullName": "joelklabo/wot-scoring",
+    "description": "PageRank-based Web of Trust scoring for Nostr. Crawls follow graph, computes trust scores, publishes NIP-85 kind 30382/30383/30384/30385 events. Live at wot.klabo.world",
+    "url": "https://github.com/joelklabo/wot-scoring",
+    "homepageUrl": "https://wot.klabo.world",
+    "stargazerCount": 1,
+    "forkCount": 0,
+    "isArchived": false,
+    "primaryLanguage": {
+      "name": "Go",
+      "color": null
+    },
+    "topics": [],
+    "pushedAt": "2026-02-11T05:14:43Z",
+    "updatedAt": "2026-02-11T05:14:46Z"
+  },
+  {
+    "name": "max-assets",
+    "fullName": "joelklabo/max-assets",
+    "description": "Public media assets for SATMAX demos",
+    "url": "https://github.com/joelklabo/max-assets",
+    "homepageUrl": null,
+    "stargazerCount": 0,
+    "forkCount": 0,
+    "isArchived": false,
+    "primaryLanguage": null,
+    "topics": [],
+    "pushedAt": "2026-02-11T02:47:14Z",
+    "updatedAt": "2026-02-11T02:47:07Z"
+  },
+  {
+    "name": "maximumsats-mcp",
+    "fullName": "joelklabo/maximumsats-mcp",
+    "description": "MCP server for Maximum Sats AI — Bitcoin & Lightning knowledge tools for AI agents",
+    "url": "https://github.com/joelklabo/maximumsats-mcp",
+    "homepageUrl": null,
+    "stargazerCount": 0,
+    "forkCount": 0,
+    "isArchived": false,
+    "primaryLanguage": {
+      "name": "JavaScript",
+      "color": null
+    },
+    "topics": [
+      "ai-tools",
+      "bitcoin",
+      "lightning-network",
+      "mcp",
+      "mcp-server",
+      "model-context-protocol",
+      "nostr",
+      "web-of-trust"
+    ],
+    "pushedAt": "2026-02-11T12:59:42Z",
+    "updatedAt": "2026-02-10T18:14:58Z"
+  },
+  {
+    "name": "markdowntown-cli",
+    "fullName": "joelklabo/markdowntown-cli",
+    "description": "markdowntown scan CLI",
+    "url": "https://github.com/joelklabo/markdowntown-cli",
+    "homepageUrl": null,
+    "stargazerCount": 0,
+    "forkCount": 0,
+    "isArchived": false,
+    "primaryLanguage": {
+      "name": "TypeScript",
+      "color": null
+    },
+    "topics": [],
+    "pushedAt": "2026-02-10T18:05:08Z",
+    "updatedAt": "2026-02-10T18:02:01Z"
+  },
+  {
+    "name": "lnbits-shopify",
+    "fullName": "joelklabo/lnbits-shopify",
+    "description": "Self-custodial Bitcoin & Lightning payments for Shopify via LNbits",
+    "url": "https://github.com/joelklabo/lnbits-shopify",
+    "homepageUrl": null,
+    "stargazerCount": 0,
+    "forkCount": 0,
+    "isArchived": false,
+    "primaryLanguage": {
+      "name": "JavaScript",
+      "color": null
+    },
+    "topics": [],
+    "pushedAt": "2026-02-10T07:47:24Z",
+    "updatedAt": "2026-02-10T07:47:27Z"
   }
 ]
