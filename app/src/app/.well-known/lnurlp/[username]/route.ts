@@ -8,7 +8,6 @@ const LNBITS_PAY_LINK_USERNAME = 'joel';
 export async function GET(_: Request, { params }: { params: Promise<{ username: string }> }) {
   const { username: rawUsername } = await params;
   const requestedUsername = rawUsername.trim();
-  const canonicalUsername = requestedUsername.toLowerCase();
   const baseUrl = getLnbitsBaseUrl();
   const headers = buildLnbitsHeaders();
   
@@ -24,7 +23,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ username: 
   const siteUrl = getPublicSiteUrl();
   
   // Preserve the requested username in callback and metadata
-  payload.callback = `${siteUrl}/api/lnurlp/${encodeURIComponent(canonicalUsername)}/invoice`;
+  payload.callback = `${siteUrl}/api/lnurlp/${encodeURIComponent(requestedUsername)}/invoice`;
   
   // Update metadata to show the requested address
   const metadata = JSON.parse(payload.metadata as string || '[]') as string[][];
