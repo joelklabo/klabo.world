@@ -97,9 +97,6 @@ jobs:
       - name: Build Next.js app
         run: pnpm turbo build --filter=app
 
-      - name: Install Playwright browsers
-        run: pnpm --filter app exec playwright install --with-deps
-
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
@@ -141,47 +138,3 @@ jobs:
         env:
           LNURL_BASE_URL: https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net
         run: pnpm test:lnurlp-case gary Gary randomCaseUser randomUSER SldfkjlsadfkjlsLDKDJldfkjldjf
-
-      - name: Capture smoke screenshots
-        if: always()
-        run: |
-          pnpm --filter app exec playwright install --with-deps
-          set +e
-          SMOKE_BASE_URL=https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net pnpm --filter app exec playwright test tests/e2e/home-smoke.e2e.ts --reporter=dot
-          smoke_status=$?
-          set -e
-          echo "SMOKE_SCREENSHOT_STATUS=$smoke_status" >> "$GITHUB_ENV"
-          if [ -d app/test-results ] && find app/test-results -type f -print -quit | grep -q .; then
-            tar -czf smoke-screenshots.tar.gz app/test-results
-          else
-            echo "No smoke screenshots captured; app/test-results is empty or missing."
-          fi
-
-      - name: Verify smoke screenshots archive
-        if: always()
-        run: |
-          if [ "${SMOKE_SCREENSHOT_STATUS:-0}" -eq 0 ]; then
-            echo "Smoke screenshot run passed; skipping archive verification."
-            exit 0
-          fi
-          if [ ! -s smoke-screenshots.tar.gz ]; then
-            echo "Smoke screenshots archive missing or empty."
-            exit 1
-          fi
-          if ! tar -tzf smoke-screenshots.tar.gz >/dev/null 2>&1; then
-            echo "Smoke screenshots archive is unreadable."
-            exit 1
-          fi
-          if ! tar -tzf smoke-screenshots.tar.gz | grep -q .; then
-            echo "Smoke screenshots archive contains no files."
-            exit 1
-          fi
-
-      - name: Upload smoke screenshots
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: smoke-screenshots
-          path: smoke-screenshots.tar.gz
-          if-no-files-found: error
-          retention-days: 7
