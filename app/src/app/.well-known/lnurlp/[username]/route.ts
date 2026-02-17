@@ -16,11 +16,10 @@ function toMetadataPairs(metadata: unknown): Array<[string, string]> {
   }
 
   if (Array.isArray(metadata)) {
-    const entries = metadata
-      .filter(Array.isArray)
-      .filter((item) => item.length >= 2)
-      .filter((item) => typeof item[0] === 'string')
-      .map((item) => [String(item[0]), String(item[1])]);
+    const entries: [string, string][] = metadata
+      .filter((item): item is [unknown, unknown] => Array.isArray(item) && item.length >= 2)
+      .filter((item): item is [string, unknown] => typeof item[0] === 'string')
+      .map(([type, value]) => [String(type), String(value)]);
     return entries;
   }
 
