@@ -52,12 +52,16 @@ function extractPaymentHash(bolt11: string): string | null {
 const LNBITS_PAY_LINK_USERNAME = 'joel';
 
 export async function GET(request: Request, { params }: { params: Promise<{ username: string }> }) {
-  // Wildcard: all usernames route to the single pay link (normalize to lowercase per LUD-16)
-  const { username: _rawUsername } = await params;
-  // rawUsername consumed but unused — all routes go to the same pay link
+  // Wildcard: all usernames route to the single pay link.
+  const { username: rawUsername } = await params;
+  const normalizedUsername = rawUsername.trim();
   const url = new URL(request.url);
   const amount = toNumber(url.searchParams.get('amount'));
   const namespace = url.searchParams.get('ns') || 'default';
+
+  if (!normalizedUsername) {
+    return NextResponse.json({ error: 'missing_username' }, { status: 400 });
+  }
   
   if (!amount || amount <= 0) {
     return NextResponse.json({ error: 'invalid_amount' }, { status: 400 });
@@ -81,7 +85,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ user
   const callbackUrl = new URL(meta.callback);
   callbackUrl.searchParams.set('amount', String(amount));
   // Add namespace as comment for tip tracking
-  callbackUrl.searchParams.set('comment', `klabo.world:${namespace}`);
+  callbackUrl.searchParams.set('comment', `klabo.world:${normalizedUsername}:${namespace}`);
   
   const invoiceRes = await fetch(callbackUrl.toString(), {
     headers,

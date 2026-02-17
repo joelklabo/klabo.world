@@ -7,7 +7,7 @@ const LNBITS_PAY_LINK_USERNAME = 'joel';
 
 export async function GET(_: Request, { params }: { params: Promise<{ username: string }> }) {
   const { username: rawUsername } = await params;
-  const requestedUsername = rawUsername.toLowerCase();
+  const requestedUsername = rawUsername.trim();
   const baseUrl = getLnbitsBaseUrl();
   const headers = buildLnbitsHeaders();
   
