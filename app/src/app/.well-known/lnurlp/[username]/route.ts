@@ -8,6 +8,7 @@ const LNBITS_PAY_LINK_USERNAME = 'joel';
 export async function GET(_: Request, { params }: { params: Promise<{ username: string }> }) {
   const { username: rawUsername } = await params;
   const requestedUsername = rawUsername.trim();
+  const canonicalUsername = requestedUsername.toLowerCase();
   const baseUrl = getLnbitsBaseUrl();
   const headers = buildLnbitsHeaders();
   
@@ -23,17 +24,17 @@ export async function GET(_: Request, { params }: { params: Promise<{ username: 
   const siteUrl = getPublicSiteUrl();
   
   // Preserve the requested username in callback and metadata
-  payload.callback = `${siteUrl}/api/lnurlp/${encodeURIComponent(requestedUsername)}/invoice`;
+  payload.callback = `${siteUrl}/api/lnurlp/${encodeURIComponent(canonicalUsername)}/invoice`;
   
   // Update metadata to show the requested address
   const metadata = JSON.parse(payload.metadata as string || '[]') as string[][];
   const identifierIdx = metadata.findIndex(([type]) => type === 'text/identifier');
   if (identifierIdx !== -1) {
-    metadata[identifierIdx] = ['text/identifier', `${requestedUsername}@klabo.world`];
+    metadata[identifierIdx] = ['text/identifier', `${canonicalUsername}@klabo.world`];
   }
   const plainIdx = metadata.findIndex(([type]) => type === 'text/plain');
   if (plainIdx !== -1) {
-    metadata[plainIdx] = ['text/plain', `Payment to ${requestedUsername}@klabo.world`];
+    metadata[plainIdx] = ['text/plain', `Payment to ${canonicalUsername}@klabo.world`];
   }
   payload.metadata = JSON.stringify(metadata);
   

@@ -55,6 +55,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ user
   // Wildcard: all usernames route to the single pay link.
   const { username: rawUsername } = await params;
   const normalizedUsername = rawUsername.trim();
+  const canonicalUsername = normalizedUsername.toLowerCase();
   const url = new URL(request.url);
   const amount = toNumber(url.searchParams.get('amount'));
   const namespace = url.searchParams.get('ns') || 'default';
@@ -85,7 +86,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ user
   const callbackUrl = new URL(meta.callback);
   callbackUrl.searchParams.set('amount', String(amount));
   // Add namespace as comment for tip tracking
-  callbackUrl.searchParams.set('comment', `klabo.world:${normalizedUsername}:${namespace}`);
+  callbackUrl.searchParams.set('comment', `klabo.world:${canonicalUsername}:${namespace}`);
   
   const invoiceRes = await fetch(callbackUrl.toString(), {
     headers,
