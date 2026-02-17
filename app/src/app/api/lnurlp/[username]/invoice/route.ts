@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { randomUUID } from 'node:crypto';
 import { getLnbitsBaseUrl, buildLnbitsHeaders } from '@/lib/lnbits';
 
 function toNumber(value: string | null): number | null {
@@ -8,6 +9,16 @@ function toNumber(value: string | null): number | null {
 }
 
 const BECH32_CHARSET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
+
+function logLnurlEvent(route: string, requestId: string, event: string, details: Record<string, unknown>): void {
+  console.info(
+    `[lightning.lnurlp] route=${route} request_id=${requestId} event=${event} details=${JSON.stringify(details)}`
+  );
+}
+
+function safeStatusText(value: unknown): string {
+  return typeof value === 'string' ? value : '';
+}
 
 /** Extract payment hash from a bolt11 invoice string (no external deps). */
 function extractPaymentHash(bolt11: string): string | null {
@@ -58,13 +69,48 @@ export async function GET(request: Request, { params }: { params: Promise<{ user
   const url = new URL(request.url);
   const amount = toNumber(url.searchParams.get('amount'));
   const namespace = url.searchParams.get('ns') || 'default';
+  const requestId = randomUUID();
+
+  logLnurlEvent('invoice', requestId, 'request_start', {
+    requestedUsername: normalizedUsername,
+    namespace,
+    amount,
+    amountText: url.searchParams.get('amount'),
+  });
 
   if (!normalizedUsername) {
-    return NextResponse.json({ error: 'missing_username' }, { status: 400 });
+    logLnurlEvent('invoice', requestId, 'invalid_request', { reason: 'missing_username' });
+    return NextResponse.json(
+      { error: 'missing_username' },
+      {
+        status: 400,
+        headers: {
+          'x-lnurlp-request-id': requestId,
+          'Cache-Control': 'no-store',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, OPTIONS',
+        },
+      }
+    );
   }
   
   if (!amount || amount <= 0) {
-    return NextResponse.json({ error: 'invalid_amount' }, { status: 400 });
+    logLnurlEvent('invoice', requestId, 'invalid_request', {
+      reason: 'invalid_amount',
+      amount: url.searchParams.get('amount') ?? null,
+    });
+    return NextResponse.json(
+      { error: 'invalid_amount' },
+      {
+        status: 400,
+        headers: {
+          'x-lnurlp-request-id': requestId,
+          'Cache-Control': 'no-store',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, OPTIONS',
+        },
+      }
+    );
   }
 
   const baseUrl = getLnbitsBaseUrl();
@@ -75,12 +121,44 @@ export async function GET(request: Request, { params }: { params: Promise<{ user
     cache: 'no-store',
   });
   if (!metaRes.ok) {
-    return NextResponse.json({ error: 'lnbits_unreachable' }, { status: metaRes.status });
+    logLnurlEvent('invoice', requestId, 'lnbits_meta_failed', {
+      status: metaRes.status,
+      statusText: safeStatusText(metaRes.statusText),
+      requestedUsername: normalizedUsername,
+    });
+    return NextResponse.json(
+      { error: 'lnbits_unreachable' },
+      {
+        status: metaRes.status,
+        headers: {
+          'x-lnurlp-request-id': requestId,
+          'Cache-Control': 'no-store',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, OPTIONS',
+        },
+      }
+    );
   }
   const meta = (await metaRes.json()) as { callback?: string };
   if (!meta.callback) {
-    return NextResponse.json({ error: 'lnbits_missing_callback' }, { status: 502 });
+    logLnurlEvent('invoice', requestId, 'lnbits_missing_callback', { requestedUsername: normalizedUsername });
+    return NextResponse.json(
+      { error: 'lnbits_missing_callback' },
+      {
+        status: 502,
+        headers: {
+          'x-lnurlp-request-id': requestId,
+          'Cache-Control': 'no-store',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, OPTIONS',
+        },
+      }
+    );
   }
+  logLnurlEvent('invoice', requestId, 'lnbits_meta_success', {
+    requestedUsername: normalizedUsername,
+    callbackFromLNBits: meta.callback,
+  });
 
   const callbackUrl = new URL(meta.callback);
   callbackUrl.searchParams.set('amount', String(amount));
@@ -92,12 +170,53 @@ export async function GET(request: Request, { params }: { params: Promise<{ user
     cache: 'no-store',
   });
   if (!invoiceRes.ok) {
-    return NextResponse.json({ error: 'lnbits_invoice_failed' }, { status: invoiceRes.status });
+    logLnurlEvent('invoice', requestId, 'lnbits_invoice_failed', {
+      status: invoiceRes.status,
+      statusText: safeStatusText(invoiceRes.statusText),
+      requestUrl: callbackUrl.toString(),
+    });
+    return NextResponse.json(
+      { error: 'lnbits_invoice_failed' },
+      {
+        status: invoiceRes.status,
+        headers: {
+          'x-lnurlp-request-id': requestId,
+          'Cache-Control': 'no-store',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, OPTIONS',
+        },
+      }
+    );
   }
   const invoice = (await invoiceRes.json()) as Record<string, unknown>;
+  const paymentRequest = invoice.pr || invoice.payment_request;
+  if (typeof paymentRequest !== 'string' || paymentRequest.length === 0) {
+    const responseKeys = invoice && typeof invoice === 'object' ? Object.keys(invoice).slice(0, 8) : [];
+    logLnurlEvent('invoice', requestId, 'lnbits_invoice_invalid', {
+      requestedUsername: normalizedUsername,
+      responseKeys,
+    });
+    return NextResponse.json(
+      { error: 'lnbits_invalid_invoice' },
+      {
+        status: 502,
+        headers: {
+          'x-lnurlp-request-id': requestId,
+          'Cache-Control': 'no-store',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, OPTIONS',
+        },
+      }
+    );
+  }
+  logLnurlEvent('invoice', requestId, 'lnbits_invoice_success', {
+    requestedUsername: normalizedUsername,
+    hasPaymentRequest: true,
+    route: callbackUrl.pathname,
+  });
 
   // Extract payment_hash from the bolt11 so clients can poll for payment status
-  const bolt11 = (invoice.pr || invoice.payment_request) as string | undefined;
+  const bolt11 = paymentRequest as string;
   if (bolt11) {
     const paymentHash = extractPaymentHash(bolt11);
     if (paymentHash) {
@@ -107,6 +226,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ user
 
   return NextResponse.json(invoice, {
     headers: {
+      'x-lnurlp-request-id': requestId,
       'Cache-Control': 'no-store',
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, OPTIONS',
