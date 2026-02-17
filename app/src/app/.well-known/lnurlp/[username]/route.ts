@@ -5,6 +5,62 @@ import { getPublicSiteUrl } from '@/lib/public-env';
 // All usernames route to the same "joel" pay link in LNbits (wildcard support)
 const LNBITS_PAY_LINK_USERNAME = 'joel';
 
+function toMetadataPairs(metadata: unknown): Array<[string, string]> {
+  if (typeof metadata === 'string') {
+    try {
+      const parsed = JSON.parse(metadata);
+      return toMetadataPairs(parsed);
+    } catch {
+      return [];
+    }
+  }
+
+  if (Array.isArray(metadata)) {
+    const entries = metadata
+      .filter(Array.isArray)
+      .filter((item) => item.length >= 2)
+      .filter((item) => typeof item[0] === 'string')
+      .map((item) => [String(item[0]), String(item[1])]);
+    return entries;
+  }
+
+  if (metadata && typeof metadata === 'object') {
+    return Object.entries(metadata as Record<string, unknown>).map(([type, value]) => [
+      type,
+      typeof value === 'string' ? value : '',
+    ]);
+  }
+
+  return [];
+}
+
+function updateMetadata(metadata: unknown, requestedUsername: string): string {
+  const metadataPairs = toMetadataPairs(metadata);
+  const normalizedPairs = [...metadataPairs];
+  let hasIdentifier = false;
+  let hasPlainText = false;
+
+  for (let i = 0; i < normalizedPairs.length; i += 1) {
+    const pair = normalizedPairs[i];
+    if (pair[0] === 'text/identifier') {
+      normalizedPairs[i] = ['text/identifier', `${requestedUsername}@klabo.world`];
+      hasIdentifier = true;
+    } else if (pair[0] === 'text/plain') {
+      normalizedPairs[i] = ['text/plain', `Payment to ${requestedUsername}@klabo.world`];
+      hasPlainText = true;
+    }
+  }
+
+  if (!hasIdentifier) {
+    normalizedPairs.push(['text/identifier', `${requestedUsername}@klabo.world`]);
+  }
+  if (!hasPlainText) {
+    normalizedPairs.push(['text/plain', `Payment to ${requestedUsername}@klabo.world`]);
+  }
+
+  return JSON.stringify(normalizedPairs);
+}
+
 export async function GET(_: Request, { params }: { params: Promise<{ username: string }> }) {
   const { username: rawUsername } = await params;
   const requestedUsername = rawUsername.trim();
@@ -26,16 +82,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ username: 
   payload.callback = `${siteUrl}/api/lnurlp/${encodeURIComponent(requestedUsername)}/invoice`;
   
   // Update metadata to show the requested address
-  const metadata = JSON.parse(payload.metadata as string || '[]') as string[][];
-  const identifierIdx = metadata.findIndex(([type]) => type === 'text/identifier');
-  if (identifierIdx !== -1) {
-    metadata[identifierIdx] = ['text/identifier', `${requestedUsername}@klabo.world`];
-  }
-  const plainIdx = metadata.findIndex(([type]) => type === 'text/plain');
-  if (plainIdx !== -1) {
-    metadata[plainIdx] = ['text/plain', `Payment to ${requestedUsername}@klabo.world`];
-  }
-  payload.metadata = JSON.stringify(metadata);
+  payload.metadata = updateMetadata(payload.metadata, requestedUsername);
   
   return NextResponse.json(payload, {
     headers: {

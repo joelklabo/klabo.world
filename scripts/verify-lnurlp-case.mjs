@@ -60,13 +60,23 @@ async function verify(name) {
         identifier = typeof idPair?.[1] === 'string' ? idPair[1] : '';
         plainText = typeof plainPair?.[1] === 'string' ? plainPair[1] : '';
       }
+    } else if (Array.isArray(payload.metadata)) {
+      const parsed = payload.metadata;
+      const idPair = parsed.find((entry) => Array.isArray(entry) && entry[0] === 'text/identifier');
+      const plainPair = parsed.find((entry) => Array.isArray(entry) && entry[0] === 'text/plain');
+      identifier = typeof idPair?.[1] === 'string' ? idPair[1] : '';
+      plainText = typeof plainPair?.[1] === 'string' ? plainPair[1] : '';
+    } else if (payload.metadata && typeof payload.metadata === 'object') {
+      const pairs = payload.metadata;
+      identifier = typeof pairs?.['text/identifier'] === 'string' ? String(pairs['text/identifier']) : '';
+      plainText = typeof pairs?.['text/plain'] === 'string' ? String(pairs['text/plain']) : '';
     }
   } catch {
     // Ignore parse errors.
   }
 
-  okLine(name, identifier.includes(`${name}@`), `identifier metadata=${identifier || '<missing>'}`);
-  okLine(name, plainText.includes(name), `plain metadata=${plainText || '<missing>'}`);
+  okLine(name, identifier === `${name}@klabo.world`, `identifier metadata=${identifier || '<missing>'}`);
+  okLine(name, plainText === `Payment to ${name}@klabo.world`, `plain metadata=${plainText || '<missing>'}`);
 
   if (!payload.callback) {
     okLine(name, false, 'callback missing');
