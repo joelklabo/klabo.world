@@ -15,6 +15,7 @@
     "lint": "just lint",
     "test": "just test",
     "test:unit": "mise exec -- pnpm --filter app run test",
+    "test:lnurlp-case": "node scripts/verify-lnurlp-case.mjs",
     "doctor": "just doctor",
     "validate:env": "tsx scripts/validate-env.ts",
     "lint:dead": "knip",
