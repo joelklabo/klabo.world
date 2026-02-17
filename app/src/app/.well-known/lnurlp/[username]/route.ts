@@ -30,11 +30,11 @@ export async function GET(_: Request, { params }: { params: Promise<{ username: 
   const metadata = JSON.parse(payload.metadata as string || '[]') as string[][];
   const identifierIdx = metadata.findIndex(([type]) => type === 'text/identifier');
   if (identifierIdx !== -1) {
-    metadata[identifierIdx] = ['text/identifier', `${canonicalUsername}@klabo.world`];
+    metadata[identifierIdx] = ['text/identifier', `${requestedUsername}@klabo.world`];
   }
   const plainIdx = metadata.findIndex(([type]) => type === 'text/plain');
   if (plainIdx !== -1) {
-    metadata[plainIdx] = ['text/plain', `Payment to ${canonicalUsername}@klabo.world`];
+    metadata[plainIdx] = ['text/plain', `Payment to ${requestedUsername}@klabo.world`];
   }
   payload.metadata = JSON.stringify(metadata);
   
