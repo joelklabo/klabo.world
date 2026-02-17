@@ -85,7 +85,7 @@ jobs:
           NEXT_PID=$!
           trap "kill $NEXT_PID" EXIT
           npx wait-on "$BASE_URL"
-          PLAYWRIGHT_BASE_URL="$BASE_URL" NOSTRSTACK_BASE_URL=mock NOSTRSTACK_HOST=mock NOSTRSTACK_RELAYS=mock NEXTAUTH_URL="$BASE_URL" SITE_URL="$BASE_URL" pnpm --filter app exec playwright test --reporter=dot
+          PLAYWRIGHT_BASE_URL="$BASE_URL" NOSTRSTACK_BASE_URL=mock NOSTRSTACK_HOST=mock NOSTRSTACK_RELAYS=mock NEXTAUTH_URL="$BASE_URL" SITE_URL="$BASE_URL" pnpm --filter app exec playwright test --reporter=dot tests/e2e/home-smoke.e2e.ts
           LNURL_BASE_URL="$BASE_URL" pnpm test:lnurlp-case gary Gary randomCaseUser randomUSER SldfkjlsadfkjlsLDKDJldfkjldjf
       - name: Upload Playwright artifacts
         if: failure()
