@@ -23,6 +23,7 @@ jobs:
       DATABASE_URL: file:../data/app.db
       ALLOW_SQLITE_IN_PROD: "true"
       UPLOADS_DIR: ./tmp/uploads
+      LNBITS_BASE_URL: https://lnbits.klabo.world
     steps:
       - uses: actions/checkout@v4
       - name: Verify App Service SQLite guard
