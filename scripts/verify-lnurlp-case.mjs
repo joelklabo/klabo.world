@@ -25,20 +25,28 @@ async function fetchJson(url) {
   return { status: response.status, headers: Object.fromEntries(response.headers.entries()), json, text };
 }
 
+function decodeUntilStable(rawName) {
+  let value = rawName;
+  for (let i = 0; i < 4; i += 1) {
+    try {
+      const next = decodeURIComponent(value);
+      if (next === value) break;
+      value = next;
+    } catch {
+      break;
+    }
+  }
+  return value.replace(/%40/gi, '@');
+}
+
 function expectedLightningAddress(rawName) {
-  let decoded = rawName;
-  try {
-    decoded = decodeURIComponent(rawName);
-  } catch {}
+  const decoded = decodeUntilStable(rawName);
   const [local] = decoded.split('@');
   return `${local || decoded}@klabo.world`;
 }
 
 function expectedLocalPart(rawName) {
-  let decoded = rawName;
-  try {
-    decoded = decodeURIComponent(rawName);
-  } catch {}
+  const decoded = decodeUntilStable(rawName);
   const [local] = decoded.split('@');
   return local || decoded;
 }

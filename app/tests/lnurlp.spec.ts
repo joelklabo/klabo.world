@@ -34,3 +34,11 @@ describe('lnurlp metadata update', () => {
     expect(parsed).toContainEqual(['description', 'old format']);
   });
 });
+
+describe('lnurlp normalization edge cases', () => {
+  it('handles encoded and double-encoded input', () => {
+    expect(normalizeLnurlUsername('Gary%2540klabo.world')).toBe('Gary');
+    expect(normalizeLnurlUsername('s%2540domain.org')).toBe('s');
+    expect(normalizeLnurlUsername('Gary%40klabo.world')).toBe('Gary');
+  });
+});

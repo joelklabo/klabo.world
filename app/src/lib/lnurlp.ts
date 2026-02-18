@@ -1,14 +1,31 @@
 export function normalizeLnurlUsername(rawUsername: string): string {
   const decoded = (() => {
-    try {
-      return decodeURIComponent(rawUsername);
-    } catch {
-      return rawUsername;
+    let value = rawUsername;
+    for (let i = 0; i < 4; i += 1) {
+      try {
+        const next = decodeURIComponent(value);
+        if (next === value) break;
+        value = next;
+      } catch {
+        break;
+      }
     }
+    return value;
   })();
 
-  const [localPart] = decoded.trim().split('@');
-  return localPart || decoded.trim();
+  const localNormalized = (() => {
+    const trimmed = decoded.trim();
+    const atParts = trimmed.split('@');
+    if (atParts.length > 1) {
+      return atParts[0] || trimmed;
+    }
+
+    const rawWithAt = trimmed.replaceAll(/%40/gi, '@');
+    const rawAtParts = rawWithAt.split('@');
+    return rawAtParts[0] || trimmed;
+  })();
+
+  return localNormalized;
 }
 
 export type MetadataPair = [string, string];
