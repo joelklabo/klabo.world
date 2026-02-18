@@ -9,6 +9,19 @@ function toNumber(value: string | null): number | null {
 }
 
 const BECH32_CHARSET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
+const LNBITS_PAY_LINK_USERNAME = 'joel';
+
+function normalizeLnurlUsername(rawUsername: string) {
+  const decoded = (() => {
+    try {
+      return decodeURIComponent(rawUsername);
+    } catch {
+      return rawUsername;
+    }
+  })();
+  const [localPart] = decoded.trim().split('@');
+  return localPart || decoded.trim();
+}
 
 function logLnurlEvent(route: string, requestId: string, event: string, details: Record<string, unknown>): void {
   console.info(
@@ -59,13 +72,10 @@ function extractPaymentHash(bolt11: string): string | null {
   }
 }
 
-// All usernames route to the same "joel" pay link in LNbits (wildcard support)
-const LNBITS_PAY_LINK_USERNAME = 'joel';
-
 export async function GET(request: Request, { params }: { params: Promise<{ username: string }> }) {
   // Wildcard: all usernames route to the single pay link.
   const { username: rawUsername } = await params;
-  const normalizedUsername = rawUsername.trim();
+  const normalizedUsername = normalizeLnurlUsername(rawUsername);
   const url = new URL(request.url);
   const amount = toNumber(url.searchParams.get('amount'));
   const namespace = url.searchParams.get('ns') || 'default';
@@ -73,10 +83,18 @@ export async function GET(request: Request, { params }: { params: Promise<{ user
 
   logLnurlEvent('invoice', requestId, 'request_start', {
     requestedUsername: normalizedUsername,
+    rawUsername,
     namespace,
     amount,
     amountText: url.searchParams.get('amount'),
   });
+
+  if (normalizedUsername !== rawUsername.trim()) {
+    logLnurlEvent('invoice', requestId, 'normalize_username', {
+      rawUsername,
+      normalizedUsername,
+    });
+  }
 
   if (!normalizedUsername) {
     logLnurlEvent('invoice', requestId, 'invalid_request', { reason: 'missing_username' });
@@ -164,6 +182,10 @@ export async function GET(request: Request, { params }: { params: Promise<{ user
   callbackUrl.searchParams.set('amount', String(amount));
   // Add namespace as comment for tip tracking
   callbackUrl.searchParams.set('comment', `klabo.world:${normalizedUsername}:${namespace}`);
+  logLnurlEvent('invoice', requestId, 'lnbits_invoice_request', {
+    requestedUsername: normalizedUsername,
+    callbackUrl: callbackUrl.toString(),
+  });
   
   const invoiceRes = await fetch(callbackUrl.toString(), {
     headers,
@@ -213,6 +235,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ user
     requestedUsername: normalizedUsername,
     hasPaymentRequest: true,
     route: callbackUrl.pathname,
+    responseKeys: Object.keys(invoice).slice(0, 8),
+    status: invoiceRes.status,
   });
 
   // Extract payment_hash from the bolt11 so clients can poll for payment status

@@ -137,4 +137,4 @@ jobs:
       - name: Verify LNURL case preservation in deployment
         env:
           LNURL_BASE_URL: https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net
-        run: pnpm test:lnurlp-case gary Gary randomCaseUser randomUSER SldfkjlsadfkjlsLDKDJldfkjldjf
+        run: pnpm test:lnurlp-case gary Gary@klabo.world randomCaseUser randomUSER Gary%40klabo.world SldfkjlsadfkjlsLDKDJldfkjldjf@klabo.world

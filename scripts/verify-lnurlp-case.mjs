@@ -25,6 +25,15 @@ async function fetchJson(url) {
   return { status: response.status, headers: Object.fromEntries(response.headers.entries()), json, text };
 }
 
+function expectedLightningAddress(rawName) {
+  let decoded = rawName;
+  try {
+    decoded = decodeURIComponent(rawName);
+  } catch {}
+  const [local] = decoded.split('@');
+  return `${local || decoded}@klabo.world`;
+}
+
 async function verify(name) {
   const encoded = encodeURIComponent(name);
   const metadataUrl = `${BASE_URL}/.well-known/lnurlp/${encoded}`;
@@ -49,6 +58,7 @@ async function verify(name) {
   okLine(name, Number.isFinite(payload.minSendable), `minSendable=${payload.minSendable}`);
   okLine(name, Number.isFinite(payload.maxSendable), `maxSendable=${payload.maxSendable}`);
 
+  const expectedIdentifier = expectedLightningAddress(name);
   let identifier = '';
   let plainText = '';
   try {
@@ -75,8 +85,16 @@ async function verify(name) {
     // Ignore parse errors.
   }
 
-  okLine(name, identifier === `${name}@klabo.world`, `identifier metadata=${identifier || '<missing>'}`);
-  okLine(name, plainText === `Payment to ${name}@klabo.world`, `plain metadata=${plainText || '<missing>'}`);
+  okLine(
+    name,
+    identifier === expectedIdentifier,
+    `identifier metadata=${identifier || '<missing>'}; expected=${expectedIdentifier}`
+  );
+  okLine(
+    name,
+    plainText === `Payment to ${expectedIdentifier}`,
+    `plain metadata=${plainText || '<missing>'}; expected=${`Payment to ${expectedIdentifier}`}`
+  );
 
   if (!payload.callback) {
     okLine(name, false, 'callback missing');

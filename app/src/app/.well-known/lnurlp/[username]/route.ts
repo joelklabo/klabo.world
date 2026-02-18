@@ -9,8 +9,19 @@ function logLnurlEvent(route: string, requestId: string, event: string, details:
   );
 }
 
-// All usernames route to the same "joel" pay link in LNbits (wildcard support)
 const LNBITS_PAY_LINK_USERNAME = 'joel';
+
+function normalizeLnurlUsername(rawUsername: string) {
+  const decoded = (() => {
+    try {
+      return decodeURIComponent(rawUsername);
+    } catch {
+      return rawUsername;
+    }
+  })();
+  const [localPart] = decoded.trim().split('@');
+  return localPart || decoded.trim();
+}
 
 function toMetadataPairs(metadata: unknown): Array<[string, string]> {
   if (typeof metadata === 'string') {
@@ -49,19 +60,19 @@ function updateMetadata(metadata: unknown, requestedUsername: string): string {
   for (let i = 0; i < normalizedPairs.length; i += 1) {
     const pair = normalizedPairs[i];
     if (pair[0] === 'text/identifier') {
-      normalizedPairs[i] = ['text/identifier', `${requestedUsername}@klabo.world`];
+      normalizedPairs[i] = ['text/identifier', requestedUsername];
       hasIdentifier = true;
     } else if (pair[0] === 'text/plain') {
-      normalizedPairs[i] = ['text/plain', `Payment to ${requestedUsername}@klabo.world`];
+      normalizedPairs[i] = ['text/plain', `Payment to ${requestedUsername}`];
       hasPlainText = true;
     }
   }
 
   if (!hasIdentifier) {
-    normalizedPairs.push(['text/identifier', `${requestedUsername}@klabo.world`]);
+    normalizedPairs.push(['text/identifier', requestedUsername]);
   }
   if (!hasPlainText) {
-    normalizedPairs.push(['text/plain', `Payment to ${requestedUsername}@klabo.world`]);
+    normalizedPairs.push(['text/plain', `Payment to ${requestedUsername}`]);
   }
 
   return JSON.stringify(normalizedPairs);
@@ -69,13 +80,22 @@ function updateMetadata(metadata: unknown, requestedUsername: string): string {
 
 export async function GET(_: Request, { params }: { params: Promise<{ username: string }> }) {
   const { username: rawUsername } = await params;
-  const requestedUsername = rawUsername.trim();
+  const requestedUsername = normalizeLnurlUsername(rawUsername);
   const requestId = randomUUID();
   const baseUrl = getLnbitsBaseUrl();
   const headers = buildLnbitsHeaders();
+  const lightningAddress = `${requestedUsername}@${new URL(getPublicSiteUrl()).host}`;
+
+  if (requestedUsername !== rawUsername.trim()) {
+    logLnurlEvent('well-known', requestId, 'normalize_username', {
+      rawUsername,
+      requestedUsername,
+    });
+  }
 
   logLnurlEvent('well-known', requestId, 'request_start', {
     requestedUsername,
+    rawUsername,
     lnbitsBaseUrl: baseUrl,
     source: 'klabo.world',
   });
@@ -105,13 +125,13 @@ export async function GET(_: Request, { params }: { params: Promise<{ username: 
     );
   }
   const payload = (await res.json()) as Record<string, unknown>;
-  const siteUrl = getPublicSiteUrl();
-  
+
   // Preserve the requested username in callback and metadata
+  const siteUrl = getPublicSiteUrl();
   payload.callback = `${siteUrl}/api/lnurlp/${encodeURIComponent(requestedUsername)}/invoice`;
   
   // Update metadata to show the requested address
-  payload.metadata = updateMetadata(payload.metadata, requestedUsername);
+  payload.metadata = updateMetadata(payload.metadata, lightningAddress);
 
   logLnurlEvent('well-known', requestId, 'request_success', {
     requestedUsername,
