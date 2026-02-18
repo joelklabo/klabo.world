@@ -39,10 +39,10 @@ function decodeUntilStable(rawName) {
   return value.replace(/%40/gi, '@');
 }
 
-function expectedLightningAddress(rawName) {
+function expectedLightningAddress(rawName, host) {
   const decoded = decodeUntilStable(rawName);
   const [local] = decoded.split('@');
-  return `${local || decoded}@klabo.world`;
+  return `${local || decoded}@${host}`;
 }
 
 function expectedLocalPart(rawName) {
@@ -75,8 +75,15 @@ async function verify(name) {
   okLine(name, Number.isFinite(payload.minSendable), `minSendable=${payload.minSendable}`);
   okLine(name, Number.isFinite(payload.maxSendable), `maxSendable=${payload.maxSendable}`);
 
-  const expectedIdentifier = expectedLightningAddress(name);
   const expectedLocal = expectedLocalPart(name);
+  const expectedHost = (() => {
+    try {
+      return payload.callback ? new URL(payload.callback).host : new URL(BASE_URL).host;
+    } catch {
+      return new URL(BASE_URL).host;
+    }
+  })();
+  const expectedIdentifier = expectedLightningAddress(name, expectedHost);
   let identifier = '';
   let plainText = '';
   try {
