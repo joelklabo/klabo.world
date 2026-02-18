@@ -17,12 +17,24 @@ function extractAmountFromSearchParams(url: URL): number | null {
     return direct;
   }
 
-  const directMatch = url.search.match(/(?:[?&])amount=(\d+)/);
-  if (!directMatch) {
-    return null;
+  const searchVariants = [url.search];
+  try {
+    const decodedSearch = decodeURIComponent(url.search);
+    if (decodedSearch !== url.search) {
+      searchVariants.push(decodedSearch);
+    }
+  } catch {
+    // Ignore decoding failures; keep raw search only.
   }
 
-  return toNumber(directMatch[1] ?? null);
+  for (const search of searchVariants) {
+    const directMatch = search.match(/(?:[?&]|%3F|%3f)amount=(\d+)/);
+    if (directMatch) {
+      return toNumber(directMatch[1] ?? null);
+    }
+  }
+
+  return null;
 }
 
 const BECH32_CHARSET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';

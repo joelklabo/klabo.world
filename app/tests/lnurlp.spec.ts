@@ -152,4 +152,37 @@ describe('lnurlp route handlers', () => {
     const secondCall = new URL(fetchMock.mock.calls[1]![0] as string);
     expect(secondCall.searchParams.get('amount')).toBe('1000');
   });
+
+  it('accepts invoice requests where amount is percent-encoded in legacy query string', async () => {
+    fetchMock
+      .mockResolvedValueOnce(
+        Response.json(
+          {
+            callback: 'https://lnbits.test/api/v1/lnurlp/joel/callback',
+            tag: 'payRequest',
+          },
+          { status: 200 }
+        )
+      )
+      .mockResolvedValueOnce(Response.json({ pr: 'lnbc1abcdef', routes: [], disposable: false }, { status: 200 }));
+
+    const { GET } = await import('@/app/api/lnurlp/[username]/invoice/route');
+    const response = await GET(
+      new Request(
+        'https://klabo.world/api/lnurlp/Can%40klabo.world/invoice?rid=oops%3Famount%3D1000&ns=Can%40klabo.world',
+        {
+          method: 'GET',
+        }
+      ),
+      {
+        params: Promise.resolve({ username: 'Can%40klabo.world' }),
+      }
+    );
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(response.status).toBe(200);
+
+    const secondCall = new URL(fetchMock.mock.calls[1]![0] as string);
+    expect(secondCall.searchParams.get('amount')).toBe('1000');
+  });
 });
