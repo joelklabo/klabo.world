@@ -129,8 +129,9 @@ async function verify(name) {
   const callbackUrl = new URL(payload.callback);
   const callbackUser = decodeURIComponent(callbackUrl.pathname.split('/').at(-2) ?? '');
   okLine(name, callbackUser === expectedLocal, `callback user=${callbackUser || '<missing>'}; expected=${expectedLocal}`);
-  callbackUrl.searchParams.set('amount', String(AMOUNT_MSATS));
-  const invoiceRes = await fetchJson(`${callbackUrl.toString()}&ns=${encodeURIComponent(name)}`);
+  okLine(name, callbackUrl.search === '', `callback has empty query (${callbackUrl.search || '<empty>'}); expected <empty>`);
+  const malformedInvoiceUrl = `${callbackUrl.origin}${callbackUrl.pathname}?amount=${AMOUNT_MSATS}&ns=${encodeURIComponent(name)}`;
+  const invoiceRes = await fetchJson(malformedInvoiceUrl);
   okLine(name, invoiceRes.status === 200, `invoice status=${invoiceRes.status}`);
   if (invoiceRes.status !== 200) return allPass;
 

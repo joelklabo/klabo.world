@@ -11,6 +11,20 @@ function toNumber(value: string | null): number | null {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
+function extractAmountFromSearchParams(url: URL): number | null {
+  const direct = toNumber(url.searchParams.get('amount'));
+  if (direct !== null) {
+    return direct;
+  }
+
+  const directMatch = url.search.match(/(?:[?&])amount=(\d+)/);
+  if (!directMatch) {
+    return null;
+  }
+
+  return toNumber(directMatch[1] ?? null);
+}
+
 const BECH32_CHARSET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
 const LNBITS_PAY_LINK_USERNAME = 'joel';
 
@@ -68,7 +82,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ user
   const { username: rawUsername } = await params;
   const normalizedUsername = normalizeLnurlUsername(rawUsername);
   const url = new URL(request.url);
-  const amount = toNumber(url.searchParams.get('amount'));
+  const amount = extractAmountFromSearchParams(url);
   const namespace = url.searchParams.get('ns') || 'default';
   const requestId = randomUUID();
 
@@ -77,7 +91,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ user
     rawUsername,
     namespace,
     amount,
-    amountText: url.searchParams.get('amount'),
+    amountText: url.search,
   });
 
   if (normalizedUsername !== rawUsername.trim()) {

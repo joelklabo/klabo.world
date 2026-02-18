@@ -86,6 +86,7 @@ describe('lnurlp route handlers', () => {
     const responsePayload = (await response.json()) as { callback: string; metadata: string };
     const callbackUrl = new URL(responsePayload.callback);
     expect(callbackUrl.pathname).toContain('/api/lnurlp/Gary/invoice');
+    expect(callbackUrl.search).toBe('');
 
     const parsedMetadata = JSON.parse(responsePayload.metadata) as Array<[string, string]>;
     const identifier = parsedMetadata.find((entry) => entry[0] === 'text/identifier')?.[1];
@@ -122,5 +123,33 @@ describe('lnurlp route handlers', () => {
     const invoice = (await response.json()) as { pr: string };
     expect(invoice.pr).toBe('lnbc1abcdef');
     expect(response.headers.get('x-lnurlp-request-id')).toBeTruthy();
+  });
+
+  it('accepts malformed invoice requests where amount is appended after an existing query separator', async () => {
+    fetchMock
+      .mockResolvedValueOnce(
+        Response.json(
+          {
+            callback: 'https://lnbits.test/api/v1/lnurlp/joel/callback',
+            tag: 'payRequest',
+          },
+          { status: 200 }
+        )
+      )
+      .mockResolvedValueOnce(Response.json({ pr: 'lnbc1abcdef', routes: [], disposable: false }, { status: 200 }));
+
+    const { GET } = await import('@/app/api/lnurlp/[username]/invoice/route');
+    const response = await GET(
+      new Request('https://klabo.world/api/lnurlp/Gary%40klabo.world/invoice?rid=deadbeef?amount=1000&ns=abc'),
+      {
+        params: Promise.resolve({ username: 'Gary%40klabo.world' }),
+      }
+    );
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(response.status).toBe(200);
+
+    const secondCall = new URL(fetchMock.mock.calls[1]![0] as string);
+    expect(secondCall.searchParams.get('amount')).toBe('1000');
   });
 });

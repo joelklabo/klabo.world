@@ -63,8 +63,9 @@ export async function GET(_: Request, { params }: { params: Promise<{ username: 
   const payload = (await res.json()) as Record<string, unknown>;
 
   // Preserve the requested username in callback and metadata
-  const siteUrl = getPublicSiteUrl();
-  payload.callback = `${siteUrl}/api/lnurlp/${encodeURIComponent(requestedUsername)}/invoice`;
+  const publicSiteUrl = new URL(getPublicSiteUrl());
+  publicSiteUrl.search = '';
+  payload.callback = `${publicSiteUrl.toString().replace(/\/$/, '')}/api/lnurlp/${encodeURIComponent(requestedUsername)}/invoice`;
 
   // Update metadata to show the requested address
   payload.metadata = updateMetadataWithLightningAddress(payload.metadata, lightningAddress);
