@@ -86,7 +86,6 @@ describe('lnurlp route handlers', () => {
     const responsePayload = (await response.json()) as { callback: string; metadata: string };
     const callbackUrl = new URL(responsePayload.callback);
     expect(callbackUrl.pathname).toContain('/api/lnurlp/Gary/invoice');
-    expect(callbackUrl.searchParams.get('rid')).toBeTruthy();
 
     const parsedMetadata = JSON.parse(responsePayload.metadata) as Array<[string, string]>;
     const identifier = parsedMetadata.find((entry) => entry[0] === 'text/identifier')?.[1];
@@ -110,7 +109,7 @@ describe('lnurlp route handlers', () => {
       .mockResolvedValueOnce(Response.json({ pr: 'lnbc1abcdef', routes: [], disposable: false }, { status: 200 }));
 
     const { GET } = await import('@/app/api/lnurlp/[username]/invoice/route');
-    const response = await GET(new Request('https://klabo.world/api/lnurlp/Gary%40klabo.world/invoice?amount=1000&ns=test&rid=req-1'), {
+    const response = await GET(new Request('https://klabo.world/api/lnurlp/Gary%40klabo.world/invoice?amount=1000&ns=test'), {
       params: Promise.resolve({ username: 'Gary%40klabo.world' }),
     });
 

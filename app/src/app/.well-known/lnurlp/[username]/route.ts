@@ -64,7 +64,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ username: 
 
   // Preserve the requested username in callback and metadata
   const siteUrl = getPublicSiteUrl();
-  payload.callback = `${siteUrl}/api/lnurlp/${encodeURIComponent(requestedUsername)}/invoice?rid=${encodeURIComponent(requestId)}`;
+  payload.callback = `${siteUrl}/api/lnurlp/${encodeURIComponent(requestedUsername)}/invoice`;
 
   // Update metadata to show the requested address
   payload.metadata = updateMetadataWithLightningAddress(payload.metadata, lightningAddress);

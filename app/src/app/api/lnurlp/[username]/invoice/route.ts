@@ -70,7 +70,6 @@ export async function GET(request: Request, { params }: { params: Promise<{ user
   const url = new URL(request.url);
   const amount = toNumber(url.searchParams.get('amount'));
   const namespace = url.searchParams.get('ns') || 'default';
-  const rid = url.searchParams.get('rid');
   const requestId = randomUUID();
 
   logLnurlEvent('invoice', requestId, 'request_start', {
@@ -79,7 +78,6 @@ export async function GET(request: Request, { params }: { params: Promise<{ user
     namespace,
     amount,
     amountText: url.searchParams.get('amount'),
-    rid,
   });
 
   if (normalizedUsername !== rawUsername.trim()) {
