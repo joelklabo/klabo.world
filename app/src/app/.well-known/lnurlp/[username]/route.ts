@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { randomUUID } from 'node:crypto';
 import { getLnbitsBaseUrl, buildLnbitsHeaders } from '@/lib/lnbits';
 import { getPublicSiteUrl } from '@/lib/public-env';
+import { normalizeLnurlUsername, updateMetadataWithLightningAddress } from '@/lib/lnurlp';
 
 function logLnurlEvent(route: string, requestId: string, event: string, details: Record<string, unknown>): void {
   console.info(
@@ -10,73 +11,6 @@ function logLnurlEvent(route: string, requestId: string, event: string, details:
 }
 
 const LNBITS_PAY_LINK_USERNAME = 'joel';
-
-function normalizeLnurlUsername(rawUsername: string) {
-  const decoded = (() => {
-    try {
-      return decodeURIComponent(rawUsername);
-    } catch {
-      return rawUsername;
-    }
-  })();
-  const [localPart] = decoded.trim().split('@');
-  return localPart || decoded.trim();
-}
-
-function toMetadataPairs(metadata: unknown): Array<[string, string]> {
-  if (typeof metadata === 'string') {
-    try {
-      const parsed = JSON.parse(metadata);
-      return toMetadataPairs(parsed);
-    } catch {
-      return [];
-    }
-  }
-
-  if (Array.isArray(metadata)) {
-    const entries: [string, string][] = metadata
-      .filter((item): item is [unknown, unknown] => Array.isArray(item) && item.length >= 2)
-      .filter((item): item is [string, unknown] => typeof item[0] === 'string')
-      .map(([type, value]) => [String(type), String(value)]);
-    return entries;
-  }
-
-  if (metadata && typeof metadata === 'object') {
-    return Object.entries(metadata as Record<string, unknown>).map(([type, value]) => [
-      type,
-      typeof value === 'string' ? value : '',
-    ]);
-  }
-
-  return [];
-}
-
-function updateMetadata(metadata: unknown, requestedUsername: string): string {
-  const metadataPairs = toMetadataPairs(metadata);
-  const normalizedPairs = [...metadataPairs];
-  let hasIdentifier = false;
-  let hasPlainText = false;
-
-  for (let i = 0; i < normalizedPairs.length; i += 1) {
-    const pair = normalizedPairs[i];
-    if (pair[0] === 'text/identifier') {
-      normalizedPairs[i] = ['text/identifier', requestedUsername];
-      hasIdentifier = true;
-    } else if (pair[0] === 'text/plain') {
-      normalizedPairs[i] = ['text/plain', `Payment to ${requestedUsername}`];
-      hasPlainText = true;
-    }
-  }
-
-  if (!hasIdentifier) {
-    normalizedPairs.push(['text/identifier', requestedUsername]);
-  }
-  if (!hasPlainText) {
-    normalizedPairs.push(['text/plain', `Payment to ${requestedUsername}`]);
-  }
-
-  return JSON.stringify(normalizedPairs);
-}
 
 export async function GET(_: Request, { params }: { params: Promise<{ username: string }> }) {
   const { username: rawUsername } = await params;
@@ -129,9 +63,9 @@ export async function GET(_: Request, { params }: { params: Promise<{ username: 
   // Preserve the requested username in callback and metadata
   const siteUrl = getPublicSiteUrl();
   payload.callback = `${siteUrl}/api/lnurlp/${encodeURIComponent(requestedUsername)}/invoice`;
-  
+
   // Update metadata to show the requested address
-  payload.metadata = updateMetadata(payload.metadata, lightningAddress);
+  payload.metadata = updateMetadataWithLightningAddress(payload.metadata, lightningAddress);
 
   logLnurlEvent('well-known', requestId, 'request_success', {
     requestedUsername,

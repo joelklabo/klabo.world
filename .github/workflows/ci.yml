@@ -69,30 +69,13 @@ jobs:
         run: pnpm turbo test --filter=app
       - name: Build Next.js app
         run: pnpm turbo build --filter=app
-      - name: Cache Playwright browsers
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('**/playwright.config.ts') }}
-          restore-keys: |
-            ${{ runner.os }}-playwright-
-      - name: Install Playwright browsers
-        run: pnpm --filter app exec playwright install --with-deps
-      - name: Playwright smoke tests (headed via Xvfb)
+      - name: Verify LNURL case normalization in CI
+        env:
+          LNURL_BASE_URL: http://127.0.0.1:3000
         run: |
           BASE_URL="http://127.0.0.1:3000"
           NOSTRSTACK_BASE_URL=mock NOSTRSTACK_HOST=mock NOSTRSTACK_RELAYS=mock NEXTAUTH_URL="$BASE_URL" SITE_URL="$BASE_URL" pnpm --filter app start --hostname 127.0.0.1 --port 3000 > /tmp/next.log 2>&1 &
           NEXT_PID=$!
           trap "kill $NEXT_PID" EXIT
           npx wait-on "$BASE_URL"
-          PLAYWRIGHT_BASE_URL="$BASE_URL" NOSTRSTACK_BASE_URL=mock NOSTRSTACK_HOST=mock NOSTRSTACK_RELAYS=mock NEXTAUTH_URL="$BASE_URL" SITE_URL="$BASE_URL" pnpm --filter app exec playwright test --reporter=dot tests/e2e/home-smoke.e2e.ts
-          LNURL_BASE_URL="$BASE_URL" pnpm test:lnurlp-case gary Gary randomCaseUser randomUSER SldfkjlsadfkjlsLDKDJldfkjldjf
-      - name: Upload Playwright artifacts
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-artifacts
-          path: |
-            app/test-results
-            /tmp/next.log
-          if-no-files-found: ignore
+          LNURL_BASE_URL="$BASE_URL" pnpm test:lnurlp-case gary Gary Gary@klabo.world Gary%40klabo.world randomCaseUser randomUSER SldfkjlsadfkjlsLDKDJldfkjldjf

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { randomUUID } from 'node:crypto';
 import { getLnbitsBaseUrl, buildLnbitsHeaders } from '@/lib/lnbits';
+import { normalizeLnurlUsername } from '@/lib/lnurlp';
 
 function toNumber(value: string | null): number | null {
   if (!value) return null;
@@ -10,18 +11,6 @@ function toNumber(value: string | null): number | null {
 
 const BECH32_CHARSET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
 const LNBITS_PAY_LINK_USERNAME = 'joel';
-
-function normalizeLnurlUsername(rawUsername: string) {
-  const decoded = (() => {
-    try {
-      return decodeURIComponent(rawUsername);
-    } catch {
-      return rawUsername;
-    }
-  })();
-  const [localPart] = decoded.trim().split('@');
-  return localPart || decoded.trim();
-}
 
 function logLnurlEvent(route: string, requestId: string, event: string, details: Record<string, unknown>): void {
   console.info(

@@ -34,6 +34,15 @@ function expectedLightningAddress(rawName) {
   return `${local || decoded}@klabo.world`;
 }
 
+function expectedLocalPart(rawName) {
+  let decoded = rawName;
+  try {
+    decoded = decodeURIComponent(rawName);
+  } catch {}
+  const [local] = decoded.split('@');
+  return local || decoded;
+}
+
 async function verify(name) {
   const encoded = encodeURIComponent(name);
   const metadataUrl = `${BASE_URL}/.well-known/lnurlp/${encoded}`;
@@ -59,6 +68,7 @@ async function verify(name) {
   okLine(name, Number.isFinite(payload.maxSendable), `maxSendable=${payload.maxSendable}`);
 
   const expectedIdentifier = expectedLightningAddress(name);
+  const expectedLocal = expectedLocalPart(name);
   let identifier = '';
   let plainText = '';
   try {
@@ -102,6 +112,8 @@ async function verify(name) {
   }
 
   const callbackUrl = new URL(payload.callback);
+  const callbackUser = decodeURIComponent(callbackUrl.pathname.split('/').at(-2) ?? '');
+  okLine(name, callbackUser === expectedLocal, `callback user=${callbackUser || '<missing>'}; expected=${expectedLocal}`);
   callbackUrl.searchParams.set('amount', String(AMOUNT_MSATS));
   const invoiceRes = await fetchJson(`${callbackUrl.toString()}&ns=${encodeURIComponent(name)}`);
   okLine(name, invoiceRes.status === 200, `invoice status=${invoiceRes.status}`);
