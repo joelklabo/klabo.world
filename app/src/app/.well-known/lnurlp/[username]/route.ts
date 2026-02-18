@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import { randomUUID } from 'node:crypto';
+
+export const dynamic = 'force-dynamic';
 import { getLnbitsBaseUrl, buildLnbitsHeaders } from '@/lib/lnbits';
 import { getPublicSiteUrl } from '@/lib/public-env';
 import { normalizeLnurlUsername, updateMetadataWithLightningAddress } from '@/lib/lnurlp';
@@ -62,7 +64,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ username: 
 
   // Preserve the requested username in callback and metadata
   const siteUrl = getPublicSiteUrl();
-  payload.callback = `${siteUrl}/api/lnurlp/${encodeURIComponent(requestedUsername)}/invoice`;
+  payload.callback = `${siteUrl}/api/lnurlp/${encodeURIComponent(requestedUsername)}/invoice?rid=${encodeURIComponent(requestId)}`;
 
   // Update metadata to show the requested address
   payload.metadata = updateMetadataWithLightningAddress(payload.metadata, lightningAddress);
