@@ -91,7 +91,7 @@ const schema = z.object({
   LNBITS_ADMIN_KEY: z.string().optional(),
   LIGHTNING_NODE_PUBKEY: z.string().default('0276dc1ed542d0d777b518f1bd05f042847f19f312718cf1303288119a0a789a68'),
   LIGHTNING_NODE_ALIAS: z.string().default('klabo.world'),
-  LIGHTNING_NODE_HOST: z.string().default('klabo.world'),
+  LIGHTNING_NODE_HOST: z.string().default('lnbits.klabo.world'),
   LIGHTNING_NODE_PORT: optionalNumber(z.coerce.number().int().min(1).max(65_535).default(9735)),
   LIGHTNING_NODE_STATUS_TIMEOUT_MS: optionalNumber(z.coerce.number().int().min(100).max(10_000).default(2000)),
   NEXT_PUBLIC_NOSTRSTACK_BASE_URL: optionalUrl,

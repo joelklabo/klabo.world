@@ -95,7 +95,7 @@ export default function AboutPage() {
               alias="klabo.world"
               pubkey="0276dc1ed542d0d777b518f1bd05f042847f19f312718cf1303288119a0a789a68"
               color="#f7931a"
-              host="klabo.world"
+              host="lnbits.klabo.world"
               port={9735}
             />
             <LightningTipWidget lightningAddress="joel@klabo.world" namespace="about" />

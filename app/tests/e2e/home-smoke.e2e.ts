@@ -17,9 +17,9 @@ test.describe('public smoke', () => {
         body: JSON.stringify({
           alias: 'klabo.world',
           pubkey: '0276dc1ed542d0d777b518f1bd05f042847f19f312718cf1303288119a0a789a68',
-          host: 'klabo.world',
+          host: 'lnbits.klabo.world',
           port: 9735,
-          uri: '0276dc1ed542d0d777b518f1bd05f042847f19f312718cf1303288119a0a789a68@klabo.world:9735',
+          uri: '0276dc1ed542d0d777b518f1bd05f042847f19f312718cf1303288119a0a789a68@lnbits.klabo.world:9735',
           reachable: true,
           latencyMs: 42,
           checkedAt: '2026-05-04T01:00:00.000Z',
@@ -53,7 +53,7 @@ test.describe('public smoke', () => {
     await expect(page.getByText(/0276dc1e.*0a789a68/)).toBeVisible();
     await expect(page.getByRole('link', { name: /connect/i })).toHaveAttribute(
       'href',
-      /^lightning:0276dc1ed542d0d777b518f1bd05f042847f19f312718cf1303288119a0a789a68@klabo\.world:9735$/
+      /^lightning:0276dc1ed542d0d777b518f1bd05f042847f19f312718cf1303288119a0a789a68@lnbits\.klabo\.world:9735$/
     );
 
     await page.getByRole('button', { name: /21\s*sats/i }).click();

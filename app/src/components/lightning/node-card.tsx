@@ -19,7 +19,7 @@ type NodeCardProps = {
 const NODE_PUBKEY = '0276dc1ed542d0d777b518f1bd05f042847f19f312718cf1303288119a0a789a68';
 const NODE_ALIAS = 'klabo.world';
 const NODE_COLOR = '#f7931a';
-const NODE_HOST = 'klabo.world';
+const NODE_HOST = 'lnbits.klabo.world';
 const NODE_PORT = 9735;
 
 // Default props for klabo.world node

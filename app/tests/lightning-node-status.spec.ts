@@ -11,9 +11,9 @@ describe('lightning node status API', () => {
     getLightningNodeStatusMock.mockResolvedValueOnce({
       alias: 'klabo.world',
       pubkey: '0276dc1ed542d0d777b518f1bd05f042847f19f312718cf1303288119a0a789a68',
-      host: 'klabo.world',
+      host: 'lnbits.klabo.world',
       port: 9735,
-      uri: '0276dc1ed542d0d777b518f1bd05f042847f19f312718cf1303288119a0a789a68@klabo.world:9735',
+      uri: '0276dc1ed542d0d777b518f1bd05f042847f19f312718cf1303288119a0a789a68@lnbits.klabo.world:9735',
       reachable: true,
       latencyMs: 42,
       checkedAt: '2026-05-03T18:00:00.000Z',
@@ -28,7 +28,7 @@ describe('lightning node status API', () => {
     expect(response.headers.get('Cache-Control')).toContain('max-age=30');
     expect(payload).toMatchObject({
       alias: 'klabo.world',
-      host: 'klabo.world',
+      host: 'lnbits.klabo.world',
       port: 9735,
       reachable: true,
       latencyMs: 42,
