@@ -253,6 +253,10 @@ export function GlobalNavigation() {
     router.push(result.url as Route);
   };
 
+  if (pathname === '/pay' || pathname.startsWith('/pay/')) {
+    return null;
+  }
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl shadow-[0_20px_40px_rgba(6,10,20,0.45)]">
       <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:gap-6 lg:px-8">

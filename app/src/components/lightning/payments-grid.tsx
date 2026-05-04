@@ -25,6 +25,7 @@ type BitcoinPaymentsGridProps = {
   node?: LightningNodeDetails | null;
   bitcoinAddress?: string;
   className?: string;
+  variant?: 'home' | 'terminal';
 };
 
 export function BitcoinPaymentsGrid({
@@ -32,11 +33,16 @@ export function BitcoinPaymentsGrid({
   node,
   bitcoinAddress = DEFAULT_BITCOIN_ONCHAIN_ADDRESS,
   className,
+  variant = 'home',
 }: BitcoinPaymentsGridProps) {
+  const isTerminal = variant === 'terminal';
+
   return (
     <div
       className={cn(
-        'grid grid-cols-1 items-stretch gap-4 lg:auto-rows-fr lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.9fr)_minmax(330px,1fr)]',
+        isTerminal
+          ? 'grid grid-cols-1 items-stretch gap-3 sm:gap-4 lg:auto-rows-fr lg:grid-cols-[minmax(0,0.95fr)_minmax(320px,1fr)] xl:grid-cols-[minmax(0,0.92fr)_minmax(320px,1fr)_minmax(320px,0.96fr)]'
+          : 'grid grid-cols-1 items-stretch gap-4 lg:auto-rows-fr lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.9fr)_minmax(330px,1fr)]',
         className,
       )}
     >
@@ -46,10 +52,17 @@ export function BitcoinPaymentsGrid({
         color={node?.color ?? NODE_COLOR}
         host={node?.host ?? NODE_HOST}
         port={node?.port ?? NODE_PORT}
-        className="h-full"
+        className={cn('h-full', isTerminal && 'order-3 lg:order-1')}
       />
-      <LightningTipWidget lightningAddress={LIGHTNING_ADDRESS} namespace={namespace} className="h-full" />
-      <BitcoinOnchainCard address={bitcoinAddress} className="h-full" />
+      <LightningTipWidget
+        lightningAddress={LIGHTNING_ADDRESS}
+        namespace={namespace}
+        className={cn('h-full', isTerminal && 'order-1 lg:order-2')}
+      />
+      <BitcoinOnchainCard
+        address={bitcoinAddress}
+        className={cn('h-full', isTerminal && 'order-2 lg:order-3')}
+      />
     </div>
   );
 }

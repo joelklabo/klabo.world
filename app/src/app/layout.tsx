@@ -6,6 +6,9 @@ import ApplicationInsightsConnection from './components/ApplicationInsights';
 import { getPublicSiteUrl } from '@/lib/public-env';
 
 const siteUrl = getPublicSiteUrl();
+const paymentHostChromeScript =
+  "if(location.hostname==='pay.klabo.world')document.documentElement.dataset.paymentHost='true'";
+const paymentHostChromeStyle = 'html[data-payment-host="true"] body > header{display:none}';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -62,6 +65,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" style={{ colorScheme: 'dark' }}>
+      <head>
+        <style>{paymentHostChromeStyle}</style>
+        <script dangerouslySetInnerHTML={{ __html: paymentHostChromeScript }} />
+      </head>
       <body className={`${manrope.variable} ${jetbrains.variable} antialiased bg-background text-foreground`}>
         <a
           href="#main-content"

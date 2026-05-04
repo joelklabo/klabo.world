@@ -1,7 +1,16 @@
 import { NextResponse, type NextRequest } from 'next/server';
 
 const LEGACY_HOSTS = new Set(['klabo.blog', 'www.klabo.blog']);
+const PAYMENT_HOSTS = new Set(['pay.klabo.world']);
 const PRIMARY_HOST = 'klabo.world';
+
+function withSecurityHeaders(response: NextResponse) {
+  response.headers.set('X-Frame-Options', 'DENY');
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  return response;
+}
 
 export function proxy(req: NextRequest) {
   const rawHost = req.headers.get('host')?.toLowerCase() ?? '';
@@ -10,18 +19,16 @@ export function proxy(req: NextRequest) {
     const url = req.nextUrl.clone();
     url.protocol = 'https:';
     url.hostname = PRIMARY_HOST;
-    return NextResponse.redirect(url, 308);
+    return withSecurityHeaders(NextResponse.redirect(url, 308));
   }
 
-  const response = NextResponse.next();
+  if (PAYMENT_HOSTS.has(host) && req.nextUrl.pathname === '/') {
+    const url = req.nextUrl.clone();
+    url.pathname = '/pay';
+    return withSecurityHeaders(NextResponse.rewrite(url));
+  }
 
-  // Security Headers
-  response.headers.set('X-Frame-Options', 'DENY');
-  response.headers.set('X-Content-Type-Options', 'nosniff');
-  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
-
-  return response;
+  return withSecurityHeaders(NextResponse.next());
 }
 
 export const config = {

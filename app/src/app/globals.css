@@ -47,6 +47,10 @@ body {
   font-family: var(--font-manrope), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
+body:has([data-payment-surface="true"]) > header {
+  display: none;
+}
+
 @layer base {
   ::selection {
     background: oklch(72% 0.16 80deg / 60%);
@@ -387,4 +391,3 @@ body {
    POST METADATA STYLING
    Enhanced badges for date, reading time, tags
    ============================================ */
-
