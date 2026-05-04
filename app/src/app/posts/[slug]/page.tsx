@@ -1,5 +1,6 @@
 import { notFound, permanentRedirect } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import type { Metadata } from 'next';
 import { formatPostDate, getPostBySlug, getPosts, normalizePostSlug } from '@/lib/posts';
 import { MDXContent } from '@/components/mdx-content';
@@ -9,6 +10,14 @@ import { LightningTipWidget } from '@/components/lightning';
 type Params = { slug: string };
 
 export const dynamic = 'force-dynamic';
+const DEFAULT_POST_HERO_IMAGE = '/images/posts/klabo-world-editorial-hero.webp';
+
+function getImageMimeType(src: string) {
+  if (src.endsWith('.webp')) return 'image/webp';
+  if (src.endsWith('.png')) return 'image/png';
+  if (src.endsWith('.jpg') || src.endsWith('.jpeg')) return 'image/jpeg';
+  return 'image/svg+xml';
+}
 
 export function generateStaticParams(): Params[] {
   return getPosts({ includeUnpublished: true }).map((post) => ({ slug: post.slug }));
@@ -24,6 +33,7 @@ export async function generateMetadata({ params }: { params: Params | Promise<Pa
   const siteUrl = getPublicSiteUrl();
   const canonicalPath = `/posts/${post.slug}`;
   const publishedTime = post.publishDate ?? post.date;
+  const heroImage = post.featuredImage ?? DEFAULT_POST_HERO_IMAGE;
 
   return {
     title: post.title,
@@ -38,11 +48,11 @@ export async function generateMetadata({ params }: { params: Params | Promise<Pa
       tags: post.tags ?? [],
       images: [
         {
-          url: new URL(`${canonicalPath}/og.png`, siteUrl),
-          width: 1200,
-          height: 630,
+          url: new URL(heroImage, siteUrl),
+          width: 1600,
+          height: 900,
           alt: post.title,
-          type: 'image/png',
+          type: getImageMimeType(heroImage),
         },
       ],
     },
@@ -50,7 +60,7 @@ export async function generateMetadata({ params }: { params: Params | Promise<Pa
       card: 'summary_large_image',
       title: post.title,
       description: post.summary,
-      images: [new URL(`${canonicalPath}/og.png`, siteUrl)],
+      images: [new URL(heroImage, siteUrl)],
     },
   };
 }
@@ -58,10 +68,11 @@ export async function generateMetadata({ params }: { params: Params | Promise<Pa
 export default async function PostPage({ params }: { params: Params | Promise<Params> }) {
   const resolvedParams = await Promise.resolve(params as Params);
   const requestedSlug = resolvedParams.slug;
-  const post = getPostBySlug(requestedSlug);
-  if (!post) {
+  const postCandidate = getPostBySlug(requestedSlug);
+  if (!postCandidate) {
     notFound();
   }
+  const post = postCandidate;
   if (normalizePostSlug(post.slug) !== normalizePostSlug(requestedSlug)) {
     permanentRedirect(`/posts/${post.slug}`);
   }
@@ -79,6 +90,8 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
   const canonicalUrl = `${siteUrl}/posts/${post.slug}`;
   const lightningAddress = post.lightningAddress ?? 'joel@klabo.world';
   const publishedDate = post.publishDate ?? post.date;
+  const heroImage = post.featuredImage ?? DEFAULT_POST_HERO_IMAGE;
+  const heroImageUrl = new URL(heroImage, siteUrl).toString();
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
@@ -91,7 +104,7 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
       '@type': 'WebPage',
       '@id': canonicalUrl,
     },
-    image: [`${canonicalUrl}/og.png`],
+    image: [heroImageUrl],
     keywords: post.tags ?? [],
     publisher: {
       '@type': 'Organization',
@@ -102,52 +115,62 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
 
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-background text-foreground">
-      <div className="pointer-events-none absolute inset-0 opacity-80">
-        <div className="absolute -left-20 -top-10 h-64 w-64 rounded-full bg-primary/15 blur-3xl" />
-        <div className="absolute right-0 top-10 h-72 w-72 rounded-full bg-secondary/18 blur-3xl" />
-      </div>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <div className="relative mx-auto max-w-6xl px-6 py-16">
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[3fr_1fr]">
-          <section className="min-w-0 space-y-8">
-            <div className="rounded-3xl border border-border/60 bg-card/80 p-8 shadow-[0_24px_70px_rgba(6,10,20,0.55)]">
-              <Link
-                href="/posts"
-                className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.35em] text-primary hover:text-primary/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded"
-                aria-label="Back to all posts"
-              >
-                ← Back to posts
-              </Link>
-              <div className="mt-4 flex flex-col gap-2">
-                <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">Published</p>
-                <time dateTime={new Date(post.publishDate ?? post.date).toISOString()} className="text-base font-semibold text-foreground">
-                  {formatPostDate(post.publishDate ?? post.date, {
-                    month: 'long',
-                    day: 'numeric',
-                    year: 'numeric',
-                  })}
-                </time>
-              </div>
-              <h1 className="mt-6 text-4xl font-semibold leading-tight text-foreground md:text-5xl">{post.title}</h1>
-              <p className="mt-4 text-lg text-muted-foreground">{post.summary}</p>
-              <div className="mt-6 flex flex-wrap gap-3">
-                {post.tags?.map((tag) => (
-                  <Link
-                    key={tag}
-                    href={`/posts/tag/${encodeURIComponent(tag)}`}
-                    className="rounded-full border border-primary/30 bg-primary/10 px-4 py-1 text-[11px] font-semibold uppercase tracking-[0.35em] text-foreground motion-safe:transition-colors hover:border-primary/70 hover:bg-primary/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
-                  >
-                    {tag}
-                  </Link>
-                ))}
-              </div>
-              <div className="mt-6 flex flex-wrap gap-6 text-xs uppercase tracking-[0.35em] text-muted-foreground">
-                <span>{readingTime} min read</span>
-                <span>
-                  {previous ? 'Chronological' : 'Latest'} · {posts.length} post{posts.length === 1 ? '' : 's'}
-                </span>
-              </div>
+      <section className="relative isolate min-h-[560px] overflow-hidden border-b border-border/60 sm:min-h-[620px]">
+        <Image
+          src={heroImage}
+          alt=""
+          fill
+          sizes="100vw"
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,10,20,0.94)_0%,rgba(5,10,20,0.78)_42%,rgba(5,10,20,0.28)_78%,rgba(5,10,20,0.58)_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,10,20,0.18)_0%,rgba(5,10,20,0.16)_48%,rgba(5,10,20,0.92)_100%)]" />
+        <div className="relative mx-auto flex min-h-[560px] max-w-6xl items-end px-6 py-12 sm:min-h-[620px] sm:py-16">
+          <div className="max-w-4xl space-y-5">
+            <Link
+              href="/posts"
+              className="inline-flex items-center gap-2 rounded text-xs font-semibold uppercase tracking-[0.35em] text-primary hover:text-primary/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+              aria-label="Back to all posts"
+            >
+              ← Back to posts
+            </Link>
+            <div className="flex flex-wrap items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.3em] text-white/75">
+              <time dateTime={new Date(publishedDate).toISOString()}>
+                {formatPostDate(publishedDate, {
+                  month: 'long',
+                  day: 'numeric',
+                  year: 'numeric',
+                })}
+              </time>
+              <span>{readingTime} min read</span>
+              <span>{previous ? 'Chronological' : 'Latest'} · {posts.length} post{posts.length === 1 ? '' : 's'}</span>
             </div>
+            <h1 className="text-4xl font-semibold leading-tight text-white drop-shadow-[0_10px_30px_rgba(0,0,0,0.75)] md:text-6xl">
+              {post.title}
+            </h1>
+            <p className="max-w-3xl text-base leading-7 text-white/78 md:text-xl md:leading-8">
+              {post.summary}
+            </p>
+            <div className="flex flex-wrap gap-3">
+              {post.tags?.map((tag) => (
+                <Link
+                  key={tag}
+                  href={`/posts/tag/${encodeURIComponent(tag)}`}
+                  className="rounded-full border border-primary/35 bg-primary/15 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.32em] text-white backdrop-blur motion-safe:transition-colors hover:border-primary/70 hover:bg-primary/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                >
+                  {tag}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div className="relative mx-auto max-w-6xl px-6 py-12 sm:py-14">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,3fr)_minmax(260px,1fr)]">
+          <section className="min-w-0 space-y-8">
             {lightningAddress && (
               <LightningTipWidget lightningAddress={lightningAddress} namespace={`post:${post.slug}`} />
             )}

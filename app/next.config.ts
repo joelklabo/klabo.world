@@ -25,6 +25,7 @@ const nextConfig: NextConfig = {
   typedRoutes: true,
   turbopack: {},
   output: 'standalone',
+  outputFileTracingRoot: path.join(process.cwd(), '..'),
   reactCompiler: true,
   // Note: cacheComponents disabled due to incompatibility with dynamic='force-dynamic' in admin routes
   // cacheComponents: true,

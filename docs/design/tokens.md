@@ -52,9 +52,17 @@ This doc captures the current design primitives for klabo.world and proposes a s
 - Cards: prefer `rounded-2xl` (use `rounded-3xl` only for hero/feature cards)
 - Form controls: use shadcn defaults (`Input`/`Textarea`) rather than bespoke `rounded-lg` + custom focus rings.
 
+## Blog Hero Images
+
+- Default asset: `app/public/images/posts/klabo-world-editorial-hero.webp`
+- Served path: `/images/posts/klabo-world-editorial-hero.webp`
+- Shape: 16:9, 1600x900 or larger
+- Composition: dark low-detail left half for overlaid title text, brighter amber Lightning/node/circuit subject on the right third
+- Palette: obsidian/navy base, warm amber primary, restrained coral or muted teal accents
+- Avoid: embedded text, logos, UI mockups, dense center compositions, purple-dominant gradients, beige/brown washes
+
 ## Drift to watch for
 
 - Legacy usage of `tracking-widest` (prefer explicit `tracking-[...]` for consistency).
 - Mixed card radii (`rounded-xl`, `rounded-2xl`, `rounded-3xl`) in older public pages.
 - Hard-coded palette accents (`indigo`/`purple`/`cyan`) on some public sections; keep only when intentional.
-

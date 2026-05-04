@@ -35,6 +35,7 @@ app/data/*
 pnpm-debug.log
 .next/
 app/.next/
+app/output/
 
 # Temporary files
 *.tmp

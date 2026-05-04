@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 import { spawn } from 'node:child_process';
+import { existsSync } from 'node:fs';
+import path from 'node:path';
 
 let args = process.argv.slice(2);
 if (args[0] === '--') {
@@ -30,15 +32,19 @@ const passthroughPrefixes = [
   'PLAYWRIGHT_',
 ];
 
-const env = { PATH: FIXED_PATH };
+const nodeBinDir = path.dirname(process.execPath);
+const env = {
+  PATH: [nodeBinDir, process.env.PATH, FIXED_PATH].filter(Boolean).join(path.delimiter),
+};
 for (const [key, value] of Object.entries(process.env)) {
-  if (value == null) continue;
+  if (value === null || value === undefined) continue;
   if (passthroughKeys.has(key) || passthroughPrefixes.some((prefix) => key.startsWith(prefix))) {
     env[key] = value;
   }
 }
 
-const PNPM_BIN = process.env.PNPM_HOME ? `${process.env.PNPM_HOME}/pnpm` : 'pnpm';
+const pnpmHomeBin = process.env.PNPM_HOME ? `${process.env.PNPM_HOME}/pnpm` : null;
+const PNPM_BIN = pnpmHomeBin && existsSync(pnpmHomeBin) ? pnpmHomeBin : 'pnpm';
 
 const contentlayer = spawn(PNPM_BIN, ['exec', 'contentlayer', 'dev', '--clearCache'], {
   stdio: 'inherit',

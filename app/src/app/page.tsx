@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Route } from "next";
 import { getPublicGitHubOwner } from "@/lib/public-env";
 import { getApps } from "@/lib/apps";
@@ -15,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { ViewTransitionLink } from "@/components/view-transition-link";
 
 export const revalidate = 3600;
+const EDITORIAL_HERO_IMAGE = "/images/posts/klabo-world-editorial-hero.webp";
 
 export default async function Home() {
   const recentPosts = getRecentPosts(2);
@@ -101,23 +103,33 @@ export default async function Home() {
 
   return (
     <div className="bg-background text-foreground">
-      <section className="relative overflow-x-hidden py-16 sm:py-20">
-        <div className="relative mx-auto flex max-w-6xl flex-col gap-10 px-6">
+      <section className="relative isolate overflow-hidden border-b border-border/50">
+        <Image
+          src={EDITORIAL_HERO_IMAGE}
+          alt=""
+          fill
+          sizes="100vw"
+          priority
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,10,20,0.95)_0%,rgba(5,10,20,0.78)_42%,rgba(5,10,20,0.18)_78%,rgba(5,10,20,0.52)_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,10,20,0.16)_0%,rgba(5,10,20,0.12)_54%,rgba(5,10,20,0.9)_100%)]" />
+        <div className="relative mx-auto flex min-h-[560px] max-w-6xl flex-col justify-end gap-10 px-6 py-14 sm:min-h-[640px] sm:py-20">
           <div className="max-w-3xl space-y-5">
             <h1
-              className="text-4xl font-bold tracking-tight text-foreground text-balance md:text-5xl"
+              className="text-4xl font-bold tracking-tight text-white text-balance drop-shadow-[0_10px_30px_rgba(0,0,0,0.75)] md:text-6xl"
               data-testid="home-hero-title"
             >
               Notes, playbooks, and projects for shipping software.
             </h1>
-            <p className="text-base text-muted-foreground text-pretty md:text-lg">
+            <p className="text-base text-white/76 text-pretty md:text-lg">
               Practical notes and small tools for Bitcoin, Lightning, and agentic
               engineering.
             </p>
-            <ul className="flex flex-wrap gap-2 text-[10px] font-semibold uppercase tracking-[0.28em] text-muted-foreground" role="list" aria-label="Main topics">
+            <ul className="flex flex-wrap gap-2 text-[10px] font-semibold uppercase tracking-[0.28em] text-white/70" role="list" aria-label="Main topics">
               {["Bitcoin", "Lightning", "Agentic systems"].map((topic) => (
                 <li key={topic}>
-                  <span className="rounded-full border border-border/60 bg-background/70 px-3 py-1 text-foreground">
+                  <span className="rounded-full border border-white/20 bg-black/30 px-3 py-1 text-white backdrop-blur">
                     {topic}
                   </span>
                 </li>
@@ -138,7 +150,7 @@ export default async function Home() {
                 asChild
                 variant="link"
                 size="lg"
-                className="px-2 text-sm font-semibold uppercase tracking-[0.24em] text-muted-foreground hover:text-primary"
+                className="px-2 text-sm font-semibold uppercase tracking-[0.24em] text-white/72 hover:text-primary"
               >
                 <Link
                   href="/projects"

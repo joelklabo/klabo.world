@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Metadata } from 'next';
 import { formatPostDate, getPosts } from '@/lib/posts';
 import { Button } from '@/components/ui/button';
@@ -8,15 +9,13 @@ export const metadata: Metadata = {
   title: 'Posts',
 };
 
+const DEFAULT_POST_HERO_IMAGE = '/images/posts/klabo-world-editorial-hero.webp';
+
 export default function PostsIndex() {
   const posts = getPosts();
 
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-background text-foreground">
-      <div className="pointer-events-none absolute inset-0 opacity-80">
-        <div className="absolute -left-20 -top-10 h-64 w-64 rounded-full bg-primary/15 blur-3xl" />
-        <div className="absolute right-0 top-10 h-72 w-72 rounded-full bg-secondary/18 blur-3xl" />
-      </div>
       <div className="relative mx-auto flex max-w-6xl flex-col gap-8 px-6 py-16">
         <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="space-y-3">
@@ -33,42 +32,49 @@ export default function PostsIndex() {
         <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           {posts.map((post) => (
             <li key={post._id}>
-              <article className="card-hover-lift group h-full rounded-2xl border border-border/60 bg-card/80 p-5 shadow-[0_18px_45px_rgba(6,10,20,0.45)]">
-                <div className="flex items-center justify-between text-xs uppercase tracking-[0.3em] text-muted-foreground">
-                  <time dateTime={post.publishDate ?? post.date}>{formatPostDate(post.publishDate ?? post.date)}</time>
-                  {post.tags?.[0] ? (
-                    <Link
-                      href={`/posts/tag/${encodeURIComponent(post.tags[0])}`}
-                      className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1.5 text-[10px] font-semibold text-foreground motion-safe:transition-colors hover:border-primary/60 hover:bg-primary/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
-                    >
-                      {post.tags[0]}
-                    </Link>
-                  ) : (
-                    <span className="rounded-full border border-border/60 bg-background/60 px-3 py-1.5 text-[10px] text-muted-foreground">
-                      Post
+              <article className="card-hover-lift group h-full overflow-hidden rounded-2xl border border-border/60 bg-card/80 shadow-[0_18px_45px_rgba(6,10,20,0.45)]">
+                <ViewTransitionLink
+                  href={`/posts/${post.slug}`}
+                  className="relative block aspect-[16/9] overflow-hidden bg-background"
+                  aria-label={`Read ${post.title}`}
+                >
+                  <Image
+                    src={post.featuredImage ?? DEFAULT_POST_HERO_IMAGE}
+                    alt=""
+                    fill
+                    sizes="(max-width: 640px) 100vw, 560px"
+                    className="object-cover motion-safe:transition-transform motion-safe:duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/75 via-background/15 to-transparent" />
+                  <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between gap-3 text-[10px] font-semibold uppercase tracking-[0.28em] text-white/80">
+                    <time dateTime={post.publishDate ?? post.date}>{formatPostDate(post.publishDate ?? post.date)}</time>
+                    <span className="rounded-full border border-white/20 bg-black/35 px-3 py-1 text-white/80 backdrop-blur">
+                      {post.tags?.[0] ?? 'Post'}
                     </span>
+                  </div>
+                </ViewTransitionLink>
+                <div className="p-5">
+                  <h2 className="text-xl font-semibold leading-snug text-foreground">
+                    <ViewTransitionLink href={`/posts/${post.slug}`} className="hover:text-primary">
+                      {post.title}
+                    </ViewTransitionLink>
+                  </h2>
+                  <p className="mt-2 text-sm text-muted-foreground text-pretty line-clamp-3">{post.summary}</p>
+                  {post.tags && post.tags.length > 0 && (
+                    <ul className="mt-4 flex flex-wrap gap-2 text-[10px] font-semibold uppercase tracking-[0.3em] text-primary" role="list" aria-label="Post tags">
+                      {post.tags.slice(0, 4).map((tag) => (
+                        <li key={tag}>
+                          <Link
+                            href={`/posts/tag/${encodeURIComponent(tag)}`}
+                            className="inline-block rounded-full border border-primary/25 bg-primary/10 px-3 py-1.5 text-foreground motion-safe:transition-colors hover:border-primary/60 hover:bg-primary/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                          >
+                            {tag}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
                   )}
                 </div>
-                <h2 className="mt-3 text-xl font-semibold leading-snug text-foreground">
-                  <ViewTransitionLink href={`/posts/${post.slug}`} className="hover:text-primary">
-                    {post.title}
-                  </ViewTransitionLink>
-                </h2>
-                <p className="mt-2 text-sm text-muted-foreground text-pretty line-clamp-3">{post.summary}</p>
-                {post.tags && post.tags.length > 0 && (
-                  <ul className="mt-3 flex flex-wrap gap-2 text-[10px] font-semibold uppercase tracking-[0.3em] text-primary" role="list" aria-label="Post tags">
-                    {post.tags.slice(0, 4).map((tag) => (
-                      <li key={tag}>
-                        <Link
-                          href={`/posts/tag/${encodeURIComponent(tag)}`}
-                          className="inline-block rounded-full border border-primary/25 bg-primary/10 px-3 py-1.5 text-foreground motion-safe:transition-colors hover:border-primary/60 hover:bg-primary/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
-                        >
-                          {tag}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                )}
               </article>
             </li>
           ))}

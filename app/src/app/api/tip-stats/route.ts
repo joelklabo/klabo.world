@@ -21,10 +21,38 @@ type TipStats = {
 const statsCache = new Map<string, { data: TipStats; expires: number }>();
 const CACHE_TTL = 60_000; // 1 minute
 
+function emptyStats(namespace: string): TipStats {
+  return {
+    namespace,
+    count: 0,
+    totalSats: 0,
+    largestTip: 0,
+  };
+}
+
+function commentMatchesNamespace(comment: string, namespace: string): boolean {
+  const legacyComment = `klabo.world:${namespace}`;
+  if (comment === legacyComment) {
+    return true;
+  }
+
+  const prefix = 'klabo.world:';
+  if (!comment.startsWith(prefix)) {
+    return false;
+  }
+
+  const rest = comment.slice(prefix.length);
+  const usernameSeparator = rest.indexOf(':');
+  if (usernameSeparator === -1) {
+    return false;
+  }
+
+  return rest.slice(usernameSeparator + 1) === namespace;
+}
+
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const namespace = url.searchParams.get('ns') || 'default';
-  const fullNamespace = `klabo.world:${namespace}`;
   
   // Check cache
   const cached = statsCache.get(namespace);
@@ -34,12 +62,21 @@ export async function GET(request: Request) {
     });
   }
 
-  const baseUrl = getLnbitsBaseUrl();
+  let baseUrl: string;
+  try {
+    baseUrl = getLnbitsBaseUrl();
+  } catch {
+    return NextResponse.json(emptyStats(namespace), {
+      headers: { 'Cache-Control': 'public, max-age=60' },
+    });
+  }
   const headers = buildLnbitsHeaders();
   const adminKey = getLnbitsAdminKey();
   
   if (!adminKey) {
-    return NextResponse.json({ error: 'lnbits_not_configured' }, { status: 500 });
+    return NextResponse.json(emptyStats(namespace), {
+      headers: { 'Cache-Control': 'public, max-age=60' },
+    });
   }
 
   try {
@@ -63,7 +100,7 @@ export async function GET(request: Request) {
       if (p.pending !== false && p.pending !== null) return false; // Only settled payments
       if (p.amount <= 0) return false; // Only incoming payments
       const comment = p.extra?.comment || '';
-      return comment === fullNamespace;
+      return commentMatchesNamespace(comment, namespace);
     });
 
     // Calculate stats

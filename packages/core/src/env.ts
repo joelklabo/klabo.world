@@ -11,11 +11,19 @@ const optionalUrl = z.preprocess(
   z.union([z.string().url(), z.literal('mock')]).optional(),
 );
 
+const optionalNumber = <T extends z.ZodTypeAny>(schema: T) =>
+  z.preprocess((value) => {
+    if (typeof value === 'string' && value.trim() === '') {
+      return undefined;
+    }
+    return value;
+  }, schema);
+
 const TRUTHY_VALUES = new Set(['1', 'true', 'yes', 'y', 'on']);
 const FALSY_VALUES = new Set(['0', 'false', 'no', 'n', 'off']);
 
 const coerceBooleanFlag = (value: unknown): boolean | undefined => {
-  if (value == null) {
+  if (value === null || value === undefined) {
     return false;
   }
   if (typeof value === 'boolean') {
@@ -81,6 +89,11 @@ const schema = z.object({
   NOSTRSTACK_RELAYS: z.string().optional(),
   LNBITS_BASE_URL: optionalUrl,
   LNBITS_ADMIN_KEY: z.string().optional(),
+  LIGHTNING_NODE_PUBKEY: z.string().default('0276dc1ed542d0d777b518f1bd05f042847f19f312718cf1303288119a0a789a68'),
+  LIGHTNING_NODE_ALIAS: z.string().default('klabo.world'),
+  LIGHTNING_NODE_HOST: z.string().default('klabo.world'),
+  LIGHTNING_NODE_PORT: optionalNumber(z.coerce.number().int().min(1).max(65_535).default(9735)),
+  LIGHTNING_NODE_STATUS_TIMEOUT_MS: optionalNumber(z.coerce.number().int().min(100).max(10_000).default(2000)),
   NEXT_PUBLIC_NOSTRSTACK_BASE_URL: optionalUrl,
   NEXT_PUBLIC_NOSTRSTACK_HOST: z.string().optional(),
   NEXT_PUBLIC_NOSTRSTACK_RELAYS: z.string().optional(),

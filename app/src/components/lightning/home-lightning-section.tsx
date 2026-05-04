@@ -34,6 +34,18 @@ async function copyToClipboard(text: string): Promise<boolean> {
 
 type TipState = 'idle' | 'loading' | 'invoice' | 'success' | 'error';
 
+type NodeStatus = {
+  alias: string;
+  pubkey: string;
+  host: string;
+  port: number;
+  uri: string;
+  reachable: boolean;
+  latencyMs: number | null;
+  checkedAt: string;
+  source: string;
+};
+
 async function fetchInvoice(amountSats: number): Promise<{ invoice: string; paymentHash: string | null }> {
   const amountMsat = amountSats * 1000;
   const res = await fetch(`/api/lnurlp/joel/invoice?amount=${amountMsat}&ns=home`);
@@ -86,20 +98,49 @@ function ExternalIcon({ className }: { className?: string }) {
 }
 
 export function HomeLightningSection({ className }: { className?: string }) {
-  const [copiedField, setCopiedField] = useState<'pubkey' | 'address' | 'invoice' | null>(null);
+  const [copiedField, setCopiedField] = useState<'pubkey' | 'address' | 'uri' | 'invoice' | null>(null);
   const [tipState, setTipState] = useState<TipState>('idle');
   const [invoice, setInvoice] = useState<string | null>(null);
   const [paymentHash, setPaymentHash] = useState<string | null>(null);
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
+  const [nodeStatus, setNodeStatus] = useState<NodeStatus | null>(null);
 
-  const nodeUri = `${NODE_PUBKEY}@${NODE_HOST}:${NODE_PORT}`;
+  const nodeUri = nodeStatus?.uri ?? `${NODE_PUBKEY}@${NODE_HOST}:${NODE_PORT}`;
+  const statusLabel = nodeStatus ? (nodeStatus.reachable ? 'Online' : 'Offline') : 'Checking';
+  const statusDetail = nodeStatus?.reachable && typeof nodeStatus.latencyMs === 'number'
+    ? `${statusLabel} · ${nodeStatus.latencyMs}ms`
+    : statusLabel;
 
-  const handleCopy = useCallback(async (field: 'pubkey' | 'address' | 'invoice', text: string) => {
+  const handleCopy = useCallback(async (field: 'pubkey' | 'address' | 'uri' | 'invoice', text: string) => {
     const success = await copyToClipboard(text);
     if (success) {
       setCopiedField(field);
       setTimeout(() => setCopiedField(null), 2000);
     }
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+
+    const loadStatus = async () => {
+      try {
+        const res = await fetch('/api/lightning/node-status', { cache: 'no-store' });
+        if (!res.ok) return;
+        const data = (await res.json()) as NodeStatus;
+        if (active) {
+          setNodeStatus(data);
+        }
+      } catch {
+        // Keep the static connection details visible when status is unavailable.
+      }
+    };
+
+    loadStatus();
+    const interval = setInterval(loadStatus, 30_000);
+    return () => {
+      active = false;
+      clearInterval(interval);
+    };
   }, []);
 
   const handleTip = useCallback(async (sats: number) => {
@@ -159,10 +200,31 @@ export function HomeLightningSection({ className }: { className?: string }) {
       <div className="mx-auto max-w-6xl px-6">
         <div className="flex items-baseline justify-between gap-4 mb-6">
           <div className="space-y-1">
-            <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
-              <LightningIcon className="h-5 w-5 text-amber-400" />
-              Lightning Network
-            </h2>
+            <div className="flex flex-wrap items-center gap-3">
+              <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
+                <LightningIcon className="h-5 w-5 text-amber-400" />
+                Lightning Network
+              </h2>
+              <span
+                className={cn(
+                  'inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.24em]',
+                  nodeStatus?.reachable
+                    ? 'border-emerald-400/30 bg-emerald-400/10 text-emerald-200'
+                    : nodeStatus
+                      ? 'border-red-400/30 bg-red-400/10 text-red-200'
+                      : 'border-border/60 bg-background/50 text-muted-foreground',
+                )}
+                data-testid="lightning-node-status"
+              >
+                <span
+                  className={cn(
+                    'h-1.5 w-1.5 rounded-full',
+                    nodeStatus?.reachable ? 'bg-emerald-300' : nodeStatus ? 'bg-red-300' : 'bg-muted-foreground',
+                  )}
+                />
+                {statusDetail}
+              </span>
+            </div>
             <p className="text-sm text-muted-foreground">Connect to my node or send a tip.</p>
           </div>
           <a
@@ -175,7 +237,7 @@ export function HomeLightningSection({ className }: { className?: string }) {
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {/* Node Info - Compact */}
-          <div className="rounded-2xl border border-amber-500/10 bg-gradient-to-br from-amber-950/20 via-card/70 to-card/70 p-4 shadow-[0_12px_30px_rgba(6,10,20,0.35)]">
+          <div className="rounded-2xl border border-amber-500/10 bg-gradient-to-br from-amber-950/20 via-card/80 to-card/70 p-4 shadow-[0_12px_30px_rgba(6,10,20,0.35)]">
             <div className="flex items-center gap-3 mb-3">
               <div
                 className="h-8 w-8 rounded-full flex items-center justify-center shadow-lg shadow-amber-500/20"
@@ -184,8 +246,8 @@ export function HomeLightningSection({ className }: { className?: string }) {
                 <LightningIcon className="h-4 w-4 text-white" />
               </div>
               <div className="min-w-0 flex-1">
-                <h3 className="text-sm font-semibold text-foreground truncate">{NODE_ALIAS}</h3>
-                <p className="text-xs text-muted-foreground">Lightning Node</p>
+                <h3 className="text-sm font-semibold text-foreground truncate">{nodeStatus?.alias ?? NODE_ALIAS}</h3>
+                <p className="text-xs text-muted-foreground">{nodeStatus?.host ?? NODE_HOST}:{nodeStatus?.port ?? NODE_PORT}</p>
               </div>
             </div>
 
@@ -219,6 +281,26 @@ export function HomeLightningSection({ className }: { className?: string }) {
                   aria-label="Copy lightning address"
                 >
                   {copiedField === 'address' ? (
+                    <CheckIcon className="h-3.5 w-3.5 text-green-400" />
+                  ) : (
+                    <CopyIcon className="h-3.5 w-3.5" />
+                  )}
+                </button>
+              </div>
+
+              {/* Connection URI */}
+              <div className="flex items-center gap-2 text-xs">
+                <span className="text-muted-foreground shrink-0">URI:</span>
+                <code className="font-mono text-foreground/80 truncate flex-1" title={nodeUri}>
+                  {nodeUri.slice(0, 24)}...:{nodeStatus?.port ?? NODE_PORT}
+                </code>
+                <button
+                  type="button"
+                  onClick={() => handleCopy('uri', nodeUri)}
+                  className="shrink-0 rounded p-1 text-muted-foreground hover:text-foreground hover:bg-background/50 transition-colors"
+                  aria-label="Copy connection URI"
+                >
+                  {copiedField === 'uri' ? (
                     <CheckIcon className="h-3.5 w-3.5 text-green-400" />
                   ) : (
                     <CopyIcon className="h-3.5 w-3.5" />

@@ -6,6 +6,12 @@
 - Stack: Next.js 16 (App Router) + React 19, TypeScript 5, Tailwind 4, Contentlayer MDX, Prisma (SQLite default; Postgres optional), optional Redis, Azure Blob Storage, Azure App Service containers.
 - Layout: `app/` (Next app), `packages/{config,scripts,ui}`, `content/{posts,apps,dashboards}`, `infra/` (Bicep), `docs/`, `docker-compose.dev.yml`, `Justfile`, `.devcontainer/`.
 
+## Blog Hero Image Theme
+- Canonical generated fallback: `app/public/images/posts/klabo-world-editorial-hero.webp`, served as `/images/posts/klabo-world-editorial-hero.webp`.
+- Public post pages treat `featuredImage` as the canonical article hero. Omit `featuredImage` to use the fallback; add a post-specific image only when it follows the same theme and has a calm left-side text zone.
+- Future generated post heroes should use: dark obsidian/navy editorial technology photography, warm amber Lightning/circuit energy, restrained coral or muted teal accents, realistic workbench or node/laptop materials, fine grain, and no embedded text, logos, UI chrome, cartoons, purple-dominant gradients, beige/brown washes, or busy center compositions.
+- Preferred crop is 16:9 at 1600x900 or larger. Keep the brightest subject in the right third and preserve a darker, low-detail left half for overlaid title text on post pages.
+
 ## Prereqs
 - macOS/Linux, Git, [mise](https://mise.jdx.dev/) (installs Node 24.11.1 + pnpm 10.22.0 via `just bootstrap`).
 - Optional: Docker Desktop/Nerdctl for Postgres/Redis/Azurite; k6 for `just load-test`; Azure CLI 2.79+ for infra/deploy work.
