@@ -92,7 +92,7 @@ export function BitcoinOnchainCard({
   return (
     <div
       className={cn(
-        'relative flex flex-col overflow-hidden rounded-2xl border border-orange-400/20 bg-[linear-gradient(135deg,rgba(12,18,30,0.98),rgba(28,24,22,0.86))] p-4 shadow-[0_18px_45px_rgba(6,10,20,0.34)] sm:p-5',
+        'relative flex min-h-[304px] flex-col overflow-hidden rounded-2xl border border-orange-400/20 bg-[linear-gradient(135deg,rgba(12,18,30,0.98),rgba(28,24,22,0.86))] p-4 shadow-[0_18px_45px_rgba(6,10,20,0.34)] sm:p-5',
         className,
       )}
       data-testid="bitcoin-onchain-card"

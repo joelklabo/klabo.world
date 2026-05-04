@@ -167,12 +167,12 @@ export function LightningTipWidget({ lightningAddress, namespace = 'default', cl
   return (
     <div
       className={cn(
-        'relative overflow-hidden rounded-2xl border border-amber-500/20 bg-[linear-gradient(135deg,rgba(22,20,24,0.96),rgba(8,14,28,0.86))] p-5 shadow-[0_18px_45px_rgba(6,10,20,0.34)] backdrop-blur-xl',
+        'relative flex min-h-[304px] flex-col overflow-hidden rounded-2xl border border-amber-500/20 bg-[linear-gradient(135deg,rgba(22,20,24,0.96),rgba(8,14,28,0.86))] p-5 shadow-[0_18px_45px_rgba(6,10,20,0.34)] backdrop-blur-xl',
         className
       )}
       data-testid="lightning-tip-widget"
     >
-      <div className="relative space-y-5">
+      <div className="relative flex h-full flex-1 flex-col gap-5">
         {/* Header */}
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-amber-400 to-orange-500 shadow-lg shadow-amber-500/30">
@@ -208,7 +208,7 @@ export function LightningTipWidget({ lightningAddress, namespace = 'default', cl
 
         {/* Amount Selection */}
         {state === 'idle' && (
-          <div className="space-y-3" data-testid="tip-amount-selection">
+          <div className="mt-auto space-y-3" data-testid="tip-amount-selection">
             {/* Preset amounts in a grid */}
             <div className="grid grid-cols-2 gap-2 2xl:grid-cols-4">
               {PRESET_AMOUNTS.map((sats) => (
@@ -267,7 +267,7 @@ export function LightningTipWidget({ lightningAddress, namespace = 'default', cl
 
         {/* Loading */}
         {state === 'loading' && (
-          <div className="flex flex-col items-center gap-4 py-6" data-testid="tip-loading">
+          <div className="flex flex-1 flex-col items-center justify-center gap-4 py-6" data-testid="tip-loading">
             <div className="relative">
               <div className="h-12 w-12 animate-spin rounded-full border-2 border-amber-500/20 border-t-amber-400" />
               <LightningIcon className="absolute left-1/2 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 text-amber-400" />
@@ -351,7 +351,7 @@ export function LightningTipWidget({ lightningAddress, namespace = 'default', cl
 
         {/* Error */}
         {state === 'error' && (
-          <div className="space-y-3" data-testid="tip-error">
+          <div className="flex flex-1 flex-col justify-center space-y-3" data-testid="tip-error">
             <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-center">
               <p className="text-sm text-red-200">{error}</p>
             </div>
@@ -367,7 +367,7 @@ export function LightningTipWidget({ lightningAddress, namespace = 'default', cl
 
         {/* Success */}
         {state === 'success' && (
-          <div className="flex flex-col items-center gap-4 py-6" data-testid="tip-success">
+          <div className="flex flex-1 flex-col items-center justify-center gap-4 py-6" data-testid="tip-success">
             <div className="relative">
               {/* Animated rings */}
               <div className="absolute inset-0 animate-ping rounded-full bg-emerald-400/30" />

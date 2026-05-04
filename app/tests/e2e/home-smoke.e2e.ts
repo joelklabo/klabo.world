@@ -1,7 +1,24 @@
 import { expect, test } from '@playwright/test';
+import type { Page } from '@playwright/test';
 
 const routes = ['/', '/posts', '/projects', '/apps'];
 const BTC_ADDRESS = 'bc1qzafw20xpesnvwup6gmtx38e5j6ddjjdpc0zh78';
+const paymentCardTestIds = [
+  'lightning-node-card',
+  'lightning-tip-widget',
+  'bitcoin-onchain-card',
+] as const;
+
+async function expectPaymentCardsSameHeight(page: Page) {
+  const heights = await Promise.all(
+    paymentCardTestIds.map((testId) =>
+      page
+        .getByTestId(testId)
+        .evaluate((element) => Math.round(element.getBoundingClientRect().height)),
+    ),
+  );
+  expect(Math.max(...heights) - Math.min(...heights)).toBeLessThanOrEqual(1);
+}
 
 test.describe('public smoke', () => {
   for (const route of routes) {
@@ -84,6 +101,7 @@ test.describe('public smoke', () => {
       'href',
       `bitcoin:${BTC_ADDRESS}`
     );
+    await expectPaymentCardsSameHeight(page);
 
     const paymentTop = await page
       .getByTestId('home-lightning-section')
@@ -100,5 +118,8 @@ test.describe('public smoke', () => {
       'href',
       'lightning:lnbc1testinvoiceforplaywright'
     );
+    await page.getByTestId('mark-paid').click();
+    await expect(page.getByTestId('tip-success')).toBeVisible();
+    await expectPaymentCardsSameHeight(page);
   });
 });

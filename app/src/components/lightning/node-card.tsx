@@ -95,12 +95,12 @@ export function LightningNodeCard(props: NodeCardProps) {
   return (
     <div
       className={cn(
-        'relative overflow-hidden rounded-2xl border border-primary/20 bg-[linear-gradient(135deg,rgba(18,24,34,0.96),rgba(8,14,28,0.86))] p-5 shadow-[0_18px_45px_rgba(6,10,20,0.34)] backdrop-blur-xl',
+        'relative flex min-h-[304px] flex-col overflow-hidden rounded-2xl border border-primary/20 bg-[linear-gradient(135deg,rgba(18,24,34,0.96),rgba(8,14,28,0.86))] p-5 shadow-[0_18px_45px_rgba(6,10,20,0.34)] backdrop-blur-xl',
         className
       )}
       data-testid="lightning-node-card"
     >
-      <div className="relative space-y-5">
+      <div className="relative flex h-full flex-1 flex-col gap-5">
         {/* Header */}
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -265,7 +265,7 @@ export function LightningNodeCard(props: NodeCardProps) {
         {/* Open Channel CTA */}
         <a
           href={`lightning:${nodeUri}`}
-          className="flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-primary to-primary/80 px-6 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:-translate-y-0.5 hover:shadow-primary/40"
+          className="mt-auto flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-primary to-primary/80 px-6 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 transition-all hover:-translate-y-0.5 hover:shadow-primary/40"
           data-testid="connect-node"
         >
           <LightningIcon className="h-4 w-4" />

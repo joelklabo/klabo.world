@@ -36,7 +36,7 @@ export function BitcoinPaymentsGrid({
   return (
     <div
       className={cn(
-        'grid grid-cols-1 items-start gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.9fr)_minmax(330px,1fr)]',
+        'grid grid-cols-1 items-stretch gap-4 lg:auto-rows-fr lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.9fr)_minmax(330px,1fr)]',
         className,
       )}
     >
@@ -46,9 +46,10 @@ export function BitcoinPaymentsGrid({
         color={node?.color ?? NODE_COLOR}
         host={node?.host ?? NODE_HOST}
         port={node?.port ?? NODE_PORT}
+        className="h-full"
       />
-      <LightningTipWidget lightningAddress={LIGHTNING_ADDRESS} namespace={namespace} />
-      <BitcoinOnchainCard address={bitcoinAddress} />
+      <LightningTipWidget lightningAddress={LIGHTNING_ADDRESS} namespace={namespace} className="h-full" />
+      <BitcoinOnchainCard address={bitcoinAddress} className="h-full" />
     </div>
   );
 }
