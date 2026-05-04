@@ -112,7 +112,7 @@ export function BitcoinOnchainCard({
         </div>
       </div>
 
-      <div className="mt-4 grid min-w-0 flex-1 items-center gap-4 sm:grid-cols-[112px_minmax(0,1fr)] lg:grid-cols-1 xl:grid-cols-[112px_minmax(0,1fr)]">
+      <div className="mt-8 grid min-w-0 flex-1 items-start gap-4 sm:grid-cols-[112px_minmax(0,1fr)] lg:grid-cols-1 xl:grid-cols-[112px_minmax(0,1fr)]">
         <a
           href={addressInfo.uri}
           className="mx-auto flex h-28 w-28 items-center justify-center rounded-xl bg-white p-2 shadow-[0_16px_32px_rgba(0,0,0,0.28)] transition-transform hover:-translate-y-0.5"

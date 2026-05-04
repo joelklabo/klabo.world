@@ -208,7 +208,7 @@ export function LightningTipWidget({ lightningAddress, namespace = 'default', cl
 
         {/* Amount Selection */}
         {state === 'idle' && (
-          <div className="mt-auto space-y-3" data-testid="tip-amount-selection">
+          <div className="space-y-3" data-testid="tip-amount-selection">
             {/* Preset amounts in a grid */}
             <div className="grid grid-cols-2 gap-2 2xl:grid-cols-4">
               {PRESET_AMOUNTS.map((sats) => (
