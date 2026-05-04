@@ -61,9 +61,17 @@ test.describe('public smoke', () => {
       });
     });
 
+    await page.route('**/api/tip-stats?*', async (route) => {
+      await route.fulfill({
+        contentType: 'application/json',
+        body: JSON.stringify({ count: 0, totalSats: 0, largestTip: 0 }),
+      });
+    });
+
     await page.goto('/');
 
     await expect(page.getByTestId('home-lightning-section')).toBeVisible();
+    await expect(page.getByTestId('tip-custom-input')).toBeVisible();
     await expect(page.getByTestId('lightning-node-status')).toContainText('Online');
     await expect(page.getByText(/0276dc1e.*0a789a68/)).toBeVisible();
     await expect(page.getByRole('link', { name: /connect/i })).toHaveAttribute(
@@ -77,10 +85,18 @@ test.describe('public smoke', () => {
       `bitcoin:${BTC_ADDRESS}`
     );
 
+    const paymentTop = await page
+      .getByTestId('home-lightning-section')
+      .evaluate((element) => element.getBoundingClientRect().top + window.scrollY);
+    const overviewTop = await page
+      .getByTestId('home-section-overview')
+      .evaluate((element) => element.getBoundingClientRect().top + window.scrollY);
+    expect(paymentTop).toBeLessThan(overviewTop);
+
     await page.getByRole('button', { name: /21\s*sats/i }).click();
 
     await expect(page.getByText(/lnbc1testinvoiceforplay/)).toBeVisible();
-    await expect(page.getByRole('link', { name: /pay 21 sats/i }).last()).toHaveAttribute(
+    await expect(page.getByTestId('open-wallet')).toHaveAttribute(
       'href',
       'lightning:lnbc1testinvoiceforplaywright'
     );

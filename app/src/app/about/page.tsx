@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { getPublicGitHubOwner } from '@/lib/public-env';
 import { Button } from '@/components/ui/button';
 import { Surface } from '@/components/ui/surface';
-import { BitcoinOnchainCard, LightningNodeCard, LightningTipWidget } from '@/components/lightning';
+import { BitcoinPaymentsGrid } from '@/components/lightning';
 
 export const metadata: Metadata = {
   title: 'About',
@@ -86,17 +86,7 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.9fr)_minmax(330px,1fr)]">
-            <LightningNodeCard
-              alias="klabo.world"
-              pubkey="0276dc1ed542d0d777b518f1bd05f042847f19f312718cf1303288119a0a789a68"
-              color="#f7931a"
-              host="lnbits.klabo.world"
-              port={9735}
-            />
-            <LightningTipWidget lightningAddress="joel@klabo.world" namespace="about" />
-            <BitcoinOnchainCard />
-          </div>
+          <BitcoinPaymentsGrid namespace="about" />
         </section>
       </div>
     </div>

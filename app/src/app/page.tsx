@@ -166,6 +166,8 @@ export default async function Home() {
         </div>
       </section>
 
+      <HomeLightningSection />
+
       <section className="pb-12 sm:pb-16">
         <div className="mx-auto max-w-6xl space-y-8 px-6" data-testid="home-section-overview">
           <div className="flex flex-col gap-2">
@@ -198,8 +200,6 @@ export default async function Home() {
           </div>
         </div>
       </section>
-
-      <HomeLightningSection />
 
       <section className="pb-16 sm:pb-20">
         <div className="mx-auto max-w-6xl px-6">
