@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 const routes = ['/', '/posts', '/projects', '/apps'];
+const BTC_ADDRESS = 'bc1qzafw20xpesnvwup6gmtx38e5j6ddjjdpc0zh78';
 
 test.describe('public smoke', () => {
   for (const route of routes) {
@@ -24,6 +25,20 @@ test.describe('public smoke', () => {
           latencyMs: 42,
           checkedAt: '2026-05-04T01:00:00.000Z',
           source: 'tcp-connect',
+        }),
+      });
+    });
+
+    await page.route('**/api/bitcoin/onchain-address', async (route) => {
+      await route.fulfill({
+        contentType: 'application/json',
+        body: JSON.stringify({
+          address: BTC_ADDRESS,
+          uri: `bitcoin:${BTC_ADDRESS}`,
+          source: 'rotating-pool',
+          poolSize: 31,
+          rotation: 'daily',
+          index: 0,
         }),
       });
     });
@@ -54,6 +69,12 @@ test.describe('public smoke', () => {
     await expect(page.getByRole('link', { name: /connect/i })).toHaveAttribute(
       'href',
       /^lightning:0276dc1ed542d0d777b518f1bd05f042847f19f312718cf1303288119a0a789a68@lnbits\.klabo\.world:9735$/
+    );
+    await expect(page.getByTestId('bitcoin-onchain-card')).toBeVisible();
+    await expect(page.getByTestId('bitcoin-onchain-address')).toContainText(/bc1qzafw/);
+    await expect(page.getByTestId('open-onchain-wallet')).toHaveAttribute(
+      'href',
+      `bitcoin:${BTC_ADDRESS}`
     );
 
     await page.getByRole('button', { name: /21\s*sats/i }).click();

@@ -12,6 +12,13 @@
 - Future generated post heroes should use: dark obsidian/navy editorial technology photography, warm amber Lightning/circuit energy, restrained coral or muted teal accents, realistic workbench or node/laptop materials, fine grain, and no embedded text, logos, UI chrome, cartoons, purple-dominant gradients, beige/brown washes, or busy center compositions.
 - Preferred crop is 16:9 at 1600x900 or larger. Keep the brightest subject in the right third and preserve a darker, low-detail left half for overlaid title text on post pages.
 
+## Bitcoin Payment Address Policy
+- Public payment surfaces support both Lightning and regular on-chain Bitcoin transactions.
+- Do not expose LND macaroons, xpubs, or live wallet RPC directly to the web app for public address generation.
+- Preferred on-chain pattern: generate a bounded batch of receive addresses from the node wallet, store them in `BITCOIN_ONCHAIN_ADDRESS_POOL`, and rotate through them daily. Keep `BITCOIN_ONCHAIN_ADDRESS` as the static fallback.
+- Avoid unbounded public address generation. Unused wallet-derived addresses are normal, but a public generate endpoint can create wallet-state bloat and recovery-window/gap-limit problems after seed restore.
+- If replacing the pool, generate addresses through LND so the wallet tracks them, keep the pool reasonably small, and update Azure app settings rather than committing future receive addresses to the repo.
+
 ## Prereqs
 - macOS/Linux, Git, [mise](https://mise.jdx.dev/) (installs Node 24.11.1 + pnpm 10.22.0 via `just bootstrap`).
 - Optional: Docker Desktop/Nerdctl for Postgres/Redis/Azurite; k6 for `just load-test`; Azure CLI 2.79+ for infra/deploy work.

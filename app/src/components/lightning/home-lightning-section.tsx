@@ -3,12 +3,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { cn } from '@/lib/utils';
+import { BitcoinOnchainCard } from './onchain-card';
 
 const NODE_PUBKEY = '0276dc1ed542d0d777b518f1bd05f042847f19f312718cf1303288119a0a789a68';
 const NODE_ALIAS = 'klabo.world';
 const NODE_HOST = 'lnbits.klabo.world';
 const NODE_PORT = 9735;
 const LIGHTNING_ADDRESS = 'joel@klabo.world';
+const BITCOIN_ONCHAIN_ADDRESS = 'bc1qzafw20xpesnvwup6gmtx38e5j6ddjjdpc0zh78';
 
 const PRESET_AMOUNTS = [21, 100, 500, 1000] as const;
 
@@ -97,7 +99,15 @@ function ExternalIcon({ className }: { className?: string }) {
   );
 }
 
-export function HomeLightningSection({ className }: { className?: string }) {
+type HomeLightningSectionProps = {
+  className?: string;
+  bitcoinAddress?: string;
+};
+
+export function HomeLightningSection({
+  className,
+  bitcoinAddress = BITCOIN_ONCHAIN_ADDRESS,
+}: HomeLightningSectionProps) {
   const [copiedField, setCopiedField] = useState<'pubkey' | 'address' | 'uri' | 'invoice' | null>(null);
   const [tipState, setTipState] = useState<TipState>('idle');
   const [invoice, setInvoice] = useState<string | null>(null);
@@ -203,7 +213,7 @@ export function HomeLightningSection({ className }: { className?: string }) {
             <div className="flex flex-wrap items-center gap-3">
               <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
                 <LightningIcon className="h-5 w-5 text-amber-400" />
-                Lightning Network
+                Bitcoin Payments
               </h2>
               <span
                 className={cn(
@@ -225,7 +235,7 @@ export function HomeLightningSection({ className }: { className?: string }) {
                 {statusDetail}
               </span>
             </div>
-            <p className="text-sm text-muted-foreground">Connect to my node or send a tip.</p>
+            <p className="text-sm text-muted-foreground">Lightning for tips and channels. On-chain for regular Bitcoin transactions.</p>
           </div>
           <a
             href="/about"
@@ -235,7 +245,7 @@ export function HomeLightningSection({ className }: { className?: string }) {
           </a>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
           {/* Node Info - Compact */}
           <div className="rounded-2xl border border-amber-500/10 bg-gradient-to-br from-amber-950/20 via-card/80 to-card/70 p-4 shadow-[0_12px_30px_rgba(6,10,20,0.35)]">
             <div className="flex items-center gap-3 mb-3">
@@ -435,6 +445,8 @@ export function HomeLightningSection({ className }: { className?: string }) {
               </div>
             )}
           </div>
+
+          <BitcoinOnchainCard address={bitcoinAddress} />
         </div>
       </div>
     </section>

@@ -89,6 +89,8 @@ const schema = z.object({
   NOSTRSTACK_RELAYS: z.string().optional(),
   LNBITS_BASE_URL: optionalUrl,
   LNBITS_ADMIN_KEY: z.string().optional(),
+  BITCOIN_ONCHAIN_ADDRESS: z.string().default('bc1qzafw20xpesnvwup6gmtx38e5j6ddjjdpc0zh78'),
+  BITCOIN_ONCHAIN_ADDRESS_POOL: z.string().optional(),
   LIGHTNING_NODE_PUBKEY: z.string().default('0276dc1ed542d0d777b518f1bd05f042847f19f312718cf1303288119a0a789a68'),
   LIGHTNING_NODE_ALIAS: z.string().default('klabo.world'),
   LIGHTNING_NODE_HOST: z.string().default('lnbits.klabo.world'),
