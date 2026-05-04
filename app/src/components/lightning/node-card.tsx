@@ -13,6 +13,7 @@ type NodeCardProps = {
   port?: number;
   numChannels?: number;
   totalCapacity?: number; // in sats
+  showExplorerLinks?: boolean;
   className?: string;
 };
 
@@ -67,6 +68,7 @@ export function LightningNodeCard(props: NodeCardProps) {
     port = defaultProps.port,
     numChannels,
     totalCapacity,
+    showExplorerLinks = false,
     className,
   } = props;
 
@@ -236,27 +238,29 @@ export function LightningNodeCard(props: NodeCardProps) {
         )}
 
         {/* Explorer Links */}
-        <div className="space-y-2">
-          <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-            View on Explorer
-          </span>
-          <div className="flex flex-wrap gap-2">
-            {explorers.map((explorer) => (
-              <a
-                key={explorer.name}
-                href={explorer.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`View node on ${explorer.name} (opens in new tab)`}
-                className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-foreground/80 transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-foreground"
-                data-testid={`explorer-${explorer.name.toLowerCase()}`}
-              >
-                {explorer.name}
-                <ExternalLinkIcon className="h-3 w-3" />
-              </a>
-            ))}
+        {showExplorerLinks && (
+          <div className="space-y-2">
+            <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              View on Explorer
+            </span>
+            <div className="flex flex-wrap gap-2">
+              {explorers.map((explorer) => (
+                <a
+                  key={explorer.name}
+                  href={explorer.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`View node on ${explorer.name} (opens in new tab)`}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-foreground/80 transition-colors hover:border-primary/40 hover:bg-primary/10 hover:text-foreground"
+                  data-testid={`explorer-${explorer.name.toLowerCase()}`}
+                >
+                  {explorer.name}
+                  <ExternalLinkIcon className="h-3 w-3" />
+                </a>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Open Channel CTA */}
         <a
