@@ -242,11 +242,11 @@ export default async function Home() {
                       data-analytics-label={post.slug}
                       className="group block px-5 py-4 motion-safe:transition-colors hover:bg-background/15"
                     >
-                      <div className="flex items-baseline justify-between gap-4">
-                        <h3 className="min-w-0 truncate text-base font-semibold text-foreground motion-safe:transition-colors group-hover:text-primary">
+                      <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
+                        <h3 className="min-w-0 text-base font-semibold leading-snug text-foreground line-clamp-2 motion-safe:transition-colors group-hover:text-primary">
                           {post.title}
                         </h3>
-                        <time dateTime={new Date(post.publishDate ?? post.date).toISOString()} className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.28em] text-muted-foreground">
+                        <time dateTime={new Date(post.publishDate ?? post.date).toISOString()} className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
                           {new Date(post.publishDate ?? post.date).toLocaleDateString(
                             undefined,
                             { month: "short", day: "numeric", year: "numeric" },

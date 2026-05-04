@@ -93,32 +93,25 @@ export function LightningNodeCard(props: NodeCardProps) {
   return (
     <div
       className={cn(
-        'relative overflow-hidden rounded-3xl border border-primary/20 bg-gradient-to-br from-primary/10 via-background/80 to-background/60 p-6 shadow-[0_20px_50px_rgba(var(--primary-rgb),0.12)] backdrop-blur-xl',
+        'relative overflow-hidden rounded-2xl border border-primary/20 bg-[linear-gradient(135deg,rgba(18,24,34,0.96),rgba(8,14,28,0.86))] p-5 shadow-[0_18px_45px_rgba(6,10,20,0.34)] backdrop-blur-xl',
         className
       )}
       data-testid="lightning-node-card"
     >
-      {/* Glow effects */}
-      <div
-        className="pointer-events-none absolute -right-16 -top-16 h-32 w-32 rounded-full blur-3xl opacity-40"
-        style={{ backgroundColor: color }}
-      />
-      <div className="pointer-events-none absolute -bottom-8 -left-8 h-24 w-24 rounded-full bg-primary/20 blur-2xl" />
-
       <div className="relative space-y-5">
         {/* Header */}
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">
             {/* Node color indicator */}
             <div
-              className="flex h-12 w-12 items-center justify-center rounded-xl shadow-lg"
+              className="flex h-11 w-11 items-center justify-center rounded-xl shadow-lg"
               style={{ backgroundColor: color }}
             >
-              <LightningIcon className="h-6 w-6 text-white" />
+              <LightningIcon className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-foreground">{alias}</h3>
-              <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+              <h3 className="text-base font-bold leading-tight text-foreground">{alias}</h3>
+              <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
                 Lightning Node
               </p>
             </div>

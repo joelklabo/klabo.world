@@ -167,26 +167,22 @@ export function LightningTipWidget({ lightningAddress, namespace = 'default', cl
   return (
     <div
       className={cn(
-        'relative overflow-hidden rounded-3xl border border-amber-500/20 bg-gradient-to-br from-amber-950/40 via-background/80 to-background/60 p-6 shadow-[0_20px_50px_rgba(245,158,11,0.15)] backdrop-blur-xl',
+        'relative overflow-hidden rounded-2xl border border-amber-500/20 bg-[linear-gradient(135deg,rgba(22,20,24,0.96),rgba(8,14,28,0.86))] p-5 shadow-[0_18px_45px_rgba(6,10,20,0.34)] backdrop-blur-xl',
         className
       )}
       data-testid="lightning-tip-widget"
     >
-      {/* Glow effect */}
-      <div className="pointer-events-none absolute -right-20 -top-20 h-40 w-40 rounded-full bg-amber-500/20 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-orange-500/15 blur-2xl" />
-
       <div className="relative space-y-5">
         {/* Header */}
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-amber-400 to-orange-500 shadow-lg shadow-amber-500/30">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-amber-400 to-orange-500 shadow-lg shadow-amber-500/30">
             <LightningIcon className="h-5 w-5 text-white" />
           </div>
-          <div>
-            <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-amber-100/90">
+          <div className="min-w-0">
+            <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-amber-100/90">
               Send a Tip
             </h3>
-            <p className="text-xs text-muted-foreground">{lightningAddress}</p>
+            <p className="truncate text-xs text-muted-foreground">{lightningAddress}</p>
           </div>
         </div>
 
@@ -214,7 +210,7 @@ export function LightningTipWidget({ lightningAddress, namespace = 'default', cl
         {state === 'idle' && (
           <div className="space-y-3" data-testid="tip-amount-selection">
             {/* Preset amounts in a grid */}
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 gap-2 2xl:grid-cols-4">
               {PRESET_AMOUNTS.map((sats) => (
                 <button
                   key={sats}
@@ -222,7 +218,7 @@ export function LightningTipWidget({ lightningAddress, namespace = 'default', cl
                   onClick={() => handleAmountSelect(sats)}
                   data-testid={`tip-amount-${sats}`}
                   className={cn(
-                    'group flex flex-col items-center justify-center rounded-xl border px-2 py-3 text-center transition-all',
+                    'group flex min-h-16 flex-col items-center justify-center rounded-xl border px-2 py-3 text-center transition-all',
                     'border-amber-500/30 bg-amber-500/10 hover:border-amber-400/60 hover:bg-amber-500/20 hover:-translate-y-0.5',
                     'focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background'
                   )}

@@ -108,19 +108,19 @@ export function GitHubProjectsShowcase({
                   </span>
                 ) : null}
               </div>
-              <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.26em] text-muted-foreground">
-                <span className="hidden sm:inline">{featured.fullName}</span>
+              <div className="flex min-w-0 items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+                <span className="hidden min-w-0 max-w-64 truncate sm:inline-block">{featured.fullName}</span>
                 <ArrowUpRight className="size-4 text-muted-foreground motion-safe:transition-transform motion-safe:duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
               </div>
             </div>
 
             <div className="space-y-3">
-              <div className="flex items-start justify-between gap-4">
+              <div className="flex flex-col gap-2 lg:flex-row lg:items-start lg:justify-between lg:gap-4">
                 <h3 className="text-xl font-semibold tracking-tight text-foreground text-balance sm:text-2xl">
                   {featured.name}
                 </h3>
                 {featuredUpdatedLabel ? (
-                  <div className="shrink-0 text-right text-[11px] font-semibold uppercase tracking-[0.28em] text-muted-foreground">
+                  <div className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.22em] text-muted-foreground lg:text-right">
                     <div>Updated</div>
                     <div className="mt-1 font-medium normal-case tracking-normal text-muted-foreground">
                       {featuredUpdatedLabel}

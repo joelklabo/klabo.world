@@ -208,10 +208,10 @@ export function HomeLightningSection({
   return (
     <section className={cn('py-8', className)} data-testid="home-lightning-section">
       <div className="mx-auto max-w-6xl px-6">
-        <div className="flex items-baseline justify-between gap-4 mb-6">
+        <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div className="space-y-1">
             <div className="flex flex-wrap items-center gap-3">
-              <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
+              <h2 className="flex items-center gap-2 text-xl font-semibold leading-tight text-foreground">
                 <LightningIcon className="h-5 w-5 text-amber-400" />
                 Bitcoin Payments
               </h2>
@@ -235,19 +235,20 @@ export function HomeLightningSection({
                 {statusDetail}
               </span>
             </div>
-            <p className="text-sm text-muted-foreground">Lightning for tips and channels. On-chain for regular Bitcoin transactions.</p>
+            <p className="max-w-2xl text-sm text-muted-foreground">Lightning for tips and channels. On-chain for regular Bitcoin transactions.</p>
           </div>
           <a
             href="/about"
-            className="px-0 text-xs font-semibold uppercase tracking-[0.28em] text-muted-foreground hover:text-primary transition-colors"
+            className="inline-flex w-fit items-center gap-1.5 rounded-full border border-border/50 bg-card/40 px-3 py-1.5 text-sm font-semibold text-muted-foreground transition-colors hover:border-primary/45 hover:text-primary"
           >
-            More info →
+            More info
+            <ExternalIcon className="h-3.5 w-3.5" />
           </a>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <div className="grid grid-cols-1 items-stretch gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.9fr)_minmax(330px,1fr)]">
           {/* Node Info - Compact */}
-          <div className="rounded-2xl border border-amber-500/10 bg-gradient-to-br from-amber-950/20 via-card/80 to-card/70 p-4 shadow-[0_12px_30px_rgba(6,10,20,0.35)]">
+          <div className="rounded-2xl border border-border/60 bg-card/70 p-4 shadow-[0_12px_30px_rgba(6,10,20,0.32)] sm:p-5">
             <div className="flex items-center gap-3 mb-3">
               <div
                 className="h-8 w-8 rounded-full flex items-center justify-center shadow-lg shadow-amber-500/20"
@@ -341,21 +342,26 @@ export function HomeLightningSection({
           </div>
 
           {/* Tip Widget - Compact */}
-          <div className="rounded-2xl border border-amber-500/20 bg-gradient-to-br from-amber-950/30 via-background/60 to-background/40 p-4 shadow-[0_12px_30px_rgba(245,158,11,0.1)]">
-            <div className="flex items-center gap-2 mb-3">
-              <LightningIcon className="h-4 w-4 text-amber-400" />
-              <h3 className="text-sm font-semibold text-amber-100/90">Send a Tip</h3>
+          <div className="rounded-2xl border border-amber-500/20 bg-[linear-gradient(135deg,rgba(18,24,34,0.96),rgba(16,20,29,0.82))] p-4 shadow-[0_12px_30px_rgba(6,10,20,0.3)] sm:p-5">
+            <div className="mb-4 flex items-start gap-3">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-amber-500/16 text-amber-300">
+                <LightningIcon className="h-4 w-4" />
+              </div>
+              <div className="min-w-0">
+                <h3 className="text-sm font-semibold leading-tight text-amber-100/90">Send a Tip</h3>
+                <p className="truncate text-xs text-muted-foreground">{LIGHTNING_ADDRESS}</p>
+              </div>
             </div>
 
             {tipState === 'idle' && (
               <div className="space-y-3">
-                <div className="flex gap-2">
+                <div className="grid grid-cols-2 gap-2 2xl:grid-cols-4">
                   {PRESET_AMOUNTS.map((sats) => (
                     <button
                       key={sats}
                       type="button"
                       onClick={() => handleTip(sats)}
-                      className="flex-1 flex flex-col items-center justify-center rounded-lg border border-amber-500/30 bg-amber-500/10 px-2 py-2.5 text-center transition-all hover:border-amber-400/60 hover:bg-amber-500/20 hover:-translate-y-0.5"
+                      className="flex min-h-16 flex-col items-center justify-center rounded-lg border border-amber-500/30 bg-amber-500/10 px-2 py-2.5 text-center transition-all hover:-translate-y-0.5 hover:border-amber-400/60 hover:bg-amber-500/20"
                     >
                       <span className="text-base font-bold text-amber-100">{formatSats(sats)}</span>
                       <span className="text-[10px] text-amber-200/60">sats</span>
@@ -446,7 +452,7 @@ export function HomeLightningSection({
             )}
           </div>
 
-          <BitcoinOnchainCard address={bitcoinAddress} />
+          <BitcoinOnchainCard address={bitcoinAddress} className="h-full" />
         </div>
       </div>
     </section>

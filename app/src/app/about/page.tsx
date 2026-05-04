@@ -14,10 +14,6 @@ export default function AboutPage() {
   const githubOwner = getPublicGitHubOwner();
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-background text-foreground">
-      <div className="pointer-events-none absolute inset-0 opacity-80">
-        <div className="absolute -left-20 -top-10 h-64 w-64 rounded-full bg-primary/15 blur-3xl" />
-        <div className="absolute right-0 top-10 h-72 w-72 rounded-full bg-secondary/18 blur-3xl" />
-      </div>
       <div className="relative mx-auto flex max-w-6xl flex-col gap-10 px-6 py-16">
         <header className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div className="space-y-3">
@@ -90,7 +86,7 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.9fr)_minmax(330px,1fr)]">
             <LightningNodeCard
               alias="klabo.world"
               pubkey="0276dc1ed542d0d777b518f1bd05f042847f19f312718cf1303288119a0a789a68"

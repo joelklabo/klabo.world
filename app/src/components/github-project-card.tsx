@@ -56,10 +56,11 @@ export function GitHubProjectCard({
       >
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">
-              {project.fullName}
+            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+              <span className="sm:hidden">Repository</span>
+              <span className="hidden break-words sm:block">{project.fullName}</span>
             </p>
-            <h3 className="mt-2 truncate text-xl font-semibold text-foreground group-hover:text-primary">
+            <h3 className="mt-2 text-xl font-semibold leading-tight text-foreground text-balance group-hover:text-primary">
               {project.name}
             </h3>
           </div>
