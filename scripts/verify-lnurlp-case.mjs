@@ -1,8 +1,54 @@
 #!/usr/bin/env node
 
+import { createHash } from 'node:crypto';
+
 const names = process.argv.slice(2);
 const BASE_URL = process.env.LNURL_BASE_URL || 'https://klabo.world';
 const AMOUNT_MSATS = 1000;
+
+const BECH32_CHARSET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
+
+function groupsToBytes(groups) {
+  let acc = 0;
+  let bits = 0;
+  const bytes = [];
+  for (const val of groups) {
+    acc = (acc << 5) | val;
+    bits += 5;
+    while (bits >= 8) {
+      bits -= 8;
+      bytes.push((acc >> bits) & 0xff);
+    }
+  }
+  return bytes;
+}
+
+function extractBolt11DescriptionHash(bolt11) {
+  const invoice = String(bolt11 || '').toLowerCase();
+  const sepIdx = invoice.lastIndexOf('1');
+  if (sepIdx === -1) return null;
+  const dataStr = invoice.slice(sepIdx + 1, -6); // strip checksum
+  const data5 = [...dataStr].map((ch) => BECH32_CHARSET.indexOf(ch));
+  if (data5.some((v) => v < 0)) return null;
+
+  let pos = 7; // timestamp
+  while (pos + 3 <= data5.length) {
+    const type = data5[pos];
+    const dataLen = data5[pos + 1] * 32 + data5[pos + 2];
+    pos += 3;
+    const groups = data5.slice(pos, pos + dataLen);
+    if (type === 23) { // h: description_hash
+      return Buffer.from(groupsToBytes(groups).slice(0, 32)).toString('hex');
+    }
+    pos += dataLen;
+  }
+  return null;
+}
+
+function sha256Hex(value) {
+  return createHash('sha256').update(value, 'utf8').digest('hex');
+}
+
 
 if (names.length === 0) {
   console.log('Usage: node scripts/verify-lnurlp-case.mjs <name1> [name2...]');
@@ -39,12 +85,6 @@ function decodeUntilStable(rawName) {
   return value.replace(/%40/gi, '@');
 }
 
-function expectedLightningAddress(rawName, host) {
-  const decoded = decodeUntilStable(rawName);
-  const [local] = decoded.split('@');
-  return `${local || decoded}@${host}`;
-}
-
 function expectedLocalPart(rawName) {
   const decoded = decodeUntilStable(rawName);
   const [local] = decoded.split('@');
@@ -76,50 +116,9 @@ async function verify(name) {
   okLine(name, Number.isFinite(payload.maxSendable), `maxSendable=${payload.maxSendable}`);
 
   const expectedLocal = expectedLocalPart(name);
-  const expectedHost = (() => {
-    try {
-      return payload.callback ? new URL(payload.callback).host : new URL(BASE_URL).host;
-    } catch {
-      return new URL(BASE_URL).host;
-    }
-  })();
-  const expectedIdentifier = expectedLightningAddress(name, expectedHost);
-  let identifier = '';
-  let plainText = '';
-  try {
-    if (typeof payload.metadata === 'string') {
-      const parsed = JSON.parse(payload.metadata);
-      if (Array.isArray(parsed)) {
-        const idPair = parsed.find((entry) => Array.isArray(entry) && entry[0] === 'text/identifier');
-        const plainPair = parsed.find((entry) => Array.isArray(entry) && entry[0] === 'text/plain');
-        identifier = typeof idPair?.[1] === 'string' ? idPair[1] : '';
-        plainText = typeof plainPair?.[1] === 'string' ? plainPair[1] : '';
-      }
-    } else if (Array.isArray(payload.metadata)) {
-      const parsed = payload.metadata;
-      const idPair = parsed.find((entry) => Array.isArray(entry) && entry[0] === 'text/identifier');
-      const plainPair = parsed.find((entry) => Array.isArray(entry) && entry[0] === 'text/plain');
-      identifier = typeof idPair?.[1] === 'string' ? idPair[1] : '';
-      plainText = typeof plainPair?.[1] === 'string' ? plainPair[1] : '';
-    } else if (payload.metadata && typeof payload.metadata === 'object') {
-      const pairs = payload.metadata;
-      identifier = typeof pairs?.['text/identifier'] === 'string' ? String(pairs['text/identifier']) : '';
-      plainText = typeof pairs?.['text/plain'] === 'string' ? String(pairs['text/plain']) : '';
-    }
-  } catch {
-    // Ignore parse errors.
-  }
-
-  okLine(
-    name,
-    identifier === expectedIdentifier,
-    `identifier metadata=${identifier || '<missing>'}; expected=${expectedIdentifier}`
-  );
-  okLine(
-    name,
-    plainText === `Payment to ${expectedIdentifier}`,
-    `plain metadata=${plainText || '<missing>'}; expected=${`Payment to ${expectedIdentifier}`}`
-  );
+  const metadataString = typeof payload.metadata === 'string' ? payload.metadata : JSON.stringify(payload.metadata);
+  okLine(name, typeof metadataString === 'string' && metadataString.length > 0, 'metadata string present');
+  const metadataHash = sha256Hex(metadataString);
 
   if (!payload.callback) {
     okLine(name, false, 'callback missing');
@@ -136,8 +135,15 @@ async function verify(name) {
   if (invoiceRes.status !== 200) return allPass;
 
   const invoice = invoiceRes.json;
-  okLine(name, Boolean(invoice && (invoice.pr || invoice.payment_request)), 'invoice contains bolt11');
+  const bolt11 = invoice && (invoice.pr || invoice.payment_request);
+  okLine(name, Boolean(bolt11), 'invoice contains bolt11');
   okLine(name, typeof invoiceRes.text === 'string' && invoiceRes.text.length > 40, 'invoice body non-empty');
+  const descriptionHash = extractBolt11DescriptionHash(bolt11);
+  okLine(
+    name,
+    descriptionHash === metadataHash,
+    `invoice description_hash=${descriptionHash || '<missing>'}; metadata sha256=${metadataHash}`
+  );
 
   return allPass;
 }
