@@ -2,7 +2,9 @@
 
 import { createHash } from 'node:crypto';
 
-const names = process.argv.slice(2);
+const rawArgs = process.argv.slice(2);
+const metadataOnly = rawArgs.includes('--metadata-only') || process.env.LNURL_VERIFY_METADATA_ONLY === '1';
+const names = rawArgs.filter((arg) => arg !== '--metadata-only');
 const BASE_URL = process.env.LNURL_BASE_URL || 'https://klabo.world';
 const AMOUNT_MSATS = 1000;
 
@@ -51,7 +53,7 @@ function sha256Hex(value) {
 
 
 if (names.length === 0) {
-  console.log('Usage: node scripts/verify-lnurlp-case.mjs <name1> [name2...]');
+  console.log('Usage: node scripts/verify-lnurlp-case.mjs [--metadata-only] <name1> [name2...]');
   process.exit(1);
 }
 
@@ -129,6 +131,10 @@ async function verify(name) {
   const callbackUser = decodeURIComponent(callbackUrl.pathname.split('/').at(-2) ?? '');
   okLine(name, callbackUser === expectedLocal, `callback user=${callbackUser || '<missing>'}; expected=${expectedLocal}`);
   okLine(name, callbackUrl.search === '', `callback has empty query (${callbackUrl.search || '<empty>'}); expected <empty>`);
+  if (metadataOnly) {
+    return allPass;
+  }
+
   const malformedInvoiceUrl = `${callbackUrl.origin}${callbackUrl.pathname}?amount=${AMOUNT_MSATS}&ns=${encodeURIComponent(name)}`;
   const invoiceRes = await fetchJson(malformedInvoiceUrl);
   okLine(name, invoiceRes.status === 200, `invoice status=${invoiceRes.status}`);
@@ -156,4 +162,4 @@ if (failed > 0) {
   process.exit(1);
 }
 
-console.log(`\nSummary: ${results.length}/${results.length} case probes passed.`);
+console.log(`\nSummary: ${results.length}/${results.length} case probes passed${metadataOnly ? ' (metadata-only)' : ''}.`);

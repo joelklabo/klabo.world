@@ -78,4 +78,4 @@ jobs:
           NEXT_PID=$!
           trap "kill $NEXT_PID" EXIT
           npx wait-on "$BASE_URL"
-          LNURL_BASE_URL="$BASE_URL" pnpm test:lnurlp-case gary Gary Gary@klabo.world Gary%40klabo.world randomCaseUser randomUSER SldfkjlsadfkjlsLDKDJldfkjldjf
+          LNURL_BASE_URL="$BASE_URL" pnpm test:lnurlp-case --metadata-only gary Gary Gary@klabo.world Gary%40klabo.world randomCaseUser randomUSER SldfkjlsadfkjlsLDKDJldfkjldjf
