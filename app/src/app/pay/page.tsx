@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { PaymentPageClient } from './payment-page-client';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Pay klabo.world',
   description: 'Lightning and on-chain Bitcoin payment options for klabo.world.',
