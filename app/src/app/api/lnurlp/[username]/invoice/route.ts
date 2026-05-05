@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
-import { randomUUID } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 
 export const dynamic = 'force-dynamic';
-import { getLnbitsBaseUrl, buildLnbitsHeaders } from '@/lib/lnbits';
-import { normalizeLnurlUsername } from '@/lib/lnurlp';
+import { getLnbitsBaseUrl, buildLnbitsHeaders, getLnbitsAdminKey } from '@/lib/lnbits';
+import { getPublicSiteUrl } from '@/lib/public-env';
+import { buildLightningAddressMetadata, normalizeLnurlUsername } from '@/lib/lnurlp';
 
 function toNumber(value: string | null): number | null {
   if (!value) return null;
@@ -38,7 +39,6 @@ function extractAmountFromSearchParams(url: URL): number | null {
 }
 
 const BECH32_CHARSET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
-const LNBITS_PAY_LINK_USERNAME = 'joel';
 
 function logLnurlEvent(route: string, requestId: string, event: string, details: Record<string, unknown>): void {
   console.info(
@@ -149,22 +149,13 @@ export async function GET(request: Request, { params }: { params: Promise<{ user
   }
 
   const baseUrl = getLnbitsBaseUrl();
-  const headers = buildLnbitsHeaders();
-  // Always use the single "joel" pay link for invoice generation
-  const metaRes = await fetch(`${baseUrl}/.well-known/lnurlp/${LNBITS_PAY_LINK_USERNAME}`, {
-    headers,
-    cache: 'no-store',
-  });
-  if (!metaRes.ok) {
-    logLnurlEvent('invoice', requestId, 'lnbits_meta_failed', {
-      status: metaRes.status,
-      statusText: safeStatusText(metaRes.statusText),
-      requestedUsername: normalizedUsername,
-    });
+  const adminKey = getLnbitsAdminKey();
+  if (!adminKey) {
+    logLnurlEvent('invoice', requestId, 'invalid_config', { reason: 'missing_lnbits_admin_key' });
     return NextResponse.json(
-      { error: 'lnbits_unreachable' },
+      { error: 'lnbits_admin_key_missing' },
       {
-        status: metaRes.status,
+        status: 500,
         headers: {
           'x-lnurlp-request-id': requestId,
           'Cache-Control': 'no-store',
@@ -174,45 +165,45 @@ export async function GET(request: Request, { params }: { params: Promise<{ user
       }
     );
   }
-  const meta = (await metaRes.json()) as { callback?: string };
-  if (!meta.callback) {
-    logLnurlEvent('invoice', requestId, 'lnbits_missing_callback', { requestedUsername: normalizedUsername });
-    return NextResponse.json(
-      { error: 'lnbits_missing_callback' },
-      {
-        status: 502,
-        headers: {
-          'x-lnurlp-request-id': requestId,
-          'Cache-Control': 'no-store',
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, OPTIONS',
-        },
-      }
-    );
-  }
-  logLnurlEvent('invoice', requestId, 'lnbits_meta_success', {
-    requestedUsername: normalizedUsername,
-    callbackFromLNBits: meta.callback,
-  });
 
-  const callbackUrl = new URL(meta.callback);
-  callbackUrl.searchParams.set('amount', String(amount));
-  // Add namespace as comment for tip tracking
-  callbackUrl.searchParams.set('comment', `klabo.world:${normalizedUsername}:${namespace}`);
+  const lightningAddress = `${normalizedUsername}@${new URL(getPublicSiteUrl()).host}`;
+  const metadata = buildLightningAddressMetadata(lightningAddress);
+  const descriptionHash = createHash('sha256').update(metadata, 'utf8').digest('hex');
+  const amountSats = amount / 1000;
+
   logLnurlEvent('invoice', requestId, 'lnbits_invoice_request', {
     requestedUsername: normalizedUsername,
-    callbackUrl: callbackUrl.toString(),
+    amountMsat: amount,
+    amountSats,
+    descriptionHash,
   });
-  
-  const invoiceRes = await fetch(callbackUrl.toString(), {
-    headers,
+
+  const invoiceRes = await fetch(`${baseUrl}/api/v1/payments`, {
+    method: 'POST',
+    headers: {
+      ...buildLnbitsHeaders(),
+      'Content-Type': 'application/json',
+      'X-Api-Key': adminKey,
+    },
     cache: 'no-store',
+    body: JSON.stringify({
+      out: false,
+      amount: amountSats,
+      unit: 'sat',
+      memo: '',
+      description_hash: descriptionHash,
+      extra: {
+        tag: 'klabo-world-lnurlp',
+        lnurlp_username: normalizedUsername,
+        lnurlp_namespace: namespace,
+        lnurlp_comment: `klabo.world:${normalizedUsername}:${namespace}`,
+      },
+    }),
   });
   if (!invoiceRes.ok) {
     logLnurlEvent('invoice', requestId, 'lnbits_invoice_failed', {
       status: invoiceRes.status,
       statusText: safeStatusText(invoiceRes.statusText),
-      requestUrl: callbackUrl.toString(),
     });
     return NextResponse.json(
       { error: 'lnbits_invoice_failed' },
@@ -227,10 +218,10 @@ export async function GET(request: Request, { params }: { params: Promise<{ user
       }
     );
   }
-  const invoice = (await invoiceRes.json()) as Record<string, unknown>;
-  const paymentRequest = invoice.pr || invoice.payment_request;
+  const lnbitsInvoice = (await invoiceRes.json()) as Record<string, unknown>;
+  const paymentRequest = lnbitsInvoice.payment_request || lnbitsInvoice.bolt11 || lnbitsInvoice.pr;
   if (typeof paymentRequest !== 'string' || paymentRequest.length === 0) {
-    const responseKeys = invoice && typeof invoice === 'object' ? Object.keys(invoice).slice(0, 8) : [];
+    const responseKeys = lnbitsInvoice && typeof lnbitsInvoice === 'object' ? Object.keys(lnbitsInvoice).slice(0, 8) : [];
     logLnurlEvent('invoice', requestId, 'lnbits_invoice_invalid', {
       requestedUsername: normalizedUsername,
       responseKeys,
@@ -248,12 +239,22 @@ export async function GET(request: Request, { params }: { params: Promise<{ user
       }
     );
   }
+
+  const invoice: Record<string, unknown> = {
+    pr: paymentRequest,
+    routes: [],
+    disposable: true,
+  };
+  if (typeof lnbitsInvoice.payment_hash === 'string') {
+    invoice.payment_hash = lnbitsInvoice.payment_hash;
+  }
+
   logLnurlEvent('invoice', requestId, 'lnbits_invoice_success', {
     requestedUsername: normalizedUsername,
     hasPaymentRequest: true,
-    route: callbackUrl.pathname,
-    responseKeys: Object.keys(invoice).slice(0, 8),
+    responseKeys: Object.keys(lnbitsInvoice).slice(0, 8),
     status: invoiceRes.status,
+    descriptionHash,
   });
 
   // Extract payment_hash from the bolt11 so clients can poll for payment status

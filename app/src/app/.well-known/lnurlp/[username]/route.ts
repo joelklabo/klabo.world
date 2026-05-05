@@ -4,7 +4,7 @@ import { randomUUID } from 'node:crypto';
 export const dynamic = 'force-dynamic';
 import { getLnbitsBaseUrl, buildLnbitsHeaders } from '@/lib/lnbits';
 import { getPublicSiteUrl } from '@/lib/public-env';
-import { normalizeLnurlUsername } from '@/lib/lnurlp';
+import { buildLightningAddressMetadata, normalizeLnurlUsername } from '@/lib/lnurlp';
 
 function logLnurlEvent(route: string, requestId: string, event: string, details: Record<string, unknown>): void {
   console.info(
@@ -20,6 +20,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ username: 
   const requestId = randomUUID();
   const baseUrl = getLnbitsBaseUrl();
   const headers = buildLnbitsHeaders();
+  const lightningAddress = `${requestedUsername}@${new URL(getPublicSiteUrl()).host}`;
   if (requestedUsername !== rawUsername.trim()) {
     logLnurlEvent('well-known', requestId, 'normalize_username', {
       rawUsername,
@@ -65,13 +66,9 @@ export async function GET(_: Request, { params }: { params: Promise<{ username: 
   publicSiteUrl.search = '';
   payload.callback = `${publicSiteUrl.toString().replace(/\/$/, '')}/api/lnurlp/${encodeURIComponent(requestedUsername)}/invoice`;
 
-  // Do not rewrite payload.metadata here.
-  // LNbits signs the generated BOLT11 invoice with a description_hash of the
-  // exact metadata string it serves for the upstream pay link. If this wrapper
-  // changes metadata but still asks LNbits to create the invoice, strict LNURL
-  // wallets reject the invoice because the served metadata hash no longer
-  // matches the invoice description_hash. Rewriting callback is safe; rewriting
-  // metadata is not unless this service also owns invoice generation.
+  // This service owns the LNURL metadata bytes. The invoice route must create
+  // BOLT11 invoices with description_hash = SHA256(payload.metadata) exactly.
+  payload.metadata = buildLightningAddressMetadata(lightningAddress);
 
   logLnurlEvent('well-known', requestId, 'request_success', {
     requestedUsername,

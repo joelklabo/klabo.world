@@ -17,3 +17,10 @@ export function normalizeLnurlUsername(rawUsername: string): string {
   const [local] = trimmed.split('@');
   return local || trimmed;
 }
+
+export function buildLightningAddressMetadata(lightningAddress: string): string {
+  return JSON.stringify([
+    ['text/plain', `Payment to ${lightningAddress}`],
+    ['text/identifier', lightningAddress],
+  ]);
+}
