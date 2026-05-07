@@ -356,7 +356,7 @@ body:has([data-payment-surface="true"]) > header {
   }
 }
 
-@keyframes bitcoinBlockFound {
+@keyframes bitcoin-block-found {
   0% {
     border-color: rgb(252 211 77 / 70%);
     box-shadow:
@@ -380,7 +380,7 @@ body:has([data-payment-surface="true"]) > header {
   }
 }
 
-@keyframes bitcoinLedgerScan {
+@keyframes bitcoin-ledger-scan {
   0% {
     transform: translateX(-82%);
     opacity: 0;
@@ -400,7 +400,7 @@ body:has([data-payment-surface="true"]) > header {
   }
 }
 
-@keyframes bitcoinTipArrive {
+@keyframes bitcoin-tip-arrive {
   0% {
     opacity: 0;
     transform: translateY(-18px) scale(0.98);
@@ -417,7 +417,7 @@ body:has([data-payment-surface="true"]) > header {
   }
 }
 
-@keyframes bitcoinToastIn {
+@keyframes bitcoin-toast-in {
   from {
     opacity: 0;
     transform: translateY(-8px) scale(0.97);

@@ -390,7 +390,7 @@ export function LiveBitcoinSection({ className }: LiveBitcoinSectionProps) {
             <div
               className={cn(
                 'rounded-[1.75rem] border border-white/10 bg-black/25 p-5 shadow-[0_24px_70px_rgba(0,0,0,0.28)] backdrop-blur',
-                newBlockHeight ? 'motion-safe:animate-[bitcoinBlockFound_1300ms_ease-out]' : null,
+                newBlockHeight ? 'motion-safe:animate-[bitcoin-block-found_1300ms_ease-out]' : null,
               )}
               aria-live="polite"
               data-testid="bitcoin-tip-panel"
@@ -458,7 +458,7 @@ export function LiveBitcoinSection({ className }: LiveBitcoinSectionProps) {
 
           <div className="relative min-h-[430px] overflow-hidden rounded-[2rem] border border-white/10 bg-[#050a10]/80 p-5 shadow-[0_28px_90px_rgba(0,0,0,0.38)] sm:p-6">
             <div className="absolute inset-0 opacity-55 [background-image:linear-gradient(120deg,rgba(245,158,11,0.12),transparent_24%,rgba(45,212,191,0.08)_62%,transparent)]" />
-            <div className="absolute inset-x-6 top-20 h-px bg-[linear-gradient(90deg,transparent,rgba(245,158,11,0.75),rgba(45,212,191,0.65),transparent)] motion-safe:animate-[bitcoinLedgerScan_4s_linear_infinite]" />
+            <div className="absolute inset-x-6 top-20 h-px bg-[linear-gradient(90deg,transparent,rgba(245,158,11,0.75),rgba(45,212,191,0.65),transparent)] motion-safe:animate-[bitcoin-ledger-scan_4s_linear_infinite]" />
 
             <div className="relative flex h-full min-h-[380px] flex-col justify-between gap-6">
               <div className="flex items-center justify-between gap-3">
@@ -499,7 +499,7 @@ export function LiveBitcoinSection({ className }: LiveBitcoinSectionProps) {
                             : 'border-white/5 bg-white/[0.03] opacity-55',
                           isTip && typedBlock ? 'border-amber-300/35 bg-amber-300/[0.08]' : null,
                           isTip && newBlockHeight === typedBlock?.height
-                            ? 'motion-safe:animate-[bitcoinTipArrive_900ms_ease-out]'
+                            ? 'motion-safe:animate-[bitcoin-tip-arrive_900ms_ease-out]'
                             : null,
                         )}
                       >
@@ -576,7 +576,7 @@ export function LiveBitcoinSection({ className }: LiveBitcoinSectionProps) {
 
             {newBlockHeight ? (
               <div
-                className="absolute right-4 top-4 flex items-center gap-2 rounded-full border border-amber-200/40 bg-amber-200/15 px-3 py-2 text-xs font-semibold text-amber-50 shadow-[0_14px_40px_rgba(245,158,11,0.24)] backdrop-blur motion-safe:animate-[bitcoinToastIn_420ms_ease-out]"
+                className="absolute right-4 top-4 flex items-center gap-2 rounded-full border border-amber-200/40 bg-amber-200/15 px-3 py-2 text-xs font-semibold text-amber-50 shadow-[0_14px_40px_rgba(245,158,11,0.24)] backdrop-blur motion-safe:animate-[bitcoin-toast-in_420ms_ease-out]"
                 data-testid="bitcoin-new-block-toast"
               >
                 <Sparkles className="size-4" aria-hidden="true" />
