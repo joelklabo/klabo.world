@@ -11,6 +11,7 @@ import { GitHubProjectsShowcase } from "@/components/github-projects-showcase";
 import { HomeQuickLinks } from "@/components/home-quick-links";
 import { HomeStats } from "@/components/home-stats";
 import { HomeTopics } from "@/components/home-topics";
+import { LiveBitcoinSection } from "@/components/bitcoin";
 import { HomeLightningSection } from "@/components/lightning";
 import { Button } from "@/components/ui/button";
 import { ViewTransitionLink } from "@/components/view-transition-link";
@@ -123,8 +124,8 @@ export default async function Home() {
               Notes, playbooks, and projects for shipping software.
             </h1>
             <p className="text-base text-white/76 text-pretty md:text-lg">
-              Practical notes and small tools for Bitcoin, Lightning, and agentic
-              engineering.
+              Live Bitcoin mainnet signals, practical notes, and small tools for
+              Lightning and agentic engineering.
             </p>
             <ul className="flex flex-wrap gap-2 text-[10px] font-semibold uppercase tracking-[0.28em] text-white/70" role="list" aria-label="Main topics">
               {["Bitcoin", "Lightning", "Agentic systems"].map((topic) => (
@@ -153,18 +154,20 @@ export default async function Home() {
                 className="px-2 text-sm font-semibold uppercase tracking-[0.24em] text-white/72 hover:text-primary"
               >
                 <Link
-                  href="/projects"
-                  data-testid="home-cta-projects"
+                  href="#live-bitcoin"
+                  data-testid="home-cta-live-bitcoin"
                   data-analytics-event="ui.home.cta"
-                  data-analytics-label="projects"
+                  data-analytics-label="live_bitcoin"
                 >
-                  Explore projects →
+                  Watch the chain →
                 </Link>
               </Button>
             </div>
           </div>
         </div>
       </section>
+
+      <LiveBitcoinSection />
 
       <HomeLightningSection />
 

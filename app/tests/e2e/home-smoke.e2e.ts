@@ -3,11 +3,132 @@ import type { Page } from '@playwright/test';
 
 const routes = ['/', '/posts', '/projects', '/apps', '/pay'];
 const BTC_ADDRESS = 'bc1qzafw20xpesnvwup6gmtx38e5j6ddjjdpc0zh78';
+const chainTipPayload = {
+  network: 'mainnet',
+  source: 'playwright',
+  checkedAt: '2026-05-07T12:00:00.000Z',
+  tip: {
+    hash: '00000000000000000000632a2f3d0df0119d13f5b56736ae2932552bd6f99f48',
+    height: 948_352,
+    timestamp: 1_778_180_485,
+    txCount: 2075,
+    sizeBytes: 902_958,
+    weight: 2_230_104,
+    difficulty: 132_472_011_079_030.52,
+    medianFeeSatVb: 1.4,
+    poolName: 'Foundry USA',
+  },
+  recentBlocks: [
+    {
+      hash: '00000000000000000000632a2f3d0df0119d13f5b56736ae2932552bd6f99f48',
+      height: 948_352,
+      timestamp: 1_778_180_485,
+      txCount: 2075,
+      sizeBytes: 902_958,
+      weight: 2_230_104,
+      difficulty: 132_472_011_079_030.52,
+      medianFeeSatVb: 1.4,
+      poolName: 'Foundry USA',
+    },
+    {
+      hash: '00000000000000000000f3164e185d6a60b537c32bbd7fc7c38ffc94155248d1',
+      height: 948_351,
+      timestamp: 1_778_180_108,
+      txCount: 3411,
+      sizeBytes: 1_517_351,
+      weight: 3_993_863,
+      difficulty: 132_472_011_079_030.52,
+      medianFeeSatVb: 1.1,
+      poolName: null,
+    },
+  ],
+  mempool: {
+    transactionCount: 42_000,
+    vsize: 82_000_000,
+    totalFeeSats: 12_000_000,
+  },
+};
+const websocketBlockPayload = {
+  blocks: [
+    {
+      id: '00000000000000000000d0e5aa8cd159983dfbd493a3d20561cce2f89d53c1f6',
+      height: 948_353,
+      timestamp: 1_778_182_415,
+      tx_count: 4066,
+      size: 1_563_806,
+      weight: 3_995_057,
+      difficulty: 132_472_011_079_030.52,
+      extras: {
+        medianFee: 4.2,
+      },
+    },
+  ],
+  mempoolInfo: {
+    count: 56_600,
+    vsize: 91_000_000,
+    total_fee: 14_000_000,
+  },
+};
 const paymentCardTestIds = [
   'lightning-node-card',
   'lightning-tip-widget',
   'bitcoin-onchain-card',
 ] as const;
+
+async function mockBitcoinWebSocket(page: Page) {
+  await page.addInitScript((payload) => {
+    class MockWebSocket extends EventTarget {
+      static readonly CONNECTING = 0;
+      static readonly OPEN = 1;
+      static readonly CLOSING = 2;
+      static readonly CLOSED = 3;
+
+      readonly url = 'wss://mempool.space/api/v1/ws';
+      readonly protocol = '';
+      readonly extensions = '';
+      binaryType: BinaryType = 'blob';
+      bufferedAmount = 0;
+      readyState = MockWebSocket.CONNECTING;
+      onopen: ((this: WebSocket, event: Event) => unknown) | null = null;
+      onmessage: ((this: WebSocket, event: MessageEvent) => unknown) | null = null;
+      onerror: ((this: WebSocket, event: Event) => unknown) | null = null;
+      onclose: ((this: WebSocket, event: CloseEvent) => unknown) | null = null;
+
+      constructor() {
+        super();
+        setTimeout(() => {
+          this.readyState = MockWebSocket.OPEN;
+          const openEvent = new Event('open');
+          this.onopen?.call(this as unknown as WebSocket, openEvent);
+          this.dispatchEvent(openEvent);
+
+          setTimeout(() => {
+            const messageEvent = new MessageEvent('message', {
+              data: JSON.stringify(payload),
+            });
+            this.onmessage?.call(this as unknown as WebSocket, messageEvent);
+            this.dispatchEvent(messageEvent);
+          }, 1000);
+        }, 0);
+      }
+
+      send() {}
+
+      close() {
+        this.readyState = MockWebSocket.CLOSED;
+        const closeEvent = new CloseEvent('close');
+        this.onclose?.call(this as unknown as WebSocket, closeEvent);
+        this.dispatchEvent(closeEvent);
+      }
+    }
+
+    Object.defineProperty(globalThis, 'WebSocket', {
+      configurable: true,
+      writable: true,
+      value: MockWebSocket as unknown as typeof WebSocket,
+    });
+  }, websocketBlockPayload);
+}
 
 async function expectPaymentCardsSameHeight(page: Page) {
   const heights = await Promise.all(
@@ -44,6 +165,10 @@ test.describe('public smoke', () => {
           source: 'tcp-connect',
         }),
       });
+    });
+
+    await page.route('**/api/bitcoin/chain-tip', async (route) => {
+      await route.fulfill({ json: chainTipPayload });
     });
 
     await page.route('**/api/bitcoin/onchain-address', async (route) => {
@@ -87,6 +212,10 @@ test.describe('public smoke', () => {
 
     await page.goto('/');
 
+    await expect(page.getByTestId('live-bitcoin-section')).toBeVisible();
+    await expect(page.getByTestId('bitcoin-block-height')).toContainText('948,352');
+    await expect(page.getByTestId('bitcoin-last-block-age')).toBeVisible();
+    await expect(page.getByTestId('bitcoin-connection-status')).toBeVisible();
     await expect(page.getByTestId('home-lightning-section')).toBeVisible();
     await expect(page.getByTestId('tip-custom-input')).toBeVisible();
     await expect(page.getByTestId('lightning-node-status')).toContainText('Online');
@@ -106,9 +235,13 @@ test.describe('public smoke', () => {
     const paymentTop = await page
       .getByTestId('home-lightning-section')
       .evaluate((element) => element.getBoundingClientRect().top + window.scrollY);
+    const bitcoinTop = await page
+      .getByTestId('live-bitcoin-section')
+      .evaluate((element) => element.getBoundingClientRect().top + window.scrollY);
     const overviewTop = await page
       .getByTestId('home-section-overview')
       .evaluate((element) => element.getBoundingClientRect().top + window.scrollY);
+    expect(bitcoinTop).toBeLessThan(paymentTop);
     expect(paymentTop).toBeLessThan(overviewTop);
 
     await page.getByRole('button', { name: /21\s*sats/i }).click();
@@ -121,6 +254,20 @@ test.describe('public smoke', () => {
     await page.getByTestId('mark-paid').click();
     await expect(page.getByTestId('tip-success')).toBeVisible();
     await expectPaymentCardsSameHeight(page);
+  });
+
+  test('updates the live Bitcoin section when a new block arrives', async ({ page }) => {
+    await mockBitcoinWebSocket(page);
+    await page.route('**/api/bitcoin/chain-tip', async (route) => {
+      await route.fulfill({ json: chainTipPayload });
+    });
+
+    await page.goto('/');
+
+    await expect(page.getByTestId('bitcoin-block-height')).toContainText('948,352');
+    await expect(page.getByTestId('bitcoin-connection-status')).toContainText('Live socket');
+    await expect(page.getByTestId('bitcoin-block-height')).toContainText('948,353');
+    await expect(page.getByTestId('bitcoin-new-block-toast')).toContainText('948,353');
   });
 
   test('renders the mobile payment page without the global site chrome', async ({ page }) => {
