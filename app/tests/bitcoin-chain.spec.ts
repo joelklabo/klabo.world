@@ -53,12 +53,22 @@ describe('Bitcoin chain helpers', () => {
       .fn()
       .mockResolvedValueOnce(new Response('upstream unavailable', { status: 503 }))
       .mockResolvedValueOnce(new Response('upstream unavailable', { status: 503 }))
+      .mockResolvedValueOnce(new Response('upstream unavailable', { status: 503 }))
       .mockResolvedValueOnce(Response.json([blockB, blockA]))
       .mockResolvedValueOnce(
         Response.json({
           count: 45_000,
           vsize: 88_000_000,
           total_fee: 12_000_000,
+        }),
+      )
+      .mockResolvedValueOnce(
+        Response.json({
+          fastestFee: 2,
+          halfHourFee: 1,
+          hourFee: 1,
+          economyFee: 1,
+          minimumFee: 1,
         }),
       );
 
@@ -70,6 +80,10 @@ describe('Bitcoin chain helpers', () => {
       transactionCount: 45_000,
       vsize: 88_000_000,
       totalFeeSats: 12_000_000,
+    });
+    expect(snapshot.fees).toMatchObject({
+      fastestFeeSatVb: 2,
+      halfHourFeeSatVb: 1,
     });
   });
 });

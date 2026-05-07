@@ -47,6 +47,13 @@ const chainTipPayload = {
     vsize: 82_000_000,
     totalFeeSats: 12_000_000,
   },
+  fees: {
+    fastestFeeSatVb: 2,
+    halfHourFeeSatVb: 1,
+    hourFeeSatVb: 1,
+    economyFeeSatVb: 1,
+    minimumFeeSatVb: 1,
+  },
 };
 const websocketBlockPayload = {
   blocks: [
@@ -68,6 +75,13 @@ const websocketBlockPayload = {
     vsize: 91_000_000,
     total_fee: 14_000_000,
   },
+  fees: {
+    fastestFee: 5,
+    halfHourFee: 4,
+    hourFee: 3,
+    economyFee: 2,
+    minimumFee: 1,
+  },
 };
 const paymentCardTestIds = [
   'lightning-node-card',
@@ -77,6 +91,14 @@ const paymentCardTestIds = [
 
 async function mockBitcoinWebSocket(page: Page) {
   await page.addInitScript((payload) => {
+    const futureBlockPayload = {
+      ...payload,
+      blocks: payload.blocks.map((block, index) => ({
+        ...block,
+        timestamp: index === 0 ? Math.floor(Date.now() / 1000) + 600 : block.timestamp,
+      })),
+    };
+
     class MockWebSocket extends EventTarget {
       static readonly CONNECTING = 0;
       static readonly OPEN = 1;
@@ -104,7 +126,7 @@ async function mockBitcoinWebSocket(page: Page) {
 
           setTimeout(() => {
             const messageEvent = new MessageEvent('message', {
-              data: JSON.stringify(payload),
+              data: JSON.stringify(futureBlockPayload),
             });
             this.onmessage?.call(this as unknown as WebSocket, messageEvent);
             this.dispatchEvent(messageEvent);
@@ -214,6 +236,7 @@ test.describe('public smoke', () => {
 
     await expect(page.getByTestId('live-bitcoin-section')).toBeVisible();
     await expect(page.getByTestId('bitcoin-block-height')).toContainText('948,352');
+    await expect(page.getByTestId('bitcoin-fee-estimate')).toContainText('2 sat/vB');
     await expect(page.getByTestId('bitcoin-last-block-age')).toBeVisible();
     await expect(page.getByTestId('bitcoin-connection-status')).toBeVisible();
     await expect(page.getByTestId('home-lightning-section')).toBeVisible();
@@ -268,6 +291,18 @@ test.describe('public smoke', () => {
     await expect(page.getByTestId('bitcoin-connection-status')).toContainText('Live socket');
     await expect(page.getByTestId('bitcoin-block-height')).toContainText('948,353');
     await expect(page.getByTestId('bitcoin-new-block-toast')).toContainText('948,353');
+    await expect(page.getByTestId('bitcoin-fee-estimate')).toContainText('5 sat/vB');
+    await expect
+      .poll(async () => {
+        const text = await page.getByTestId('bitcoin-last-block-age').textContent();
+        return text?.trim() ?? '';
+      })
+      .toMatch(/^[1-9]\d*s$/);
+
+    const progressWidth = await page
+      .getByTestId('bitcoin-block-progress')
+      .evaluate((element) => element.getBoundingClientRect().width);
+    expect(progressWidth).toBeGreaterThan(0);
   });
 
   test('renders the mobile payment page without the global site chrome', async ({ page }) => {

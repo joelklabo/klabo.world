@@ -45,6 +45,16 @@ const rawMempoolSchema = z
   })
   .passthrough();
 
+const rawFeesSchema = z
+  .object({
+    fastestFee: z.number().nonnegative(),
+    halfHourFee: z.number().nonnegative(),
+    hourFee: z.number().nonnegative(),
+    economyFee: z.number().nonnegative(),
+    minimumFee: z.number().nonnegative(),
+  })
+  .passthrough();
+
 export type BitcoinSourceName = (typeof BITCOIN_SOURCES)[number]['name'];
 
 export type BitcoinBlockSummary = {
@@ -65,6 +75,14 @@ export type BitcoinMempoolSummary = {
   totalFeeSats: number;
 };
 
+export type BitcoinFeeSummary = {
+  fastestFeeSatVb: number;
+  halfHourFeeSatVb: number;
+  hourFeeSatVb: number;
+  economyFeeSatVb: number;
+  minimumFeeSatVb: number;
+};
+
 export type BitcoinChainSnapshot = {
   network: 'mainnet';
   source: BitcoinSourceName;
@@ -72,6 +90,7 @@ export type BitcoinChainSnapshot = {
   tip: BitcoinBlockSummary;
   recentBlocks: BitcoinBlockSummary[];
   mempool: BitcoinMempoolSummary | null;
+  fees: BitcoinFeeSummary | null;
 };
 
 type FetchLike = typeof fetch;
@@ -133,16 +152,38 @@ function normalizeMempool(input: unknown): BitcoinMempoolSummary {
   };
 }
 
+function normalizeFees(input: unknown): BitcoinFeeSummary {
+  const fees = rawFeesSchema.parse(input);
+
+  return {
+    fastestFeeSatVb: fees.fastestFee,
+    halfHourFeeSatVb: fees.halfHourFee,
+    hourFeeSatVb: fees.hourFee,
+    economyFeeSatVb: fees.economyFee,
+    minimumFeeSatVb: fees.minimumFee,
+  };
+}
+
+async function fetchRecommendedFees(fetchImpl: FetchLike): Promise<BitcoinFeeSummary | null> {
+  try {
+    const fees = await fetchJson(fetchImpl, 'https://mempool.space/api/v1/fees/recommended');
+    return normalizeFees(fees);
+  } catch {
+    return null;
+  }
+}
+
 async function getSnapshotFromSource(
   fetchImpl: FetchLike,
   source: (typeof BITCOIN_SOURCES)[number],
 ): Promise<BitcoinChainSnapshot> {
-  const [blocksJson, mempoolResult] = await Promise.all([
+  const [blocksJson, mempoolResult, fees] = await Promise.all([
     fetchJson(fetchImpl, `${source.apiBase}/blocks`),
     fetchJson(fetchImpl, `${source.apiBase}/mempool`).then(
       (mempool) => ({ ok: true as const, mempool }),
       () => ({ ok: false as const }),
     ),
+    fetchRecommendedFees(fetchImpl),
   ]);
 
   const recentBlocks = normalizeBitcoinBlocks(blocksJson);
@@ -159,6 +200,7 @@ async function getSnapshotFromSource(
     tip,
     recentBlocks,
     mempool: mempoolResult.ok ? normalizeMempool(mempoolResult.mempool) : null,
+    fees,
   };
 }
 

@@ -35,6 +35,14 @@ type BitcoinMempoolSummary = {
   totalFeeSats: number;
 };
 
+type BitcoinFeeSummary = {
+  fastestFeeSatVb: number;
+  halfHourFeeSatVb: number;
+  hourFeeSatVb: number;
+  economyFeeSatVb: number;
+  minimumFeeSatVb: number;
+};
+
 type BitcoinChainSnapshot = {
   network: 'mainnet';
   source: string;
@@ -42,6 +50,7 @@ type BitcoinChainSnapshot = {
   tip: BitcoinBlockSummary;
   recentBlocks: BitcoinBlockSummary[];
   mempool: BitcoinMempoolSummary | null;
+  fees: BitcoinFeeSummary | null;
 };
 
 type SocketState = 'connecting' | 'open' | 'fallback' | 'error';
@@ -51,8 +60,8 @@ const compactFormatter = new Intl.NumberFormat('en-US', {
   notation: 'compact',
   maximumFractionDigits: 1,
 });
-const satsFormatter = new Intl.NumberFormat('en-US', {
-  maximumFractionDigits: 0,
+const feeFormatter = new Intl.NumberFormat('en-US', {
+  maximumFractionDigits: 1,
 });
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -109,6 +118,34 @@ function normalizeSocketMempool(input: unknown): BitcoinMempoolSummary | null {
   return { transactionCount, vsize, totalFeeSats };
 }
 
+function normalizeSocketFees(input: unknown): BitcoinFeeSummary | null {
+  if (!isRecord(input)) return null;
+
+  const fastestFeeSatVb = readNumber(input.fastestFee);
+  const halfHourFeeSatVb = readNumber(input.halfHourFee);
+  const hourFeeSatVb = readNumber(input.hourFee);
+  const economyFeeSatVb = readNumber(input.economyFee);
+  const minimumFeeSatVb = readNumber(input.minimumFee);
+
+  if (
+    fastestFeeSatVb === null ||
+    halfHourFeeSatVb === null ||
+    hourFeeSatVb === null ||
+    economyFeeSatVb === null ||
+    minimumFeeSatVb === null
+  ) {
+    return null;
+  }
+
+  return {
+    fastestFeeSatVb,
+    halfHourFeeSatVb,
+    hourFeeSatVb,
+    economyFeeSatVb,
+    minimumFeeSatVb,
+  };
+}
+
 function sortBlocks(blocks: BitcoinBlockSummary[]) {
   return [...blocks].sort((a, b) => b.height - a.height);
 }
@@ -134,8 +171,13 @@ function shortHash(hash: string) {
   return `${hash.slice(0, 10)}...${hash.slice(-8)}`;
 }
 
-function formatBlockTime(timestamp: number) {
-  return new Date(timestamp * 1000).toLocaleTimeString([], {
+function formatBlockTime(timestamp: number, nowMs: number) {
+  const timestampMs = timestamp * 1000;
+  if (timestampMs > nowMs) {
+    return 'Now';
+  }
+
+  return new Date(timestampMs).toLocaleTimeString([], {
     hour: 'numeric',
     minute: '2-digit',
   });
@@ -166,14 +208,19 @@ export function LiveBitcoinSection({ className }: LiveBitcoinSectionProps) {
   const [newBlockHeight, setNewBlockHeight] = useState<number | null>(null);
   const [announcement, setAnnouncement] = useState<string>('Bitcoin chain data loading');
   const latestHeightRef = useRef<number | null>(null);
+  const tipObservedAtRef = useRef<number | null>(null);
   const celebrationTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const applySnapshot = useCallback((nextSnapshot: BitcoinChainSnapshot) => {
-    setLastReceivedAt(Date.now());
+    const receivedAt = Date.now();
+    setLastReceivedAt(receivedAt);
     setSnapshot((current) => {
       const previousHeight = latestHeightRef.current;
       const nextHeight = nextSnapshot.tip.height;
-      latestHeightRef.current = nextHeight;
+      if (previousHeight !== nextHeight) {
+        latestHeightRef.current = nextHeight;
+        tipObservedAtRef.current = receivedAt;
+      }
 
       if (previousHeight !== null && nextHeight > previousHeight) {
         setNewBlockHeight(nextHeight);
@@ -261,24 +308,29 @@ export function LiveBitcoinSection({ className }: LiveBitcoinSectionProps) {
           if (singleBlock) incomingBlocks.push(singleBlock);
 
           const mempool = normalizeSocketMempool(payload.mempoolInfo);
+          const fees = normalizeSocketFees(payload.fees);
 
-          if (incomingBlocks.length === 0 && !mempool) return;
+          if (incomingBlocks.length === 0 && !mempool && !fees) return;
 
-          setLastReceivedAt(Date.now());
+          const receivedAt = Date.now();
+          setLastReceivedAt(receivedAt);
           setSnapshot((current) => {
             const recentBlocks = incomingBlocks.length > 0
               ? mergeBlocks(current?.recentBlocks ?? [], incomingBlocks)
               : current?.recentBlocks ?? [];
             const tip = recentBlocks[0] ?? current?.tip;
 
-            if (!tip) return current;
-
+            const nextTip = tip ?? current?.tip;
+            if (!nextTip) return current;
             const previousHeight = latestHeightRef.current;
-            latestHeightRef.current = tip.height;
+            if (previousHeight !== nextTip.height) {
+              latestHeightRef.current = nextTip.height;
+              tipObservedAtRef.current = receivedAt;
+            }
 
-            if (previousHeight !== null && tip.height > previousHeight) {
-              setNewBlockHeight(tip.height);
-              setAnnouncement(`New Bitcoin block ${numberFormatter.format(tip.height)} found`);
+            if (previousHeight !== null && nextTip.height > previousHeight) {
+              setNewBlockHeight(nextTip.height);
+              setAnnouncement(`New Bitcoin block ${numberFormatter.format(nextTip.height)} found`);
               if (celebrationTimerRef.current) clearTimeout(celebrationTimerRef.current);
               celebrationTimerRef.current = setTimeout(() => setNewBlockHeight(null), 12_000);
             }
@@ -287,9 +339,10 @@ export function LiveBitcoinSection({ className }: LiveBitcoinSectionProps) {
               network: 'mainnet',
               source: 'mempool.space live socket',
               checkedAt: new Date().toISOString(),
-              tip,
+              tip: nextTip,
               recentBlocks,
               mempool: mempool ?? current?.mempool ?? null,
+              fees: fees ?? current?.fees ?? null,
             };
           });
         } catch {
@@ -325,8 +378,14 @@ export function LiveBitcoinSection({ className }: LiveBitcoinSectionProps) {
 
   const tip = snapshot?.tip ?? null;
   const recentBlocks = snapshot?.recentBlocks ?? [];
-  const secondsSinceBlock = tip ? Math.max(0, (now - tip.timestamp * 1000) / 1000) : 0;
-  const blockProgress = Math.min(100, (secondsSinceBlock / TARGET_BLOCK_INTERVAL_SECONDS) * 100);
+  const effectiveTipTimeMs = tip
+    ? Math.min(tip.timestamp * 1000, tipObservedAtRef.current ?? now)
+    : null;
+  const secondsSinceBlock = effectiveTipTimeMs ? Math.max(0, (now - effectiveTipTimeMs) / 1000) : 0;
+  const blockProgress = tip
+    ? Math.min(100, Math.max(3, (secondsSinceBlock / TARGET_BLOCK_INTERVAL_SECONDS) * 100))
+    : 0;
+  const displayFeeSatVb = snapshot?.fees?.fastestFeeSatVb ?? tip?.medianFeeSatVb ?? null;
   const isFresh = lastReceivedAt !== null && now - lastReceivedAt < 90_000;
   const isSocketLive = socketState === 'open' && isFresh;
   const statusLabel = isSocketLive
@@ -420,6 +479,7 @@ export function LiveBitcoinSection({ className }: LiveBitcoinSectionProps) {
                 <div
                   className="h-full rounded-full bg-[linear-gradient(90deg,#f59e0b,#fb7185,#2dd4bf)] motion-safe:transition-[width] motion-safe:duration-700"
                   style={{ width: `${blockProgress}%` }}
+                  data-testid="bitcoin-block-progress"
                 />
               </div>
               <div className="mt-3 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400">
@@ -523,7 +583,7 @@ export function LiveBitcoinSection({ className }: LiveBitcoinSectionProps) {
                         </div>
                         <div className="text-right">
                           <p className="font-mono text-sm font-semibold text-slate-200 tabular-nums">
-                            {typedBlock ? formatBlockTime(typedBlock.timestamp) : '--'}
+                            {typedBlock ? formatBlockTime(typedBlock.timestamp, now) : '--'}
                           </p>
                           <p className="mt-0.5 text-xs text-slate-500">
                             {typedBlock ? `${compactFormatter.format(typedBlock.txCount)} tx` : '--'}
@@ -566,8 +626,8 @@ export function LiveBitcoinSection({ className }: LiveBitcoinSectionProps) {
                     <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">
                       Fees
                     </p>
-                    <p className="font-mono text-sm font-semibold text-white">
-                      {tip?.medianFeeSatVb ? `${satsFormatter.format(tip.medianFeeSatVb)} sat/vB` : '--'}
+                    <p className="font-mono text-sm font-semibold text-white" data-testid="bitcoin-fee-estimate">
+                      {displayFeeSatVb === null ? 'pending' : `${feeFormatter.format(displayFeeSatVb)} sat/vB`}
                     </p>
                   </div>
                 </div>
