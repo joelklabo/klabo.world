@@ -408,7 +408,7 @@ export function LiveBitcoinSection({ className }: LiveBitcoinSectionProps) {
     <section
       id="live-bitcoin"
       className={cn(
-        'relative isolate overflow-hidden border-b border-amber-300/15 bg-[linear-gradient(180deg,#07111c_0%,#0b1723_48%,#10151d_100%)] py-12 sm:py-16',
+        'relative isolate scroll-mt-32 overflow-hidden border-b border-amber-300/15 bg-[linear-gradient(180deg,#07111c_0%,#0b1723_48%,#10151d_100%)] py-12 sm:scroll-mt-28 sm:py-16',
         className,
       )}
       data-testid="live-bitcoin-section"
