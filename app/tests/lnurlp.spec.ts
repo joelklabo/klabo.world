@@ -75,6 +75,45 @@ describe('lnurlp route handlers', () => {
     expect(response.headers.get('x-lnurlp-request-id')).toBeTruthy();
   });
 
+  it('returns a structured 502 when LNBits metadata fetch fails', async () => {
+    fetchMock.mockRejectedValueOnce(new Error('upstream reset'));
+
+    const { GET } = await import('@/app/.well-known/lnurlp/[username]/route');
+    const response = await GET(new Request('https://klabo.world/.well-known/lnurlp/test'), {
+      params: Promise.resolve({ username: 'test' }),
+    });
+
+    expect(response.status).toBe(502);
+    expect(response.headers.get('x-lnurlp-request-id')).toBeTruthy();
+    expect(response.headers.get('Cache-Control')).toBe('no-store');
+    expect(response.headers.get('Access-Control-Allow-Origin')).toBe('*');
+
+    const errorPayload = (await response.json()) as { error: string; requestId: string };
+    expect(errorPayload.error).toBe('lnbits_metadata_fetch_failed');
+    expect(errorPayload.requestId).toBeTruthy();
+  });
+
+  it('returns a structured 502 when LNBits metadata is not valid JSON', async () => {
+    fetchMock.mockResolvedValueOnce(
+      new Response('service temporarily returned html', {
+        status: 200,
+        headers: { 'Content-Type': 'text/html' },
+      })
+    );
+
+    const { GET } = await import('@/app/.well-known/lnurlp/[username]/route');
+    const response = await GET(new Request('https://klabo.world/.well-known/lnurlp/test'), {
+      params: Promise.resolve({ username: 'test' }),
+    });
+
+    expect(response.status).toBe(502);
+    expect(response.headers.get('x-lnurlp-request-id')).toBeTruthy();
+
+    const errorPayload = (await response.json()) as { error: string; upstreamStatus: number };
+    expect(errorPayload.error).toBe('lnbits_metadata_parse_failed');
+    expect(errorPayload.upstreamStatus).toBe(200);
+  });
+
   it('creates invoices with a description_hash matching the served Lightning Address metadata', async () => {
     fetchMock.mockResolvedValueOnce(
       Response.json({ payment_request: 'lnbc1abcdef', payment_hash: 'f'.repeat(64) }, { status: 200 })
