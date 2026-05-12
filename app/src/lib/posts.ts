@@ -21,6 +21,10 @@ function getContentlayerPosts(): Post[] {
 }
 
 function getPublishDate(post: Post): Date {
+  return getPostPublishDate(post);
+}
+
+export function getPostPublishDate(post: Pick<Post, 'publishDate' | 'date'>): Date {
   return new Date(post.publishDate ?? post.date);
 }
 

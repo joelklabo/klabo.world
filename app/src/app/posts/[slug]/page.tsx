@@ -7,6 +7,7 @@ import {
   getPosts,
   getPostReadableBody,
   getPostHeroImage,
+  getPostPublishDate,
   normalizePostSlug,
 } from '@/lib/posts';
 import { MDXContent } from '@/components/mdx-content';
@@ -41,7 +42,7 @@ export async function generateMetadata({ params }: { params: Params | Promise<Pa
 
       const siteUrl = getPublicSiteUrl();
       const canonicalPath = `/posts/${post.slug}`;
-      const publishedTime = post.publishDate ?? post.date;
+      const publishedTime = getPostPublishDate(post).toISOString();
       const heroImage = getPostHeroImage(post);
 
       return {
@@ -101,7 +102,7 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
       const siteUrl = getPublicSiteUrl();
       const canonicalUrl = `${siteUrl}/posts/${post.slug}`;
       const lightningAddress = post.lightningAddress ?? 'joel@klabo.world';
-      const publishedDate = post.publishDate ?? post.date;
+      const publishedDate = getPostPublishDate(post).toISOString();
       const heroImage = getPostHeroImage(post);
       const heroImageUrl = new URL(heroImage, siteUrl).toString();
       const jsonLd = {

@@ -1,5 +1,5 @@
 import { getPublicSiteUrl } from './public-env';
-import { getPosts } from './posts';
+import { getPosts, getPostPublishDate } from './posts';
 
 const SITE_NAME = 'klabo.world';
 const SITE_DESCRIPTION = 'Bitcoin, Lightning, Nostr & Agentic Engineering insights from klabo.world.';
@@ -15,7 +15,7 @@ function getFeedItems(limit = 20) {
     url: absoluteUrl(post.url),
     title: post.title,
     summary: post.summary,
-    datePublished: new Date(post.publishDate ?? post.date).toISOString(),
+    datePublished: getPostPublishDate(post).toISOString(),
   }));
 }
 

@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { getPublicSiteUrl } from '@/lib/public-env';
 import { getApps } from '@/lib/apps';
-import { getPosts, getPostTagCounts } from '@/lib/posts';
+import { getPostPublishDate, getPosts, getPostTagCounts } from '@/lib/posts';
 
 function withBaseUrl(path: string) {
   const base = getPublicSiteUrl();
@@ -27,7 +27,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const postRoutes: MetadataRoute.Sitemap = posts.map((post) => ({
     url: withBaseUrl(`/posts/${post.slug}`),
-    lastModified: new Date(post.publishDate ?? post.date),
+    lastModified: getPostPublishDate(post),
     changeFrequency: 'monthly',
     priority: 0.7,
   }));
