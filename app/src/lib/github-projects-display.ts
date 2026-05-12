@@ -1,12 +1,5 @@
 import { GitHubProject } from '@/lib/github-projects';
-
-function parseProjectDate(value?: string | null): Date | undefined {
-  if (!value) {
-    return undefined;
-  }
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? undefined : date;
-}
+import { formatDisplayDate, parseDateInput } from '@/lib/dateDisplay';
 
 const DEFAULT_PROJECT_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
   month: 'short',
@@ -18,18 +11,13 @@ export function formatProjectDate(
   value: string,
   options: Intl.DateTimeFormatOptions = DEFAULT_PROJECT_DATE_OPTIONS,
 ): string | null {
-  const date = parseProjectDate(value);
+  const date = parseDateInput(value);
   if (!date) return null;
-  const normalizedOptions = { ...options };
-  try {
-    return new Intl.DateTimeFormat(undefined, normalizedOptions).format(date);
-  } catch {
-    return date.toLocaleDateString(undefined, normalizedOptions);
-  }
+  return formatDisplayDate(date, null, options);
 }
 
 export function getProjectSortTime(project: Pick<GitHubProject, 'updatedAt' | 'pushedAt'>): number {
   const value = project.updatedAt ?? project.pushedAt;
-  const date = parseProjectDate(value);
+  const date = parseDateInput(value);
   return date ? date.getTime() : 0;
 }

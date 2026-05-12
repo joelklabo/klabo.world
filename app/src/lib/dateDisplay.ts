@@ -4,7 +4,7 @@ export function resolveDisplayDate(value: DateInput, fallback: DateInput = null)
   return value ?? fallback ?? '';
 }
 
-function toDate(value: DateInput): Date | undefined {
+export function parseDateInput(value: DateInput): Date | undefined {
   if (value instanceof Date) {
     return Number.isNaN(value.getTime()) ? undefined : value;
   }
@@ -14,7 +14,7 @@ function toDate(value: DateInput): Date | undefined {
 
 export function getDateTimeAttr(value: DateInput, fallback: DateInput = null): string {
   const resolved = resolveDisplayDate(value, fallback);
-  const parsed = toDate(resolved);
+  const parsed = parseDateInput(resolved);
   return parsed ? parsed.toISOString() : resolved;
 }
 
@@ -24,7 +24,7 @@ export function formatDisplayDate(
   options?: Intl.DateTimeFormatOptions,
 ): string {
   const resolved = resolveDisplayDate(value, fallback);
-  const parsed = toDate(resolved);
+  const parsed = parseDateInput(resolved);
   if (!parsed) return resolved;
   try {
     return parsed.toLocaleDateString(undefined, options);
@@ -39,7 +39,7 @@ export function formatDisplayDateTime(
   options?: Intl.DateTimeFormatOptions,
 ): string {
   const resolved = resolveDisplayDate(value, fallback);
-  const parsed = toDate(resolved);
+  const parsed = parseDateInput(resolved);
   if (!parsed) return resolved;
   try {
     return parsed.toLocaleString(undefined, options);
@@ -50,6 +50,6 @@ export function formatDisplayDateTime(
 
 export function formatUtcDate(value: DateInput, fallback: DateInput = null): string {
   const resolved = resolveDisplayDate(value, fallback);
-  const parsed = toDate(resolved);
+  const parsed = parseDateInput(resolved);
   return parsed ? parsed.toUTCString() : resolved;
 }
