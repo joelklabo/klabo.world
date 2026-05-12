@@ -77,6 +77,10 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
     params,
     getPostBySlug,
     (post, requestedSlug) => {
+      if (!post) {
+        return notFound();
+      }
+
       if (normalizePostSlug(post.slug) !== normalizePostSlug(requestedSlug)) {
         permanentRedirect(`/posts/${post.slug}`);
       }
