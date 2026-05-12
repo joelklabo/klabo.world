@@ -1,13 +1,11 @@
-import Link from 'next/link';
-import type { Route } from 'next';
 import { LoginForm } from '../login-form';
 import { getPostsForAdmin } from '@/lib/posts';
 import { ContentDate } from '@/components/content-date';
-import { Button } from '@/components/ui/button';
 import { Surface } from '@/components/ui/surface';
 import { getAdminSession } from '@/lib/adminSession';
 import { AdminSectionHeader } from '@/app/(admin)/components/admin-section-header';
 import { AdminActionLink } from '@/app/(admin)/components/admin-action-link';
+import { AdminActionButton } from '@/app/(admin)/components/admin-action-button';
 
 export const dynamic = 'force-dynamic';
 
@@ -36,9 +34,7 @@ export default async function AdminLanding({ searchParams }: { searchParams?: Ad
         title="Content overview"
         description="Publish and maintain posts."
         action={
-          <Button asChild size="lg">
-            <Link href={'/admin/compose' as Route}>Compose post</Link>
-          </Button>
+          <AdminActionButton href="/admin/compose">Compose post</AdminActionButton>
         }
       />
       <Surface
@@ -65,11 +61,11 @@ export default async function AdminLanding({ searchParams }: { searchParams?: Ad
                 <td className="px-6 py-4 text-muted-foreground">{post.tags?.length ? post.tags.join(', ') : '—'}</td>
                 <td className="px-6 py-4 text-sm">
                   <div className="flex gap-3">
-                    <AdminActionLink href={`/posts/${post.slug}` as Route} target="_blank">
+                    <AdminActionLink href={`/posts/${post.slug}`} target="_blank">
                       View
                       <span className="sr-only"> (opens in new tab)</span>
                     </AdminActionLink>
-                    <AdminActionLink href={`/admin/posts/${post.slug}/edit` as Route} variant="primary">
+                    <AdminActionLink href={`/admin/posts/${post.slug}/edit`} variant="primary">
                       Edit
                     </AdminActionLink>
                   </div>

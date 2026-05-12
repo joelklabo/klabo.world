@@ -1,11 +1,10 @@
-import Link from 'next/link';
 import type { Metadata } from 'next';
 import { getAppsForAdmin } from '@/lib/apps';
 import { ContentDate } from '@/components/content-date';
-import { Button } from '@/components/ui/button';
 import { Surface } from '@/components/ui/surface';
 import { AdminSectionHeader } from '@/app/(admin)/components/admin-section-header';
 import { AdminActionLink } from '@/app/(admin)/components/admin-action-link';
+import { AdminActionButton } from '@/app/(admin)/components/admin-action-button';
 import { runAdminPage } from '@/lib/adminPageHelpers';
 
 export const dynamic = 'force-dynamic';
@@ -24,9 +23,7 @@ export default async function AdminAppsPage() {
           title="Manage app listings"
           description="Keep app metadata and release notes current."
           action={
-            <Button asChild size="lg">
-              <Link href="/admin/apps/new">New app</Link>
-            </Button>
+            <AdminActionButton href="/admin/apps/new">New app</AdminActionButton>
           }
         />
         <Surface
