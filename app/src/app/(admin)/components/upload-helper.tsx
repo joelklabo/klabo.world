@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { handleImageUploadChange, uploadImage } from './image-upload-transport';
 
 type Status = 'idle' | 'uploading' | 'success' | 'error';
 
@@ -16,38 +17,23 @@ export function MarkdownUploadHelper({ buttonTestId, statusTestId }: Props) {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const handleUpload = useCallback(async (file: File) => {
-    const formData = new FormData();
-    formData.append('file', file);
     setStatus('uploading');
     setMessage('');
-    try {
-      const response = await fetch('/admin/upload-image', {
-        method: 'POST',
-        body: formData,
-        credentials: 'include',
-      });
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok || !data?.url) {
-        throw new Error(data?.error || 'Upload failed');
-      }
-      if (typeof navigator !== 'undefined' && navigator.clipboard) {
-        await navigator.clipboard.writeText(data.url).catch(() => {});
-      }
-      setStatus('success');
-      setMessage(`Copied ${data.url} to clipboard`);
-    } catch (error) {
+    const result = await uploadImage(file);
+    if (!result.ok) {
       setStatus('error');
-      setMessage(error instanceof Error ? error.message : 'Upload failed');
+      setMessage(result.message || 'Upload failed');
+      return;
     }
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      await navigator.clipboard.writeText(result.url).catch(() => {});
+    }
+    setStatus('success');
+    setMessage(`Copied ${result.url} to clipboard`);
   }, []);
 
   const onFileChange = useCallback(
-    async (event: React.ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0];
-      if (!file) return;
-      await handleUpload(file);
-      event.target.value = '';
-    },
+    (event: React.ChangeEvent<HTMLInputElement>) => handleImageUploadChange(event, handleUpload),
     [handleUpload],
   );
 

@@ -175,7 +175,6 @@ export function AppForm({ upsertAction, deleteAction, initialData, mode }: AppFo
           label="Icon path"
           defaultValue={initialData?.icon ?? ''}
           helperText="Ideal size 512x512. Upload new assets or reuse /app-icons."
-          tone="purple"
           inputTestId={`${testIdPrefix}-icon`}
           uploadButtonTestId={`${testIdPrefix}-icon-upload`}
         />
@@ -184,7 +183,6 @@ export function AppForm({ upsertAction, deleteAction, initialData, mode }: AppFo
           label="Screenshots (one per line)"
           defaultValue={initialData?.screenshots?.join('\n') ?? ''}
           helperText="Uploads append to the textarea automatically."
-          tone="purple"
           textareaTestId={`${testIdPrefix}-screenshots`}
           uploadButtonTestId={`${testIdPrefix}-screenshot-upload`}
         />

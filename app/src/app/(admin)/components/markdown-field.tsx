@@ -5,8 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
-type Tone = 'indigo' | 'emerald';
-
 type Props = {
   name: string;
   label: string;
@@ -14,7 +12,6 @@ type Props = {
   placeholder?: string;
   helperText?: string;
   rows?: number;
-  tone?: Tone;
   textareaTestId?: string;
   previewButtonTestId?: string;
 };

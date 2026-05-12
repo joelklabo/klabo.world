@@ -205,14 +205,12 @@ export function PostForm({ upsertAction, deleteAction, initialData, mode }: Post
         label="Featured image path"
         defaultValue={initialData?.featuredImage ?? ''}
         helperText="Uploads are stored under /uploads — link directly to the generated path."
-        tone="indigo"
       />
       <MarkdownField
         name="content"
         label="Content (Markdown)"
         defaultValue={initialData?.body}
         helperText="Use Preview to validate gist embeds, lists, and MDX components."
-        tone="indigo"
       />
       <div className="flex items-start justify-between gap-4">
         <div className="flex gap-2">

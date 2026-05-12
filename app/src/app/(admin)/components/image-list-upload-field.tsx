@@ -4,8 +4,7 @@ import { useCallback, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-
-type Tone = 'indigo' | 'purple' | 'emerald';
+import { handleImageUploadChange, uploadImage } from './image-upload-transport';
 
 type Props = {
   name: string;
@@ -13,7 +12,6 @@ type Props = {
   defaultValue?: string;
   helperText?: string;
   placeholder?: string;
-  tone?: Tone;
   textareaTestId?: string;
   uploadButtonTestId?: string;
 };
@@ -39,35 +37,20 @@ export function ImageListUploadField({
   }, []);
 
   const handleUpload = useCallback(async (file: File) => {
-    const formData = new FormData();
-    formData.append('file', file);
     setStatus('uploading');
     setError(null);
-    try {
-      const response = await fetch('/admin/upload-image', {
-        method: 'POST',
-        body: formData,
-        credentials: 'include',
-      });
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok || !data?.url) {
-        throw new Error(data?.error || 'Upload failed');
-      }
-      appendValue(data.url);
-      setStatus('success');
-    } catch (uploadError) {
-      setError(uploadError instanceof Error ? uploadError.message : 'Upload failed');
+    const result = await uploadImage(file);
+    if (!result.ok) {
+      setError(result.message || 'Upload failed');
       setStatus('error');
+      return;
     }
+    appendValue(result.url);
+    setStatus('success');
   }, [appendValue]);
 
   const onFileChange = useCallback(
-    async (event: React.ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0];
-      if (!file) return;
-      await handleUpload(file);
-      event.target.value = '';
-    },
+    (event: React.ChangeEvent<HTMLInputElement>) => handleImageUploadChange(event, handleUpload),
     [handleUpload],
   );
 
