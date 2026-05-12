@@ -13,6 +13,11 @@ export const DASHBOARD_PANEL_TYPE_VALUES = [
 ] as const;
 
 export type DashboardPanelType = (typeof DASHBOARD_PANEL_TYPES)[keyof typeof DASHBOARD_PANEL_TYPES];
+export const DASHBOARD_ANALYTICS_PANEL_TYPES = [
+  DASHBOARD_PANEL_TYPES.chart,
+  DASHBOARD_PANEL_TYPES.logs,
+] as const;
+export type DashboardAnalyticsPanelType = (typeof DASHBOARD_ANALYTICS_PANEL_TYPES)[number];
 
 export type DashboardPanelRequirements = {
   requiresKqlQuery: boolean;
