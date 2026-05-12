@@ -24,6 +24,23 @@ const postSchema = z.object({
   nostrstackEnabled: z.coerce.boolean().optional(),
 });
 
+type PostFormValues = z.infer<typeof postSchema>;
+
+function buildPostPersistenceInput(data: PostFormValues) {
+  return {
+    title: data.title,
+    summary: data.summary,
+    body: data.content,
+    tags: data.tags,
+    publishDate: data.publishDate || null,
+    featuredImage: data.featuredImage || null,
+    lightningAddress: data.lightningAddress || null,
+    nostrPubkey: data.nostrPubkey || null,
+    nostrRelays: data.nostrRelays,
+    nostrstackEnabled: data.nostrstackEnabled,
+  };
+}
+
 export type ActionState = {
   message: string;
   errors?: Record<string, string[]>;
@@ -55,18 +72,7 @@ export async function createPostAction(
     }
 
     const data = result.data;
-    const input = {
-      title: data.title,
-      summary: data.summary,
-      body: data.content,
-      tags: data.tags,
-      publishDate: data.publishDate || null,
-      featuredImage: data.featuredImage || null,
-      lightningAddress: data.lightningAddress || null,
-      nostrPubkey: data.nostrPubkey || null,
-      nostrRelays: data.nostrRelays,
-      nostrstackEnabled: data.nostrstackEnabled,
-    };
+    const input = buildPostPersistenceInput(data);
 
     const createResult = await createPost(input);
     slug = createResult.slug;
@@ -125,18 +131,7 @@ export async function updatePostAction(
     }
 
     const data = result.data;
-    const input = {
-      title: data.title,
-      summary: data.summary,
-      body: data.content,
-      tags: data.tags,
-      publishDate: data.publishDate || null,
-      featuredImage: data.featuredImage || null,
-      lightningAddress: data.lightningAddress || null,
-      nostrPubkey: data.nostrPubkey || null,
-      nostrRelays: data.nostrRelays,
-      nostrstackEnabled: data.nostrstackEnabled,
-    };
+    const input = buildPostPersistenceInput(data);
 
     await updatePost(slug, input);
 

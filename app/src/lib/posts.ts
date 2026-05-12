@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import matter from 'gray-matter';
 import { allPosts, type Post } from 'contentlayer/generated';
+import { summarizePostMetadata, type AdminPostSummary } from './postFrontmatter';
 type PostsDirectoryLoader = () => Promise<string>;
 
 const resolvePostsDirectory: PostsDirectoryLoader = async () => {
@@ -143,20 +144,6 @@ export function getPostTagCounts(): Record<string, number> {
   }, {});
 }
 
-type AdminPostSummary = {
-  slug: string;
-  title: string;
-  summary: string;
-  tags?: string[];
-  date: string;
-  publishDate?: string | null;
-  lightningAddress?: string | null;
-  nostrPubkey?: string | null;
-  nostrRelays?: string[];
-  nostrstackEnabled?: boolean | null;
-  xPostId?: string | null;
-};
-
 function getAdminPublishDate(post: AdminPostSummary): Date {
   return new Date(post.publishDate ?? post.date);
 }
@@ -177,34 +164,14 @@ async function readDiskPosts(exclude: Set<string>): Promise<AdminPostSummary[]> 
       if (exclude.has(slug)) continue;
       const raw = await fs.readFile(path.join(postsDir, file), 'utf8');
       const parsed = matter(raw);
-      const data = parsed.data as Record<string, unknown>;
-      const title = typeof data.title === 'string' ? data.title : slug;
-      const summary = typeof data.summary === 'string' ? data.summary : '';
-      const tags = Array.isArray(data.tags) ? data.tags.map(String) : undefined;
-      const date = typeof data.date === 'string' ? data.date : new Date().toISOString().slice(0, 10);
-      const publishDate = typeof data.publishDate === 'string' ? data.publishDate : null;
-      const lightningAddress = typeof data.lightningAddress === 'string' ? data.lightningAddress : null;
-      const nostrPubkey = typeof data.nostrPubkey === 'string' ? data.nostrPubkey : null;
-      const nostrRelays = Array.isArray(data.nostrRelays)
-        ? data.nostrRelays.map(String).filter(Boolean)
-        : undefined;
-      const nostrstackEnabled =
-        typeof data.nostrstackEnabled === 'boolean' ? data.nostrstackEnabled : undefined;
-      const xPostId = typeof data.xPostId === 'string' ? data.xPostId : null;
-
-      entries.push({
-        slug,
-        title,
-        summary,
-        tags,
-        date,
-        publishDate,
-        lightningAddress,
-        nostrPubkey,
-        nostrRelays,
-        nostrstackEnabled,
-        xPostId,
-      });
+      entries.push(
+        summarizePostMetadata(parsed.data, {
+          slug,
+          titleFallback: slug,
+          summaryFallback: '',
+          date: typeof parsed.data.date === 'string' ? parsed.data.date : new Date().toISOString().slice(0, 10),
+        }),
+      );
     }
     return entries;
   } catch (error) {
@@ -216,19 +183,16 @@ async function readDiskPosts(exclude: Set<string>): Promise<AdminPostSummary[]> 
 }
 
 export async function getPostsForAdmin(): Promise<AdminPostSummary[]> {
-  const basePosts = getPosts({ includeUnpublished: true }).map<AdminPostSummary>((post) => ({
-    slug: post.slug,
-    title: post.title,
-    summary: post.summary,
-    tags: post.tags,
-    date: post.date,
-    publishDate: post.publishDate ?? null,
-    lightningAddress: post.lightningAddress ?? null,
-    nostrPubkey: post.nostrPubkey ?? null,
-    nostrRelays: post.nostrRelays ?? undefined,
-    nostrstackEnabled: typeof post.nostrstackEnabled === 'boolean' ? post.nostrstackEnabled : undefined,
-    xPostId: post.xPostId ?? null,
-  }));
+  const basePosts = getPosts({ includeUnpublished: true }).map<AdminPostSummary>((post) =>
+    summarizePostMetadata(post, {
+      slug: post.slug,
+      summaryFallback: post.summary,
+      date: post.date,
+      featuredImage: post.featuredImage ?? null,
+      publishDateFallback: post.publishDate ?? null,
+      titleFallback: post.title,
+    }),
+  );
   const existing = new Set(basePosts.map((post) => post.slug));
   const diskPosts = await readDiskPosts(existing);
   return [...basePosts, ...diskPosts].sort(
@@ -240,18 +204,14 @@ export async function getEditablePostBySlug(slug: string): Promise<EditablePost 
   const contentlayerPost = getPostBySlug(slug);
   if (contentlayerPost) {
     return {
-      slug: contentlayerPost.slug,
-      title: contentlayerPost.title,
-      summary: contentlayerPost.summary,
-      tags: contentlayerPost.tags,
-      date: contentlayerPost.date,
-      publishDate: contentlayerPost.publishDate ?? null,
-      featuredImage: contentlayerPost.featuredImage ?? null,
-      lightningAddress: contentlayerPost.lightningAddress ?? null,
-      nostrPubkey: contentlayerPost.nostrPubkey ?? null,
-      nostrRelays: contentlayerPost.nostrRelays ?? undefined,
-      nostrstackEnabled: typeof contentlayerPost.nostrstackEnabled === 'boolean' ? contentlayerPost.nostrstackEnabled : undefined,
-      xPostId: contentlayerPost.xPostId ?? null,
+      ...summarizePostMetadata(contentlayerPost, {
+        slug: contentlayerPost.slug,
+        titleFallback: contentlayerPost.title,
+        summaryFallback: contentlayerPost.summary,
+        date: contentlayerPost.date,
+        featuredImage: contentlayerPost.featuredImage ?? null,
+        publishDateFallback: contentlayerPost.publishDate ?? null,
+      }),
       body: contentlayerPost.body.raw,
     };
   }
@@ -260,33 +220,13 @@ export async function getEditablePostBySlug(slug: string): Promise<EditablePost 
   try {
     const raw = await fs.readFile(filePath, 'utf8');
     const parsed = matter(raw);
-    const data = parsed.data as Record<string, unknown>;
-    const title = typeof data.title === 'string' ? data.title : slug;
-    const summary = typeof data.summary === 'string' ? data.summary : '';
-    const tags = Array.isArray(data.tags) ? data.tags.map(String) : undefined;
-    const date = typeof data.date === 'string' ? data.date : new Date().toISOString().slice(0, 10);
-    const publishDate = typeof data.publishDate === 'string' ? data.publishDate : null;
-    const featuredImage = typeof data.featuredImage === 'string' ? data.featuredImage : null;
-    const lightningAddress = typeof data.lightningAddress === 'string' ? data.lightningAddress : null;
-    const nostrPubkey = typeof data.nostrPubkey === 'string' ? data.nostrPubkey : null;
-    const nostrRelays = Array.isArray(data.nostrRelays)
-      ? data.nostrRelays.map(String).filter(Boolean)
-      : undefined;
-    const nostrstackEnabled = typeof data.nostrstackEnabled === 'boolean' ? data.nostrstackEnabled : undefined;
-    const xPostId = typeof data.xPostId === 'string' ? data.xPostId : null;
     return {
-      slug,
-      title,
-      summary,
-      tags,
-      date,
-      publishDate,
-      featuredImage,
-      lightningAddress,
-      nostrPubkey,
-      nostrRelays,
-      nostrstackEnabled,
-      xPostId,
+      ...summarizePostMetadata(parsed.data, {
+        slug,
+        titleFallback: slug,
+        summaryFallback: '',
+        date: typeof parsed.data.date === 'string' ? parsed.data.date : new Date().toISOString().slice(0, 10),
+      }),
       body: parsed.content.trim(),
     };
   } catch (error) {
