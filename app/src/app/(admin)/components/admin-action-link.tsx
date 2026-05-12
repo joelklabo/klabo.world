@@ -1,13 +1,12 @@
 import Link from 'next/link';
-import type { LinkProps } from 'next/link';
 import type { HTMLAttributeAnchorTarget, ReactNode } from 'react';
 
 type AdminActionLinkVariant = 'muted' | 'primary' | 'back';
 
-type AdminActionLinkHref = LinkProps<string>['href'] | string;
+type AdminActionLinkHref = Parameters<typeof Link>[0]['href'];
 
 type AdminActionLinkProps = {
-  href: AdminActionLinkHref;
+  href: AdminActionLinkHref | string;
   children: ReactNode;
   variant?: AdminActionLinkVariant;
   target?: HTMLAttributeAnchorTarget;
@@ -29,7 +28,7 @@ export function AdminActionLink({
 }: AdminActionLinkProps) {
   return (
     <Link
-      href={href}
+      href={href as AdminActionLinkHref}
       className={`inline-block rounded px-3 py-2 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${variantStyles[variant]}`}
       target={target}
       rel={target === '_blank' ? rel ?? 'noreferrer' : rel}
