@@ -20,11 +20,17 @@ export async function generateMetadata({ params }: { params: Params | Promise<Pa
   return runAdminSlugMetadata(
     params,
     getPostBySlug,
-    (post) => ({
-      title: `[DRAFT] ${post.title}`,
-      description: post.summary,
-      robots: { index: false, follow: false },
-    }),
+    (post) => {
+      if (!post) {
+        return { title: 'Draft not found' };
+      }
+
+      return {
+        title: `[DRAFT] ${post.title}`,
+        description: post.summary,
+        robots: { index: false, follow: false },
+      };
+    },
     () => ({ title: 'Draft not found' }),
   );
 }
