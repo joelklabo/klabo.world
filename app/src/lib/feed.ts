@@ -1,18 +1,13 @@
-import { getPublicSiteUrl } from './public-env';
+import { withPublicSiteUrl } from './public-env';
 import { getPosts, getPostPublishDate } from './posts';
 
 const SITE_NAME = 'klabo.world';
 const SITE_DESCRIPTION = 'Bitcoin, Lightning, Nostr & Agentic Engineering insights from klabo.world.';
 
-function absoluteUrl(path: string): string {
-  const base = getPublicSiteUrl();
-  return `${base}${path.startsWith('/') ? path : `/${path}`}`;
-}
-
 function getFeedItems(limit = 20) {
   return getPosts().slice(0, limit).map((post) => ({
-    id: absoluteUrl(post.url),
-    url: absoluteUrl(post.url),
+    id: withPublicSiteUrl(post.url),
+    url: withPublicSiteUrl(post.url),
     title: post.title,
     summary: post.summary,
     datePublished: getPostPublishDate(post).toISOString(),
@@ -21,7 +16,7 @@ function getFeedItems(limit = 20) {
 
 export function buildRssFeed(limit = 20): string {
   const items = getFeedItems(limit);
-  const feedUrl = absoluteUrl('/rss.xml');
+  const feedUrl = withPublicSiteUrl('/rss.xml');
 
   const rssItems = items
     .map(
@@ -40,7 +35,7 @@ export function buildRssFeed(limit = 20): string {
 <rss version="2.0">
   <channel>
     <title><![CDATA[${SITE_NAME}]]></title>
-    <link>${absoluteUrl('/')}</link>
+    <link>${withPublicSiteUrl('/')}</link>
     <description><![CDATA[${SITE_DESCRIPTION}]]></description>
     <language>en</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
@@ -56,8 +51,8 @@ export function buildJsonFeed(limit = 20) {
   return {
     version: 'https://jsonfeed.org/version/1.1',
     title: SITE_NAME,
-    home_page_url: absoluteUrl('/'),
-    feed_url: absoluteUrl('/feed.json'),
+    home_page_url: withPublicSiteUrl('/'),
+    feed_url: withPublicSiteUrl('/feed.json'),
     description: SITE_DESCRIPTION,
     items: items.map((item) => ({
       id: item.id,

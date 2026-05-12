@@ -29,6 +29,11 @@ export function getPublicSiteUrl(): string {
   return normalizeUrl(raw);
 }
 
+export function withPublicSiteUrl(path: string): string {
+  const base = getPublicSiteUrl();
+  return `${base}${path.startsWith('/') ? path : `/${path}`}`;
+}
+
 export function getPublicGitHubOwner(): string {
   const raw = process.env.GITHUB_OWNER ?? process.env.NEXT_PUBLIC_GITHUB_OWNER ?? FALLBACK_GITHUB_OWNER;
   return normalizeString(raw, FALLBACK_GITHUB_OWNER);
