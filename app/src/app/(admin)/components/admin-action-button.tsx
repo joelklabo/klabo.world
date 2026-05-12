@@ -6,8 +6,10 @@ import { Button } from '@/components/ui/button';
 
 type AdminActionButtonSize = 'default' | 'xs' | 'sm' | 'lg' | 'icon' | 'icon-sm' | 'icon-lg';
 
+type AdminActionButtonHref = LinkProps<string>['href'] | string;
+
 type AdminActionButtonProps = {
-  href: LinkProps<string>['href'];
+  href: AdminActionButtonHref;
   children: ReactNode;
   size?: AdminActionButtonSize;
 };

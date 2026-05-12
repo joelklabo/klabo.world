@@ -4,8 +4,10 @@ import type { HTMLAttributeAnchorTarget, ReactNode } from 'react';
 
 type AdminActionLinkVariant = 'muted' | 'primary' | 'back';
 
+type AdminActionLinkHref = LinkProps<string>['href'] | string;
+
 type AdminActionLinkProps = {
-  href: LinkProps<string>['href'];
+  href: AdminActionLinkHref;
   children: ReactNode;
   variant?: AdminActionLinkVariant;
   target?: HTMLAttributeAnchorTarget;
