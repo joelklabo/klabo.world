@@ -10,7 +10,6 @@ export function parseListField(separator: string | RegExp) {
   return z.string().transform((value) => splitTrimmedList(value, separator));
 }
 
-export const parseCommaList = parseListField(',');
 export const parseNewlineList = parseListField(/\r?\n/);
 
 export function optionalUrlField(errorMessage = 'Invalid URL') {
