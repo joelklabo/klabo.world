@@ -1,10 +1,10 @@
 'use client';
 
-import { useCallback, useRef, useState } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { handleImageUploadChange, uploadImage } from './image-upload-transport';
+import { useImageUpload } from './image-upload-hook';
 
 type Props = {
   name: string;
@@ -16,8 +16,6 @@ type Props = {
   uploadButtonTestId?: string;
 };
 
-type Status = 'idle' | 'uploading' | 'success' | 'error' | 'rate-limited' | 'quarantined';
-
 export function ImageUploadField({
   name,
   label,
@@ -28,46 +26,41 @@ export function ImageUploadField({
   uploadButtonTestId,
 }: Props) {
   const [value, setValue] = useState(defaultValue);
-  const [status, setStatus] = useState<Status>('idle');
-  const [error, setError] = useState<string | null>(null);
   const [uploadedPath, setUploadedPath] = useState<string | null>(defaultValue || null);
-  const [retryAfterSeconds, setRetryAfterSeconds] = useState<number | null>(null);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-
-  const handleUpload = useCallback(async (file: File) => {
-    setStatus('uploading');
-    setError(null);
-    setRetryAfterSeconds(null);
-    const result = await uploadImage(file);
-    if (!result.ok) {
+  const {
+    fileInputRef,
+    onFileChange,
+    triggerUpload,
+    status,
+    error,
+    retryAfterSeconds,
+    setStatus,
+    setError,
+    setRetryAfterSeconds,
+  } = useImageUpload({
+    onSuccess: (result) => {
+      setValue(result.url);
+      setUploadedPath(result.url);
+      if (result.scanStatus === 'processing') {
+        setStatus('quarantined');
+      } else {
+        setStatus('success');
+      }
+      setError(null);
+      setRetryAfterSeconds(null);
+    },
+    onFailure: (result) => {
       if (result.statusCode === 429) {
         setRetryAfterSeconds(result.retryAfterSeconds);
-        setError(
-          result.message && result.message !== 'Upload failed'
-            ? result.message
-            : 'Too many uploads. Please try again later.',
-        );
-        setStatus('rate-limited');
-        return;
+        setError(result.message && result.message !== 'Upload failed' ? result.message : 'Too many uploads. Please try again later.');
+      } else if (result.statusCode === 400) {
+        setError(`Invalid file: ${result.message || 'Upload failed'}`);
+      } else {
+        setError(result.message || 'Upload failed');
       }
-      const message = result.message || 'Upload failed';
-      setError(result.statusCode === 400 ? `Invalid file: ${message}` : message);
-      setStatus('error');
-      return;
-    }
-    setValue(result.url);
-    setUploadedPath(result.url);
-    setStatus(result.scanStatus === 'processing' ? 'quarantined' : 'success');
-  }, []);
-
-  const onFileChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => handleImageUploadChange(event, handleUpload),
-    [handleUpload],
-  );
-
-  const onBrowseClick = useCallback(() => {
-    fileInputRef.current?.click();
-  }, []);
+      setStatus(result.statusCode === 429 ? 'rate-limited' : 'error');
+    },
+  });
 
   return (
     <div className="space-y-2">
@@ -85,7 +78,7 @@ export function ImageUploadField({
       <div className="flex flex-wrap items-center gap-3 text-sm">
         <Button
           type="button"
-          onClick={onBrowseClick}
+          onClick={triggerUpload}
           variant="outline"
           size="xs"
           data-testid={uploadButtonTestId}

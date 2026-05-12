@@ -1,10 +1,10 @@
 'use client';
 
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { handleImageUploadChange, uploadImage } from './image-upload-transport';
+import { useImageUpload } from './image-upload-hook';
 
 type Props = {
   name: string;
@@ -16,8 +16,6 @@ type Props = {
   uploadButtonTestId?: string;
 };
 
-type Status = 'idle' | 'uploading' | 'success' | 'error';
-
 export function ImageListUploadField({
   name,
   label,
@@ -28,31 +26,23 @@ export function ImageListUploadField({
   uploadButtonTestId,
 }: Props) {
   const [value, setValue] = useState(defaultValue);
-  const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const appendValue = useCallback((url: string) => {
     setValue((prev) => (prev ? `${prev}\n${url}` : url));
   }, []);
 
-  const handleUpload = useCallback(async (file: File) => {
-    setStatus('uploading');
-    setError(null);
-    const result = await uploadImage(file);
-    if (!result.ok) {
+  const { fileInputRef, onFileChange, triggerUpload, status, setStatus } = useImageUpload({
+    onSuccess: (result) => {
+      appendValue(result.url);
+      setError(null);
+      setStatus('success');
+    },
+    onFailure: (result) => {
       setError(result.message || 'Upload failed');
       setStatus('error');
-      return;
-    }
-    appendValue(result.url);
-    setStatus('success');
-  }, [appendValue]);
-
-  const onFileChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => handleImageUploadChange(event, handleUpload),
-    [handleUpload],
-  );
+    },
+  });
 
   return (
     <div className="space-y-2">
@@ -71,7 +61,7 @@ export function ImageListUploadField({
       <div className="flex flex-wrap items-center gap-3 text-sm">
         <Button
           type="button"
-          onClick={() => fileInputRef.current?.click()}
+          onClick={triggerUpload}
           variant="outline"
           size="xs"
           data-testid={uploadButtonTestId}
