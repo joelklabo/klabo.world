@@ -65,6 +65,14 @@ function toFrontMatterValue(value: string | string[] | undefined | null): string
   return JSON.stringify(value);
 }
 
+function getLocalPostPath(slug: string) {
+  return path.join(POSTS_DIR, `${slug}.mdx`);
+}
+
+function getGithubPostPath(slug: string) {
+  return `${GITHUB_POSTS_DIR}/${slug}.mdx`;
+}
+
 function buildMarkdown(slug: string, input: PostInput) {
   const today = new Date().toISOString().slice(0, 10);
   const lines = ['---'];
@@ -104,25 +112,35 @@ function buildMarkdown(slug: string, input: PostInput) {
   return lines.join('\n');
 }
 
-async function writeLocalFile(slug: string, content: string) {
-  await fs.mkdir(POSTS_DIR, { recursive: true });
-  await fs.writeFile(path.join(POSTS_DIR, `${slug}.mdx`), content, 'utf8');
-}
-
-async function writeGitHubFile(slug: string, content: string) {
-  const relativePath = `${GITHUB_POSTS_DIR}/${slug}.mdx`;
-  let sha: string | undefined;
+async function resolveExistingSha(relativePath: string): Promise<string | undefined> {
   try {
     const existing = await fetchRepoFile(githubConfig, relativePath);
-    sha = existing.sha;
+    return existing.sha;
   } catch (error: unknown) {
     if (typeof error !== 'object' || error === null || (error as { status?: number }).status !== 404) {
       throw error;
     }
+    return undefined;
   }
+}
+
+async function persistPostMarkdown(
+  slug: string,
+  content: string,
+  message = `chore: update post ${slug}`,
+  existingSha?: string,
+) {
+  const relativePath = getGithubPostPath(slug);
+  if (!shouldUseGitHub()) {
+    await fs.mkdir(POSTS_DIR, { recursive: true });
+    await fs.writeFile(getLocalPostPath(slug), content, 'utf8');
+    return;
+  }
+
+  const sha = existingSha ?? (await resolveExistingSha(relativePath));
   await upsertRepoFile(githubConfig, {
     path: relativePath,
-    message: `chore: update post ${slug}`,
+    message,
     content,
     sha,
   });
@@ -132,22 +150,35 @@ export async function createPost(input: PostInput) {
   const baseSlug = normalizeSlug(input.title);
   const slug = await resolveSlug(baseSlug);
   const markdown = buildMarkdown(slug, input);
-  await (shouldUseGitHub() ? writeGitHubFile(slug, markdown) : writeLocalFile(slug, markdown));
+  await persistPostMarkdown(slug, markdown);
   return { slug };
 }
 
 export async function updatePost(slug: string, input: PostInput) {
   const markdown = buildMarkdown(slug, input);
-  await (shouldUseGitHub() ? writeGitHubFile(slug, markdown) : writeLocalFile(slug, markdown));
+  await persistPostMarkdown(slug, markdown);
+}
+
+async function readPostMarkdown(slug: string): Promise<{ content: string; sha?: string }> {
+  if (!shouldUseGitHub()) {
+    return { content: await fs.readFile(getLocalPostPath(slug), 'utf8') };
+  }
+
+  const relativePath = getGithubPostPath(slug);
+  const existing = await fetchRepoFile(githubConfig, relativePath);
+  return {
+    content: Buffer.from(existing.content, 'base64').toString('utf8'),
+    sha: existing.sha,
+  };
 }
 
 export async function deletePost(slug: string) {
   if (shouldUseGitHub()) {
-    const relativePath = `${GITHUB_POSTS_DIR}/${slug}.mdx`;
+    const relativePath = getGithubPostPath(slug);
     const existing = await fetchRepoFile(githubConfig, relativePath);
     await deleteRepoFile(githubConfig, relativePath, `chore: delete post ${slug}`, existing.sha);
   } else {
-    await fs.unlink(path.join(POSTS_DIR, `${slug}.mdx`));
+    await fs.unlink(getLocalPostPath(slug));
   }
 }
 
@@ -160,26 +191,9 @@ export function getPostsDirectory() {
  * Reads the existing file, parses frontmatter, updates xPostId, and writes back.
  */
 export async function updatePostXPostId(slug: string, xPostId: string): Promise<void> {
-  const filePath = path.join(POSTS_DIR, `${slug}.mdx`);
-
-  if (shouldUseGitHub()) {
-    const relativePath = `${GITHUB_POSTS_DIR}/${slug}.mdx`;
-    const existing = await fetchRepoFile(githubConfig, relativePath);
-    const content = Buffer.from(existing.content, 'base64').toString('utf8');
-    const parsed = matter(content);
-    parsed.data.xPostId = xPostId;
-    const updated = matter.stringify(parsed.content, parsed.data);
-    await upsertRepoFile(githubConfig, {
-      path: relativePath,
-      message: `chore: add xPostId to ${slug}`,
-      content: updated,
-      sha: existing.sha,
-    });
-  } else {
-    const content = await fs.readFile(filePath, 'utf8');
-    const parsed = matter(content);
-    parsed.data.xPostId = xPostId;
-    const updated = matter.stringify(parsed.content, parsed.data);
-    await fs.writeFile(filePath, updated, 'utf8');
-  }
+  const current = await readPostMarkdown(slug);
+  const parsed = matter(current.content);
+  parsed.data.xPostId = xPostId;
+  const updated = matter.stringify(parsed.content, parsed.data);
+  await persistPostMarkdown(slug, updated, `chore: add xPostId to ${slug}`, current.sha);
 }
