@@ -76,7 +76,7 @@ export function LightningNodeCard(props: NodeCardProps) {
   const [copiedField, setCopiedField] = useState<'pubkey' | 'uri' | null>(null);
   const [showQR, setShowQR] = useState(false);
 
-  const nodeUri = host ? `${pubkey}@${host}:${port ?? 9735}` : pubkey;
+  const nodeUri = host ? `${pubkey}@${host}:${port ?? DEFAULT_LIGHTNING_NODE_PORT}` : pubkey;
 
   const handleCopy = useCallback(async (field: 'pubkey' | 'uri') => {
     const text = field === 'pubkey' ? pubkey : nodeUri;
