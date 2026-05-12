@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getDashboardBySlugForAdmin } from '@/lib/dashboards';
 import { runAdminRoute, AdminRouteError } from '@/lib/adminRouteHelpers';
 import { loadDashboardLogs } from '@/lib/dashboardLogs';
