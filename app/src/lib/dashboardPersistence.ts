@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { resolveContentSubdir } from '@klaboworld/core/server/contentPaths';
-import { deleteRepoFile, fetchRepoFile, upsertRepoFile } from '@klaboworld/core/server/github';
+import { deleteRepoFile, fetchRepoFile, resolveExistingSha, shouldUseGitHubStorage, upsertRepoFile } from './github-service';
 import { normalizeSlug } from './slugUtils';
 
 type DashboardType = 'chart' | 'logs' | 'embed' | 'link';
@@ -21,20 +21,6 @@ export type DashboardInput = {
 
 const DASHBOARDS_DIR = resolveContentSubdir('dashboards');
 const GITHUB_DASHBOARD_DIR = 'content/dashboards';
-
-async function getGitHubConfig() {
-  const { env } = await import('./env');
-  return {
-    token: env.GITHUB_TOKEN ?? '',
-    owner: env.GITHUB_OWNER,
-    repo: env.GITHUB_REPO,
-  };
-}
-
-async function shouldUseGitHub(): Promise<boolean> {
-  const { env } = await import('./env');
-  return process.env.NODE_ENV === 'production' && Boolean(env.GITHUB_TOKEN);
-}
 
 async function fileExists(filePath: string): Promise<boolean> {
   try {
@@ -106,18 +92,9 @@ async function writeLocalFile(slug: string, content: string) {
 }
 
 async function writeGitHubFile(slug: string, content: string) {
-  const githubConfig = await getGitHubConfig();
   const relativePath = `${GITHUB_DASHBOARD_DIR}/${slug}.mdx`;
-  let sha: string | undefined;
-  try {
-    const existing = await fetchRepoFile(githubConfig, relativePath);
-    sha = existing.sha;
-  } catch (error) {
-    if ((error as { status?: number }).status !== 404) {
-      throw error;
-    }
-  }
-  await upsertRepoFile(githubConfig, {
+  const sha = await resolveExistingSha(relativePath);
+  await upsertRepoFile({
     path: relativePath,
     message: `chore: update dashboard ${slug}`,
     content,
@@ -129,21 +106,20 @@ export async function createDashboard(input: DashboardInput) {
   const baseSlug = normalizeSlug(input.title);
   const slug = await resolveSlug(baseSlug);
   const markdown = buildMarkdown(slug, input);
-  await ((await shouldUseGitHub()) ? writeGitHubFile(slug, markdown) : writeLocalFile(slug, markdown));
+  await (shouldUseGitHubStorage() ? writeGitHubFile(slug, markdown) : writeLocalFile(slug, markdown));
   return { slug };
 }
 
 export async function updateDashboard(slug: string, input: DashboardInput) {
   const markdown = buildMarkdown(slug, input);
-  await ((await shouldUseGitHub()) ? writeGitHubFile(slug, markdown) : writeLocalFile(slug, markdown));
+  await (shouldUseGitHubStorage() ? writeGitHubFile(slug, markdown) : writeLocalFile(slug, markdown));
 }
 
 export async function deleteDashboard(slug: string) {
-  if (await shouldUseGitHub()) {
-    const githubConfig = await getGitHubConfig();
+  if (shouldUseGitHubStorage()) {
     const relativePath = `${GITHUB_DASHBOARD_DIR}/${slug}.mdx`;
-    const existing = await fetchRepoFile(githubConfig, relativePath);
-    await deleteRepoFile(githubConfig, relativePath, `chore: delete dashboard ${slug}`, existing.sha);
+    const existing = await fetchRepoFile(relativePath);
+    await deleteRepoFile(relativePath, `chore: delete dashboard ${slug}`, existing.sha);
   } else {
     await fs.unlink(path.join(DASHBOARDS_DIR, `${slug}.mdx`));
   }

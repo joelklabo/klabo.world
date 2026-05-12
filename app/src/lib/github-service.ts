@@ -18,3 +18,19 @@ export async function upsertRepoFile(params: { path: string; message: string; co
 export async function deleteRepoFile(path: string, message: string, sha: string) {
   return coreDelete(config, path, message, sha);
 }
+
+export function shouldUseGitHubStorage(): boolean {
+  return process.env.NODE_ENV === 'production' && Boolean(env.GITHUB_TOKEN);
+}
+
+export async function resolveExistingSha(path: string): Promise<string | undefined> {
+  try {
+    const existing = await fetchRepoFile(path);
+    return existing.sha;
+  } catch (error: unknown) {
+    if (typeof error !== 'object' || error === null || (error as { status?: number }).status !== 404) {
+      throw error;
+    }
+    return undefined;
+  }
+}

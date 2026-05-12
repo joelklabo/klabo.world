@@ -2,8 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import matter from 'gray-matter';
 import { resolveContentSubdir } from '@klaboworld/core/server/contentPaths';
-import { deleteRepoFile, fetchRepoFile, upsertRepoFile } from '@klaboworld/core/server/github';
-import { env } from './env';
+import { deleteRepoFile, fetchRepoFile, resolveExistingSha, shouldUseGitHubStorage, upsertRepoFile } from './github-service';
 import { normalizeSlug } from './slugUtils';
 
 type PostInput = {
@@ -22,15 +21,6 @@ type PostInput = {
 
 const POSTS_DIR = resolveContentSubdir('posts');
 const GITHUB_POSTS_DIR = 'content/posts';
-const githubConfig = {
-  token: env.GITHUB_TOKEN ?? '',
-  owner: env.GITHUB_OWNER,
-  repo: env.GITHUB_REPO,
-};
-
-function shouldUseGitHub(): boolean {
-  return process.env.NODE_ENV === 'production' && Boolean(env.GITHUB_TOKEN);
-}
 
 async function fileExists(filePath: string): Promise<boolean> {
   try {
@@ -108,18 +98,6 @@ function buildMarkdown(slug: string, input: PostInput) {
   return lines.join('\n');
 }
 
-async function resolveExistingSha(relativePath: string): Promise<string | undefined> {
-  try {
-    const existing = await fetchRepoFile(githubConfig, relativePath);
-    return existing.sha;
-  } catch (error: unknown) {
-    if (typeof error !== 'object' || error === null || (error as { status?: number }).status !== 404) {
-      throw error;
-    }
-    return undefined;
-  }
-}
-
 async function persistPostMarkdown(
   slug: string,
   content: string,
@@ -127,14 +105,14 @@ async function persistPostMarkdown(
   existingSha?: string,
 ) {
   const relativePath = getGithubPostPath(slug);
-  if (!shouldUseGitHub()) {
+  if (!shouldUseGitHubStorage()) {
     await fs.mkdir(POSTS_DIR, { recursive: true });
     await fs.writeFile(getLocalPostPath(slug), content, 'utf8');
     return;
   }
 
   const sha = existingSha ?? (await resolveExistingSha(relativePath));
-  await upsertRepoFile(githubConfig, {
+  await upsertRepoFile({
     path: relativePath,
     message,
     content,
@@ -156,12 +134,12 @@ export async function updatePost(slug: string, input: PostInput) {
 }
 
 async function readPostMarkdown(slug: string): Promise<{ content: string; sha?: string }> {
-  if (!shouldUseGitHub()) {
+  if (!shouldUseGitHubStorage()) {
     return { content: await fs.readFile(getLocalPostPath(slug), 'utf8') };
   }
 
   const relativePath = getGithubPostPath(slug);
-  const existing = await fetchRepoFile(githubConfig, relativePath);
+  const existing = await fetchRepoFile(relativePath);
   return {
     content: Buffer.from(existing.content, 'base64').toString('utf8'),
     sha: existing.sha,
@@ -169,10 +147,10 @@ async function readPostMarkdown(slug: string): Promise<{ content: string; sha?: 
 }
 
 export async function deletePost(slug: string) {
-  if (shouldUseGitHub()) {
+  if (shouldUseGitHubStorage()) {
     const relativePath = getGithubPostPath(slug);
-    const existing = await fetchRepoFile(githubConfig, relativePath);
-    await deleteRepoFile(githubConfig, relativePath, `chore: delete post ${slug}`, existing.sha);
+    const existing = await fetchRepoFile(relativePath);
+    await deleteRepoFile(relativePath, `chore: delete post ${slug}`, existing.sha);
   } else {
     await fs.unlink(getLocalPostPath(slug));
   }
