@@ -1,10 +1,13 @@
-type DateInput = string | null | undefined;
+export type DateInput = string | Date | null | undefined;
 
 export function resolveDisplayDate(value: DateInput, fallback: DateInput = null): string {
   return value ?? fallback ?? '';
 }
 
-function toDate(value: string): Date | undefined {
+function toDate(value: DateInput): Date | undefined {
+  if (value instanceof Date) {
+    return Number.isNaN(value.getTime()) ? undefined : value;
+  }
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? undefined : date;
 }

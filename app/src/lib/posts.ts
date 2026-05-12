@@ -3,6 +3,7 @@ import path from 'node:path';
 import matter from 'gray-matter';
 import { allPosts, type Post } from 'contentlayer/generated';
 import { summarizePostMetadata, type AdminPostSummary } from './postFrontmatter';
+import { formatDisplayDate, type DateInput } from './dateDisplay';
 type PostsDirectoryLoader = () => Promise<string>;
 
 const resolvePostsDirectory: PostsDirectoryLoader = async () => {
@@ -44,19 +45,10 @@ function isPublished(post: Post, now = new Date()): boolean {
 }
 
 export function formatPostDate(
-  value: string | Date | null | undefined,
+  value: DateInput,
   options?: Intl.DateTimeFormatOptions,
 ): string {
-  if (!value) return '';
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) {
-    return typeof value === 'string' ? value : '';
-  }
-  try {
-    return date.toLocaleDateString(undefined, options);
-  } catch {
-    return date.toISOString().slice(0, 10);
-  }
+  return formatDisplayDate(value, null, options);
 }
 
 export function getPosts(options: { includeUnpublished?: boolean } = {}): Post[] {
