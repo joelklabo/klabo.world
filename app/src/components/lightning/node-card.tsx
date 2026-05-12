@@ -4,14 +4,7 @@ import { useCallback, useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { buildLightningNodeUri } from '@/lib/lightning-node-uri';
-import {
-  DEFAULT_LIGHTNING_NODE_ALIAS,
-  DEFAULT_LIGHTNING_NODE_COLOR,
-  DEFAULT_LIGHTNING_NODE_HOST,
-  DEFAULT_LIGHTNING_NODE_PUBKEY,
-  DEFAULT_LIGHTNING_NODE_PORT,
-} from '@/lib/site-config';
+import { buildLightningNodeUri, resolveLightningNode } from '@/lib/lightning-node-uri';
 
 type NodeCardProps = {
   alias?: string;
@@ -23,15 +16,6 @@ type NodeCardProps = {
   totalCapacity?: number; // in sats
   showExplorerLinks?: boolean;
   className?: string;
-};
-
-// Default props for site lightning node
-const defaultProps: Partial<NodeCardProps> = {
-  alias: DEFAULT_LIGHTNING_NODE_ALIAS,
-  pubkey: DEFAULT_LIGHTNING_NODE_PUBKEY,
-  color: DEFAULT_LIGHTNING_NODE_COLOR,
-  host: DEFAULT_LIGHTNING_NODE_HOST,
-  port: DEFAULT_LIGHTNING_NODE_PORT,
 };
 
 function formatCapacity(sats: number): string {
@@ -63,39 +47,47 @@ async function copyToClipboard(text: string): Promise<boolean> {
 
 export function LightningNodeCard(props: NodeCardProps) {
   const {
-    alias = defaultProps.alias,
-    pubkey = defaultProps.pubkey!,
-    color = defaultProps.color,
-    host = defaultProps.host,
-    port = defaultProps.port,
     numChannels,
     totalCapacity,
     showExplorerLinks = false,
     className,
+    alias,
+    pubkey,
+    color,
+    host,
+    port,
   } = props;
+  const { alias: resolvedAlias, pubkey: resolvedPubkey, color: resolvedColor, host: resolvedHost, port: resolvedPort } =
+    resolveLightningNode({
+      alias,
+      pubkey,
+      color,
+      host,
+      port,
+    });
 
   const [copiedField, setCopiedField] = useState<'pubkey' | 'uri' | null>(null);
   const [showQR, setShowQR] = useState(false);
 
   const nodeUri = buildLightningNodeUri({
-    pubkey,
-    host,
-    port,
+    pubkey: resolvedPubkey,
+    host: resolvedHost,
+    port: resolvedPort,
   });
 
   const handleCopy = useCallback(async (field: 'pubkey' | 'uri') => {
-    const text = field === 'pubkey' ? pubkey : nodeUri;
+    const text = field === 'pubkey' ? resolvedPubkey : nodeUri;
     const success = await copyToClipboard(text);
     if (success) {
       setCopiedField(field);
       setTimeout(() => setCopiedField(null), 2000);
     }
-  }, [pubkey, nodeUri]);
+  }, [resolvedPubkey, nodeUri]);
 
   const explorers = [
-    { name: 'Amboss', url: `https://amboss.space/node/${pubkey}` },
-    { name: 'Mempool', url: `https://mempool.space/lightning/node/${pubkey}` },
-    { name: '1ML', url: `https://1ml.com/node/${pubkey}` },
+    { name: 'Amboss', url: `https://amboss.space/node/${resolvedPubkey}` },
+    { name: 'Mempool', url: `https://mempool.space/lightning/node/${resolvedPubkey}` },
+    { name: '1ML', url: `https://1ml.com/node/${resolvedPubkey}` },
   ];
 
   return (
@@ -113,12 +105,12 @@ export function LightningNodeCard(props: NodeCardProps) {
             {/* Node color indicator */}
             <div
               className="flex h-11 w-11 items-center justify-center rounded-xl shadow-lg"
-              style={{ backgroundColor: color }}
+              style={{ backgroundColor: resolvedColor }}
             >
               <LightningIcon className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h3 className="text-base font-bold leading-tight text-foreground">{alias}</h3>
+              <h3 className="text-base font-bold leading-tight text-foreground">{resolvedAlias}</h3>
               <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
                 Lightning Node
               </p>
@@ -187,11 +179,11 @@ export function LightningNodeCard(props: NodeCardProps) {
           <div className="flex items-center gap-2">
             <code
               className="flex-1 rounded-lg border border-white/10 bg-white/5 px-3 py-2 font-mono text-xs text-foreground/80"
-              title={pubkey}
+              title={resolvedPubkey}
               aria-labelledby="pubkey-label"
               data-testid="node-pubkey"
             >
-              {truncatePubkey(pubkey, 12)}
+              {truncatePubkey(resolvedPubkey, 12)}
             </code>
             <Button
               onClick={() => handleCopy('pubkey')}
@@ -211,7 +203,7 @@ export function LightningNodeCard(props: NodeCardProps) {
         </div>
 
         {/* Connection URI with copy */}
-        {host && (
+        {resolvedHost && (
           <div className="space-y-2">
             <span id="uri-label" className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
               Connection URI
@@ -223,7 +215,7 @@ export function LightningNodeCard(props: NodeCardProps) {
                 aria-labelledby="uri-label"
                 data-testid="node-uri"
               >
-                {nodeUri.slice(0, 24)}…:{port}
+                {nodeUri.slice(0, 24)}…:{resolvedPort}
               </code>
               <Button
                 onClick={() => handleCopy('uri')}

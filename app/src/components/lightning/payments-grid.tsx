@@ -2,14 +2,10 @@ import { cn } from '@/lib/utils';
 import { BitcoinOnchainCard } from './onchain-card';
 import { LightningNodeCard } from './node-card';
 import { LightningTipWidget } from './tip-widget';
+import { resolveLightningNode } from '@/lib/lightning-node-uri';
 import {
   DEFAULT_BITCOIN_ONCHAIN_ADDRESS,
   DEFAULT_LIGHTNING_ADDRESS,
-  DEFAULT_LIGHTNING_NODE_ALIAS,
-  DEFAULT_LIGHTNING_NODE_COLOR,
-  DEFAULT_LIGHTNING_NODE_HOST,
-  DEFAULT_LIGHTNING_NODE_PORT,
-  DEFAULT_LIGHTNING_NODE_PUBKEY,
 } from '@/lib/site-config';
 
 type LightningNodeDetails = {
@@ -36,6 +32,7 @@ export function BitcoinPaymentsGrid({
   variant = 'home',
 }: BitcoinPaymentsGridProps) {
   const isTerminal = variant === 'terminal';
+  const resolvedNode = resolveLightningNode(node);
 
   return (
     <div
@@ -47,11 +44,7 @@ export function BitcoinPaymentsGrid({
       )}
     >
       <LightningNodeCard
-        alias={node?.alias ?? DEFAULT_LIGHTNING_NODE_ALIAS}
-        pubkey={node?.pubkey ?? DEFAULT_LIGHTNING_NODE_PUBKEY}
-        color={node?.color ?? DEFAULT_LIGHTNING_NODE_COLOR}
-        host={node?.host ?? DEFAULT_LIGHTNING_NODE_HOST}
-        port={node?.port ?? DEFAULT_LIGHTNING_NODE_PORT}
+        {...resolvedNode}
         className={cn('h-full', isTerminal && 'order-3 lg:order-1')}
       />
       <LightningTipWidget
