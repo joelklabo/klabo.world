@@ -12,6 +12,7 @@ import {
 } from '@/lib/dashboardPersistence';
 import { requireAdminSession } from '@/lib/adminSession';
 import { withSpan } from '@/lib/telemetry';
+import { parseFormData, type ActionState as SharedActionState } from '@/lib/formActions';
 
 const optionalUrl = z
   .union([z.string().url('Invalid URL'), z.literal('')])
@@ -56,28 +57,7 @@ const dashboardSchema = z
     },
   );
 
-export type ActionState = {
-  message: string;
-  errors?: Record<string, string[]>;
-  success?: boolean;
-};
-
-export async function extractDashboardInput(formData: FormData): Promise<DashboardInput> {
-  await requireAdminSession();
-  const raw = Object.fromEntries(formData.entries());
-  const result = dashboardSchema.safeParse(raw);
-
-  if (!result.success) {
-    const errorMessages = result.error.flatten().fieldErrors;
-    // Throwing here to be caught by the action handler, but ideally we'd return the errors directly
-    // For now, we'll join them into a string to fit the existing error handling structure
-    // or we can update the caller to handle ZodError.
-    // Given the current structure, let's throw a formatted error or handle it in the action.
-    throw new Error(JSON.stringify(errorMessages));
-  }
-
-  return result.data as DashboardInput;
-}
+export type ActionState = SharedActionState;
 
 export async function createDashboardAction(
   prevState: ActionState,
@@ -86,18 +66,12 @@ export async function createDashboardAction(
   let slug: string | undefined;
   try {
     await requireAdminSession();
-    const raw = Object.fromEntries(formData.entries());
-    const result = dashboardSchema.safeParse(raw);
-
-    if (!result.success) {
-      return {
-        message: 'Validation failed',
-        errors: result.error.flatten().fieldErrors,
-        success: false,
-      };
+    const parsed = parseFormData(dashboardSchema, formData);
+    if (!parsed.ok) {
+      return parsed.state;
     }
 
-    const input = result.data as DashboardInput;
+    const input = parsed.data;
     const createResult = await createDashboard(input);
     slug = createResult.slug;
 
@@ -133,18 +107,12 @@ export async function updateDashboardAction(
       throw new Error('Missing dashboard slug');
     }
 
-    const raw = Object.fromEntries(formData.entries());
-    const result = dashboardSchema.safeParse(raw);
-
-    if (!result.success) {
-      return {
-        message: 'Validation failed',
-        errors: result.error.flatten().fieldErrors,
-        success: false,
-      };
+    const parsed = parseFormData(dashboardSchema, formData);
+    if (!parsed.ok) {
+      return parsed.state;
     }
 
-    const input = result.data as DashboardInput;
+    const input = parsed.data;
     await updateDashboard(slug!, input);
 
     after(async () => {

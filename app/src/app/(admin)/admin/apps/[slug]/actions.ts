@@ -8,6 +8,7 @@ import { z } from 'zod';
 import { requireAdminSession } from '@/lib/adminSession';
 import { upsertApp, deleteApp, type AppInput } from '@/lib/appPersistence';
 import { withSpan } from '@/lib/telemetry';
+import { parseFormData, type ActionState as SharedActionState } from '@/lib/formActions';
 
 const appSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -22,11 +23,7 @@ const appSchema = z.object({
   icon: z.string().optional(),
 });
 
-export type ActionState = {
-  message: string;
-  errors?: Record<string, string[]>;
-  success?: boolean;
-};
+export type ActionState = SharedActionState;
 
 export async function upsertAppAction(
   prevState: ActionState,
@@ -34,18 +31,12 @@ export async function upsertAppAction(
 ): Promise<ActionState> {
   try {
     await requireAdminSession();
-    const raw = Object.fromEntries(formData.entries());
-    const result = appSchema.safeParse(raw);
-
-    if (!result.success) {
-      return {
-        message: 'Validation failed',
-        errors: result.error.flatten().fieldErrors,
-        success: false,
-      };
+    const parsed = parseFormData(appSchema, formData);
+    if (!parsed.ok) {
+      return parsed.state;
     }
 
-    const data = result.data;
+    const data = parsed.data;
     const derivedSlug = data.slug
       ? slugify(data.slug, { lower: true, strict: true })
       : slugify(data.name, { lower: true, strict: true });

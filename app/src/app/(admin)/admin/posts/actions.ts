@@ -10,6 +10,7 @@ import { withSpan } from '@/lib/telemetry';
 import { getEditablePostBySlug } from '@/lib/posts';
 import { isXPublishingEnabled, publishToX } from '@/lib/x-publisher';
 import { env } from '@/lib/env';
+import { parseFormValues, type ActionState as SharedActionState } from '@/lib/formActions';
 
 const postSchema = z.object({
   title: z.string().min(1, 'Title is required'),
@@ -41,11 +42,7 @@ function buildPostPersistenceInput(data: PostFormValues) {
   };
 }
 
-export type ActionState = {
-  message: string;
-  errors?: Record<string, string[]>;
-  success?: boolean;
-};
+export type ActionState = SharedActionState;
 
 export async function createPostAction(
   prevState: ActionState,
@@ -54,24 +51,18 @@ export async function createPostAction(
   let slug: string | undefined;
   try {
     await requireAdminSession();
-    const raw = Object.fromEntries(formData.entries());
     // Checkbox handling: if unchecked, it's missing from formData.
     // We can manually set it to 'false' if missing, or let Zod handle optional.
     // But Zod coerce boolean treats "on" as true, missing as undefined.
     // Let's ensure it's handled correctly.
+    const raw = Object.fromEntries(formData.entries()) as Record<string, string>;
     raw.nostrstackEnabled = raw.nostrstackEnabled ? 'true' : 'false';
-
-    const result = postSchema.safeParse(raw);
-
-    if (!result.success) {
-      return {
-        message: 'Validation failed',
-        errors: result.error.flatten().fieldErrors,
-        success: false,
-      };
+    const parsed = parseFormValues(postSchema, raw);
+    if (!parsed.ok) {
+      return parsed.state;
     }
 
-    const data = result.data;
+    const data = parsed.data;
     const input = buildPostPersistenceInput(data);
 
     const createResult = await createPost(input);
@@ -117,20 +108,15 @@ export async function updatePostAction(
     const existingPublishDate = existingPost?.publishDate;
     const existingXPostId = (existingPost as { xPostId?: string } | undefined)?.xPostId;
 
-    const raw = Object.fromEntries(formData.entries());
+    const raw = Object.fromEntries(formData.entries()) as Record<string, string>;
     raw.nostrstackEnabled = raw.nostrstackEnabled ? 'true' : 'false';
 
-    const result = postSchema.safeParse(raw);
-
-    if (!result.success) {
-      return {
-        message: 'Validation failed',
-        errors: result.error.flatten().fieldErrors,
-        success: false,
-      };
+    const parsed = parseFormValues(postSchema, raw);
+    if (!parsed.ok) {
+      return parsed.state;
     }
 
-    const data = result.data;
+    const data = parsed.data;
     const input = buildPostPersistenceInput(data);
 
     await updatePost(slug, input);
