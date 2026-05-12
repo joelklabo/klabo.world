@@ -1,8 +1,7 @@
-import fs from 'node:fs';
-import path from 'node:path';
 import matter from 'gray-matter';
 import { allDashboardDocs, type DashboardDoc } from 'contentlayer/generated';
 import { DASHBOARD_PANEL_TYPES, isDashboardPanelType, type DashboardPanelType } from './dashboardPanelTypes';
+import { readDiskRecords } from './readDiskRecords';
 
 type FrontMatterFile = ReturnType<typeof matter>;
 
@@ -65,29 +64,15 @@ function toDashboardFromFrontmatter(slug: string, parsed: FrontMatterFile): Dash
 }
 
 async function readDiskDashboards(existing: Set<string>): Promise<Dashboard[]> {
-  const dir = await resolveDashboardsDirectory();
-  let files: string[] = [];
-  try {
-    files = fs.readdirSync(dir);
-  } catch (error) {
-    if ((error as { code?: string }).code === 'ENOENT') {
-      return [];
-    }
-    throw error;
-  }
-
-  return files
-    .filter((file) => file.endsWith('.mdx'))
-    .map((file) => {
-      const slug = path.basename(file, '.mdx');
-      if (existing.has(slug)) {
-        return null;
-      }
-      const raw = fs.readFileSync(path.join(dir, file), 'utf8');
+  return readDiskRecords({
+    getDirectory: resolveDashboardsDirectory,
+    extension: '.mdx',
+    exclude: existing,
+    parseRecord: ({ slug, raw }) => {
       const parsed = matter(raw);
       return toDashboardFromFrontmatter(slug, parsed);
-    })
-    .filter((dashboard): dashboard is Dashboard => dashboard !== null);
+    },
+  });
 }
 
 function fromContentlayerDashboards(): Dashboard[] {

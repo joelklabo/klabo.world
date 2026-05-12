@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { allAppDocs, type AppDoc } from 'contentlayer/generated';
+import { readDiskRecords } from './readDiskRecords';
 type AppsDirectoryLoader = () => Promise<string>;
 
 const resolveAppsDirectory: AppsDirectoryLoader = async () => {
@@ -69,25 +70,15 @@ function normalizeAdminApp(app: AppDoc): AdminApp {
 }
 
 async function readDiskApps(exclude: Set<string>): Promise<AdminApp[]> {
-  const dir = await resolveAppsDirectory();
-  try {
-    const files = await fs.readdir(dir);
-    const results: AdminApp[] = [];
-    for (const file of files) {
-      if (!file.endsWith('.json')) continue;
-      const slug = path.basename(file, '.json');
-      if (exclude.has(slug)) continue;
-      const raw = await fs.readFile(path.join(dir, file), 'utf8');
+  return readDiskRecords({
+    getDirectory: resolveAppsDirectory,
+    extension: '.json',
+    exclude,
+    parseRecord: ({ slug, raw }) => {
       const parsed = JSON.parse(raw) as Partial<AdminApp>;
-      results.push(normalizeAdminAppPayload(slug, parsed));
-    }
-    return results;
-  } catch (error) {
-    if ((error as { code?: string }).code === 'ENOENT') {
-      return [];
-    }
-    throw error;
-  }
+      return normalizeAdminAppPayload(slug, parsed);
+    },
+  });
 }
 
 export async function getAppsForAdmin(): Promise<AdminApp[]> {

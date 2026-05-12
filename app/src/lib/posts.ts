@@ -4,6 +4,7 @@ import matter from 'gray-matter';
 import { allPosts, type Post } from 'contentlayer/generated';
 import { summarizePostMetadata, type AdminPostSummary } from './postFrontmatter';
 import { formatDisplayDate, getCurrentDateString, type DateInput } from './dateDisplay';
+import { readDiskRecords } from './readDiskRecords';
 type PostsDirectoryLoader = () => Promise<string>;
 
 const resolvePostsDirectory: PostsDirectoryLoader = async () => {
@@ -150,32 +151,20 @@ export type EditablePost = AdminPostSummary & {
 };
 
 async function readDiskPosts(exclude: Set<string>): Promise<AdminPostSummary[]> {
-  const postsDir = await resolvePostsDirectory();
-  try {
-    const files = await fs.readdir(postsDir);
-    const entries: AdminPostSummary[] = [];
-    for (const file of files) {
-      if (!file.endsWith('.mdx')) continue;
-      const slug = path.basename(file, '.mdx');
-      if (exclude.has(slug)) continue;
-      const raw = await fs.readFile(path.join(postsDir, file), 'utf8');
+  return readDiskRecords({
+    getDirectory: resolvePostsDirectory,
+    extension: '.mdx',
+    exclude,
+    parseRecord: ({ slug, raw }) => {
       const parsed = matter(raw);
-      entries.push(
-        summarizePostMetadata(parsed.data, {
-          slug,
-          titleFallback: slug,
-          summaryFallback: '',
-          date: parseFrontmatterDate(parsed.data.date),
-        }),
-      );
-    }
-    return entries;
-  } catch (error) {
-    if ((error as { code?: string }).code === 'ENOENT') {
-      return [];
-    }
-    throw error;
-  }
+      return summarizePostMetadata(parsed.data, {
+        slug,
+        titleFallback: slug,
+        summaryFallback: '',
+        date: parseFrontmatterDate(parsed.data.date),
+      });
+    },
+  });
 }
 
 export async function getPostsForAdmin(): Promise<AdminPostSummary[]> {
