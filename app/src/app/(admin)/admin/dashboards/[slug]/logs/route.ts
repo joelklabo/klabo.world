@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAdminSession } from '@/lib/adminSession';
-import { getDashboardBySlug } from '@/lib/dashboards';
+import { getDashboardBySlugForAdmin } from '@/lib/dashboards';
 import { loadDashboardLogs } from '@/lib/dashboardLogs';
 
 export const dynamic = 'force-dynamic';
@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 export async function GET(req: NextRequest, context: { params: Promise<{ slug: string }> }) {
   const { slug } = await context.params;
   await requireAdminSession();
-  const dashboard = getDashboardBySlug(slug);
+  const dashboard = await getDashboardBySlugForAdmin(slug);
   if (!dashboard) {
     return NextResponse.json({ message: 'Dashboard not found' }, { status: 404 });
   }

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getDashboards } from "@/lib/dashboards";
+import { getDashboardsForAdmin } from "@/lib/dashboards";
 import { requireAdminSession } from "@/lib/adminSession";
 import { Button } from "@/components/ui/button";
 import { DashboardList } from "@/app/(admin)/components/dashboard-list";
@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminDashboardsPage() {
   await requireAdminSession();
-  const dashboards = getDashboards();
+  const dashboards = await getDashboardsForAdmin();
 
   return (
     <div className="space-y-6">

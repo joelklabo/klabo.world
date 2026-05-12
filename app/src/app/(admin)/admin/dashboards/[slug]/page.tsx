@@ -4,7 +4,7 @@ import { DashboardForm } from "@/app/(admin)/components/dashboard-form";
 import { DashboardChart } from "@/app/(admin)/components/dashboard-chart";
 import { DashboardLogsPanel } from "@/app/(admin)/components/dashboard-logs-panel";
 import { deleteDashboardAction, updateDashboardAction } from "../actions";
-import { getDashboardBySlug } from "@/lib/dashboards";
+import { getDashboardBySlugForAdmin } from "@/lib/dashboards";
 import { loadDashboardChartState } from "@/lib/dashboardCharts";
 import { requireAdminSession } from "@/lib/adminSession";
 import { formatUtcDate } from "@/lib/dateDisplay";
@@ -31,7 +31,7 @@ type PageProps = {
 export default async function DashboardDetailPage({ params }: PageProps) {
   await requireAdminSession();
   const { slug } = await params;
-  const dashboard = getDashboardBySlug(slug);
+  const dashboard = await getDashboardBySlugForAdmin(slug);
   if (!dashboard) {
     notFound();
   }

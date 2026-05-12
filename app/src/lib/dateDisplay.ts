@@ -1,7 +1,8 @@
 export type DateInput = string | Date | null | undefined;
 
 export function resolveDisplayDate(value: DateInput, fallback: DateInput = null): string {
-  return value ?? fallback ?? '';
+  const resolved = value ?? fallback ?? '';
+  return typeof resolved === 'string' ? resolved : resolved.toISOString();
 }
 
 export function getCurrentDateString(): string {
