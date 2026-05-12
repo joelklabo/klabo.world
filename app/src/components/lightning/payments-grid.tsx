@@ -2,23 +2,15 @@ import { cn } from '@/lib/utils';
 import { BitcoinOnchainCard } from './onchain-card';
 import { LightningNodeCard } from './node-card';
 import { LightningTipWidget } from './tip-widget';
-import { resolveLightningNode } from '@/lib/lightning-node-uri';
+import { type LightningNodeInput, resolveLightningNode } from '@/lib/lightning-node-uri';
 import {
   DEFAULT_BITCOIN_ONCHAIN_ADDRESS,
   DEFAULT_LIGHTNING_ADDRESS,
 } from '@/lib/site-config';
 
-type LightningNodeDetails = {
-  alias?: string;
-  pubkey?: string;
-  host?: string;
-  port?: number;
-  color?: string;
-};
-
 type BitcoinPaymentsGridProps = {
   namespace: string;
-  node?: LightningNodeDetails | null;
+  node?: LightningNodeInput | null;
   bitcoinAddress?: string;
   className?: string;
   variant?: 'home' | 'terminal';
