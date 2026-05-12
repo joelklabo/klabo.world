@@ -13,6 +13,9 @@ export function parseDateInput(value: DateInput): Date | undefined {
   if (value instanceof Date) {
     return Number.isNaN(value.getTime()) ? undefined : value;
   }
+  if (value === null || value === undefined) {
+    return undefined;
+  }
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? undefined : date;
 }

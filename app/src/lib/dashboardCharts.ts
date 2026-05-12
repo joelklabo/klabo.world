@@ -1,5 +1,6 @@
 import { type Dashboard } from './dashboards';
-import { hasAnalyticsConfig, runLogAnalyticsQuery } from './logAnalytics';
+import { runLogAnalyticsQuery } from './logAnalytics';
+import { getPanelDisabledState } from './dashboardQuery';
 
 const NUMBER_COLUMN_TYPES = new Set(['long', 'real', 'double', 'decimal', 'int', 'number']);
 
@@ -32,16 +33,9 @@ function normalizeNumber(value: unknown): number | null {
 }
 
 export async function loadDashboardChartState(dashboard: Dashboard): Promise<DashboardChartState> {
-  if (dashboard.panelType !== 'chart') {
-    return { status: 'disabled', reason: 'Panel is not a chart.' };
-  }
-
-  if (!dashboard.kqlQuery) {
-    return { status: 'disabled', reason: 'No KQL query configured yet.' };
-  }
-
-  if (!hasAnalyticsConfig()) {
-    return { status: 'disabled', reason: 'Log Analytics not configured (set LOG_ANALYTICS_* or APPINSIGHTS_* env vars).' };
+  const disabledState = getPanelDisabledState(dashboard, 'chart', 'Panel is not a chart.');
+  if (disabledState) {
+    return disabledState;
   }
 
   try {
