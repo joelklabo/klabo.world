@@ -12,6 +12,25 @@ function getPublishDate(app: AppDoc): Date {
   return new Date(app.publishDate);
 }
 
+function currentTimestamp() {
+  return new Date().toISOString();
+}
+
+function normalizeAdminAppPayload(slug: string, app: Partial<AdminApp>): AdminApp {
+  return {
+    slug,
+    name: app.name ?? slug,
+    version: app.version ?? '1.0.0',
+    publishDate: app.publishDate ?? currentTimestamp(),
+    fullDescription: app.fullDescription ?? '',
+    features: app.features ?? [],
+    icon: app.icon,
+    screenshots: app.screenshots,
+    githubURL: app.githubURL,
+    appStoreURL: app.appStoreURL,
+  };
+}
+
 export function getApps(): AppDoc[] {
   const apps = Array.isArray(allAppDocs) ? allAppDocs : [];
   return [...apps].sort((a, b) => getPublishDate(b).getTime() - getPublishDate(a).getTime());
@@ -60,18 +79,7 @@ async function readDiskApps(exclude: Set<string>): Promise<AdminApp[]> {
       if (exclude.has(slug)) continue;
       const raw = await fs.readFile(path.join(dir, file), 'utf8');
       const parsed = JSON.parse(raw) as Partial<AdminApp>;
-      results.push({
-        slug,
-        name: parsed.name ?? slug,
-        version: parsed.version ?? '1.0.0',
-        publishDate: parsed.publishDate ?? new Date().toISOString(),
-        fullDescription: parsed.fullDescription ?? '',
-        features: parsed.features ?? [],
-        icon: parsed.icon,
-        screenshots: parsed.screenshots,
-        githubURL: parsed.githubURL,
-        appStoreURL: parsed.appStoreURL,
-      });
+      results.push(normalizeAdminAppPayload(slug, parsed));
     }
     return results;
   } catch (error) {
@@ -101,18 +109,7 @@ export async function getEditableAppBySlug(slug: string): Promise<AdminApp | und
   try {
     const raw = await fs.readFile(filePath, 'utf8');
     const parsed = JSON.parse(raw) as Partial<AdminApp>;
-    return {
-      slug,
-      name: parsed.name ?? slug,
-      version: parsed.version ?? '1.0.0',
-      publishDate: parsed.publishDate ?? new Date().toISOString(),
-      fullDescription: parsed.fullDescription ?? '',
-      features: parsed.features ?? [],
-      icon: parsed.icon,
-      screenshots: parsed.screenshots,
-      githubURL: parsed.githubURL,
-      appStoreURL: parsed.appStoreURL,
-    };
+    return normalizeAdminAppPayload(slug, parsed);
   } catch (error) {
     if ((error as { code?: string }).code === 'ENOENT') {
       return undefined;
