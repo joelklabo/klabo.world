@@ -1,17 +1,8 @@
 import { GitHubProject } from "@/lib/github-projects";
+import { formatProjectDate } from "@/lib/github-projects-display";
 import { cn } from "@/lib/utils";
 import { Surface } from "@/components/ui/surface";
 import { ArrowUpRight, GitFork, Star } from "lucide-react";
-
-function formatProjectDate(value: string) {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return null;
-  return date.toLocaleDateString(undefined, {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-}
 
 function normalizeExternalUrl(value: string) {
   const trimmed = value.trim();

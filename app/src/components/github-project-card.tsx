@@ -1,21 +1,9 @@
 import { GitHubProject } from "@/lib/github-projects";
+import { formatProjectDate } from "@/lib/github-projects-display";
 import { cn } from "@/lib/utils";
 import { Surface } from "@/components/ui/surface";
 
-const projectDateFormatter = new Intl.DateTimeFormat("en-US", {
-  month: "short",
-  day: "numeric",
-  year: "numeric",
-  timeZone: "UTC",
-});
-
 const starFormatter = new Intl.NumberFormat("en-US");
-
-function formatProjectDate(value: string) {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return null;
-  return projectDateFormatter.format(date);
-}
 
 type GitHubProjectCardProps = {
   project: GitHubProject;
@@ -32,7 +20,9 @@ export function GitHubProjectCard({
   className,
   testId,
 }: GitHubProjectCardProps) {
-  const updatedLabel = project.updatedAt ? formatProjectDate(project.updatedAt) : null;
+  const updatedLabel = project.updatedAt
+    ? formatProjectDate(project.updatedAt, { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
+    : null;
   const topics = showTopics ? project.topics.slice(0, topicLimit) : [];
   const description = project.description?.trim() || null;
   const hasStars = project.stargazerCount > 0;

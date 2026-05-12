@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { GitHubProject } from "@/lib/github-projects";
+import { getProjectSortTime } from "@/lib/github-projects-display";
 import { cn } from "@/lib/utils";
 import { GitHubProjectCard } from "@/components/github-project-card";
 import {
@@ -19,14 +20,6 @@ type Props = {
   className?: string;
   cardTestId?: string;
 };
-
-function getProjectTime(project: GitHubProject) {
-  const value = project.updatedAt ?? project.pushedAt;
-  if (!value) return 0;
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return 0;
-  return date.getTime();
-}
 
 function getTopLanguages(projects: GitHubProject[], limit = 6) {
   const counts = new Map<string, number>();
@@ -59,7 +52,7 @@ export function GitHubProjectsExplorer({ projects, className, cardTestId }: Prop
         const starsDelta = (b.stargazerCount ?? 0) - (a.stargazerCount ?? 0);
         if (starsDelta !== 0) return starsDelta;
       }
-      return getProjectTime(b) - getProjectTime(a);
+      return getProjectSortTime(b) - getProjectSortTime(a);
     });
 
     return sorted;
