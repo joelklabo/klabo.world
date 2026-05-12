@@ -33,10 +33,6 @@ export async function runAdminPage<T>(render: () => Promise<T>): Promise<T> {
   return render();
 }
 
-export async function runAdminMetadata<T>(render: () => Promise<T>): Promise<T> {
-  return runAdminPage(render);
-}
-
 export async function runAdminSlugPage<TResource, TOutput>(
   params: SlugParams,
   loadResource: (slug: string) => SlugResourceResult<TResource>,
