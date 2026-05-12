@@ -4,6 +4,7 @@ import matter from 'gray-matter';
 import { resolveContentSubdir } from '@klaboworld/core/server/contentPaths';
 import { deleteRepoFile, fetchRepoFile, resolveExistingSha, shouldUseGitHubStorage, upsertRepoFile } from './github-service';
 import { normalizeSlug } from './slugUtils';
+import { getCurrentDateString } from './dateDisplay';
 
 type PostInput = {
   title: string;
@@ -60,7 +61,7 @@ function getGithubPostPath(slug: string) {
 }
 
 function buildMarkdown(slug: string, input: PostInput) {
-  const today = new Date().toISOString().slice(0, 10);
+  const today = getCurrentDateString();
   const lines = ['---'];
   lines.push(`title: ${JSON.stringify(input.title)}`);
   lines.push(`summary: ${JSON.stringify(input.summary)}`, `date: ${today}`);

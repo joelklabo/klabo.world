@@ -3,13 +3,17 @@ import path from 'node:path';
 import matter from 'gray-matter';
 import { allPosts, type Post } from 'contentlayer/generated';
 import { summarizePostMetadata, type AdminPostSummary } from './postFrontmatter';
-import { formatDisplayDate, type DateInput } from './dateDisplay';
+import { formatDisplayDate, getCurrentDateString, type DateInput } from './dateDisplay';
 type PostsDirectoryLoader = () => Promise<string>;
 
 const resolvePostsDirectory: PostsDirectoryLoader = async () => {
   const { getPostsDirectory } = await import('./postPersistence');
   return getPostsDirectory();
 };
+
+function parseFrontmatterDate(value: unknown): string {
+  return typeof value === 'string' ? value : getCurrentDateString();
+}
 
 function getContentlayerPosts(): Post[] {
   return Array.isArray(allPosts) ? allPosts : [];
@@ -161,7 +165,7 @@ async function readDiskPosts(exclude: Set<string>): Promise<AdminPostSummary[]> 
           slug,
           titleFallback: slug,
           summaryFallback: '',
-          date: typeof parsed.data.date === 'string' ? parsed.data.date : new Date().toISOString().slice(0, 10),
+          date: parseFrontmatterDate(parsed.data.date),
         }),
       );
     }
@@ -217,7 +221,7 @@ export async function getEditablePostBySlug(slug: string): Promise<EditablePost 
         slug,
         titleFallback: slug,
         summaryFallback: '',
-        date: typeof parsed.data.date === 'string' ? parsed.data.date : new Date().toISOString().slice(0, 10),
+        date: parseFrontmatterDate(parsed.data.date),
       }),
       body: parsed.content.trim(),
     };

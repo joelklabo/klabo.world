@@ -4,6 +4,10 @@ export function resolveDisplayDate(value: DateInput, fallback: DateInput = null)
   return value ?? fallback ?? '';
 }
 
+export function getCurrentDateString(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+
 export function parseDateInput(value: DateInput): Date | undefined {
   if (value instanceof Date) {
     return Number.isNaN(value.getTime()) ? undefined : value;
