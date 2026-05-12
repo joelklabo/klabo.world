@@ -22,14 +22,13 @@ export async function runAdminActionAndRedirect<T extends ActionState>(
     message,
     success: false,
   } as T));
-  if (!result.success) {
-    return result;
+  if (result.success) {
+    const url = typeof destination === 'function' ? destination(result) : destination;
+    if (url) {
+      redirect(url);
+    }
   }
 
-  const url = typeof destination === 'function' ? destination(result) : destination;
-  if (url) {
-    redirect(url);
-  }
   return result;
 }
 

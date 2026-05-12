@@ -113,8 +113,8 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
         },
       };
 
-      return (
-    <div className="relative min-h-screen overflow-x-hidden bg-background text-foreground">
+    return (
+      <div className="relative min-h-screen overflow-x-hidden bg-background text-foreground">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <section className="relative isolate min-h-[560px] overflow-hidden border-b border-border/60 sm:min-h-[620px]">
         <Image
@@ -250,7 +250,8 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
           </aside>
         </div>
       </div>
-    </div>
+      </div>
+    );
     },
     () => notFound(),
   );

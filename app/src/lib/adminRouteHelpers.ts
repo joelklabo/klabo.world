@@ -8,10 +8,10 @@ export class AdminRouteError extends Error {
   payload: AdminRoutePayload;
   headers?: HeadersInit;
 
-  constructor(message: string, status: number, payload: AdminRoutePayload = { error: message }, headers?: HeadersInit) {
+  constructor(message: string, status: number, payload?: AdminRoutePayload, headers?: HeadersInit) {
     super(message);
     this.status = status;
-    this.payload = payload;
+    this.payload = payload ?? { error: message };
     this.headers = headers;
   }
 }

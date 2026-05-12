@@ -1,7 +1,6 @@
 import { requireAdminSession } from '@/lib/adminSession';
 
-type SessionResult = Awaited<ReturnType<typeof requireAdminSession>>;
-export type AdminSessionResult = SessionResult;
+export type AdminSessionResult = Awaited<ReturnType<typeof requireAdminSession>>;
 
 export function isRedirectError(error: unknown): error is { digest: string } {
   return (
@@ -13,7 +12,7 @@ export function isRedirectError(error: unknown): error is { digest: string } {
   );
 }
 
-type AdminSessionHandler<T> = (session: SessionResult) => Promise<T>;
+type AdminSessionHandler<T> = (session: AdminSessionResult) => Promise<T>;
 
 type AdminSessionErrorHandler<T> = (error: unknown) => Promise<T> | T;
 

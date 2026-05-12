@@ -60,9 +60,7 @@ export async function removeContentFile({ message, ...config }: RemoveContentFil
   await deleteRepoFile(relativePath, message, existing.sha);
 }
 
-type ReadContentFileParams = StorageConfig;
-
-export async function readContentFile(config: ReadContentFileParams): Promise<{ content: string; sha?: string }> {
+export async function readContentFile(config: StorageConfig): Promise<{ content: string; sha?: string }> {
   if (!shouldUseGitHubStorage()) {
     return { content: await fs.readFile(getLocalPath(config), 'utf8') };
   }
@@ -74,4 +72,3 @@ export async function readContentFile(config: ReadContentFileParams): Promise<{ 
     sha: existing.sha,
   };
 }
-

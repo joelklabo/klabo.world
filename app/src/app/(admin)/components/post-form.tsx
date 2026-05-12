@@ -5,6 +5,7 @@ import { ImageUploadField } from './image-upload-field';
 import { DeleteButton, FormErrorMessage, SubmitButton } from './admin-form-controls';
 import { MarkdownField } from './markdown-field';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { type EditablePost } from '@/lib/posts';
