@@ -1,18 +1,7 @@
-import { requireAdminSession } from '@/lib/adminSession';
 import { type ActionState } from '@/lib/formActions';
 import { redirect } from 'next/navigation';
-
-function isRedirectError(error: unknown): error is { digest: string } {
-  return !!(
-    error &&
-    typeof error === 'object' &&
-    'digest' in error &&
-    typeof (error as { digest: unknown }).digest === 'string' &&
-    (error as { digest: string }).digest.startsWith('NEXT_REDIRECT')
-  );
-}
-
-export { isRedirectError };
+export { isRedirectError } from '@/lib/adminGuards';
+import { runWithAdminSession } from '@/lib/adminGuards';
 
 export function getFormSlug(formData: FormData, resourceLabel: string): string {
   const slug = formData.get('slug')?.toString().trim();
@@ -51,15 +40,11 @@ export async function runAdminOperation<T>(
   fallbackErrorMessage: string,
   toFailureResult: ErrorResultFactory<T>,
 ): Promise<T> {
-  try {
-    await requireAdminSession();
-    return await action();
-  } catch (error) {
-    if (isRedirectError(error)) {
-      throw error;
-    }
-    return toFailureResult(
-      error instanceof Error ? error.message : fallbackErrorMessage,
-    );
-  }
+  return runWithAdminSession(
+    () => action(),
+    (error) =>
+      toFailureResult(
+        error instanceof Error ? error.message : fallbackErrorMessage,
+      ),
+  );
 }

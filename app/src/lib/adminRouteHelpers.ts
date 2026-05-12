@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
-import { isRedirectError } from '@/lib/adminActionHelpers';
-import { requireAdminSession } from '@/lib/adminSession';
+import { runWithAdminSession, type AdminSessionResult } from '@/lib/adminGuards';
 
-type SessionResult = Awaited<ReturnType<typeof requireAdminSession>>;
 type AdminRoutePayload = Record<string, unknown>;
 
 export class AdminRouteError extends Error {
@@ -27,17 +25,11 @@ function isAdminRouteError(error: unknown): error is AdminRouteError {
 }
 
 export async function runAdminRoute(
-  handler: (session: SessionResult) => Promise<Response>,
+  handler: (session: AdminSessionResult) => Promise<Response>,
   fallbackErrorStatus = 500,
   fallbackErrorMessage = 'Request failed',
 ): Promise<Response> {
-  try {
-    const session = await requireAdminSession();
-    return await handler(session);
-  } catch (error) {
-    if (isRedirectError(error)) {
-      throw error;
-    }
+  return runWithAdminSession(handler, (error) => {
     if (isAdminRouteError(error)) {
       return NextResponse.json(error.payload, {
         status: error.status,
@@ -46,5 +38,5 @@ export async function runAdminRoute(
     }
     const message = error instanceof Error ? error.message : fallbackErrorMessage;
     return NextResponse.json({ error: message }, { status: fallbackErrorStatus });
-  }
+  });
 }
