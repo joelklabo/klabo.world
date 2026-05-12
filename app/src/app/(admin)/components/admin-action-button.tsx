@@ -1,12 +1,13 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
+import type { LinkProps } from 'next/link';
 
 import { Button } from '@/components/ui/button';
 
 type AdminActionButtonSize = 'default' | 'xs' | 'sm' | 'lg' | 'icon' | 'icon-sm' | 'icon-lg';
 
 type AdminActionButtonProps = {
-  href: string;
+  href: LinkProps['href'];
   children: ReactNode;
   size?: AdminActionButtonSize;
 };
