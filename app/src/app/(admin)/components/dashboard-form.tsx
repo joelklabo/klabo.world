@@ -10,6 +10,10 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { type Dashboard } from '@/lib/dashboards';
 import { type ActionState } from '../admin/dashboards/actions';
+import {
+  DASHBOARD_PANEL_OPTIONS,
+  DASHBOARD_PANEL_TYPES,
+} from '@/lib/dashboardPanelTypes';
 
 type DashboardFormProps = {
   action: (state: ActionState, formData: FormData) => Promise<ActionState>;
@@ -17,13 +21,6 @@ type DashboardFormProps = {
   dashboard?: Dashboard;
   includeSlugField?: boolean;
 };
-
-const panelTypeOptions = [
-  { value: 'chart', label: 'Chart – render KQL as a line/area/bar chart' },
-  { value: 'logs', label: 'Logs – live feed of warnings/errors (KQL)' },
-  { value: 'embed', label: 'Embed – show an iframe (Grafana, Azure, etc.)' },
-  { value: 'link', label: 'External Link – CTA button to another dashboard' },
-];
 
 function SubmitButton({ label }: { label: string }) {
   const { pending } = useFormStatus();
@@ -78,11 +75,11 @@ export function DashboardForm({ action, submitLabel, dashboard, includeSlugField
             id="panelType"
           name="panelType"
           required
-          defaultValue={dashboard?.panelType ?? 'chart'}
+          defaultValue={dashboard?.panelType ?? DASHBOARD_PANEL_TYPES.chart}
           className="flex h-10 w-full cursor-pointer rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground ring-offset-background focus-visible:border-ring focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50"
           data-testid="dashboard-panel-type"
         >
-          {panelTypeOptions.map((option) => (
+          {DASHBOARD_PANEL_OPTIONS.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
             </option>

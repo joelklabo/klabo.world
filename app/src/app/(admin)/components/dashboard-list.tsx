@@ -4,6 +4,7 @@ import { useOptimistic } from 'react';
 import Link from 'next/link';
 import { type Dashboard } from '@/lib/dashboards';
 import { Surface } from '@/components/ui/surface';
+import { DASHBOARD_PANEL_TYPES } from '@/lib/dashboardPanelTypes';
 
 type DashboardListProps = {
   initialDashboards: Dashboard[];
@@ -47,7 +48,7 @@ export function DashboardList({ initialDashboards }: DashboardListProps) {
                 </div>
               </td>
               <td className="px-4 py-4 text-sm capitalize text-muted-foreground">
-                {dashboard.panelType ?? "chart"}
+                {dashboard.panelType ?? DASHBOARD_PANEL_TYPES.chart}
               </td>
               <td className="px-4 py-4">
                 <div className="flex flex-wrap gap-2">

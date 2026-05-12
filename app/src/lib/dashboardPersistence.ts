@@ -2,14 +2,13 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { resolveContentSubdir } from '@klaboworld/core/server/contentPaths';
 import { deleteRepoFile, fetchRepoFile, resolveExistingSha, shouldUseGitHubStorage, upsertRepoFile } from './github-service';
+import { type DashboardPanelType } from './dashboardPanelTypes';
 import { normalizeSlug } from './slugUtils';
-
-type DashboardType = 'chart' | 'logs' | 'embed' | 'link';
 
 export type DashboardInput = {
   title: string;
   summary: string;
-  panelType: DashboardType;
+  panelType: DashboardPanelType;
   tags: string[];
   chartType?: string | null;
   kqlQuery?: string | null;

@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import matter from 'gray-matter';
 import { allDashboardDocs, type DashboardDoc } from 'contentlayer/generated';
+import { DASHBOARD_PANEL_TYPES, isDashboardPanelType, type DashboardPanelType } from './dashboardPanelTypes';
 
 type FrontMatterFile = ReturnType<typeof matter>;
 
@@ -16,7 +17,7 @@ export type Dashboard = {
   slug: string;
   title: string;
   summary: string;
-  panelType?: string | null;
+  panelType?: DashboardPanelType | null;
   tags?: string[];
   chartType?: string | null;
   iframeUrl?: string | null;
@@ -31,7 +32,7 @@ function fromContentlayer(doc: DashboardDoc): Dashboard {
     slug: doc.slug,
     title: doc.title,
     summary: doc.summary ?? '',
-    panelType: doc.panelType,
+    panelType: isDashboardPanelType(doc.panelType) ? doc.panelType : DASHBOARD_PANEL_TYPES.chart,
     tags: doc.tags ?? [],
     chartType: doc.chartType ?? null,
     iframeUrl: doc.iframeUrl ?? null,
@@ -44,12 +45,14 @@ function fromContentlayer(doc: DashboardDoc): Dashboard {
 
 function toDashboardFromFrontmatter(slug: string, parsed: FrontMatterFile): Dashboard {
   const data = parsed.data as Record<string, unknown>;
+  const panelType =
+    typeof data.panelType === 'string' && isDashboardPanelType(data.panelType) ? data.panelType : undefined;
 
   return {
     slug,
     title: typeof data.title === 'string' ? data.title : slug,
     summary: typeof data.summary === 'string' ? data.summary : '',
-    panelType: typeof data.panelType === 'string' ? data.panelType : undefined,
+    panelType,
     tags: Array.isArray(data.tags) ? data.tags.map(String) : [],
     chartType: typeof data.chartType === 'string' ? data.chartType : undefined,
     iframeUrl: typeof data.iframeUrl === 'string' ? data.iframeUrl : undefined,

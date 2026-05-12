@@ -1,4 +1,5 @@
 import { type Dashboard } from './dashboards';
+import { type DashboardPanelType } from './dashboardPanelTypes';
 import { hasAnalyticsConfig } from './logAnalytics';
 
 const analyticsMissingMessage =
@@ -10,7 +11,7 @@ type PanelState =
 
 export function getPanelState(
   dashboard: Dashboard,
-  panelType: 'chart' | 'logs',
+  panelType: DashboardPanelType,
   notPanelMessage: string,
 ): PanelState {
   if (dashboard.panelType !== panelType) {

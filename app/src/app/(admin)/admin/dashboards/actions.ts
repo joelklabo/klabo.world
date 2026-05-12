@@ -10,6 +10,10 @@ import {
 } from '@/lib/dashboardPersistence';
 import { requireAdminSession } from '@/lib/adminSession';
 import { revalidateDashboardCache } from '@/lib/adminRevalidation';
+import {
+  DASHBOARD_PANEL_REQUIREMENTS,
+  DASHBOARD_PANEL_TYPE_VALUES,
+} from '@/lib/dashboardPanelTypes';
 import { withSpan } from '@/lib/telemetry';
 import { parseFormData, type ActionState as SharedActionState } from '@/lib/formActions';
 import { splitTrimmedList } from '@/lib/formTransforms';
@@ -24,7 +28,7 @@ const dashboardSchema = z
   .object({
     title: z.string().min(1, 'Title is required'),
     summary: z.string().min(1, 'Summary is required'),
-    panelType: z.enum(['chart', 'logs', 'embed', 'link']),
+    panelType: z.enum(DASHBOARD_PANEL_TYPE_VALUES),
     tags: z.string().transform((val) => splitTrimmedList(val, ',')),
     chartType: z.string().optional().nullable(),
     kqlQuery: z.string().optional().nullable(),
@@ -33,15 +37,16 @@ const dashboardSchema = z
     refreshIntervalSeconds: z.coerce.number().min(0).optional().nullable(),
     notes: z.string().optional().nullable(),
   })
-  .refine(
+    .refine(
     (data) => {
-      if ((data.panelType === 'chart' || data.panelType === 'logs') && !data.kqlQuery) {
+      const requirements = DASHBOARD_PANEL_REQUIREMENTS[data.panelType];
+      if (requirements.requiresKqlQuery && !data.kqlQuery) {
         return false;
       }
-      if (data.panelType === 'embed' && !data.iframeUrl) {
+      if (requirements.requiresIFrameUrl && !data.iframeUrl) {
         return false;
       }
-      if (data.panelType === 'link' && !data.externalUrl) {
+      if (requirements.requiresExternalUrl && !data.externalUrl) {
         return false;
       }
       return true;

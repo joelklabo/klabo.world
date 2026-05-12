@@ -11,6 +11,7 @@ import { formatUtcDate } from "@/lib/dateDisplay";
 import { ContentDate } from "@/components/content-date";
 import { Button } from "@/components/ui/button";
 import { getHostnameForDisplay } from "@/lib/urlDisplay";
+import { DASHBOARD_PANEL_TYPES } from "@/lib/dashboardPanelTypes";
 
 export const dynamic = "force-dynamic";
 
@@ -25,10 +26,10 @@ export default async function DashboardDetailPage({ params }: PageProps) {
   if (!dashboard) {
     notFound();
   }
-  const isChartPanel = dashboard.panelType === "chart";
-  const isLogsPanel = dashboard.panelType === "logs";
-  const isEmbedPanel = dashboard.panelType === "embed";
-  const isLinkPanel = dashboard.panelType === "link";
+  const isChartPanel = dashboard.panelType === DASHBOARD_PANEL_TYPES.chart;
+  const isLogsPanel = dashboard.panelType === DASHBOARD_PANEL_TYPES.logs;
+  const isEmbedPanel = dashboard.panelType === DASHBOARD_PANEL_TYPES.embed;
+  const isLinkPanel = dashboard.panelType === DASHBOARD_PANEL_TYPES.link;
   const chartState = isChartPanel
     ? await loadDashboardChartState(dashboard)
     : null;
