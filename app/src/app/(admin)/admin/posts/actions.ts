@@ -48,7 +48,7 @@ export async function createPostAction(
   prevState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const result = await runAdminActionAndRedirect(async () => {
+  return runAdminActionAndRedirect(async () => {
     // Checkbox handling: if unchecked, it's missing from formData.
     // We can manually set it to 'false' if missing, or let Zod handle optional.
     // But Zod coerce boolean treats "on" as true, missing as undefined.
@@ -73,14 +73,13 @@ export async function createPostAction(
     revalidatePostCache(createResult.slug);
     return { message: 'Post created', success: true };
   }, 'Failed to create post', '/admin');
-  return result;
 }
 
 export async function updatePostAction(
   prevState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const result = await runAdminActionAndRedirect(async () => {
+  return runAdminActionAndRedirect(async () => {
     const slug = getFormSlug(formData, 'post');
 
     // Get existing post state to detect publish transition
@@ -143,14 +142,13 @@ export async function updatePostAction(
     revalidatePostCache(slug);
     return { message: 'Post updated', success: true };
   }, 'Failed to update post', '/admin');
-  return result;
 }
 
 export async function deletePostAction(
   prevState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const result = await runAdminActionAndRedirect(async () => {
+  return runAdminActionAndRedirect(async () => {
     const slug = getFormSlug(formData, 'post');
     await deletePost(slug);
 
@@ -163,7 +161,6 @@ export async function deletePostAction(
     revalidatePostCache();
     return { message: 'Post deleted', success: true };
   }, 'Failed to delete post', '/admin');
-  return result;
 }
 
 export type ShareToXResult = {

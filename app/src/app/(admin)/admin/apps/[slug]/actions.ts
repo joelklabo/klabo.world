@@ -29,7 +29,7 @@ export async function upsertAppAction(
   prevState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const result = await runAdminActionAndRedirect(async () => {
+  return runAdminActionAndRedirect(async () => {
     const parsed = parseFormData(appSchema, formData);
     if (!parsed.ok) {
       return parsed.state;
@@ -64,14 +64,13 @@ export async function upsertAppAction(
     revalidateAppCache(input.slug);
     return { message: 'App saved', success: true };
   }, 'Failed to save app', '/admin/apps');
-  return result;
 }
 
 export async function deleteAppAction(
   prevState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const result = await runAdminActionAndRedirect(async () => {
+  return runAdminActionAndRedirect(async () => {
     const slug = getFormSlug(formData, 'app');
     await deleteApp(slug);
 
@@ -84,5 +83,4 @@ export async function deleteAppAction(
     revalidateAppCache();
     return { message: 'App deleted', success: true };
   }, 'Failed to delete app', '/admin/apps');
-  return result;
 }

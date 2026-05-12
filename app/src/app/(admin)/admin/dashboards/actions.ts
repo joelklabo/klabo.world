@@ -57,7 +57,7 @@ export async function createDashboardAction(
   formData: FormData,
 ): Promise<ActionState> {
   let slug: string | undefined;
-  const result = await runAdminActionAndRedirect(
+  return runAdminActionAndRedirect(
     async () => {
       const parsed = parseFormData(dashboardSchema, formData);
       if (!parsed.ok) {
@@ -80,7 +80,6 @@ export async function createDashboardAction(
     'Failed to create dashboard',
     () => (slug ? `/admin/dashboards/${slug}` : undefined),
   );
-  return result;
 }
 
 export async function updateDashboardAction(
@@ -88,7 +87,7 @@ export async function updateDashboardAction(
   formData: FormData,
 ): Promise<ActionState> {
   let slug: string | undefined;
-  const result = await runAdminActionAndRedirect(
+  return runAdminActionAndRedirect(
     async () => {
       slug = getFormSlug(formData, 'dashboard');
       const parsed = parseFormData(dashboardSchema, formData);
@@ -111,11 +110,10 @@ export async function updateDashboardAction(
     'Failed to update dashboard',
     () => (slug ? `/admin/dashboards/${slug}` : undefined),
   );
-  return result;
 }
 
 export async function deleteDashboardAction(formData: FormData): Promise<ActionState> {
-  const result = await runAdminActionAndRedirect(async () => {
+  return runAdminActionAndRedirect(async () => {
     const slug = getFormSlug(formData, 'dashboard');
     await deleteDashboard(slug);
 
@@ -128,5 +126,4 @@ export async function deleteDashboardAction(formData: FormData): Promise<ActionS
     revalidateDashboardCache();
     return { message: 'Dashboard deleted', success: true };
   }, 'Failed to delete dashboard', '/admin/dashboards');
-  return result;
 }
