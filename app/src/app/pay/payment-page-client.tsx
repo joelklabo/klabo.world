@@ -4,6 +4,12 @@ import { useEffect, useMemo, useState } from 'react';
 import { Copy, Zap } from 'lucide-react';
 import { BitcoinPaymentsGrid, DEFAULT_BITCOIN_ONCHAIN_ADDRESS } from '@/components/lightning';
 import { cn } from '@/lib/utils';
+import {
+  DEFAULT_PAYMENT_HOST,
+  DEFAULT_PAYMENT_URL,
+  SITE_CANONICAL_URL,
+  SITE_NAME,
+} from '@/lib/site-config';
 
 type NodeStatus = {
   alias: string;
@@ -60,7 +66,7 @@ export function PaymentPageClient({
 
   const copyPayUrl = async () => {
     try {
-      await navigator.clipboard.writeText('https://pay.klabo.world');
+      await navigator.clipboard.writeText(DEFAULT_PAYMENT_URL);
       setOriginCopied(true);
       setTimeout(() => setOriginCopied(false), 2000);
     } catch {
@@ -80,10 +86,10 @@ export function PaymentPageClient({
       <div className="relative mx-auto flex min-h-dvh w-full max-w-6xl flex-col px-4 py-5 sm:px-6 sm:py-7 lg:px-8">
         <header className="flex flex-wrap items-center justify-between gap-3">
           <a
-            href="https://klabo.world"
+            href={SITE_CANONICAL_URL}
             className="rounded text-sm font-semibold uppercase tracking-[0.28em] text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 sm:text-base"
           >
-            klabo.world
+            {SITE_NAME}
           </a>
           <div className="flex items-center gap-2">
             <button
@@ -92,7 +98,7 @@ export function PaymentPageClient({
               className="inline-flex min-h-10 items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 text-xs font-semibold text-white/72 shadow-[0_12px_28px_rgba(0,0,0,0.28)] transition-colors hover:border-primary/40 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
             >
               <Copy className="h-3.5 w-3.5" aria-hidden="true" />
-              {originCopied ? 'Copied' : 'pay.klabo.world'}
+              {originCopied ? 'Copied' : DEFAULT_PAYMENT_HOST}
             </button>
             <span
               className={cn(
@@ -130,7 +136,7 @@ export function PaymentPageClient({
               className="max-w-2xl text-4xl font-bold leading-[0.98] tracking-tight text-white sm:text-6xl"
               data-testid="pay-page-title"
             >
-              Pay klabo.world
+              {`Pay ${SITE_NAME}`}
             </h1>
             <p className="max-w-2xl text-sm leading-6 text-white/66 sm:text-base">
               Lightning and on-chain Bitcoin in one fast payment view.

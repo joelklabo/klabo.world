@@ -1,4 +1,5 @@
 import { createRequire } from 'node:module';
+import { SITE_CANONICAL_URL } from '@/lib/site-config';
 
 const require = createRequire(import.meta.url);
 const shouldEnforceServerOnly = process.env.NODE_ENV !== 'test' && process.env.VITEST !== 'true';
@@ -6,7 +7,7 @@ if (shouldEnforceServerOnly) {
   require('server-only');
 }
 
-const FALLBACK_SITE_URL = 'https://klabo.world';
+const FALLBACK_SITE_URL = SITE_CANONICAL_URL;
 const FALLBACK_GITHUB_OWNER = 'joelklabo';
 
 function normalizeUrl(value: string): string {
@@ -27,6 +28,14 @@ function normalizeString(value: string | undefined, fallback: string): string {
 export function getPublicSiteUrl(): string {
   const raw = process.env.SITE_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? FALLBACK_SITE_URL;
   return normalizeUrl(raw);
+}
+
+export function getPublicSiteOriginUrl(): string {
+  const site = new URL(getPublicSiteUrl());
+  site.pathname = '';
+  site.search = '';
+  site.hash = '';
+  return site.toString().replace(/\/$/, '');
 }
 
 export function withPublicSiteUrl(path: string): string {

@@ -1,7 +1,8 @@
 import { ImageResponse } from 'next/og';
 import { allPosts } from 'contentlayer/generated';
 import { createElement } from 'react';
-import { getPublicSiteUrl } from '@/lib/public-env';
+import { getPublicSiteOriginUrl } from '@/lib/public-env';
+import { DEFAULT_POST_OG_SUMMARY, SITE_NAME } from '@/lib/site-config';
 
 export const runtime = 'nodejs';
 export const revalidate = 86_400;
@@ -18,11 +19,10 @@ export async function GET(_req: Request, context: { params: Params | Promise<Par
   const { slug } = await context.params;
   const post = allPosts.find((entry) => entry.slug === slug);
   const title = clampText(post?.title ?? 'Post', 84);
-  const summary = clampText(post?.summary ?? 'Read the latest writing on klabo.world.', 180);
+  const summary = clampText(post?.summary ?? DEFAULT_POST_OG_SUMMARY, 180);
   const tags = (post?.tags ?? []).slice(0, 4);
 
-  const site = new URL(getPublicSiteUrl());
-  site.pathname = '';
+  const site = getPublicSiteOriginUrl();
 
   const logoMark = createElement(
     'svg',
@@ -116,7 +116,7 @@ export async function GET(_req: Request, context: { params: Params | Promise<Par
                   color: 'rgba(226, 232, 240, 0.72)',
                 },
               },
-              'klabo.world',
+              SITE_NAME,
             ),
           ),
           createElement(
@@ -132,7 +132,7 @@ export async function GET(_req: Request, context: { params: Params | Promise<Par
                 justifyContent: 'center',
                 boxShadow: '0 22px 60px rgba(0,0,0,0.45)',
               },
-              'aria-label': 'klabo.world',
+              'aria-label': SITE_NAME,
             },
             logoMark,
           ),
@@ -217,7 +217,7 @@ export async function GET(_req: Request, context: { params: Params | Promise<Par
                 color: 'rgba(226, 232, 240, 0.72)',
               },
             },
-            site.toString().replace(/\/$/, ''),
+            site,
           ),
         ),
       ),

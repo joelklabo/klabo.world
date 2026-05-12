@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getLnbitsBaseUrl, buildLnbitsHeaders, getLnbitsAdminKey } from '@/lib/lnbits';
+import { LIGHTNING_NAMESPACE_PREFIX } from '@/lib/site-config';
 
 type Payment = {
   amount: number;
@@ -31,12 +32,12 @@ function emptyStats(namespace: string): TipStats {
 }
 
 function commentMatchesNamespace(comment: string, namespace: string): boolean {
-  const legacyComment = `klabo.world:${namespace}`;
+  const legacyComment = `${LIGHTNING_NAMESPACE_PREFIX}${namespace}`;
   if (comment === legacyComment) {
     return true;
   }
 
-  const prefix = 'klabo.world:';
+  const prefix = LIGHTNING_NAMESPACE_PREFIX;
   if (!comment.startsWith(prefix)) {
     return false;
   }

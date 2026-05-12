@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import type { Route } from 'next';
+import { SITE_NAME, SITE_TAGLINE } from '@/lib/site-config';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -30,10 +31,10 @@ export function Footer() {
               href="/"
               className="text-lg font-semibold tracking-[0.18em] uppercase text-primary hover:text-primary/80 motion-safe:transition-colors rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
             >
-              klabo.world
+              {SITE_NAME}
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed text-pretty">
-              Bitcoin, Lightning & agentic engineering. Tutorials, project updates, and AI context libraries.
+              {SITE_TAGLINE}
             </p>
           </div>
 
@@ -87,7 +88,7 @@ export function Footer() {
         {/* Copyright & Meta */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs text-muted-foreground/60 tracking-[0.15em] uppercase">
-            &copy; {currentYear} klabo.world. all rights reserved.
+            &copy; {currentYear} {SITE_NAME}. all rights reserved.
           </p>
           <div className="flex gap-4 text-xs text-muted-foreground/60 uppercase tracking-[0.15em]">
             <Link

@@ -3,45 +3,49 @@ import { JetBrains_Mono, Manrope } from 'next/font/google';
 import './globals.css';
 import { GlobalNavigation } from './components/global-navigation';
 import ApplicationInsightsConnection from './components/ApplicationInsights';
-import { getPublicSiteUrl } from '@/lib/public-env';
+import { getPublicSiteUrl, withPublicSiteUrl } from '@/lib/public-env';
+import {
+  DEFAULT_PAYMENT_HOST,
+  SITE_DESCRIPTION_WITHOUT_PERIOD,
+  SITE_NAME,
+  SITE_TITLE,
+} from '@/lib/site-config';
 
 const siteUrl = getPublicSiteUrl();
 const paymentHostChromeScript =
-  "if(location.hostname==='pay.klabo.world')document.documentElement.dataset.paymentHost='true'";
+  `if(location.hostname==='${DEFAULT_PAYMENT_HOST}')document.documentElement.dataset.paymentHost='true'`;
 const paymentHostChromeStyle = 'html[data-payment-host="true"] body > header{display:none}';
+const publicOpenGraphImage = withPublicSiteUrl('/og.png');
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    template: '%s • klabo.world',
-    default: 'klabo.world • Bitcoin, Lightning & Agentic Engineering',
+    template: `%s • ${SITE_NAME}`,
+    default: SITE_TITLE,
   },
-  description:
-    'klabo.world covers Bitcoin, Lightning, and agentic engineering with tutorials, project updates, and AI context libraries.',
-	  openGraph: {
-	    type: 'website',
-	    url: siteUrl,
-	    siteName: 'klabo.world',
-	    title: 'klabo.world • Bitcoin, Lightning & Agentic Engineering',
-	    description:
-	      'klabo.world covers Bitcoin, Lightning, and agentic engineering with tutorials, project updates, and AI context libraries.',
-	    images: [
-	      {
-	        url: new URL('/og.png', siteUrl),
-	        width: 1200,
-	        height: 630,
-	        alt: 'klabo.world',
-	        type: 'image/png',
-	      },
-	    ],
-	  },
-	  twitter: {
-	    card: 'summary_large_image',
-	    title: 'klabo.world • Bitcoin, Lightning & Agentic Engineering',
-	    description:
-	      'klabo.world covers Bitcoin, Lightning, and agentic engineering with tutorials, project updates, and AI context libraries.',
-	    images: [new URL('/og.png', siteUrl)],
-	  },
+  description: SITE_DESCRIPTION_WITHOUT_PERIOD,
+  openGraph: {
+    type: 'website',
+    url: siteUrl,
+    siteName: SITE_NAME,
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION_WITHOUT_PERIOD,
+    images: [
+      {
+        url: publicOpenGraphImage,
+        width: 1200,
+        height: 630,
+        alt: SITE_NAME,
+        type: 'image/png',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION_WITHOUT_PERIOD,
+    images: [publicOpenGraphImage],
+  },
 };
 
 const manrope = Manrope({

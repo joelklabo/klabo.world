@@ -5,6 +5,7 @@ export const dynamic = 'force-dynamic';
 import { getLnbitsBaseUrl, buildLnbitsHeaders, getLnbitsAdminKey } from '@/lib/lnbits';
 import { getPublicSiteUrl } from '@/lib/public-env';
 import { buildLightningAddressMetadata, normalizeLnurlUsername } from '@/lib/lnurlp';
+import { LIGHTNING_NAMESPACE_PREFIX } from '@/lib/site-config';
 
 function toNumber(value: string | null): number | null {
   if (!value) return null;
@@ -196,7 +197,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ user
         tag: 'klabo-world-lnurlp',
         lnurlp_username: normalizedUsername,
         lnurlp_namespace: namespace,
-        lnurlp_comment: `klabo.world:${normalizedUsername}:${namespace}`,
+        lnurlp_comment: `${LIGHTNING_NAMESPACE_PREFIX}${normalizedUsername}:${namespace}`,
       },
     }),
   });

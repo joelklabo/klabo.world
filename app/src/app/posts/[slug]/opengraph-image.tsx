@@ -1,5 +1,6 @@
 import { ImageResponse } from 'next/og';
 import { allPosts } from 'contentlayer/generated';
+import { DEFAULT_POST_OG_SUMMARY, SITE_NAME } from '@/lib/site-config';
 
 export const runtime = 'nodejs';
 export const size = { width: 1200, height: 630 };
@@ -21,10 +22,7 @@ export default async function OpenGraphImage({
   const { slug } = await params;
   const post = allPosts.find((entry) => entry.slug === slug);
   const title = clampText(post?.title ?? 'Post', 84);
-  const summary = clampText(
-    post?.summary ?? 'Read the latest writing on klabo.world.',
-    180,
-  );
+  const summary = clampText(post?.summary ?? DEFAULT_POST_OG_SUMMARY, 180);
   const tags = (post?.tags ?? []).slice(0, 4);
 
   return new ImageResponse(
@@ -83,7 +81,7 @@ export default async function OpenGraphImage({
                 color: 'rgba(226, 232, 240, 0.72)',
               }}
             >
-              klabo.world
+              SITE_NAME
             </div>
           </div>
 

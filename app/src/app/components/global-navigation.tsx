@@ -5,6 +5,7 @@ import type { Route } from 'next';
 import { usePathname, useRouter } from 'next/navigation';
 import { KeyboardEvent, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { SITE_NAME } from '@/lib/site-config';
 
 const NAV_ITEMS = [
   { label: 'Writing', href: '/posts' },
@@ -266,7 +267,7 @@ export function GlobalNavigation() {
             className="text-lg font-semibold tracking-[0.18em] uppercase text-primary drop-shadow rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
             data-testid="global-nav-logo"
           >
-            klabo.world
+            {SITE_NAME}
           </Link>
           <button
             type="button"

@@ -15,6 +15,7 @@ import { ContentDate } from '@/components/content-date';
 import { getPublicSiteUrl } from '@/lib/public-env';
 import { LightningTipWidget } from '@/components/lightning';
 import { runPublicSlugMetadata, runPublicSlugPage } from '@/lib/publicPageHelpers';
+import { DEFAULT_POST_LIGHTNING_ADDRESS, SITE_NAME } from '@/lib/site-config';
 
 type Params = { slug: string };
 
@@ -101,7 +102,7 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
       const next = posts[index + 1];
       const siteUrl = getPublicSiteUrl();
       const canonicalUrl = `${siteUrl}/posts/${post.slug}`;
-      const lightningAddress = post.lightningAddress ?? 'joel@klabo.world';
+      const lightningAddress = post.lightningAddress ?? DEFAULT_POST_LIGHTNING_ADDRESS;
       const publishedDate = getPostPublishDate(post).toISOString();
       const heroImage = getPostHeroImage(post);
       const heroImageUrl = new URL(heroImage, siteUrl).toString();
@@ -121,7 +122,7 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
         keywords: post.tags ?? [],
         publisher: {
           '@type': 'Organization',
-          name: 'klabo.world',
+          name: SITE_NAME,
           url: siteUrl,
         },
       };

@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og';
 import { createElement } from 'react';
-import { getPublicSiteUrl } from '@/lib/public-env';
+import { getPublicSiteOriginUrl } from '@/lib/public-env';
 
 export const runtime = 'nodejs';
 export const revalidate = 86_400;
@@ -11,8 +11,7 @@ const primary = '#F5B301';
 const secondary = '#7C3AED';
 
 export async function GET() {
-  const site = new URL(getPublicSiteUrl());
-  site.pathname = '';
+  const site = getPublicSiteOriginUrl();
 
   const logoMark = createElement(
     'svg',
@@ -170,7 +169,7 @@ export async function GET() {
                 color: 'rgba(226, 232, 240, 0.72)',
               },
             },
-            site.toString().replace(/\/$/, ''),
+            site,
           ),
         ),
       ),
