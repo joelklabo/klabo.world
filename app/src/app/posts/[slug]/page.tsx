@@ -88,7 +88,7 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
       if (!postBody) {
         notFound();
       }
-      const { raw: rawBody, code: bodyCode, readingTime } = postBody;
+      const { code: bodyCode, readingTime } = postBody;
       const posts = getPosts();
       const index = posts.findIndex((entry) => entry.slug === post.slug);
       const previous = posts[index - 1];
