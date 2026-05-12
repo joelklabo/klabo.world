@@ -162,7 +162,7 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): Env {
         throw new Error('Unsafe production configuration: DATABASE_URL uses SQLite. Set ALLOW_SQLITE_IN_PROD=true to override.');
       }
     }
-    if (data.NEXTAUTH_SECRET.trim() === 'dev-secret' && !isCiEnv) {
+    if (data.NEXTAUTH_SECRET.trim() === DEFAULT_NEXTAUTH_SECRET && !isCiEnv) {
       throw new Error('Unsafe production configuration: NEXTAUTH_SECRET is set to the dev default.');
     }
     if (data.UPLOADS_REQUIRE_DURABLE) {
