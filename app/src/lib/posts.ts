@@ -65,6 +65,16 @@ export function getRecentPosts(limit = 3): Post[] {
   return getPosts().slice(0, limit);
 }
 
+export function getPostReadableBody(post: Pick<Post, 'body'>): { raw: string; code: string; readingTime: number } | null {
+  const raw = post.body?.raw;
+  const code = post.body?.code;
+  if (!raw || !code) {
+    return null;
+  }
+  const readingTime = Math.max(1, Math.round(raw.split(/\s+/).length / 200));
+  return { raw, code, readingTime };
+}
+
 function buildAliasIndex(posts: Post[]): Map<string, Post> {
   const aliasIndex = new Map<string, Post>();
   const canonicalSlugs = new Set(posts.map((post) => normalizePostSlug(post.slug)));

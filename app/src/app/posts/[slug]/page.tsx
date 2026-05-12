@@ -2,7 +2,7 @@ import { notFound, permanentRedirect } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Metadata } from 'next';
-import { getPostBySlug, getPosts, normalizePostSlug } from '@/lib/posts';
+import { getPostBySlug, getPosts, getPostReadableBody, normalizePostSlug } from '@/lib/posts';
 import { MDXContent } from '@/components/mdx-content';
 import { ContentDate } from '@/components/content-date';
 import { getPublicSiteUrl } from '@/lib/public-env';
@@ -84,16 +84,15 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
       if (normalizePostSlug(post.slug) !== normalizePostSlug(requestedSlug)) {
         permanentRedirect(`/posts/${post.slug}`);
       }
-      const rawBody = post.body?.raw;
-      const bodyCode = post.body?.code;
-      if (!rawBody || !bodyCode) {
+      const postBody = getPostReadableBody(post);
+      if (!postBody) {
         notFound();
       }
+      const { raw: rawBody, code: bodyCode, readingTime } = postBody;
       const posts = getPosts();
       const index = posts.findIndex((entry) => entry.slug === post.slug);
       const previous = posts[index - 1];
       const next = posts[index + 1];
-      const readingTime = Math.max(1, Math.round(rawBody.split(/\s+/).length / 200));
       const siteUrl = getPublicSiteUrl();
       const canonicalUrl = `${siteUrl}/posts/${post.slug}`;
       const lightningAddress = post.lightningAddress ?? 'joel@klabo.world';

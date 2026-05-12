@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getPostBySlug } from '@/lib/posts';
+import { getPostBySlug, getPostReadableBody } from '@/lib/posts';
 import { MDXContent } from '@/components/mdx-content';
 import { ContentDate } from '@/components/content-date';
 import { ReadingProgress } from '@/components/reading-progress';
@@ -63,13 +63,11 @@ export default async function DraftPreviewPage({
       );
     }
 
-    const rawBody = post.body?.raw;
-    const bodyCode = post.body?.code;
-    if (!rawBody || !bodyCode) {
+    const postBody = getPostReadableBody(post);
+    if (!postBody) {
       notFound();
     }
-
-    const readingTime = Math.max(1, Math.round(rawBody.split(/\s+/).length / 200));
+    const { raw: rawBody, code: bodyCode, readingTime } = postBody;
     const headings = extractHeadings(rawBody);
 
     const proseClass = `prose max-w-none ${
