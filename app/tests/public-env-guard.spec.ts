@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { DEFAULT_NEXTAUTH_SECRET, DEFAULT_DATABASE_URL } from '@/lib/site-config';
 
 const originalEnv = { ...process.env };
 
@@ -13,8 +14,8 @@ function setStrictProdEnv() {
   const env = process.env as Record<string, string>;
   env.NODE_ENV = 'production';
   env.CI = 'false';
-  env.NEXTAUTH_SECRET = 'dev-secret';
-  env.DATABASE_URL = 'file:../data/app.db';
+  env.NEXTAUTH_SECRET = DEFAULT_NEXTAUTH_SECRET;
+  env.DATABASE_URL = DEFAULT_DATABASE_URL;
   env.VITEST = 'true';
 }
 

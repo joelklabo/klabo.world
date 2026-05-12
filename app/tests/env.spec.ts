@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { loadEnv } from '@klaboworld/core';
+import { DEFAULT_DATABASE_URL, DEFAULT_NEXTAUTH_SECRET } from '@/lib/site-config';
 
 const originalEnv = { ...process.env };
 
@@ -27,7 +28,7 @@ describe('loadEnv production guardrails', () => {
     expect(() =>
       loadEnv({
         ...baseProdEnv,
-        DATABASE_URL: 'file:../data/app.db',
+        DATABASE_URL: DEFAULT_DATABASE_URL,
       } as NodeJS.ProcessEnv),
     ).toThrow(/DATABASE_URL uses SQLite/i);
   });
@@ -37,7 +38,7 @@ describe('loadEnv production guardrails', () => {
     expect(() =>
       loadEnv({
         ...baseProdEnv,
-        DATABASE_URL: 'file:../data/app.db',
+        DATABASE_URL: DEFAULT_DATABASE_URL,
         ALLOW_SQLITE_IN_PROD: 'true',
       } as NodeJS.ProcessEnv),
     ).not.toThrow();
@@ -48,7 +49,7 @@ describe('loadEnv production guardrails', () => {
     expect(() =>
       loadEnv({
         ...baseProdEnv,
-        DATABASE_URL: 'file:../data/app.db',
+        DATABASE_URL: DEFAULT_DATABASE_URL,
         WEBSITE_SITE_NAME: 'klabo-world-app',
       } as NodeJS.ProcessEnv),
     ).not.toThrow();
@@ -59,7 +60,7 @@ describe('loadEnv production guardrails', () => {
     expect(() =>
       loadEnv({
         ...baseProdEnv,
-        DATABASE_URL: 'file:../data/app.db',
+        DATABASE_URL: DEFAULT_DATABASE_URL,
         WEBSITE_SITE_NAME: 'klabo-world-app',
         ALLOW_SQLITE_IN_PROD: 'false',
       } as NodeJS.ProcessEnv),
@@ -71,7 +72,7 @@ describe('loadEnv production guardrails', () => {
     expect(() =>
       loadEnv({
         ...baseProdEnv,
-        NEXTAUTH_SECRET: 'dev-secret',
+        NEXTAUTH_SECRET: DEFAULT_NEXTAUTH_SECRET,
       } as NodeJS.ProcessEnv),
     ).toThrow(/NEXTAUTH_SECRET/i);
   });
