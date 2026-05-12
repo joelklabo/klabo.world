@@ -34,25 +34,43 @@ function sanitizeSlug(slug: string): string {
   return slugify(slug, { lower: true, strict: true });
 }
 
-async function writeLocalFile(slug: string, content: string) {
-  await fs.mkdir(APPS_DIR, { recursive: true });
-  await fs.writeFile(path.join(APPS_DIR, `${slug}.json`), content, 'utf8');
+function getLocalAppPath(slug: string) {
+  return path.join(APPS_DIR, `${slug}.json`);
 }
 
-async function writeGitHubFile(slug: string, content: string) {
-  const relativePath = `${GITHUB_APPS_DIR}/${slug}.json`;
-  let sha: string | undefined;
+function getGithubAppPath(slug: string) {
+  return `${GITHUB_APPS_DIR}/${slug}.json`;
+}
+
+async function resolveExistingSha(relativePath: string): Promise<string | undefined> {
   try {
     const existing = await fetchRepoFile(githubConfig, relativePath);
-    sha = existing.sha;
+    return existing.sha;
   } catch (error: unknown) {
     if (typeof error !== 'object' || error === null || (error as { status?: number }).status !== 404) {
       throw error;
     }
+    return undefined;
   }
+}
+
+async function persistAppJson(
+  slug: string,
+  content: string,
+  message = `chore: update app ${slug}`,
+  existingSha?: string,
+) {
+  const relativePath = getGithubAppPath(slug);
+  if (!shouldUseGitHub()) {
+    await fs.mkdir(APPS_DIR, { recursive: true });
+    await fs.writeFile(getLocalAppPath(slug), content, 'utf8');
+    return;
+  }
+
+  const sha = existingSha ?? (await resolveExistingSha(relativePath));
   await upsertRepoFile(githubConfig, {
     path: relativePath,
-    message: `chore: update app ${slug}`,
+    message,
     content,
     sha,
   });
@@ -65,17 +83,17 @@ export async function upsertApp(slug: string, input: AppInput) {
     slug: normalizedSlug,
   };
   const content = JSON.stringify(payload, null, 2);
-  await (shouldUseGitHub() ? writeGitHubFile(normalizedSlug, content) : writeLocalFile(normalizedSlug, content));
+  await persistAppJson(normalizedSlug, content);
 }
 
 export async function deleteApp(slug: string) {
   const normalizedSlug = sanitizeSlug(slug);
   if (shouldUseGitHub()) {
-    const relativePath = `${GITHUB_APPS_DIR}/${normalizedSlug}.json`;
+    const relativePath = getGithubAppPath(normalizedSlug);
     const existing = await fetchRepoFile(githubConfig, relativePath);
     await deleteRepoFile(githubConfig, relativePath, `chore: delete app ${normalizedSlug}`, existing.sha);
   } else {
-    await fs.unlink(path.join(APPS_DIR, `${normalizedSlug}.json`));
+    await fs.unlink(getLocalAppPath(normalizedSlug));
   }
 }
 
