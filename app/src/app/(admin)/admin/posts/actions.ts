@@ -117,13 +117,14 @@ export async function updatePostAction(
 
     const data = parsed.data;
     const input = buildPostPersistenceInput(data);
+    const now = new Date();
 
     await updatePost(slug, input);
 
     // Detect if this is a publish transition (immediate publish only)
-    const wasPublished = existingPublishDate && new Date(existingPublishDate) <= new Date();
+    const wasPublished = existingPublishDate && new Date(existingPublishDate) <= now;
     const newPublishDate = input.publishDate ? new Date(input.publishDate) : null;
-    const isNowPublished = newPublishDate && newPublishDate <= new Date();
+    const isNowPublished = newPublishDate && newPublishDate <= now;
     const isImmediatePublish = !wasPublished && isNowPublished && !existingXPostId;
 
     if (isImmediatePublish && isXPublishingEnabled()) {
