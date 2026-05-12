@@ -13,6 +13,7 @@ import { requireAdminSession } from '@/lib/adminSession';
 import { revalidateDashboardCache } from '@/lib/adminRevalidation';
 import { withSpan } from '@/lib/telemetry';
 import { parseFormData, type ActionState as SharedActionState } from '@/lib/formActions';
+import { splitTrimmedList } from '@/lib/formTransforms';
 
 const optionalUrl = z
   .union([z.string().url('Invalid URL'), z.literal('')])
@@ -25,12 +26,7 @@ const dashboardSchema = z
     title: z.string().min(1, 'Title is required'),
     summary: z.string().min(1, 'Summary is required'),
     panelType: z.enum(['chart', 'logs', 'embed', 'link']),
-    tags: z.string().transform((val) =>
-      val
-        .split(',')
-        .map((t) => t.trim())
-        .filter(Boolean),
-    ),
+    tags: z.string().transform((val) => splitTrimmedList(val, ',')),
     chartType: z.string().optional().nullable(),
     kqlQuery: z.string().optional().nullable(),
     iframeUrl: optionalUrl,

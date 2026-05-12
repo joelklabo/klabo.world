@@ -11,6 +11,7 @@ import { getEditablePostBySlug } from '@/lib/posts';
 import { isXPublishingEnabled, publishToX } from '@/lib/x-publisher';
 import { env } from '@/lib/env';
 import { parseFormValues, type ActionState as SharedActionState } from '@/lib/formActions';
+import { splitTrimmedList } from '@/lib/formTransforms';
 
 const postSchema = z.object({
   title: z.string().min(1, 'Title is required'),
@@ -18,10 +19,10 @@ const postSchema = z.object({
   content: z.string().min(1, 'Content is required'),
   publishDate: z.string().optional().nullable(),
   featuredImage: z.string().optional().nullable(),
-  tags: z.string().transform((val) => val.split(',').map((t) => t.trim()).filter(Boolean)),
+  tags: z.string().transform((val) => splitTrimmedList(val, ',')),
   lightningAddress: z.string().email().optional().or(z.literal('')),
   nostrPubkey: z.string().optional().nullable(),
-  nostrRelays: z.string().transform((val) => val.split(/[,\n]/).map((r) => r.trim()).filter(Boolean)),
+  nostrRelays: z.string().transform((val) => splitTrimmedList(val, /[,\n]/)),
   nostrstackEnabled: z.coerce.boolean().optional(),
 });
 

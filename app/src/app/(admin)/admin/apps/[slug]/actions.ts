@@ -9,6 +9,7 @@ import { revalidateAppCache } from '@/lib/adminRevalidation';
 import { withSpan } from '@/lib/telemetry';
 import { parseFormData, type ActionState as SharedActionState } from '@/lib/formActions';
 import { normalizeSlug } from '@/lib/slugUtils';
+import { splitTrimmedList } from '@/lib/formTransforms';
 
 const appSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -16,8 +17,8 @@ const appSchema = z.object({
   publishDate: z.string().refine((val) => !Number.isNaN(new Date(val).getTime()), 'Invalid date'),
   version: z.string().min(1, 'Version is required'),
   fullDescription: z.string().min(1, 'Description is required'),
-  features: z.string().transform((val) => val.split('\n').map((l) => l.trim()).filter(Boolean)),
-  screenshots: z.string().transform((val) => val.split('\n').map((l) => l.trim()).filter(Boolean)),
+  features: z.string().transform((val) => splitTrimmedList(val, /\r?\n/)),
+  screenshots: z.string().transform((val) => splitTrimmedList(val, /\r?\n/)),
   appStoreURL: z.string().url().optional().or(z.literal('')),
   githubURL: z.string().url().optional().or(z.literal('')),
   icon: z.string().optional(),
