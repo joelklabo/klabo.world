@@ -30,6 +30,10 @@ export async function generateMetadata({ params }: { params: Params | Promise<Pa
     params,
     getPostBySlug,
     (post) => {
+      if (!post) {
+        return { title: 'Post not found' };
+      }
+
       const siteUrl = getPublicSiteUrl();
       const canonicalPath = `/posts/${post.slug}`;
       const publishedTime = post.publishDate ?? post.date;
