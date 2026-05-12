@@ -15,6 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN || '' }}
   TURBO_TEAM: ${{ secrets.TURBO_TEAM || '' }}
   AZURE_WEBAPP_NAME: klabo-world-app
