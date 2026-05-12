@@ -27,3 +27,19 @@ export async function runAdminSlugPage<TResource, TOutput>(
     return render(resource);
   });
 }
+
+export async function runAdminSlugMetadata<TResource, TOutput>(
+  params: SlugParams,
+  loadResource: (slug: string) => Promise<TResource | null | undefined>,
+  render: (resource: TResource) => Promise<TOutput> | TOutput,
+  renderMissing: () => Promise<TOutput> | TOutput,
+): Promise<TOutput> {
+  return runAdminMetadata(async () => {
+    const { slug } = await params;
+    const resource = await loadResource(slug);
+    if (!resource) {
+      return renderMissing();
+    }
+    return render(resource);
+  });
+}

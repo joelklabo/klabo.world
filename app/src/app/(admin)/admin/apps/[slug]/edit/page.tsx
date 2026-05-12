@@ -3,19 +3,17 @@ import type { Metadata } from 'next';
 import { getEditableAppBySlug } from '@/lib/apps';
 import { AppForm } from '@/app/(admin)/components/app-form';
 import { upsertAppAction, deleteAppAction } from '../actions';
-import { runAdminMetadata, runAdminSlugPage } from '@/lib/adminPageHelpers';
+import { runAdminSlugPage, runAdminSlugMetadata } from '@/lib/adminPageHelpers';
 
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
-  return runAdminMetadata(async () => {
-    const { slug } = await params;
-    const app = await getEditableAppBySlug(slug);
-    if (!app) {
-      return { title: 'App not found • Admin' };
-    }
-    return { title: `Edit ${app.name} • Admin`, description: app.fullDescription };
-  });
+  return runAdminSlugMetadata(
+    params,
+    getEditableAppBySlug,
+    (app) => ({ title: `Edit ${app.name} • Admin`, description: app.fullDescription }),
+    () => ({ title: 'App not found • Admin' }),
+  );
 }
 
 export default async function EditAppPage({ params }: { params: Promise<{ slug: string }> }) {

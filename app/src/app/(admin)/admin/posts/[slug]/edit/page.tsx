@@ -3,21 +3,19 @@ import type { Metadata } from 'next';
 import { getEditablePostBySlug } from '@/lib/posts';
 import { PostForm } from '@/app/(admin)/components/post-form';
 import { updatePostAction, deletePostAction } from '../../actions';
-import { runAdminMetadata, runAdminSlugPage } from '@/lib/adminPageHelpers';
+import { runAdminSlugPage, runAdminSlugMetadata } from '@/lib/adminPageHelpers';
 
 type Params = { slug: string };
 
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
-  return runAdminMetadata(async () => {
-    const { slug } = await params;
-    const post = await getEditablePostBySlug(slug);
-    if (!post) {
-      return { title: 'Post not found • Admin' };
-    }
-    return { title: `Edit ${post.title} • Admin` };
-  });
+  return runAdminSlugMetadata(
+    params,
+    getEditablePostBySlug,
+    (post) => ({ title: `Edit ${post.title} • Admin` }),
+    () => ({ title: 'Post not found • Admin' }),
+  );
 }
 
 export default async function EditPostPage({ params }: { params: Promise<Params> }) {
