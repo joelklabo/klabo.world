@@ -7,7 +7,6 @@ import {
   createDashboard,
   deleteDashboard,
   updateDashboard,
-  type DashboardInput,
 } from '@/lib/dashboardPersistence';
 import { requireAdminSession } from '@/lib/adminSession';
 import { revalidateDashboardCache } from '@/lib/adminRevalidation';
