@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import {
   DEFAULT_BITCOIN_ONCHAIN_ADDRESS,
+  DEFAULT_GITHUB_OWNER,
+  DEFAULT_GITHUB_REPO,
   DEFAULT_LIGHTNING_NODE_ALIAS,
   DEFAULT_LIGHTNING_NODE_HOST,
   DEFAULT_LIGHTNING_NODE_PUBKEY,
@@ -81,8 +83,8 @@ const schema = z.object({
   NEXTAUTH_SECRET: z.string().default('dev-secret'),
   APPLICATIONINSIGHTS_CONNECTION_STRING: z.string().optional(),
   GITHUB_TOKEN: z.string().optional(),
-  GITHUB_OWNER: z.string().default('joelklabo'),
-  GITHUB_REPO: z.string().default('KlaboWorld'),
+  GITHUB_OWNER: z.string().default(DEFAULT_GITHUB_OWNER),
+  GITHUB_REPO: z.string().default(DEFAULT_GITHUB_REPO),
   SITE_URL: z.string().url().default(SITE_CANONICAL_URL),
   NEXTAUTH_URL: z.string().url().default(SITE_CANONICAL_URL),
   LOG_ANALYTICS_WORKSPACE_ID: z.string().optional(),

@@ -1,5 +1,5 @@
 import { createRequire } from 'node:module';
-import { SITE_CANONICAL_URL } from '@/lib/site-config';
+import { DEFAULT_GITHUB_OWNER, SITE_CANONICAL_URL } from '@/lib/site-config';
 
 const require = createRequire(import.meta.url);
 const shouldEnforceServerOnly = process.env.NODE_ENV !== 'test' && process.env.VITEST !== 'true';
@@ -8,7 +8,6 @@ if (shouldEnforceServerOnly) {
 }
 
 const FALLBACK_SITE_URL = SITE_CANONICAL_URL;
-const FALLBACK_GITHUB_OWNER = 'joelklabo';
 
 function normalizeUrl(value: string): string {
   const trimmed = value.trim();
@@ -44,8 +43,8 @@ export function withPublicSiteUrl(path: string): string {
 }
 
 export function getPublicGitHubOwner(): string {
-  const raw = process.env.GITHUB_OWNER ?? process.env.NEXT_PUBLIC_GITHUB_OWNER ?? FALLBACK_GITHUB_OWNER;
-  return normalizeString(raw, FALLBACK_GITHUB_OWNER);
+  const raw = process.env.GITHUB_OWNER ?? process.env.NEXT_PUBLIC_GITHUB_OWNER ?? DEFAULT_GITHUB_OWNER;
+  return normalizeString(raw, DEFAULT_GITHUB_OWNER);
 }
 
 export function getPublicGitHubToken(): string | undefined {

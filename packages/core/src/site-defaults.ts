@@ -13,3 +13,5 @@ export const LIGHTNING_NAMESPACE_PREFIX = `${SITE_NAME}:`;
 export const PRIMARY_HOST = SITE_NAME;
 export const LEGACY_HOSTS = ['klabo.blog', 'www.klabo.blog'] as const;
 export const PAYMENT_HOSTS = [DEFAULT_PAYMENT_HOST] as const;
+export const DEFAULT_GITHUB_OWNER = 'joelklabo';
+export const DEFAULT_GITHUB_REPO = 'KlaboWorld';
