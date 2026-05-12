@@ -1,12 +1,11 @@
 'use client';
 
 import { useActionState } from 'react';
-import { useFormStatus } from 'react-dom';
 import { MarkdownField } from './markdown-field';
+import { FormErrorMessage, SubmitButton } from './admin-form-controls';
 import { MarkdownUploadHelper } from './upload-helper';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { type Dashboard } from '@/lib/dashboards';
 import { type ActionState } from '../admin/dashboards/actions';
@@ -22,25 +21,12 @@ type DashboardFormProps = {
   includeSlugField?: boolean;
 };
 
-function SubmitButton({ label }: { label: string }) {
-  const { pending } = useFormStatus();
-  return (
-    <Button type="submit" disabled={pending} data-testid="dashboard-submit">
-      {pending ? 'Saving...' : label}
-    </Button>
-  );
-}
-
 export function DashboardForm({ action, submitLabel, dashboard, includeSlugField = false }: DashboardFormProps) {
   const [state, formAction] = useActionState(action, { message: '', success: false });
 
   return (
     <form action={formAction} className="space-y-6">
-      {state.message && !state.success && (
-        <div className="rounded-md bg-destructive/15 p-3 text-sm text-destructive" role="alert" aria-live="assertive">
-          {state.message}
-        </div>
-      )}
+      <FormErrorMessage state={state} />
       {includeSlugField && dashboard && <input type="hidden" name="slug" value={dashboard.slug} />}
       <div className="space-y-2">
         <Label htmlFor="title">Title</Label>
@@ -189,7 +175,7 @@ export function DashboardForm({ action, submitLabel, dashboard, includeSlugField
       </div>
 
       <div>
-        <SubmitButton label={submitLabel} />
+        <SubmitButton label={submitLabel} data-testid="dashboard-submit" />
       </div>
     </form>
   );

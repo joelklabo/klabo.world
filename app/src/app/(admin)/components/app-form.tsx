@@ -1,10 +1,9 @@
 'use client';
 
 import { useActionState } from 'react';
-import { useFormStatus } from 'react-dom';
 import { ImageUploadField } from './image-upload-field';
+import { DeleteButton, FormErrorMessage, SubmitButton } from './admin-form-controls';
 import { ImageListUploadField } from './image-list-upload-field';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -18,36 +17,6 @@ type AppFormProps = {
   mode: 'create' | 'edit';
 };
 
-type SubmitButtonProps = {
-  label: string;
-  testId?: string;
-};
-
-function SubmitButton({ label, testId }: SubmitButtonProps) {
-  const { pending } = useFormStatus();
-  return (
-    <Button type="submit" size="lg" disabled={pending} data-testid={testId}>
-      {pending ? 'Saving...' : label}
-    </Button>
-  );
-}
-
-function DeleteButton({ action }: { action: (payload: FormData) => void }) {
-  const { pending } = useFormStatus();
-  return (
-    <Button
-      type="submit"
-      formAction={action}
-      variant="destructive-outline"
-      size="lg"
-      disabled={pending}
-      data-testid="apps-edit-delete"
-    >
-      {pending ? 'Deleting...' : 'Delete app'}
-    </Button>
-  );
-}
-
 export function AppForm({ upsertAction, deleteAction, initialData, mode }: AppFormProps) {
   const [state, formAction] = useActionState(upsertAction, { message: '', success: false });
   // We need a separate state for delete if we want to track its error independently,
@@ -60,16 +29,8 @@ export function AppForm({ upsertAction, deleteAction, initialData, mode }: AppFo
 
   return (
     <form action={formAction} className="space-y-6" data-testid="apps-edit-form">
-      {state.message && !state.success && (
-        <div className="rounded-md bg-destructive/15 p-3 text-sm text-destructive" role="alert" aria-live="assertive">
-          {state.message}
-        </div>
-      )}
-      {deleteState.message && !deleteState.success && (
-        <div className="rounded-md bg-destructive/15 p-3 text-sm text-destructive" role="alert" aria-live="assertive">
-          {deleteState.message}
-        </div>
-      )}
+      <FormErrorMessage state={state} />
+      <FormErrorMessage state={deleteState} />
 
       <div className="space-y-2">
         <Label htmlFor="slug">Slug (optional)</Label>
@@ -189,9 +150,9 @@ export function AppForm({ upsertAction, deleteAction, initialData, mode }: AppFo
       </div>
       <div className="flex justify-between gap-3">
         {mode === 'edit' && deleteAction && (
-          <DeleteButton action={deleteFormAction} />
+          <DeleteButton action={deleteFormAction} size="lg" data-testid="apps-edit-delete" label="Delete app" />
         )}
-        <SubmitButton label="Save changes" testId={`${testIdPrefix}-submit`} />
+        <SubmitButton label="Save changes" size="lg" data-testid={`${testIdPrefix}-submit`} />
       </div>
     </form>
   );

@@ -1,27 +1,26 @@
 import { revalidatePath } from 'next/cache';
 
-export function revalidatePostCache(slug?: string, includeAdmin = false) {
-  revalidatePath('/');
-  revalidatePath('/posts');
-  if (slug) {
-    revalidatePath(`/posts/${slug}`);
+function revalidateCollection(basePath: string, slug?: string, includeRoot = false) {
+  if (includeRoot) {
+    revalidatePath('/');
   }
+  revalidatePath(basePath);
+  if (slug) {
+    revalidatePath(`${basePath}/${slug}`);
+  }
+}
+
+export function revalidatePostCache(slug?: string, includeAdmin = false) {
+  revalidateCollection('/posts', slug, true);
   if (includeAdmin) {
     revalidatePath('/admin');
   }
 }
 
 export function revalidateAppCache(slug?: string) {
-  revalidatePath('/');
-  revalidatePath('/apps');
-  if (slug) {
-    revalidatePath(`/apps/${slug}`);
-  }
+  revalidateCollection('/apps', slug, true);
 }
 
 export function revalidateDashboardCache(slug?: string) {
-  revalidatePath('/admin/dashboards');
-  if (slug) {
-    revalidatePath(`/admin/dashboards/${slug}`);
-  }
+  revalidateCollection('/admin/dashboards', slug);
 }

@@ -1,10 +1,9 @@
 'use client';
 
 import { useActionState, useState, useTransition } from 'react';
-import { useFormStatus } from 'react-dom';
 import { ImageUploadField } from './image-upload-field';
+import { DeleteButton, FormErrorMessage, SubmitButton } from './admin-form-controls';
 import { MarkdownField } from './markdown-field';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -17,30 +16,6 @@ type PostFormProps = {
   initialData?: Partial<EditablePost> & { xPostId?: string | null };
   mode: 'create' | 'edit';
 };
-
-function SubmitButton({ label }: { label: string }) {
-  const { pending } = useFormStatus();
-  return (
-    <Button type="submit" size="lg" disabled={pending}>
-      {pending ? 'Saving...' : label}
-    </Button>
-  );
-}
-
-function DeleteButton({ action }: { action: (payload: FormData) => void }) {
-  const { pending } = useFormStatus();
-  return (
-    <Button
-      type="submit"
-      formAction={action}
-      variant="destructive-outline"
-      size="lg"
-      disabled={pending}
-    >
-      {pending ? 'Deleting...' : 'Delete'}
-    </Button>
-  );
-}
 
 function ShareToXButton({ slug, xPostId }: { slug: string; xPostId?: string | null }) {
   const [isPending, startTransition] = useTransition();
@@ -94,16 +69,8 @@ export function PostForm({ upsertAction, deleteAction, initialData, mode }: Post
 
   return (
     <form action={formAction} className="space-y-6">
-      {state.message && !state.success && (
-        <div className="rounded-md bg-destructive/15 p-3 text-sm text-destructive" role="alert" aria-live="assertive">
-          {state.message}
-        </div>
-      )}
-      {deleteState.message && !deleteState.success && (
-        <div className="rounded-md bg-destructive/15 p-3 text-sm text-destructive" role="alert" aria-live="assertive">
-          {deleteState.message}
-        </div>
-      )}
+      <FormErrorMessage state={state} />
+      <FormErrorMessage state={deleteState} />
       {mode === 'edit' && initialData?.slug && (
         <input type="hidden" name="slug" defaultValue={initialData.slug} />
       )}
@@ -215,14 +182,14 @@ export function PostForm({ upsertAction, deleteAction, initialData, mode }: Post
       <div className="flex items-start justify-between gap-4">
         <div className="flex gap-2">
           {mode === 'edit' && deleteAction && (
-            <DeleteButton action={deleteFormAction} />
+            <DeleteButton action={deleteFormAction} size="lg" />
           )}
         </div>
         <div className="flex items-center gap-3">
           {mode === 'edit' && initialData?.slug && (
             <ShareToXButton slug={initialData.slug} xPostId={initialData.xPostId} />
           )}
-          <SubmitButton label={mode === 'edit' ? 'Save changes' : 'Publish post'} />
+          <SubmitButton label={mode === 'edit' ? 'Save changes' : 'Publish post'} size="lg" />
         </div>
       </div>
     </form>
