@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getPublicGitHubOwner } from "@/lib/public-env";
+import { SITE_NAME } from '@/lib/site-config';
 import {
   getPinnedGitHubProjects,
   getRecentGitHubProjects,
@@ -12,7 +13,7 @@ import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
   title: "Projects",
-  description: "Recent GitHub projects and experiments by klabo.world.",
+  description: `Recent GitHub projects and experiments by ${SITE_NAME}.`,
 };
 
 export const revalidate = 3600;

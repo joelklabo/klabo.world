@@ -1,6 +1,7 @@
 import { ImageResponse } from 'next/og';
 import { createElement } from 'react';
 import { getPublicSiteOriginUrl } from '@/lib/public-env';
+import { SITE_NAME } from '@/lib/site-config';
 
 export const runtime = 'nodejs';
 export const revalidate = 86_400;
@@ -88,7 +89,7 @@ export async function GET() {
                 justifyContent: 'center',
                 boxShadow: '0 22px 60px rgba(0,0,0,0.45)',
               },
-              'aria-label': 'klabo.world',
+              'aria-label': SITE_NAME,
             },
             logoMark,
           ),
@@ -103,7 +104,7 @@ export async function GET() {
                 opacity: 0.92,
               },
             },
-            'klabo.world',
+            SITE_NAME,
           ),
         ),
         createElement(

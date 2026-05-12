@@ -2,15 +2,15 @@ import { cn } from '@/lib/utils';
 import { BitcoinOnchainCard } from './onchain-card';
 import { LightningNodeCard } from './node-card';
 import { LightningTipWidget } from './tip-widget';
-
-const NODE_PUBKEY = '0276dc1ed542d0d777b518f1bd05f042847f19f312718cf1303288119a0a789a68';
-const NODE_ALIAS = 'klabo.world';
-const NODE_HOST = 'lnbits.klabo.world';
-const NODE_PORT = 9735;
-const NODE_COLOR = '#f7931a';
-const LIGHTNING_ADDRESS = 'joel@klabo.world';
-
-export const DEFAULT_BITCOIN_ONCHAIN_ADDRESS = 'bc1qzafw20xpesnvwup6gmtx38e5j6ddjjdpc0zh78';
+import {
+  DEFAULT_BITCOIN_ONCHAIN_ADDRESS,
+  DEFAULT_LIGHTNING_ADDRESS,
+  DEFAULT_LIGHTNING_NODE_ALIAS,
+  DEFAULT_LIGHTNING_NODE_COLOR,
+  DEFAULT_LIGHTNING_NODE_HOST,
+  DEFAULT_LIGHTNING_NODE_PORT,
+  DEFAULT_LIGHTNING_NODE_PUBKEY,
+} from '@/lib/site-config';
 
 type LightningNodeDetails = {
   alias?: string;
@@ -47,15 +47,15 @@ export function BitcoinPaymentsGrid({
       )}
     >
       <LightningNodeCard
-        alias={node?.alias ?? NODE_ALIAS}
-        pubkey={node?.pubkey ?? NODE_PUBKEY}
-        color={node?.color ?? NODE_COLOR}
-        host={node?.host ?? NODE_HOST}
-        port={node?.port ?? NODE_PORT}
+        alias={node?.alias ?? DEFAULT_LIGHTNING_NODE_ALIAS}
+        pubkey={node?.pubkey ?? DEFAULT_LIGHTNING_NODE_PUBKEY}
+        color={node?.color ?? DEFAULT_LIGHTNING_NODE_COLOR}
+        host={node?.host ?? DEFAULT_LIGHTNING_NODE_HOST}
+        port={node?.port ?? DEFAULT_LIGHTNING_NODE_PORT}
         className={cn('h-full', isTerminal && 'order-3 lg:order-1')}
       />
       <LightningTipWidget
-        lightningAddress={LIGHTNING_ADDRESS}
+        lightningAddress={DEFAULT_LIGHTNING_ADDRESS}
         namespace={namespace}
         className={cn('h-full', isTerminal && 'order-1 lg:order-2')}
       />
@@ -66,3 +66,5 @@ export function BitcoinPaymentsGrid({
     </div>
   );
 }
+
+export { DEFAULT_BITCOIN_ONCHAIN_ADDRESS };

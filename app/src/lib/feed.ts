@@ -1,8 +1,6 @@
 import { withPublicSiteUrl } from './public-env';
 import { getPosts, getPostPublishDate } from './posts';
-
-const SITE_NAME = 'klabo.world';
-const SITE_DESCRIPTION = 'Bitcoin, Lightning, Nostr & Agentic Engineering insights from klabo.world.';
+import { SITE_FEED_DESCRIPTION, SITE_NAME } from '@/lib/site-config';
 
 function getFeedItems(limit = 20) {
   return getPosts().slice(0, limit).map((post) => ({
@@ -36,7 +34,7 @@ export function buildRssFeed(limit = 20): string {
   <channel>
     <title><![CDATA[${SITE_NAME}]]></title>
     <link>${withPublicSiteUrl('/')}</link>
-    <description><![CDATA[${SITE_DESCRIPTION}]]></description>
+    <description><![CDATA[${SITE_FEED_DESCRIPTION}]]></description>
     <language>en</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
     <ttl>60</ttl>
@@ -53,7 +51,7 @@ export function buildJsonFeed(limit = 20) {
     title: SITE_NAME,
     home_page_url: withPublicSiteUrl('/'),
     feed_url: withPublicSiteUrl('/feed.json'),
-    description: SITE_DESCRIPTION,
+    description: SITE_FEED_DESCRIPTION,
     items: items.map((item) => ({
       id: item.id,
       url: item.url,

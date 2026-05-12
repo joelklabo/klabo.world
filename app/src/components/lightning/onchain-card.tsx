@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Bitcoin, Check, Copy, ExternalLink, QrCode } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import { cn } from '@/lib/utils';
+import { DEFAULT_BITCOIN_ONCHAIN_ADDRESS } from '@/lib/site-config';
 
 type OnchainAddressInfo = {
   address: string;
@@ -18,8 +19,6 @@ type BitcoinOnchainCardProps = {
   address?: string;
   className?: string;
 };
-
-const DEFAULT_BITCOIN_ONCHAIN_ADDRESS = 'bc1qzafw20xpesnvwup6gmtx38e5j6ddjjdpc0zh78';
 
 function truncateAddress(address: string): string {
   if (address.length <= 22) {

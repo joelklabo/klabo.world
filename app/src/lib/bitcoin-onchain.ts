@@ -1,6 +1,6 @@
 import { env } from './env';
+import { DEFAULT_BITCOIN_ONCHAIN_ADDRESS } from './site-config';
 
-const FALLBACK_ADDRESS = 'bc1qzafw20xpesnvwup6gmtx38e5j6ddjjdpc0zh78';
 const MAINNET_ADDRESS_PATTERN = /^(bc1[a-z0-9]{11,87}|[13][a-km-zA-HJ-NP-Z1-9]{25,34})$/;
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
@@ -50,7 +50,7 @@ function getUtcDayIndex(now: Date): number {
 }
 
 export function getBitcoinOnchainAddress(now = new Date()): BitcoinOnchainAddressInfo {
-  const defaultAddress = normalizeAddress(env.BITCOIN_ONCHAIN_ADDRESS) ?? FALLBACK_ADDRESS;
+  const defaultAddress = normalizeAddress(env.BITCOIN_ONCHAIN_ADDRESS) ?? DEFAULT_BITCOIN_ONCHAIN_ADDRESS;
   const pool = parsePool(env.BITCOIN_ONCHAIN_ADDRESS_POOL);
 
   if (pool.length > 0) {

@@ -1,8 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
+import { LEGACY_HOSTS, PAYMENT_HOSTS, PRIMARY_HOST } from '@/lib/site-config';
 
-const LEGACY_HOSTS = new Set(['klabo.blog', 'www.klabo.blog']);
-const PAYMENT_HOSTS = new Set(['pay.klabo.world']);
-const PRIMARY_HOST = 'klabo.world';
+const LEGACY_HOST_SET = new Set(LEGACY_HOSTS);
+const PAYMENT_HOST_SET = new Set(PAYMENT_HOSTS);
 
 function withSecurityHeaders(response: NextResponse) {
   response.headers.set('X-Frame-Options', 'DENY');
@@ -15,14 +15,14 @@ function withSecurityHeaders(response: NextResponse) {
 export function proxy(req: NextRequest) {
   const rawHost = req.headers.get('host')?.toLowerCase() ?? '';
   const host = rawHost.split(':')[0];
-  if (LEGACY_HOSTS.has(host)) {
+  if (LEGACY_HOST_SET.has(host)) {
     const url = req.nextUrl.clone();
     url.protocol = 'https:';
     url.hostname = PRIMARY_HOST;
     return withSecurityHeaders(NextResponse.redirect(url, 308));
   }
 
-  if (PAYMENT_HOSTS.has(host) && req.nextUrl.pathname === '/') {
+  if (PAYMENT_HOST_SET.has(host) && req.nextUrl.pathname === '/') {
     const url = req.nextUrl.clone();
     url.pathname = '/pay';
     return withSecurityHeaders(NextResponse.rewrite(url));
