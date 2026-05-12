@@ -1,5 +1,6 @@
 import 'server-only';
 import { connect as netConnect } from 'node:net';
+import { buildLightningNodeUri } from './lightning-node-uri';
 import { env } from './env';
 
 export type LightningNodePublicStatus = {
@@ -59,7 +60,7 @@ export async function getLightningNodeStatus(): Promise<LightningNodePublicStatu
     pubkey,
     host,
     port,
-    uri: `${pubkey}@${host}:${port}`,
+    uri: buildLightningNodeUri({ pubkey, host, port }),
     checkedAt,
     source: 'tcp-connect' as const,
   };

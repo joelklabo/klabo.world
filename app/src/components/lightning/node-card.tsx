@@ -4,6 +4,7 @@ import { useCallback, useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { buildLightningNodeUri } from '@/lib/lightning-node-uri';
 import {
   DEFAULT_LIGHTNING_NODE_ALIAS,
   DEFAULT_LIGHTNING_NODE_COLOR,
@@ -76,7 +77,11 @@ export function LightningNodeCard(props: NodeCardProps) {
   const [copiedField, setCopiedField] = useState<'pubkey' | 'uri' | null>(null);
   const [showQR, setShowQR] = useState(false);
 
-  const nodeUri = host ? `${pubkey}@${host}:${port ?? DEFAULT_LIGHTNING_NODE_PORT}` : pubkey;
+  const nodeUri = buildLightningNodeUri({
+    pubkey,
+    host,
+    port,
+  });
 
   const handleCopy = useCallback(async (field: 'pubkey' | 'uri') => {
     const text = field === 'pubkey' ? pubkey : nodeUri;

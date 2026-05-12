@@ -8,10 +8,15 @@ import {
   DEFAULT_LIGHTNING_NODE_PUBKEY,
   SITE_NAME,
 } from '@/lib/site-config';
+import { buildLightningNodeUri } from '@/lib/lightning-node-uri';
 
 const routes = ['/', '/posts', '/projects', '/apps', '/pay'];
 const BTC_ADDRESS = DEFAULT_BITCOIN_ONCHAIN_ADDRESS;
-const NODE_URI = `${DEFAULT_LIGHTNING_NODE_PUBKEY}@${DEFAULT_LIGHTNING_NODE_HOST}:${DEFAULT_LIGHTNING_NODE_PORT}`;
+const NODE_URI = buildLightningNodeUri({
+  pubkey: DEFAULT_LIGHTNING_NODE_PUBKEY,
+  host: DEFAULT_LIGHTNING_NODE_HOST,
+  port: DEFAULT_LIGHTNING_NODE_PORT,
+});
 const NODE_URI_REGEX = new RegExp(`^lightning:${NODE_URI.replace(/\./g, '\\.')}$`);
 const chainTipPayload = {
   network: 'mainnet',

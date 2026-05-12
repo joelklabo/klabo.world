@@ -5,6 +5,7 @@ import {
   DEFAULT_LIGHTNING_NODE_PORT,
   DEFAULT_LIGHTNING_NODE_PUBKEY,
 } from '@/lib/site-config';
+import { buildLightningNodeUri } from '@/lib/lightning-node-uri';
 
 const getLightningNodeStatusMock = vi.fn();
 
@@ -19,7 +20,11 @@ describe('lightning node status API', () => {
       pubkey: DEFAULT_LIGHTNING_NODE_PUBKEY,
       host: DEFAULT_LIGHTNING_NODE_HOST,
       port: DEFAULT_LIGHTNING_NODE_PORT,
-      uri: `${DEFAULT_LIGHTNING_NODE_PUBKEY}@${DEFAULT_LIGHTNING_NODE_HOST}:${DEFAULT_LIGHTNING_NODE_PORT}`,
+      uri: buildLightningNodeUri({
+        pubkey: DEFAULT_LIGHTNING_NODE_PUBKEY,
+        host: DEFAULT_LIGHTNING_NODE_HOST,
+        port: DEFAULT_LIGHTNING_NODE_PORT,
+      }),
       reachable: true,
       latencyMs: 42,
       checkedAt: '2026-05-03T18:00:00.000Z',

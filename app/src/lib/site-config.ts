@@ -17,16 +17,19 @@ import {
 
 export const SITE_NAME = CORE_SITE_NAME;
 export const SITE_CANONICAL_URL = CORE_SITE_CANONICAL_URL;
+const SITE_COPY_THEME =
+  'Bitcoin, Lightning, and agentic engineering with tutorials, project updates, and AI context libraries';
+const SITE_DESCRIPTION_PREFIX = `${SITE_NAME} covers`;
 export const SITE_TITLE = `${SITE_NAME} • Bitcoin, Lightning & Agentic Engineering`;
-export const SITE_DESCRIPTION = 'Bitcoin, Lightning, and agentic engineering with tutorials, project updates, and AI context libraries.';
-export const SITE_DESCRIPTION_WITHOUT_PERIOD = `${SITE_NAME} covers Bitcoin, Lightning, and agentic engineering with tutorials, project updates, and AI context libraries.`;
-export const SITE_FEED_DESCRIPTION = 'Bitcoin, Lightning, Nostr & Agentic Engineering insights from klabo.world.';
-export const SITE_TAGLINE = 'Bitcoin, Lightning & agentic engineering. Tutorials, project updates, and AI context libraries.';
+export const SITE_DESCRIPTION = `${SITE_DESCRIPTION_PREFIX} ${SITE_COPY_THEME}.`;
+export const SITE_DESCRIPTION_WITHOUT_PERIOD = `${SITE_DESCRIPTION_PREFIX} ${SITE_COPY_THEME}`;
+export const SITE_FEED_DESCRIPTION = `Bitcoin, Lightning, Nostr & Agentic Engineering insights from ${SITE_NAME}.`;
+export const SITE_TAGLINE = `${SITE_NAME}: Bitcoin, Lightning & agentic engineering. Tutorials, project updates, and AI context libraries.`;
 export { DEFAULT_PAYMENT_HOST, DEFAULT_PAYMENT_URL };
 export const DEFAULT_PAYMENT_TITLE = `Pay ${SITE_NAME}`;
-export const DEFAULT_PAYMENT_DESCRIPTION = 'Lightning and on-chain Bitcoin payment options for klabo.world.';
+export const DEFAULT_PAYMENT_DESCRIPTION = `Lightning and on-chain Bitcoin payment options for ${SITE_NAME}.`;
 
-export const DEFAULT_POST_OG_SUMMARY = 'Read the latest writing on klabo.world.';
+export const DEFAULT_POST_OG_SUMMARY = `Read the latest writing on ${SITE_NAME}.`;
 export const DEFAULT_POST_LIGHTNING_ADDRESS = CORE_DEFAULT_POST_LIGHTNING_ADDRESS;
 export const DEFAULT_LIGHTNING_ADDRESS = DEFAULT_POST_LIGHTNING_ADDRESS;
 export const DEFAULT_LIGHTNING_NODE_ALIAS = CORE_DEFAULT_LIGHTNING_NODE_ALIAS;
