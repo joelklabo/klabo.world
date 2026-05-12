@@ -1,7 +1,7 @@
 import { GitHubProject } from "@/lib/github-projects";
-import { formatProjectDate } from "@/lib/github-projects-display";
 import { cn } from "@/lib/utils";
 import { Surface } from "@/components/ui/surface";
+import { GitHubProjectUpdatedDate } from "@/components/github-project-updated";
 
 const starFormatter = new Intl.NumberFormat("en-US");
 
@@ -20,13 +20,11 @@ export function GitHubProjectCard({
   className,
   testId,
 }: GitHubProjectCardProps) {
-  const updatedLabel = project.updatedAt
-    ? formatProjectDate(project.updatedAt, { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
-    : null;
   const topics = showTopics ? project.topics.slice(0, topicLimit) : [];
   const description = project.description?.trim() || null;
   const hasStars = project.stargazerCount > 0;
   const starsLabel = hasStars ? starFormatter.format(project.stargazerCount) : null;
+  const updatedAt = project.updatedAt ?? null;
 
   return (
     <Surface
@@ -77,7 +75,10 @@ export function GitHubProjectCard({
             </span>
           ) : null}
           {starsLabel ? <span className="font-medium tabular-nums" aria-label={`${starsLabel} GitHub stars`}>★ {starsLabel}</span> : null}
-          {updatedLabel && project.updatedAt ? <time dateTime={project.updatedAt}>Updated {updatedLabel}</time> : null}
+          <GitHubProjectUpdatedDate
+            value={updatedAt}
+            options={{ month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }}
+          />
         </div>
 
         {topics.length > 0 ? (

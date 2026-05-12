@@ -2,9 +2,9 @@ import { notFound, permanentRedirect } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Metadata } from 'next';
-import { formatPostDate, getPostBySlug, getPosts, normalizePostSlug } from '@/lib/posts';
-import { getDateTimeAttr } from '@/lib/dateDisplay';
+import { getPostBySlug, getPosts, normalizePostSlug } from '@/lib/posts';
 import { MDXContent } from '@/components/mdx-content';
+import { ContentDate } from '@/components/content-date';
 import { getPublicSiteUrl } from '@/lib/public-env';
 import { LightningTipWidget } from '@/components/lightning';
 
@@ -138,13 +138,14 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
               ← Back to posts
             </Link>
             <div className="flex flex-wrap items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.3em] text-white/75">
-              <time dateTime={getDateTimeAttr(publishedDate)}>
-                {formatPostDate(publishedDate, {
+              <ContentDate
+                value={publishedDate}
+                options={{
                   month: 'long',
                   day: 'numeric',
                   year: 'numeric',
-                })}
-              </time>
+                }}
+              />
               <span>{readingTime} min read</span>
               <span>{previous ? 'Chronological' : 'Latest'} · {posts.length} post{posts.length === 1 ? '' : 's'}</span>
             </div>
@@ -211,7 +212,7 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
                 <dl className="space-y-3 text-xs uppercase tracking-[0.35em] text-muted-foreground">
                   <div>
                     <dt className="text-[10px] text-muted-foreground/70">Published</dt>
-                    <dd className="text-sm text-foreground">{formatPostDate(post.date)}</dd>
+                    <dd className="text-sm text-foreground"><ContentDate value={post.date} /></dd>
                   </div>
                   <div>
                     <dt className="text-[10px] text-muted-foreground/70">Reading time</dt>

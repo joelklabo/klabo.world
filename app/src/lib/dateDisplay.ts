@@ -22,12 +22,13 @@ export function formatDisplayDate(
   value: DateInput,
   fallback: DateInput = null,
   options?: Intl.DateTimeFormatOptions,
+  locale?: Intl.LocalesArgument,
 ): string {
   const resolved = resolveDisplayDate(value, fallback);
   const parsed = parseDateInput(resolved);
   if (!parsed) return resolved;
   try {
-    return parsed.toLocaleDateString(undefined, options);
+    return parsed.toLocaleDateString(locale, options);
   } catch {
     return parsed.toISOString().slice(0, 10);
   }
@@ -37,12 +38,13 @@ export function formatDisplayDateTime(
   value: DateInput,
   fallback: DateInput = null,
   options?: Intl.DateTimeFormatOptions,
+  locale?: Intl.LocalesArgument,
 ): string {
   const resolved = resolveDisplayDate(value, fallback);
   const parsed = parseDateInput(resolved);
   if (!parsed) return resolved;
   try {
-    return parsed.toLocaleString(undefined, options);
+    return parsed.toLocaleString(locale, options);
   } catch {
     return parsed.toString();
   }

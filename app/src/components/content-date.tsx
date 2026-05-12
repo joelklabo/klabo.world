@@ -5,6 +5,7 @@ type ContentDateProps = Omit<ComponentPropsWithoutRef<'time'>, 'dateTime' | 'chi
   value: DateInput;
   fallback?: DateInput;
   options?: Intl.DateTimeFormatOptions;
+  locale?: Intl.LocalesArgument;
   children?: ReactNode;
 };
 
@@ -12,12 +13,13 @@ export function ContentDate({
   value,
   fallback = null,
   options,
+  locale,
   children,
   ...props
 }: ContentDateProps) {
   return (
     <time dateTime={getDateTimeAttr(value, fallback)} {...props}>
-      {children ?? formatDisplayDate(value, fallback, options)}
+      {children ?? formatDisplayDate(value, fallback, options, locale)}
     </time>
   );
 }

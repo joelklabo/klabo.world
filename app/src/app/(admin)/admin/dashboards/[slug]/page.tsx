@@ -7,7 +7,8 @@ import { deleteDashboardAction, updateDashboardAction } from "../actions";
 import { getDashboardBySlug } from "@/lib/dashboards";
 import { loadDashboardChartState } from "@/lib/dashboardCharts";
 import { requireAdminSession } from "@/lib/adminSession";
-import { formatUtcDate, getDateTimeAttr } from "@/lib/dateDisplay";
+import { formatUtcDate } from "@/lib/dateDisplay";
+import { ContentDate } from "@/components/content-date";
 import { Button } from "@/components/ui/button";
 
 export const dynamic = "force-dynamic";
@@ -81,9 +82,7 @@ export default async function DashboardDetailPage({ params }: PageProps) {
               {chartState?.status === "success" && (
                 <p className="text-xs text-muted-foreground">
                   Last refreshed{" "}
-                  <time dateTime={getDateTimeAttr(chartState.refreshedAt)}>
-                    {formatUtcDate(chartState.refreshedAt)}
-                  </time>
+                  <ContentDate value={chartState.refreshedAt}>{formatUtcDate(chartState.refreshedAt)}</ContentDate>
                 </p>
               )}
             </div>

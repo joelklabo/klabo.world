@@ -1,7 +1,7 @@
 import { GitHubProject } from "@/lib/github-projects";
-import { formatProjectDate } from "@/lib/github-projects-display";
 import { cn } from "@/lib/utils";
 import { Surface } from "@/components/ui/surface";
+import { GitHubProjectUpdatedDate } from "@/components/github-project-updated";
 import { ArrowUpRight, GitFork, Star } from "lucide-react";
 
 function normalizeExternalUrl(value: string) {
@@ -36,9 +36,6 @@ export function GitHubProjectsShowcase({
   const rest = projects.slice(1, 4);
 
   const featuredDescription = featured.description?.trim() || null;
-  const featuredUpdatedLabel = featured.updatedAt
-    ? formatProjectDate(featured.updatedAt)
-    : null;
   const featuredHasStars = featured.stargazerCount > 0;
   const featuredHasForks = featured.forkCount > 0;
   const featuredAccent =
@@ -110,12 +107,15 @@ export function GitHubProjectsShowcase({
                 <h3 className="text-xl font-semibold tracking-tight text-foreground text-balance sm:text-2xl">
                   {featured.name}
                 </h3>
-                {featuredUpdatedLabel ? (
+                {featured.updatedAt ? (
                   <div className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.22em] text-muted-foreground lg:text-right">
                     <div>Updated</div>
-                    <div className="mt-1 font-medium normal-case tracking-normal text-muted-foreground">
-                      {featuredUpdatedLabel}
-                    </div>
+                    <GitHubProjectUpdatedDate
+                      value={featured.updatedAt}
+                      label=""
+                      options={{ month: 'short', day: 'numeric', year: 'numeric' }}
+                      className="mt-1 font-medium normal-case tracking-normal text-muted-foreground"
+                    />
                   </div>
                 ) : null}
               </div>
@@ -171,9 +171,6 @@ export function GitHubProjectsShowcase({
             const description = project.description?.trim() || null;
             const hasStars = project.stargazerCount > 0;
             const hasForks = project.forkCount > 0;
-            const updatedLabel = project.updatedAt
-              ? formatProjectDate(project.updatedAt)
-              : null;
             const isLive = Boolean(
               project.homepageUrl &&
                 normalizeExternalUrl(project.homepageUrl) !== null,
@@ -243,11 +240,11 @@ export function GitHubProjectsShowcase({
                           ⑂ {project.forkCount.toLocaleString()}
                         </span>
                       ) : null}
-                      {updatedLabel && project.updatedAt ? (
-                        <time dateTime={project.updatedAt} className="hidden sm:inline">
-                          Updated {updatedLabel}
-                        </time>
-                      ) : null}
+                      <GitHubProjectUpdatedDate
+                        value={project.updatedAt}
+                        className="hidden sm:inline"
+                        options={{ month: 'short', day: 'numeric', year: 'numeric' }}
+                      />
                     </div>
                   </div>
 

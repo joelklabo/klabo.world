@@ -2,8 +2,9 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Metadata } from 'next';
-import { formatPostDate, getPostBySlug } from '@/lib/posts';
+import { getPostBySlug } from '@/lib/posts';
 import { MDXContent } from '@/components/mdx-content';
+import { ContentDate } from '@/components/content-date';
 import { requireAdminSession } from '@/lib/adminSession';
 import { ReadingProgress } from '@/components/reading-progress';
 import { TableOfContents } from '@/components/table-of-contents';
@@ -294,9 +295,11 @@ export default async function DraftPreviewPage({
             <div className="mt-8 flex flex-wrap items-center gap-4 border-t border-border/40 pt-6">
               {Tags}
               <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground">{readingTime} min read</span>
-              <time className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
-                {formatPostDate(post.date, { month: 'short', day: 'numeric', year: 'numeric' })}
-              </time>
+              <ContentDate
+                value={post.date}
+                options={{ month: 'short', day: 'numeric', year: 'numeric' }}
+                className="text-xs uppercase tracking-[0.3em] text-muted-foreground"
+              />
             </div>
           </header>
 

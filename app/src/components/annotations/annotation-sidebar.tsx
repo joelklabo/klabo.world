@@ -3,16 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAnnotationMode } from './annotation-mode-provider';
 import type { Annotation } from './types';
-
-function formatDate(dateString: string) {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-  });
-}
+import { ContentDate } from '@/components/content-date';
 
 function AnnotationCard({
   annotation,
@@ -80,7 +71,16 @@ function AnnotationCard({
               </span>
             )}
             <span className="text-xs text-muted-foreground">
-              {formatDate(annotation.createdAt)}
+              <ContentDate
+                value={annotation.createdAt}
+                locale="en-US"
+                options={{
+                  month: 'short',
+                  day: 'numeric',
+                  hour: 'numeric',
+                  minute: '2-digit',
+                }}
+              />
             </span>
             {isResolved && (
               <span className="rounded bg-green-500/10 px-1.5 py-0.5 text-xs text-green-500">
@@ -100,7 +100,17 @@ function AnnotationCard({
               <div key={reply.id} className="text-sm">
                 <p className="text-muted-foreground">{reply.content}</p>
                 <span className="text-xs text-muted-foreground/60">
-                  {formatDate(reply.createdAt)}
+                  <ContentDate
+                    value={reply.createdAt}
+                    locale="en-US"
+                    options={{
+                      month: 'short',
+                      day: 'numeric',
+                      hour: 'numeric',
+                      minute: '2-digit',
+                    }}
+                    className="text-xs text-muted-foreground/60"
+                  />
                 </span>
               </div>
             ))}
