@@ -9,6 +9,9 @@ export const DEFAULT_LIGHTNING_NODE_PUBKEY =
   '0276dc1ed542d0d777b518f1bd05f042847f19f312718cf1303288119a0a789a68';
 export const DEFAULT_LIGHTNING_NODE_PORT = 9735;
 export const DEFAULT_BITCOIN_ONCHAIN_ADDRESS = 'bc1qzafw20xpesnvwup6gmtx38e5j6ddjjdpc0zh78';
+export const DEFAULT_DATABASE_URL = 'file:../data/app.db';
+export const DEFAULT_UPLOADS_DIR = 'public/uploads';
+export const DEFAULT_NEXTAUTH_SECRET = 'dev-secret';
 export const LIGHTNING_NAMESPACE_PREFIX = `${SITE_NAME}:`;
 export const PRIMARY_HOST = SITE_NAME;
 export const LEGACY_HOSTS = ['klabo.blog', 'www.klabo.blog'] as const;

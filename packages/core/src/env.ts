@@ -1,6 +1,9 @@
 import { z } from 'zod';
 import {
   DEFAULT_BITCOIN_ONCHAIN_ADDRESS,
+  DEFAULT_DATABASE_URL,
+  DEFAULT_NEXTAUTH_SECRET,
+  DEFAULT_UPLOADS_DIR,
   DEFAULT_GITHUB_OWNER,
   DEFAULT_GITHUB_REPO,
   DEFAULT_LIGHTNING_NODE_ALIAS,
@@ -66,12 +69,12 @@ const booleanFlag = (label: string) =>
 const readBooleanEnv = (value: string | undefined) => coerceBooleanFlag(value) ?? false;
 
 const schema = z.object({
-  DATABASE_URL: z.string().default('file:../data/app.db'),
+  DATABASE_URL: z.string().default(DEFAULT_DATABASE_URL),
   REDIS_URL: optionalUrl,
   ADMIN_EMAIL: z.string().email().optional(),
   ADMIN_PASSWORD: z.string().min(8).optional(),
   UPLOADS_CONTAINER_URL: optionalUrl,
-  UPLOADS_DIR: z.string().default('public/uploads'),
+  UPLOADS_DIR: z.string().default(DEFAULT_UPLOADS_DIR),
   UPLOADS_QUARANTINE_DIR: z.string().optional(),
   AZURE_STORAGE_ACCOUNT: z.string().optional(),
   AZURE_STORAGE_KEY: z.string().optional(),
@@ -80,7 +83,7 @@ const schema = z.object({
   ALLOW_SQLITE_IN_PROD: booleanFlag('ALLOW_SQLITE_IN_PROD'),
   UPLOADS_REQUIRE_DURABLE: booleanFlag('UPLOADS_REQUIRE_DURABLE'),
   UPLOADS_SCAN_FAIL_OPEN: booleanFlag('UPLOADS_SCAN_FAIL_OPEN'),
-  NEXTAUTH_SECRET: z.string().default('dev-secret'),
+  NEXTAUTH_SECRET: z.string().default(DEFAULT_NEXTAUTH_SECRET),
   APPLICATIONINSIGHTS_CONNECTION_STRING: z.string().optional(),
   GITHUB_TOKEN: z.string().optional(),
   GITHUB_OWNER: z.string().default(DEFAULT_GITHUB_OWNER),

@@ -1,11 +1,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
-
-const DEFAULT_SQLITE_URL = 'file:../data/app.db';
+import { DEFAULT_DATABASE_URL } from './site-config';
 let warnedDefaultUrl = false;
 
 export function ensureDatabaseDirectory(url?: string) {
-  const databaseUrl = url ?? process.env.DATABASE_URL ?? DEFAULT_SQLITE_URL;
+  const databaseUrl = url ?? process.env.DATABASE_URL ?? DEFAULT_DATABASE_URL;
   if (!process.env.DATABASE_URL) {
     process.env.DATABASE_URL = databaseUrl;
     if (!warnedDefaultUrl) {
