@@ -1,4 +1,5 @@
 import { PostForm } from '@/app/(admin)/components/post-form';
+import { AdminSectionHeader } from '@/app/(admin)/components/admin-section-header';
 import { createPostAction } from '../posts/actions';
 import { runAdminPage } from '@/lib/adminPageHelpers';
 
@@ -7,11 +8,11 @@ export const dynamic = 'force-dynamic';
 export default async function ComposePage() {
   return runAdminPage(async () => (
     <div className="mx-auto max-w-4xl px-6 py-10">
-      <div className="mb-8">
-        <p className="text-sm uppercase tracking-widest text-primary">Posts</p>
-        <h1 className="text-3xl font-bold">Compose New Post</h1>
-        <p className="mt-2 text-sm text-muted-foreground text-pretty">Write Markdown posts with tags, publish dates, and featured images.</p>
-      </div>
+      <AdminSectionHeader
+        label="Posts"
+        title="Compose New Post"
+        description="Write Markdown posts with tags, publish dates, and featured images."
+      />
       <PostForm upsertAction={createPostAction} mode="create" />
     </div>
   ));

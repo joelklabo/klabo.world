@@ -2,6 +2,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { getEditablePostBySlug } from '@/lib/posts';
 import { PostForm } from '@/app/(admin)/components/post-form';
+import { AdminSectionHeader } from '@/app/(admin)/components/admin-section-header';
 import { updatePostAction, deletePostAction } from '../../actions';
 import { runAdminSlugPage, runAdminSlugMetadata } from '@/lib/adminPageHelpers';
 
@@ -21,15 +22,18 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 export default async function EditPostPage({ params }: { params: Promise<Params> }) {
   return runAdminSlugPage(params, getEditablePostBySlug, (post) => (
     <div className="mx-auto max-w-4xl space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">Posts</p>
-          <h1 className="text-3xl font-bold text-foreground">Edit post</h1>
-        </div>
-        <Link href="/admin" className="text-sm font-semibold text-muted-foreground hover:text-foreground rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50">
-          ← Back to dashboard
-        </Link>
-      </div>
+      <AdminSectionHeader
+        label="Posts"
+        title="Edit post"
+        action={
+          <Link
+            href="/admin"
+            className="text-sm font-semibold text-muted-foreground hover:text-foreground rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+          >
+            ← Back to dashboard
+          </Link>
+        }
+      />
       <PostForm
         upsertAction={updatePostAction}
         deleteAction={deletePostAction}
