@@ -11,8 +11,7 @@ export function getFormSlug(formData: FormData, resourceLabel: string): string {
   return slug;
 }
 
-type RedirectDestination<T> =
-  Parameters<typeof redirect>[0] | ((result: T) => Parameters<typeof redirect>[0] | undefined);
+type RedirectDestination<T> = string | ((result: T) => string | undefined);
 
 export async function runAdminActionAndRedirect<T extends ActionState>(
   action: () => Promise<T>,
@@ -24,10 +23,10 @@ export async function runAdminActionAndRedirect<T extends ActionState>(
     success: false,
   } as T));
   if (result.success) {
-    const url = typeof destination === 'function' ? destination(result) : destination;
-    if (url) {
-      redirect(url);
-    }
+  const url = typeof destination === 'function' ? destination(result) : destination;
+  if (url) {
+    redirect(url as Parameters<typeof redirect>[0]);
+  }
   }
 
   return result;
