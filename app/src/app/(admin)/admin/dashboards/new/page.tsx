@@ -1,13 +1,12 @@
 import Link from "next/link";
 import { DashboardForm } from "@/app/(admin)/components/dashboard-form";
 import { createDashboardAction } from "../actions";
-import { requireAdminSession } from "@/lib/adminSession";
+import { runAdminPage } from '@/lib/adminPageHelpers';
 
 export const dynamic = "force-dynamic";
 
 export default async function NewDashboardPage() {
-  await requireAdminSession();
-  return (
+  return runAdminPage(async () => (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -30,5 +29,5 @@ export default async function NewDashboardPage() {
         />
       </div>
     </div>
-  );
+  ));
 }

@@ -1,13 +1,11 @@
-import { requireAdminSession } from '@/lib/adminSession';
 import { PostForm } from '@/app/(admin)/components/post-form';
 import { createPostAction } from '../posts/actions';
+import { runAdminPage } from '@/lib/adminPageHelpers';
 
 export const dynamic = 'force-dynamic';
 
 export default async function ComposePage() {
-  await requireAdminSession();
-
-  return (
+  return runAdminPage(async () => (
     <div className="mx-auto max-w-4xl px-6 py-10">
       <div className="mb-8">
         <p className="text-sm uppercase tracking-widest text-primary">Posts</p>
@@ -16,5 +14,5 @@ export default async function ComposePage() {
       </div>
       <PostForm upsertAction={createPostAction} mode="create" />
     </div>
-  );
+  ));
 }

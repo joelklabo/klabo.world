@@ -25,6 +25,19 @@ export async function runAdminAction(
   action: () => Promise<ActionState>,
   fallbackErrorMessage: string,
 ): Promise<ActionState> {
+  return runAdminOperation<ActionState>(action, fallbackErrorMessage, (message) => ({
+    message,
+    success: false,
+  }));
+}
+
+type ErrorResultFactory<T> = (message: string) => T;
+
+export async function runAdminOperation<T>(
+  action: () => Promise<T>,
+  fallbackErrorMessage: string,
+  toFailureResult: ErrorResultFactory<T>,
+): Promise<T> {
   try {
     await requireAdminSession();
     return await action();
@@ -32,9 +45,8 @@ export async function runAdminAction(
     if (isRedirectError(error)) {
       throw error;
     }
-    return {
-      message: error instanceof Error ? error.message : fallbackErrorMessage,
-      success: false,
-    };
+    return toFailureResult(
+      error instanceof Error ? error.message : fallbackErrorMessage,
+    );
   }
 }

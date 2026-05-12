@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { requireAdminSession } from '@/lib/adminSession';
 import { AppForm } from '@/app/(admin)/components/app-form';
 import { upsertAppAction } from '../[slug]/actions';
+import { runAdminPage } from '@/lib/adminPageHelpers';
 
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
@@ -10,9 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function NewAppPage() {
-  await requireAdminSession();
-
-  return (
+  return runAdminPage(async () => (
     <div className="mx-auto max-w-4xl px-6 py-10">
       <div className="mb-8 flex items-center justify-between">
         <div>
@@ -29,5 +27,5 @@ export default async function NewAppPage() {
         mode="create"
       />
     </div>
-  );
+  ));
 }

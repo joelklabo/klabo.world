@@ -1,10 +1,10 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { requireAdminSession } from '@/lib/adminSession';
 import { getAppsForAdmin } from '@/lib/apps';
 import { ContentDate } from '@/components/content-date';
 import { Button } from '@/components/ui/button';
 import { Surface } from '@/components/ui/surface';
+import { runAdminPage } from '@/lib/adminPageHelpers';
 
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
@@ -12,60 +12,61 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminAppsPage() {
-  await requireAdminSession();
-  const apps = await getAppsForAdmin();
+  return runAdminPage(async () => {
+    const apps = await getAppsForAdmin();
 
-  return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">Apps</p>
-          <h1 className="text-3xl font-bold text-foreground">Manage app listings</h1>
-          <p className="text-sm text-muted-foreground">Keep app metadata and release notes current.</p>
+    return (
+      <div className="space-y-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">Apps</p>
+            <h1 className="text-3xl font-bold text-foreground">Manage app listings</h1>
+            <p className="text-sm text-muted-foreground">Keep app metadata and release notes current.</p>
+          </div>
+          <Button asChild size="lg">
+            <Link href="/admin/apps/new">New app</Link>
+          </Button>
         </div>
-        <Button asChild size="lg">
-          <Link href="/admin/apps/new">New app</Link>
-        </Button>
-      </div>
-      <Surface
-        className="rounded-2xl shadow-[0_20px_45px_rgba(6,10,20,0.35)]"
-        innerClassName="overflow-hidden rounded-2xl border border-border/60 bg-card"
-      >
-        <table className="min-w-full divide-y divide-border/60 text-sm">
-          <caption className="sr-only">Apps list</caption>
-          <thead className="bg-background/80 text-left">
-            <tr>
-              <th scope="col" className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">Name</th>
-              <th scope="col" className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">Version</th>
-              <th scope="col" className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">Published</th>
-              <th scope="col" className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border/60">
-            {apps.map((app) => (
-              <tr key={app.slug} className="hover:bg-background/40">
-                <td className="px-6 py-4 font-medium text-foreground">{app.name}</td>
-                <td className="px-6 py-4 text-muted-foreground">{app.version}</td>
-                <td className="px-6 py-4 text-muted-foreground">
-                  <ContentDate value={app.publishDate} />
-                </td>
-                <td className="px-6 py-4">
-                  <div className="flex gap-3 text-sm">
-                    <Link href={`/apps/${app.slug}`} target="_blank" className="inline-block rounded px-3 py-2 font-semibold text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
-                      View
-                      <span className="sr-only"> (opens in new tab)</span>
-                    </Link>
-                    <Link href={`/admin/apps/${app.slug}/edit`} className="inline-block rounded px-3 py-2 font-semibold text-primary hover:text-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
-                      Edit
-                    </Link>
-                  </div>
-                </td>
+        <Surface
+          className="rounded-2xl shadow-[0_20px_45px_rgba(6,10,20,0.35)]"
+          innerClassName="overflow-hidden rounded-2xl border border-border/60 bg-card"
+        >
+          <table className="min-w-full divide-y divide-border/60 text-sm">
+            <caption className="sr-only">Apps list</caption>
+            <thead className="bg-background/80 text-left">
+              <tr>
+                <th scope="col" className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">Name</th>
+                <th scope="col" className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">Version</th>
+                <th scope="col" className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">Published</th>
+                <th scope="col" className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-        {apps.length === 0 && <p className="px-6 py-10 text-center text-sm text-muted-foreground">No apps published yet.</p>}
-      </Surface>
-    </div>
-  );
+            </thead>
+            <tbody className="divide-y divide-border/60">
+              {apps.map((app) => (
+                <tr key={app.slug} className="hover:bg-background/40">
+                  <td className="px-6 py-4 font-medium text-foreground">{app.name}</td>
+                  <td className="px-6 py-4 text-muted-foreground">{app.version}</td>
+                  <td className="px-6 py-4 text-muted-foreground">
+                    <ContentDate value={app.publishDate} />
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex gap-3 text-sm">
+                      <Link href={`/apps/${app.slug}`} target="_blank" className="inline-block rounded px-3 py-2 font-semibold text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                        View
+                        <span className="sr-only"> (opens in new tab)</span>
+                      </Link>
+                      <Link href={`/admin/apps/${app.slug}/edit`} className="inline-block rounded px-3 py-2 font-semibold text-primary hover:text-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                        Edit
+                      </Link>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {apps.length === 0 && <p className="px-6 py-10 text-center text-sm text-muted-foreground">No apps published yet.</p>}
+        </Surface>
+      </div>
+    );
+  });
 }

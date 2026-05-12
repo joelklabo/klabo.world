@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { requireAdminSession } from '@/lib/adminSession';
+import { runAdminPage } from '@/lib/adminPageHelpers';
 import { Surface } from '@/components/ui/surface';
 import { ImageListUploadField } from '@/app/(admin)/components/image-list-upload-field';
 import { ImageUploadField } from '@/app/(admin)/components/image-upload-field';
@@ -10,9 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminImagesPage() {
-  await requireAdminSession();
-
-  return (
+  return runAdminPage(async () => (
     <div className="space-y-6">
       <div className="flex flex-col gap-2">
         <p className="text-xs font-semibold uppercase tracking-widest text-primary">Media</p>
@@ -64,5 +62,5 @@ export default async function AdminImagesPage() {
         </Surface>
       </div>
     </div>
-  );
+  ));
 }

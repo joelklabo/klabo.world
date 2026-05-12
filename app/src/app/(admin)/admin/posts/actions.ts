@@ -11,8 +11,7 @@ import { isXPublishingEnabled, publishToX } from '@/lib/x-publisher';
 import { env } from '@/lib/env';
 import { requiredTextField, parseListField } from '@/lib/adminFormSchemas';
 import { parseFormValues, type ActionState as SharedActionState } from '@/lib/formActions';
-import { requireAdminSession } from '@/lib/adminSession';
-import { getFormSlug, runAdminAction } from '@/lib/adminActionHelpers';
+import { getFormSlug, runAdminAction, runAdminOperation } from '@/lib/adminActionHelpers';
 
 const postSchema = z.object({
   title: requiredTextField('Title'),
@@ -194,43 +193,41 @@ export type ShareToXResult = {
  * Used for scheduled posts, retries, or posts that weren't auto-posted.
  */
 export async function shareToXAction(slug: string): Promise<ShareToXResult> {
-  try {
-    await requireAdminSession();
-    const post = await getEditablePostBySlug(slug);
-    if (!post) {
-      return { success: false, error: 'Post not found' };
-    }
+  return runAdminOperation(
+    async () => {
+      const post = await getEditablePostBySlug(slug);
+      if (!post) {
+        return { success: false, error: 'Post not found' };
+      }
 
-    // Check if already shared
-    const existingXPostId = (post as { xPostId?: string }).xPostId;
-    if (existingXPostId) {
-      return { success: false, error: 'Post has already been shared to X' };
-    }
+      // Check if already shared
+      const existingXPostId = (post as { xPostId?: string }).xPostId;
+      if (existingXPostId) {
+        return { success: false, error: 'Post has already been shared to X' };
+      }
 
-    if (!isXPublishingEnabled()) {
-      return { success: false, error: 'X publishing is not enabled' };
-    }
+      if (!isXPublishingEnabled()) {
+        return { success: false, error: 'X publishing is not enabled' };
+      }
 
-    const siteUrl = env.SITE_URL;
-    const postUrl = `${siteUrl}/posts/${slug}`;
+      const siteUrl = env.SITE_URL;
+      const postUrl = `${siteUrl}/posts/${slug}`;
 
-    const result = await publishToX({
-      title: post.title,
-      summary: post.summary,
-      url: postUrl,
-    });
+      const result = await publishToX({
+        title: post.title,
+        summary: post.summary,
+        url: postUrl,
+      });
 
-    if (result.success) {
-      await updatePostXPostId(slug, result.postId);
-      revalidatePostCache(slug, true);
-      return { success: true, postId: result.postId };
-    }
+      if (result.success) {
+        await updatePostXPostId(slug, result.postId);
+        revalidatePostCache(slug, true);
+        return { success: true, postId: result.postId };
+      }
 
-    return { success: false, error: result.error };
-  } catch (error) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Failed to share to X',
-    };
-  }
+      return { success: false, error: result.error };
+    },
+    'Failed to share to X',
+    (message) => ({ success: false, error: message }),
+  );
 }
