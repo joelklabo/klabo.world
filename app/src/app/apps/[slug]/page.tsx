@@ -42,8 +42,13 @@ export default async function AppDetailPage({
   return runPublicSlugPage(
     params,
     getAppBySlug,
-    (app) => (
-      <article className="relative min-h-dvh overflow-x-hidden bg-background text-foreground">
+    (app) => {
+      if (!app) {
+        notFound();
+      }
+
+      return (
+        <article className="relative min-h-dvh overflow-x-hidden bg-background text-foreground">
         <div className="pointer-events-none absolute inset-0 opacity-80">
           <div className="absolute -left-20 -top-10 h-64 w-64 rounded-full bg-primary/15 blur-3xl" />
           <div className="absolute right-0 top-10 h-72 w-72 rounded-full bg-secondary/18 blur-3xl" />
@@ -125,8 +130,9 @@ export default async function AppDetailPage({
             ) : null}
           </div>
         </div>
-      </article>
-    ),
+        </article>
+      );
+    },
     () => {
       notFound();
     },
