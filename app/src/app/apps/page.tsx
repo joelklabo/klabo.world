@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { getApps } from "@/lib/apps";
+import { formatDisplayDate, getDateTimeAttr } from '@/lib/dateDisplay';
 
 export const metadata: Metadata = {
   title: "Apps",
@@ -49,8 +50,11 @@ export default function AppsPage() {
                   />
                 )}
                 <div>
-                  <time dateTime={new Date(app.publishDate).toISOString()} className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
-                    {new Date(app.publishDate).toLocaleDateString()}
+                  <time
+                    dateTime={getDateTimeAttr(app.publishDate)}
+                    className="text-xs uppercase tracking-[0.3em] text-muted-foreground"
+                  >
+                    {formatDisplayDate(app.publishDate)}
                   </time>
                   <h2 className="text-2xl font-semibold text-foreground">
                     {app.name}

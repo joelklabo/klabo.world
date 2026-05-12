@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import type { Metadata } from 'next';
 import { formatPostDate, getPostBySlug, getPosts, normalizePostSlug } from '@/lib/posts';
+import { getDateTimeAttr } from '@/lib/dateDisplay';
 import { MDXContent } from '@/components/mdx-content';
 import { getPublicSiteUrl } from '@/lib/public-env';
 import { LightningTipWidget } from '@/components/lightning';
@@ -137,7 +138,7 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
               ← Back to posts
             </Link>
             <div className="flex flex-wrap items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.3em] text-white/75">
-              <time dateTime={new Date(publishedDate).toISOString()}>
+              <time dateTime={getDateTimeAttr(publishedDate)}>
                 {formatPostDate(publishedDate, {
                   month: 'long',
                   day: 'numeric',

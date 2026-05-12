@@ -2,6 +2,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { requireAdminSession } from '@/lib/adminSession';
 import { getAppsForAdmin } from '@/lib/apps';
+import { formatDisplayDate, getDateTimeAttr } from '@/lib/dateDisplay';
 import { Button } from '@/components/ui/button';
 import { Surface } from '@/components/ui/surface';
 
@@ -46,8 +47,8 @@ export default async function AdminAppsPage() {
                 <td className="px-6 py-4 font-medium text-foreground">{app.name}</td>
                 <td className="px-6 py-4 text-muted-foreground">{app.version}</td>
                 <td className="px-6 py-4 text-muted-foreground">
-                  <time dateTime={new Date(app.publishDate).toISOString()}>
-                    {new Date(app.publishDate).toLocaleDateString()}
+                  <time dateTime={getDateTimeAttr(app.publishDate)}>
+                    {formatDisplayDate(app.publishDate)}
                   </time>
                 </td>
                 <td className="px-6 py-4">

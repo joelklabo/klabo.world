@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getPostTagCounts, getPosts } from '@/lib/posts';
+import { formatDisplayDate, getDateTimeAttr } from '@/lib/dateDisplay';
 import { Button } from '@/components/ui/button';
 
 type Params = { tag: string };
@@ -52,8 +53,11 @@ export default async function PostTagPage({ params }: { params: Params | Promise
               key={post._id}
               className="card-hover-lift group h-full rounded-2xl border border-border/60 bg-card/80 p-5 shadow-[0_18px_45px_rgba(6,10,20,0.45)]"
             >
-              <time dateTime={new Date(post.publishDate ?? post.date).toISOString()} className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
-                {new Date(post.publishDate ?? post.date).toLocaleDateString()}
+              <time
+                dateTime={getDateTimeAttr(post.publishDate, post.date)}
+                className="text-xs uppercase tracking-[0.3em] text-muted-foreground"
+              >
+                {formatDisplayDate(post.publishDate, post.date)}
               </time>
               <h2 className="mt-3 text-xl font-semibold leading-snug text-foreground">
                 <Link href={`/posts/${post.slug}`} className="hover:text-primary rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50">

@@ -7,6 +7,7 @@ import { getDashboards } from "@/lib/dashboards";
 import { getFeaturedGitHubProjects } from "@/lib/github-projects";
 import { getPosts, getRecentPosts } from "@/lib/posts";
 import { getPostTagCloud } from "@/lib/tagCloud";
+import { formatDisplayDate, getDateTimeAttr } from "@/lib/dateDisplay";
 import { GitHubProjectsShowcase } from "@/components/github-projects-showcase";
 import { HomeQuickLinks } from "@/components/home-quick-links";
 import { HomeStats } from "@/components/home-stats";
@@ -249,12 +250,12 @@ export default async function Home() {
                         <h3 className="min-w-0 text-base font-semibold leading-snug text-foreground line-clamp-2 motion-safe:transition-colors group-hover:text-primary">
                           {post.title}
                         </h3>
-                        <time dateTime={new Date(post.publishDate ?? post.date).toISOString()} className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
-                          {new Date(post.publishDate ?? post.date).toLocaleDateString(
-                            undefined,
-                            { month: "short", day: "numeric", year: "numeric" },
-                          )}
-                        </time>
+                      <time
+                        dateTime={getDateTimeAttr(post.publishDate, post.date)}
+                        className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.22em] text-muted-foreground"
+                      >
+                        {formatDisplayDate(post.publishDate, post.date, { month: "short", day: "numeric", year: "numeric" })}
+                      </time>
                       </div>
                       <p className="mt-2 text-sm text-muted-foreground line-clamp-2">
                         {post.summary}

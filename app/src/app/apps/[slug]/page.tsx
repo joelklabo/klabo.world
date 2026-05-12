@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getAppBySlug, getApps } from "@/lib/apps";
+import { formatDisplayDate, getDateTimeAttr } from '@/lib/dateDisplay';
 import { Button } from "@/components/ui/button";
 
 type Params = { slug: string };
@@ -57,8 +58,11 @@ export default async function AppDetailPage({
               />
             )}
             <div>
-              <time dateTime={new Date(app.publishDate).toISOString()} className="text-xs uppercase tracking-[0.35em] text-primary">
-                {new Date(app.publishDate).toLocaleDateString()}
+              <time
+                dateTime={getDateTimeAttr(app.publishDate)}
+                className="text-xs uppercase tracking-[0.35em] text-primary"
+              >
+                {formatDisplayDate(app.publishDate)}
               </time>
               <h1 className="text-4xl font-bold text-foreground">{app.name}</h1>
               <p className="text-sm text-muted-foreground">Version {app.version}</p>
