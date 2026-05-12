@@ -1,5 +1,5 @@
-import { requireAdminSession } from '@/lib/adminSession';
 import { notFound } from 'next/navigation';
+import { runWithAdminSession } from '@/lib/adminGuards';
 
 type SlugParams = { slug: string } | Promise<{ slug: string }>;
 
@@ -29,8 +29,12 @@ async function runAdminSlugResource<TResource, TOutput>(
 }
 
 export async function runAdminPage<T>(render: () => Promise<T>): Promise<T> {
-  await requireAdminSession();
-  return render();
+  return runWithAdminSession(
+    () => render(),
+    (error) => {
+      throw error;
+    },
+  );
 }
 
 export async function runAdminSlugPage<TResource, TOutput>(
