@@ -3,12 +3,12 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { after } from 'next/server';
-import slugify from 'slugify';
 import { z } from 'zod';
 import { requireAdminSession } from '@/lib/adminSession';
 import { upsertApp, deleteApp, type AppInput } from '@/lib/appPersistence';
 import { withSpan } from '@/lib/telemetry';
 import { parseFormData, type ActionState as SharedActionState } from '@/lib/formActions';
+import { normalizeSlug } from '@/lib/slugUtils';
 
 const appSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -38,8 +38,8 @@ export async function upsertAppAction(
 
     const data = parsed.data;
     const derivedSlug = data.slug
-      ? slugify(data.slug, { lower: true, strict: true })
-      : slugify(data.name, { lower: true, strict: true });
+      ? normalizeSlug(data.slug)
+      : normalizeSlug(data.name);
 
     const input: AppInput = {
       name: data.name,

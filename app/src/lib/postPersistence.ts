@@ -1,10 +1,10 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import slugify from 'slugify';
 import matter from 'gray-matter';
 import { resolveContentSubdir } from '@klaboworld/core/server/contentPaths';
 import { deleteRepoFile, fetchRepoFile, upsertRepoFile } from '@klaboworld/core/server/github';
 import { env } from './env';
+import { normalizeSlug } from './slugUtils';
 
 type PostInput = {
   title: string;
@@ -30,10 +30,6 @@ const githubConfig = {
 
 function shouldUseGitHub(): boolean {
   return process.env.NODE_ENV === 'production' && Boolean(env.GITHUB_TOKEN);
-}
-
-function normalizeSlug(title: string): string {
-  return slugify(title, { lower: true, strict: true });
 }
 
 async function fileExists(filePath: string): Promise<boolean> {

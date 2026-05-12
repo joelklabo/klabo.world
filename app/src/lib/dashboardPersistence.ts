@@ -1,8 +1,8 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import slugify from 'slugify';
 import { resolveContentSubdir } from '@klaboworld/core/server/contentPaths';
 import { deleteRepoFile, fetchRepoFile, upsertRepoFile } from '@klaboworld/core/server/github';
+import { normalizeSlug } from './slugUtils';
 
 type DashboardType = 'chart' | 'logs' | 'embed' | 'link';
 
@@ -34,10 +34,6 @@ async function getGitHubConfig() {
 async function shouldUseGitHub(): Promise<boolean> {
   const { env } = await import('./env');
   return process.env.NODE_ENV === 'production' && Boolean(env.GITHUB_TOKEN);
-}
-
-function normalizeSlug(title: string): string {
-  return slugify(title, { lower: true, strict: true });
 }
 
 async function fileExists(filePath: string): Promise<boolean> {

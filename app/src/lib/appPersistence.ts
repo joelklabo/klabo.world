@@ -1,9 +1,9 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import slugify from 'slugify';
 import { resolveContentSubdir } from '@klaboworld/core/server/contentPaths';
 import { deleteRepoFile, fetchRepoFile, upsertRepoFile } from '@klaboworld/core/server/github';
 import { env } from './env';
+import { normalizeSlug } from './slugUtils';
 
 export type AppInput = {
   name: string;
@@ -28,10 +28,6 @@ const githubConfig = {
 
 function shouldUseGitHub(): boolean {
   return process.env.NODE_ENV === 'production' && Boolean(env.GITHUB_TOKEN);
-}
-
-function sanitizeSlug(slug: string): string {
-  return slugify(slug, { lower: true, strict: true });
 }
 
 function getLocalAppPath(slug: string) {
@@ -77,7 +73,7 @@ async function persistAppJson(
 }
 
 export async function upsertApp(slug: string, input: AppInput) {
-  const normalizedSlug = sanitizeSlug(slug);
+  const normalizedSlug = normalizeSlug(slug);
   const payload = {
     ...input,
     slug: normalizedSlug,
@@ -87,7 +83,7 @@ export async function upsertApp(slug: string, input: AppInput) {
 }
 
 export async function deleteApp(slug: string) {
-  const normalizedSlug = sanitizeSlug(slug);
+  const normalizedSlug = normalizeSlug(slug);
   if (shouldUseGitHub()) {
     const relativePath = getGithubAppPath(normalizedSlug);
     const existing = await fetchRepoFile(githubConfig, relativePath);
