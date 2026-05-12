@@ -3,6 +3,7 @@ import { runAdminPage } from '@/lib/adminPageHelpers';
 import { Surface } from '@/components/ui/surface';
 import { ImageListUploadField } from '@/app/(admin)/components/image-list-upload-field';
 import { ImageUploadField } from '@/app/(admin)/components/image-upload-field';
+import { AdminSectionHeader } from '@/app/(admin)/components/admin-section-header';
 
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
@@ -12,13 +13,11 @@ export const metadata: Metadata = {
 export default async function AdminImagesPage() {
   return runAdminPage(async () => (
     <div className="space-y-6">
-      <div className="flex flex-col gap-2">
-        <p className="text-xs font-semibold uppercase tracking-widest text-primary">Media</p>
-        <h1 className="text-3xl font-bold text-foreground text-balance">Image uploads</h1>
-        <p className="text-sm text-muted-foreground text-pretty">
-          Upload assets and grab URLs for posts, dashboards, and app listings.
-        </p>
-      </div>
+      <AdminSectionHeader
+        label="Media"
+        title="Image uploads"
+        description="Upload assets and grab URLs for posts, dashboards, and app listings."
+      />
       <div className="grid gap-6 lg:grid-cols-2">
         <Surface
           className="rounded-2xl shadow-2xl"

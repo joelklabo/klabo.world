@@ -6,6 +6,7 @@ import { ContentDate } from '@/components/content-date';
 import { Button } from '@/components/ui/button';
 import { Surface } from '@/components/ui/surface';
 import { getAdminSession } from '@/lib/adminSession';
+import { AdminSectionHeader } from '@/app/(admin)/components/admin-section-header';
 
 export const dynamic = 'force-dynamic';
 
@@ -29,16 +30,16 @@ export default async function AdminLanding({ searchParams }: { searchParams?: Ad
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">Dashboard</p>
-          <h1 className="text-3xl font-bold text-foreground text-balance">Content overview</h1>
-          <p className="text-sm text-muted-foreground">Publish and maintain posts.</p>
-        </div>
-        <Button asChild size="lg">
-          <Link href={'/admin/compose' as Route}>Compose post</Link>
-        </Button>
-      </div>
+      <AdminSectionHeader
+        label="Dashboard"
+        title="Content overview"
+        description="Publish and maintain posts."
+        action={
+          <Button asChild size="lg">
+            <Link href={'/admin/compose' as Route}>Compose post</Link>
+          </Button>
+        }
+      />
       <Surface
         className="rounded-2xl shadow-[0_20px_45px_rgba(6,10,20,0.35)]"
         innerClassName="overflow-hidden rounded-2xl border border-border/60 bg-card"

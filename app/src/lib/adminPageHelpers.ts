@@ -9,8 +9,7 @@ export async function runAdminPage<T>(render: () => Promise<T>): Promise<T> {
 }
 
 export async function runAdminMetadata<T>(render: () => Promise<T>): Promise<T> {
-  await requireAdminSession();
-  return render();
+  return runAdminPage(render);
 }
 
 export async function runAdminSlugPage<TResource, TOutput>(
