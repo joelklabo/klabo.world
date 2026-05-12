@@ -1,10 +1,11 @@
 import Link from 'next/link';
+import type { LinkProps } from 'next/link';
 import type { HTMLAttributeAnchorTarget, ReactNode } from 'react';
 
 type AdminActionLinkVariant = 'muted' | 'primary' | 'back';
 
 type AdminActionLinkProps = {
-  href: string;
+  href: LinkProps<string>['href'];
   children: ReactNode;
   variant?: AdminActionLinkVariant;
   target?: HTMLAttributeAnchorTarget;
