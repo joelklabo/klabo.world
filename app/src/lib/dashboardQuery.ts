@@ -5,8 +5,8 @@ const analyticsMissingMessage =
   'Log Analytics not configured (set LOG_ANALYTICS_* or APPINSIGHTS_* env vars).';
 
 type PanelState =
-  | { kind: 'ready'; query: string }
-  | { kind: 'disabled'; reason: string };
+  | { status: 'ready'; query: string }
+  | { status: 'disabled'; reason: string };
 
 export function getPanelState(
   dashboard: Dashboard,
@@ -14,16 +14,16 @@ export function getPanelState(
   notPanelMessage: string,
 ): PanelState {
   if (dashboard.panelType !== panelType) {
-    return { kind: 'disabled', reason: notPanelMessage };
+    return { status: 'disabled', reason: notPanelMessage };
   }
 
   if (!dashboard.kqlQuery) {
-    return { kind: 'disabled', reason: 'No KQL query configured yet.' };
+    return { status: 'disabled', reason: 'No KQL query configured yet.' };
   }
 
   if (!hasAnalyticsConfig()) {
-    return { kind: 'disabled', reason: analyticsMissingMessage };
+    return { status: 'disabled', reason: analyticsMissingMessage };
   }
 
-  return { kind: 'ready', query: dashboard.kqlQuery };
+  return { status: 'ready', query: dashboard.kqlQuery };
 }

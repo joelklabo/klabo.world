@@ -69,7 +69,7 @@ function matchesSearch(entry: DashboardLogEntry, search?: string) {
 
 export async function loadDashboardLogs(dashboard: Dashboard, options: LogOptions = {}): Promise<DashboardLogsState> {
   const panelState = getPanelState(dashboard, 'logs', 'Panel is not configured as a log viewer.');
-  if (panelState.kind === 'disabled') {
+  if (panelState.status === 'disabled') {
     return panelState;
   }
 

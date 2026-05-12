@@ -34,7 +34,7 @@ function normalizeNumber(value: unknown): number | null {
 
 export async function loadDashboardChartState(dashboard: Dashboard): Promise<DashboardChartState> {
   const panelState = getPanelState(dashboard, 'chart', 'Panel is not a chart.');
-  if (panelState.kind === 'disabled') {
+  if (panelState.status === 'disabled') {
     return panelState;
   }
 
