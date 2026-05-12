@@ -17,17 +17,19 @@ type SearchParams = { variant?: string; layout?: string; annotate?: string };
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({ params }: { params: Params | Promise<Params> }): Promise<Metadata> {
-  const resolvedParams = await Promise.resolve(params as Params);
-  const post = getPostBySlug(resolvedParams.slug);
-  if (!post) {
-    return { title: 'Draft not found' };
-  }
+  return runAdminMetadata(async () => {
+    const resolvedParams = await Promise.resolve(params as Params);
+    const post = getPostBySlug(resolvedParams.slug);
+    if (!post) {
+      return { title: 'Draft not found' };
+    }
 
-  return {
-    title: `[DRAFT] ${post.title}`,
-    description: post.summary,
-    robots: { index: false, follow: false },
-  };
+    return {
+      title: `[DRAFT] ${post.title}`,
+      description: post.summary,
+      robots: { index: false, follow: false },
+    };
+  });
 }
 
 export default async function DraftPreviewPage({

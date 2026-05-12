@@ -4,3 +4,8 @@ export async function runAdminPage<T>(render: () => Promise<T>): Promise<T> {
   await requireAdminSession();
   return render();
 }
+
+export async function runAdminMetadata<T>(render: () => Promise<T>): Promise<T> {
+  await requireAdminSession();
+  return render();
+}
