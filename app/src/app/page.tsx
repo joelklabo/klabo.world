@@ -7,7 +7,7 @@ import { getDashboards } from "@/lib/dashboards";
 import { getFeaturedGitHubProjects } from "@/lib/github-projects";
 import { getPosts, getRecentPosts } from "@/lib/posts";
 import { getPostTagCloud } from "@/lib/tagCloud";
-import { formatDisplayDate, getDateTimeAttr } from "@/lib/dateDisplay";
+import { ContentDate } from "@/components/content-date";
 import { GitHubProjectsShowcase } from "@/components/github-projects-showcase";
 import { HomeQuickLinks } from "@/components/home-quick-links";
 import { HomeStats } from "@/components/home-stats";
@@ -250,16 +250,16 @@ export default async function Home() {
                         <h3 className="min-w-0 text-base font-semibold leading-snug text-foreground line-clamp-2 motion-safe:transition-colors group-hover:text-primary">
                           {post.title}
                         </h3>
-                      <time
-                        dateTime={getDateTimeAttr(post.publishDate, post.date)}
-                        className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.22em] text-muted-foreground"
-                      >
-                        {formatDisplayDate(post.publishDate, post.date, {
+                      <ContentDate
+                        value={post.publishDate}
+                        fallback={post.date}
+                        options={{
                           month: "short",
                           day: "numeric",
                           year: "numeric",
-                        })}
-                      </time>
+                        }}
+                        className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.22em] text-muted-foreground"
+                      />
                       </div>
                       <p className="mt-2 text-sm text-muted-foreground line-clamp-2">
                         {post.summary}

@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Metadata } from 'next';
 import { getPosts } from '@/lib/posts';
-import { formatDisplayDate, getDateTimeAttr } from '@/lib/dateDisplay';
+import { ContentDate } from '@/components/content-date';
 import { Button } from '@/components/ui/button';
 import { ViewTransitionLink } from '@/components/view-transition-link';
 
@@ -48,9 +48,7 @@ export default function PostsIndex() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-background/75 via-background/15 to-transparent" />
                   <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between gap-3 text-[10px] font-semibold uppercase tracking-[0.28em] text-white/80">
-                    <time dateTime={getDateTimeAttr(post.publishDate, post.date)}>
-                      {formatDisplayDate(post.publishDate, post.date)}
-                    </time>
+                    <ContentDate value={post.publishDate} fallback={post.date} />
                     <span className="rounded-full border border-white/20 bg-black/35 px-3 py-1 text-white/80 backdrop-blur">
                       {post.tags?.[0] ?? 'Post'}
                     </span>

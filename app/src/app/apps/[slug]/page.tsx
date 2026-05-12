@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getAppBySlug, getApps } from "@/lib/apps";
-import { formatDisplayDate, getDateTimeAttr } from '@/lib/dateDisplay';
+import { ContentDate } from '@/components/content-date';
 import { Button } from "@/components/ui/button";
 
 type Params = { slug: string };
@@ -58,12 +58,7 @@ export default async function AppDetailPage({
               />
             )}
             <div>
-              <time
-                dateTime={getDateTimeAttr(app.publishDate)}
-                className="text-xs uppercase tracking-[0.35em] text-primary"
-              >
-                {formatDisplayDate(app.publishDate)}
-              </time>
+              <ContentDate value={app.publishDate} className="text-xs uppercase tracking-[0.35em] text-primary" />
               <h1 className="text-4xl font-bold text-foreground">{app.name}</h1>
               <p className="text-sm text-muted-foreground">Version {app.version}</p>
             </div>

@@ -3,7 +3,7 @@ import type { Route } from 'next';
 import { auth } from '@/lib/nextAuth';
 import { LoginForm } from '../login-form';
 import { getPostsForAdmin } from '@/lib/posts';
-import { formatDisplayDate, getDateTimeAttr } from '@/lib/dateDisplay';
+import { ContentDate } from '@/components/content-date';
 import { Button } from '@/components/ui/button';
 import { Surface } from '@/components/ui/surface';
 
@@ -58,9 +58,7 @@ export default async function AdminLanding({ searchParams }: { searchParams?: Ad
               <tr key={post.slug} className="hover:bg-background/40">
                 <td className="px-6 py-4 font-medium text-foreground">{post.title}</td>
                 <td className="px-6 py-4 text-muted-foreground">
-                  <time dateTime={getDateTimeAttr(post.publishDate, post.date)}>
-                    {formatDisplayDate(post.publishDate, post.date)}
-                  </time>
+                  <ContentDate value={post.publishDate} fallback={post.date} />
                 </td>
                 <td className="px-6 py-4 text-muted-foreground">{post.tags?.length ? post.tags.join(', ') : '—'}</td>
                 <td className="px-6 py-4 text-sm">
