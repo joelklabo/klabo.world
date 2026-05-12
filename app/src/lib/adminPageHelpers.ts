@@ -10,7 +10,7 @@ type SlugMissingRenderer<TOutput> = () => Promise<TOutput> | TOutput;
 async function runAdminSlugResource<TResource, TOutput>(
   params: SlugParams,
   loadResource: (slug: string) => SlugResourceResult<TResource>,
-  render: (resource: TResource) => Promise<TOutput> | TOutput,
+  render: (resource: NonNullable<TResource>) => Promise<TOutput> | TOutput,
   renderMissing?: SlugMissingRenderer<TOutput>,
 ): Promise<TOutput> {
   return runAdminPage(async () => {
@@ -40,7 +40,7 @@ export async function runAdminPage<T>(render: () => Promise<T>): Promise<T> {
 export async function runAdminSlugPage<TResource, TOutput>(
   params: SlugParams,
   loadResource: (slug: string) => SlugResourceResult<TResource>,
-  render: (resource: TResource) => Promise<TOutput> | TOutput,
+  render: (resource: NonNullable<TResource>) => Promise<TOutput> | TOutput,
 ): Promise<TOutput> {
   return runAdminSlugResource(params, loadResource, render);
 }
@@ -48,7 +48,7 @@ export async function runAdminSlugPage<TResource, TOutput>(
 export async function runAdminSlugMetadata<TResource, TOutput>(
   params: SlugParams,
   loadResource: (slug: string) => SlugResourceResult<TResource>,
-  render: (resource: TResource) => Promise<TOutput> | TOutput,
+  render: (resource: NonNullable<TResource>) => Promise<TOutput> | TOutput,
   renderMissing: () => Promise<TOutput> | TOutput,
 ): Promise<TOutput> {
   return runAdminSlugResource(params, loadResource, render, renderMissing);

@@ -21,10 +21,6 @@ export async function generateMetadata({ params }: { params: Params | Promise<Pa
     params,
     getPostBySlug,
     (post) => {
-      if (!post) {
-        return { title: 'Draft not found' };
-      }
-
       return {
         title: `[DRAFT] ${post.title}`,
         description: post.summary,
@@ -46,10 +42,6 @@ export default async function DraftPreviewPage({
     params,
     getPostBySlug,
     async (post) => {
-      if (!post) {
-        return notFound();
-      }
-
     const resolvedSearchParams = await searchParams;
     const variant = resolvedSearchParams.variant || 'b'; // Default to variant B
     const layout = resolvedSearchParams.layout || '1'; // Default to layout 1
