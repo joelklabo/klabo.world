@@ -1,8 +1,18 @@
 import { expect, test } from '@playwright/test';
 import type { Page } from '@playwright/test';
+import {
+  DEFAULT_BITCOIN_ONCHAIN_ADDRESS,
+  DEFAULT_LIGHTNING_NODE_ALIAS,
+  DEFAULT_LIGHTNING_NODE_HOST,
+  DEFAULT_LIGHTNING_NODE_PORT,
+  DEFAULT_LIGHTNING_NODE_PUBKEY,
+  SITE_NAME,
+} from '@/lib/site-config';
 
 const routes = ['/', '/posts', '/projects', '/apps', '/pay'];
-const BTC_ADDRESS = 'bc1qzafw20xpesnvwup6gmtx38e5j6ddjjdpc0zh78';
+const BTC_ADDRESS = DEFAULT_BITCOIN_ONCHAIN_ADDRESS;
+const NODE_URI = `${DEFAULT_LIGHTNING_NODE_PUBKEY}@${DEFAULT_LIGHTNING_NODE_HOST}:${DEFAULT_LIGHTNING_NODE_PORT}`;
+const NODE_URI_REGEX = new RegExp(`^lightning:${NODE_URI.replace(/\./g, '\\.')}$`);
 const chainTipPayload = {
   network: 'mainnet',
   source: 'playwright',
@@ -167,7 +177,7 @@ test.describe('public smoke', () => {
   for (const route of routes) {
     test(`renders ${route}`, async ({ page }) => {
       await page.goto(route);
-      await expect(page).toHaveTitle(/klabo\.world/i);
+      await expect(page).toHaveTitle(new RegExp(`^${SITE_NAME.replace(/\./g, '\\.')}$`, 'i'));
     });
   }
 
@@ -176,11 +186,11 @@ test.describe('public smoke', () => {
       await route.fulfill({
         contentType: 'application/json',
         body: JSON.stringify({
-          alias: 'klabo.world',
-          pubkey: '0276dc1ed542d0d777b518f1bd05f042847f19f312718cf1303288119a0a789a68',
-          host: 'lnbits.klabo.world',
-          port: 9735,
-          uri: '0276dc1ed542d0d777b518f1bd05f042847f19f312718cf1303288119a0a789a68@lnbits.klabo.world:9735',
+          alias: DEFAULT_LIGHTNING_NODE_ALIAS,
+          pubkey: DEFAULT_LIGHTNING_NODE_PUBKEY,
+          host: DEFAULT_LIGHTNING_NODE_HOST,
+          port: DEFAULT_LIGHTNING_NODE_PORT,
+          uri: NODE_URI,
           reachable: true,
           latencyMs: 42,
           checkedAt: '2026-05-04T01:00:00.000Z',
@@ -245,7 +255,7 @@ test.describe('public smoke', () => {
     await expect(page.getByText(/0276dc1e.*0a789a68/)).toBeVisible();
     await expect(page.getByRole('link', { name: /connect/i })).toHaveAttribute(
       'href',
-      /^lightning:0276dc1ed542d0d777b518f1bd05f042847f19f312718cf1303288119a0a789a68@lnbits\.klabo\.world:9735$/
+      NODE_URI_REGEX,
     );
     await expect(page.getByTestId('bitcoin-onchain-card')).toBeVisible();
     await expect(page.getByTestId('bitcoin-onchain-address')).toContainText(/bc1qzafw/);
@@ -310,11 +320,11 @@ test.describe('public smoke', () => {
       await route.fulfill({
         contentType: 'application/json',
         body: JSON.stringify({
-          alias: 'klabo.world',
-          pubkey: '0276dc1ed542d0d777b518f1bd05f042847f19f312718cf1303288119a0a789a68',
-          host: 'lnbits.klabo.world',
-          port: 9735,
-          uri: '0276dc1ed542d0d777b518f1bd05f042847f19f312718cf1303288119a0a789a68@lnbits.klabo.world:9735',
+          alias: DEFAULT_LIGHTNING_NODE_ALIAS,
+          pubkey: DEFAULT_LIGHTNING_NODE_PUBKEY,
+          host: DEFAULT_LIGHTNING_NODE_HOST,
+          port: DEFAULT_LIGHTNING_NODE_PORT,
+          uri: NODE_URI,
           reachable: true,
           latencyMs: 24,
           checkedAt: '2026-05-04T01:00:00.000Z',
@@ -348,7 +358,7 @@ test.describe('public smoke', () => {
     await page.goto('/pay');
 
     await expect(page.getByTestId('pay-page')).toBeVisible();
-    await expect(page.getByTestId('pay-page-title')).toHaveText('Pay klabo.world');
+    await expect(page.getByTestId('pay-page-title')).toHaveText(`Pay ${SITE_NAME}`);
     await expect(page.getByTestId('global-nav-logo')).toHaveCount(0);
     await expect(page.getByTestId('pay-lightning-status')).toContainText('Online');
     await expect(page.getByTestId('lightning-tip-widget')).toBeVisible();
