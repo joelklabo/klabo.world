@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import { DashboardForm } from "@/app/(admin)/components/dashboard-form";
 import { DashboardChart } from "@/app/(admin)/components/dashboard-chart";
 import { DashboardLogsPanel } from "@/app/(admin)/components/dashboard-logs-panel";
@@ -11,7 +10,7 @@ import { ContentDate } from "@/components/content-date";
 import { Button } from "@/components/ui/button";
 import { getHostnameForDisplay } from "@/lib/urlDisplay";
 import { DASHBOARD_PANEL_TYPES } from "@/lib/dashboardPanelTypes";
-import { runAdminPage } from '@/lib/adminPageHelpers';
+import { runAdminSlugPage } from '@/lib/adminPageHelpers';
 
 export const dynamic = "force-dynamic";
 
@@ -20,12 +19,7 @@ type PageProps = {
 };
 
 export default async function DashboardDetailPage({ params }: PageProps) {
-  return runAdminPage(async () => {
-    const { slug } = await params;
-    const dashboard = await getDashboardBySlugForAdmin(slug);
-    if (!dashboard) {
-      notFound();
-    }
+  return runAdminSlugPage(params, getDashboardBySlugForAdmin, async (dashboard) => {
     const isChartPanel = dashboard.panelType === DASHBOARD_PANEL_TYPES.chart;
     const isLogsPanel = dashboard.panelType === DASHBOARD_PANEL_TYPES.logs;
     const isEmbedPanel = dashboard.panelType === DASHBOARD_PANEL_TYPES.embed;
