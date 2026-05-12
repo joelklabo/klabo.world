@@ -1,6 +1,6 @@
 import { type Dashboard } from './dashboards';
 import { runLogAnalyticsQuery } from './logAnalytics';
-import { getPanelDisabledState } from './dashboardQuery';
+import { getPanelState } from './dashboardQuery';
 
 const NUMBER_COLUMN_TYPES = new Set(['long', 'real', 'double', 'decimal', 'int', 'number']);
 
@@ -33,13 +33,13 @@ function normalizeNumber(value: unknown): number | null {
 }
 
 export async function loadDashboardChartState(dashboard: Dashboard): Promise<DashboardChartState> {
-  const disabledState = getPanelDisabledState(dashboard, 'chart', 'Panel is not a chart.');
-  if (disabledState) {
-    return disabledState;
+  const panelState = getPanelState(dashboard, 'chart', 'Panel is not a chart.');
+  if (panelState.kind === 'disabled') {
+    return panelState;
   }
 
   try {
-    const result = await runLogAnalyticsQuery(dashboard.kqlQuery, { timespan: 'P30D' });
+    const result = await runLogAnalyticsQuery(panelState.query, { timespan: 'P30D' });
     const table = result.tables.find((candidate) => candidate.columns.some((column) => column.type === 'datetime'));
     if (!table) {
       return { status: 'empty', reason: 'Query returned no datetime columns.' };

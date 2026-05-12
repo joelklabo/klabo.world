@@ -1,6 +1,6 @@
 import { type Dashboard } from './dashboards';
 import { runLogAnalyticsQuery } from './logAnalytics';
-import { getPanelDisabledState } from './dashboardQuery';
+import { getPanelState } from './dashboardQuery';
 
 const TEXT_COLUMN_TYPES = new Set(['string', 'guid']);
 const SEVERITY_NUMERIC_MAP: Record<number, string> = {
@@ -68,13 +68,13 @@ function matchesSearch(entry: DashboardLogEntry, search?: string) {
 }
 
 export async function loadDashboardLogs(dashboard: Dashboard, options: LogOptions = {}): Promise<DashboardLogsState> {
-  const disabledState = getPanelDisabledState(dashboard, 'logs', 'Panel is not configured as a log viewer.');
-  if (disabledState) {
-    return disabledState;
+  const panelState = getPanelState(dashboard, 'logs', 'Panel is not configured as a log viewer.');
+  if (panelState.kind === 'disabled') {
+    return panelState;
   }
 
   try {
-    const result = await runLogAnalyticsQuery(dashboard.kqlQuery);
+    const result = await runLogAnalyticsQuery(panelState.query);
     const table = result.tables[0];
     if (!table || table.rows.length === 0) {
       return { status: 'empty', reason: 'Query returned no records.' };

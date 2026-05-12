@@ -4,23 +4,26 @@ import { hasAnalyticsConfig } from './logAnalytics';
 const analyticsMissingMessage =
   'Log Analytics not configured (set LOG_ANALYTICS_* or APPINSIGHTS_* env vars).';
 
-export function getPanelDisabledState(
+type PanelState =
+  | { kind: 'ready'; query: string }
+  | { kind: 'disabled'; reason: string };
+
+export function getPanelState(
   dashboard: Dashboard,
   panelType: 'chart' | 'logs',
   notPanelMessage: string,
-): { status: 'disabled'; reason: string } | null {
+): PanelState {
   if (dashboard.panelType !== panelType) {
-    return { status: 'disabled', reason: notPanelMessage };
+    return { kind: 'disabled', reason: notPanelMessage };
   }
 
   if (!dashboard.kqlQuery) {
-    return { status: 'disabled', reason: 'No KQL query configured yet.' };
+    return { kind: 'disabled', reason: 'No KQL query configured yet.' };
   }
 
   if (!hasAnalyticsConfig()) {
-    return { status: 'disabled', reason: analyticsMissingMessage };
+    return { kind: 'disabled', reason: analyticsMissingMessage };
   }
 
-  return null;
+  return { kind: 'ready', query: dashboard.kqlQuery };
 }
-
