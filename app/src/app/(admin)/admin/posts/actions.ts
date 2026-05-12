@@ -1,11 +1,11 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { after } from 'next/server';
 import { z } from 'zod';
 import { createPost, deletePost, updatePost, updatePostXPostId } from '@/lib/postPersistence';
 import { requireAdminSession } from '@/lib/adminSession';
+import { revalidatePostCache } from '@/lib/adminRevalidation';
 import { withSpan } from '@/lib/telemetry';
 import { getEditablePostBySlug } from '@/lib/posts';
 import { isXPublishingEnabled, publishToX } from '@/lib/x-publisher';
@@ -74,9 +74,7 @@ export async function createPostAction(
       });
     });
 
-    revalidatePath('/');
-    revalidatePath('/posts');
-    revalidatePath(`/posts/${slug}`);
+    revalidatePostCache(slug);
   } catch (error) {
     return {
       message: error instanceof Error ? error.message : 'Failed to create post',
@@ -156,9 +154,7 @@ export async function updatePostAction(
       }
     });
 
-    revalidatePath('/');
-    revalidatePath('/posts');
-    revalidatePath(`/posts/${slug}`);
+    revalidatePostCache(slug);
   } catch (error) {
     return {
       message: error instanceof Error ? error.message : 'Failed to update post',
@@ -187,8 +183,7 @@ export async function deletePostAction(
       });
     });
 
-    revalidatePath('/');
-    revalidatePath('/posts');
+    revalidatePostCache();
   } catch (error) {
     return {
       message: error instanceof Error ? error.message : 'Failed to delete post',
@@ -238,8 +233,7 @@ export async function shareToXAction(slug: string): Promise<ShareToXResult> {
 
     if (result.success) {
       await updatePostXPostId(slug, result.postId);
-      revalidatePath(`/posts/${slug}`);
-      revalidatePath('/admin');
+      revalidatePostCache(slug, true);
       return { success: true, postId: result.postId };
     }
 

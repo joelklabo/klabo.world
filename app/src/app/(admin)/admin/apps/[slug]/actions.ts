@@ -1,11 +1,11 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { after } from 'next/server';
 import { z } from 'zod';
 import { requireAdminSession } from '@/lib/adminSession';
 import { upsertApp, deleteApp, type AppInput } from '@/lib/appPersistence';
+import { revalidateAppCache } from '@/lib/adminRevalidation';
 import { withSpan } from '@/lib/telemetry';
 import { parseFormData, type ActionState as SharedActionState } from '@/lib/formActions';
 import { normalizeSlug } from '@/lib/slugUtils';
@@ -62,9 +62,7 @@ export async function upsertAppAction(
       });
     });
 
-    revalidatePath('/');
-    revalidatePath('/apps');
-    revalidatePath(`/apps/${input.slug}`);
+    revalidateAppCache(input.slug);
   } catch (error) {
     return {
       message: error instanceof Error ? error.message : 'Failed to save app',
@@ -94,8 +92,7 @@ export async function deleteAppAction(
       });
     });
 
-    revalidatePath('/');
-    revalidatePath('/apps');
+    revalidateAppCache();
   } catch (error) {
     return {
       message: error instanceof Error ? error.message : 'Failed to delete app',

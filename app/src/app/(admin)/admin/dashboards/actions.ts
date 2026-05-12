@@ -1,6 +1,5 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { after } from 'next/server';
 import { z } from 'zod';
@@ -11,6 +10,7 @@ import {
   type DashboardInput,
 } from '@/lib/dashboardPersistence';
 import { requireAdminSession } from '@/lib/adminSession';
+import { revalidateDashboardCache } from '@/lib/adminRevalidation';
 import { withSpan } from '@/lib/telemetry';
 import { parseFormData, type ActionState as SharedActionState } from '@/lib/formActions';
 
@@ -81,8 +81,7 @@ export async function createDashboardAction(
       });
     });
 
-    revalidatePath('/admin/dashboards');
-    revalidatePath(`/admin/dashboards/${slug}`);
+    revalidateDashboardCache(slug);
   } catch (error) {
     return {
       message: error instanceof Error ? error.message : 'Failed to create dashboard',
@@ -121,8 +120,7 @@ export async function updateDashboardAction(
       });
     });
 
-    revalidatePath('/admin/dashboards');
-    revalidatePath(`/admin/dashboards/${slug}`);
+    revalidateDashboardCache(slug);
   } catch (error) {
     return {
       message: error instanceof Error ? error.message : 'Failed to update dashboard',
@@ -149,6 +147,6 @@ export async function deleteDashboardAction(formData: FormData) {
     });
   });
 
-  revalidatePath('/admin/dashboards');
+  revalidateDashboardCache();
   redirect('/admin/dashboards');
 }
