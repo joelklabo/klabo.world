@@ -29,3 +29,24 @@ export function formatDisplayDate(
     return parsed.toISOString().slice(0, 10);
   }
 }
+
+export function formatDisplayDateTime(
+  value: DateInput,
+  fallback: DateInput = null,
+  options?: Intl.DateTimeFormatOptions,
+): string {
+  const resolved = resolveDisplayDate(value, fallback);
+  const parsed = toDate(resolved);
+  if (!parsed) return resolved;
+  try {
+    return parsed.toLocaleString(undefined, options);
+  } catch {
+    return parsed.toString();
+  }
+}
+
+export function formatUtcDate(value: DateInput, fallback: DateInput = null): string {
+  const resolved = resolveDisplayDate(value, fallback);
+  const parsed = toDate(resolved);
+  return parsed ? parsed.toUTCString() : resolved;
+}

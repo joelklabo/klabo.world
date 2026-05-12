@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { DashboardLogsState } from "@/lib/dashboardLogs";
+import { formatDisplayDateTime } from "@/lib/dateDisplay";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -19,11 +20,6 @@ const severityOptions: { label: string; value: SeverityFilter }[] = [
   { label: "Errors", value: "Error" },
   { label: "Critical", value: "Critical" },
 ];
-
-function formatTimestamp(timestamp: string) {
-  return new Date(timestamp).toLocaleString();
-}
-
 function severityBadgeClass(severity?: string) {
   if (!severity) return "bg-muted text-muted-foreground";
   const normalized = severity.toLowerCase();
@@ -172,7 +168,11 @@ export function DashboardLogsPanel({
         {isLoading ? "Refreshing…" : statusDescription}
         {state?.status === "success" && (
           <span className="ml-2">
-            Last updated {new Date(state.refreshedAt).toLocaleTimeString()}
+            Last updated {formatDisplayDateTime(state.refreshedAt, null, {
+              hour: "numeric",
+              minute: "numeric",
+              second: "numeric",
+            })}
           </span>
         )}
       </div>
@@ -193,7 +193,7 @@ export function DashboardLogsPanel({
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="text-xs font-mono text-muted-foreground">
-                    {formatTimestamp(entry.timestamp)}
+                    {formatDisplayDateTime(entry.timestamp)}
                   </p>
                   <p className="mt-2 text-sm text-foreground">{entry.message}</p>
                 </div>
