@@ -7,20 +7,20 @@ import { requireAdminSession } from '@/lib/adminSession';
 import { upsertApp, deleteApp, type AppInput } from '@/lib/appPersistence';
 import { revalidateAppCache } from '@/lib/adminRevalidation';
 import { withSpan } from '@/lib/telemetry';
+import { optionalUrlField, parseNewlineList, requiredTextField } from '@/lib/adminFormSchemas';
 import { parseFormData, type ActionState as SharedActionState } from '@/lib/formActions';
 import { normalizeSlug } from '@/lib/slugUtils';
-import { splitTrimmedList } from '@/lib/formTransforms';
 
 const appSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
+  name: requiredTextField('Name'),
   slug: z.string().optional(),
   publishDate: z.string().refine((val) => !Number.isNaN(new Date(val).getTime()), 'Invalid date'),
-  version: z.string().min(1, 'Version is required'),
-  fullDescription: z.string().min(1, 'Description is required'),
-  features: z.string().transform((val) => splitTrimmedList(val, /\r?\n/)),
-  screenshots: z.string().transform((val) => splitTrimmedList(val, /\r?\n/)),
-  appStoreURL: z.string().url().optional().or(z.literal('')),
-  githubURL: z.string().url().optional().or(z.literal('')),
+  version: requiredTextField('Version'),
+  fullDescription: requiredTextField('Description'),
+  features: parseNewlineList,
+  screenshots: parseNewlineList,
+  appStoreURL: optionalUrlField(),
+  githubURL: optionalUrlField(),
   icon: z.string().optional(),
 });
 

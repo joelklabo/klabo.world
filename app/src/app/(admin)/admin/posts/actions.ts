@@ -10,19 +10,19 @@ import { withSpan } from '@/lib/telemetry';
 import { getEditablePostBySlug } from '@/lib/posts';
 import { isXPublishingEnabled, publishToX } from '@/lib/x-publisher';
 import { env } from '@/lib/env';
+import { requiredTextField, parseListField } from '@/lib/adminFormSchemas';
 import { parseFormValues, type ActionState as SharedActionState } from '@/lib/formActions';
-import { splitTrimmedList } from '@/lib/formTransforms';
 
 const postSchema = z.object({
-  title: z.string().min(1, 'Title is required'),
-  summary: z.string().min(1, 'Summary is required'),
-  content: z.string().min(1, 'Content is required'),
+  title: requiredTextField('Title'),
+  summary: requiredTextField('Summary'),
+  content: requiredTextField('Content'),
   publishDate: z.string().optional().nullable(),
   featuredImage: z.string().optional().nullable(),
-  tags: z.string().transform((val) => splitTrimmedList(val, ',')),
+  tags: parseListField(','),
   lightningAddress: z.string().email().optional().or(z.literal('')),
   nostrPubkey: z.string().optional().nullable(),
-  nostrRelays: z.string().transform((val) => splitTrimmedList(val, /[,\n]/)),
+  nostrRelays: parseListField(/[,\n]/),
   nostrstackEnabled: z.coerce.boolean().optional(),
 });
 

@@ -183,7 +183,7 @@ export default async function DashboardDetailPage({ params }: PageProps) {
               </div>
               <div>
                 <dt className="font-semibold text-foreground">Panel type</dt>
-                <dd className="capitalize">{dashboard.panelType ?? "chart"}</dd>
+                <dd className="capitalize">{dashboard.panelType ?? DASHBOARD_PANEL_TYPES.chart}</dd>
               </div>
               <div>
                 <dt className="font-semibold text-foreground">Tags</dt>

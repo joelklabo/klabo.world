@@ -15,25 +15,19 @@ import {
   DASHBOARD_PANEL_TYPE_VALUES,
 } from '@/lib/dashboardPanelTypes';
 import { withSpan } from '@/lib/telemetry';
+import { optionalUrlField, parseListField, requiredTextField } from '@/lib/adminFormSchemas';
 import { parseFormData, type ActionState as SharedActionState } from '@/lib/formActions';
-import { splitTrimmedList } from '@/lib/formTransforms';
-
-const optionalUrl = z
-  .union([z.string().url('Invalid URL'), z.literal('')])
-  .optional()
-  .nullable()
-  .transform((value) => value || undefined);
 
 const dashboardSchema = z
   .object({
-    title: z.string().min(1, 'Title is required'),
-    summary: z.string().min(1, 'Summary is required'),
+    title: requiredTextField('Title'),
+    summary: requiredTextField('Summary'),
     panelType: z.enum(DASHBOARD_PANEL_TYPE_VALUES),
-    tags: z.string().transform((val) => splitTrimmedList(val, ',')),
+    tags: parseListField(','),
     chartType: z.string().optional().nullable(),
     kqlQuery: z.string().optional().nullable(),
-    iframeUrl: optionalUrl,
-    externalUrl: optionalUrl,
+    iframeUrl: optionalUrlField(),
+    externalUrl: optionalUrlField(),
     refreshIntervalSeconds: z.coerce.number().min(0).optional().nullable(),
     notes: z.string().optional().nullable(),
   })
