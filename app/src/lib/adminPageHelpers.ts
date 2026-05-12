@@ -15,7 +15,7 @@ export async function runAdminMetadata<T>(render: () => Promise<T>): Promise<T> 
 
 export async function runAdminSlugPage<TResource, TOutput>(
   params: SlugParams,
-  loadResource: (slug: string) => Promise<TResource | null | undefined>,
+  loadResource: (slug: string) => TResource | Promise<TResource | null | undefined>,
   render: (resource: TResource) => Promise<TOutput> | TOutput,
 ): Promise<TOutput> {
   return runAdminPage(async () => {
@@ -30,7 +30,7 @@ export async function runAdminSlugPage<TResource, TOutput>(
 
 export async function runAdminSlugMetadata<TResource, TOutput>(
   params: SlugParams,
-  loadResource: (slug: string) => Promise<TResource | null | undefined>,
+  loadResource: (slug: string) => TResource | Promise<TResource | null | undefined>,
   render: (resource: TResource) => Promise<TOutput> | TOutput,
   renderMissing: () => Promise<TOutput> | TOutput,
 ): Promise<TOutput> {

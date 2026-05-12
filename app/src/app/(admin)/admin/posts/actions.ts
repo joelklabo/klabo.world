@@ -1,6 +1,5 @@
 'use server';
 
-import { redirect } from 'next/navigation';
 import { after } from 'next/server';
 import { z } from 'zod';
 import { createPost, deletePost, updatePost, updatePostXPostId } from '@/lib/postPersistence';
@@ -11,7 +10,7 @@ import { isXPublishingEnabled, publishToX } from '@/lib/x-publisher';
 import { env } from '@/lib/env';
 import { requiredTextField, parseListField } from '@/lib/adminFormSchemas';
 import { parseFormValues, type ActionState as SharedActionState } from '@/lib/formActions';
-import { getFormSlug, runAdminAction, runAdminOperation } from '@/lib/adminActionHelpers';
+import { getFormSlug, runAdminActionAndRedirect, runAdminOperation } from '@/lib/adminActionHelpers';
 
 const postSchema = z.object({
   title: requiredTextField('Title'),
@@ -49,7 +48,7 @@ export async function createPostAction(
   prevState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const result = await runAdminAction(async () => {
+  const result = await runAdminActionAndRedirect(async () => {
     // Checkbox handling: if unchecked, it's missing from formData.
     // We can manually set it to 'false' if missing, or let Zod handle optional.
     // But Zod coerce boolean treats "on" as true, missing as undefined.
@@ -73,20 +72,15 @@ export async function createPostAction(
 
     revalidatePostCache(createResult.slug);
     return { message: 'Post created', success: true };
-  }, 'Failed to create post');
-
-  if (!result.success) {
-    return result;
-  }
-
-  redirect('/admin');
+  }, 'Failed to create post', '/admin');
+  return result;
 }
 
 export async function updatePostAction(
   prevState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const result = await runAdminAction(async () => {
+  const result = await runAdminActionAndRedirect(async () => {
     const slug = getFormSlug(formData, 'post');
 
     // Get existing post state to detect publish transition
@@ -148,20 +142,15 @@ export async function updatePostAction(
 
     revalidatePostCache(slug);
     return { message: 'Post updated', success: true };
-  }, 'Failed to update post');
-
-  if (!result.success) {
-    return result;
-  }
-
-  redirect('/admin');
+  }, 'Failed to update post', '/admin');
+  return result;
 }
 
 export async function deletePostAction(
   prevState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const result = await runAdminAction(async () => {
+  const result = await runAdminActionAndRedirect(async () => {
     const slug = getFormSlug(formData, 'post');
     await deletePost(slug);
 
@@ -173,13 +162,8 @@ export async function deletePostAction(
 
     revalidatePostCache();
     return { message: 'Post deleted', success: true };
-  }, 'Failed to delete post');
-
-  if (!result.success) {
-    return result;
-  }
-
-  redirect('/admin');
+  }, 'Failed to delete post', '/admin');
+  return result;
 }
 
 export type ShareToXResult = {

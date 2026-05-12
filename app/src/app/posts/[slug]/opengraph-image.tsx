@@ -18,8 +18,8 @@ export default async function OpenGraphImage({
 }: {
   params: Params | Promise<Params>;
 }) {
-  const resolvedParams = await Promise.resolve(params as Params);
-  const post = allPosts.find((entry) => entry.slug === resolvedParams.slug);
+  const { slug } = await params;
+  const post = allPosts.find((entry) => entry.slug === slug);
   const title = clampText(post?.title ?? 'Post', 84);
   const summary = clampText(
     post?.summary ?? 'Read the latest writing on klabo.world.',

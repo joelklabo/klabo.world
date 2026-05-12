@@ -1,5 +1,5 @@
 import type { Session } from 'next-auth';
-import { auth } from '@/lib/nextAuth';
+import { getCachedSession } from '@/lib/nextAuth';
 
 export type TRPCContext = {
   session: Session | null;
@@ -7,7 +7,7 @@ export type TRPCContext = {
 
 export async function createTRPCContext(): Promise<TRPCContext> {
   try {
-    const session = await auth();
+    const session = await getCachedSession();
     return { session };
   } catch (error) {
     console.error('createTRPCContext error', error);

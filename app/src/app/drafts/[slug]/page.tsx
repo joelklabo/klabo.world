@@ -1,7 +1,7 @@
-import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import { getPostBySlug } from '@/lib/posts';
 import { MDXContent } from '@/components/mdx-content';
 import { ContentDate } from '@/components/content-date';
@@ -9,7 +9,7 @@ import { ReadingProgress } from '@/components/reading-progress';
 import { TableOfContents } from '@/components/table-of-contents';
 import { extractHeadings } from '@/lib/extract-headings';
 import { AnnotatableDraft } from '@/components/annotations';
-import { runAdminPage } from '@/lib/adminPageHelpers';
+import { runAdminSlugMetadata, runAdminSlugPage } from '@/lib/adminPageHelpers';
 
 type Params = { slug: string };
 type SearchParams = { variant?: string; layout?: string; annotate?: string };
@@ -17,19 +17,16 @@ type SearchParams = { variant?: string; layout?: string; annotate?: string };
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({ params }: { params: Params | Promise<Params> }): Promise<Metadata> {
-  return runAdminMetadata(async () => {
-    const resolvedParams = await Promise.resolve(params as Params);
-    const post = getPostBySlug(resolvedParams.slug);
-    if (!post) {
-      return { title: 'Draft not found' };
-    }
-
-    return {
+  return runAdminSlugMetadata(
+    params,
+    getPostBySlug,
+    (post) => ({
       title: `[DRAFT] ${post.title}`,
       description: post.summary,
       robots: { index: false, follow: false },
-    };
-  });
+    }),
+    () => ({ title: 'Draft not found' }),
+  );
 }
 
 export default async function DraftPreviewPage({
@@ -39,18 +36,14 @@ export default async function DraftPreviewPage({
   params: Params | Promise<Params>;
   searchParams: SearchParams | Promise<SearchParams>;
 }) {
-  return runAdminPage(async () => {
-    const resolvedParams = await Promise.resolve(params as Params);
-    const resolvedSearchParams = await Promise.resolve(searchParams as SearchParams);
-    const requestedSlug = resolvedParams.slug;
+  return runAdminSlugPage(
+    params,
+    getPostBySlug,
+    async (post) => {
+    const resolvedSearchParams = await searchParams;
     const variant = resolvedSearchParams.variant || 'b'; // Default to variant B
     const layout = resolvedSearchParams.layout || '1'; // Default to layout 1
     const annotateMode = resolvedSearchParams.annotate === 'true';
-    const post = getPostBySlug(requestedSlug);
-
-    if (!post) {
-      notFound();
-    }
 
     if (post.status !== 'draft') {
       return (
@@ -508,4 +501,5 @@ export default async function DraftPreviewPage({
       </div>
     </div>
   );
+});
 }

@@ -1,8 +1,7 @@
 import { redirect } from 'next/navigation';
-import { auth } from './nextAuth';
-import { cache } from 'react';
+import { getCachedSession } from './nextAuth';
 
-export const getAdminSession = cache(async () => auth());
+export const getAdminSession = getCachedSession;
 
 export async function requireAdminSession() {
   const session = await getAdminSession();

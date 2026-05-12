@@ -1,5 +1,6 @@
 import { requireAdminSession } from '@/lib/adminSession';
 import { type ActionState } from '@/lib/formActions';
+import { redirect } from 'next/navigation';
 
 function isRedirectError(error: unknown): error is { digest: string } {
   return !!(
@@ -29,6 +30,28 @@ export async function runAdminAction(
     message,
     success: false,
   }));
+}
+
+type RedirectDestination<T> = string | ((result: T) => string | undefined);
+
+export async function runAdminActionAndRedirect<T extends ActionState>(
+  action: () => Promise<T>,
+  fallbackErrorMessage: string,
+  destination: RedirectDestination<T>,
+): Promise<T> {
+  const result = await runAdminOperation<T>(action, fallbackErrorMessage, (message) => ({
+    message,
+    success: false,
+  } as T));
+  if (!result.success) {
+    return result;
+  }
+
+  const url = typeof destination === 'function' ? destination(result) : destination;
+  if (url) {
+    redirect(url);
+  }
+  return result;
 }
 
 type ErrorResultFactory<T> = (message: string) => T;

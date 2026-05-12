@@ -12,7 +12,7 @@ export function generateStaticParams(): Params[] {
 }
 
 export async function generateMetadata({ params }: { params: Params | Promise<Params> }): Promise<Metadata> {
-  const { tag: rawTag } = await Promise.resolve(params);
+  const { tag: rawTag } = await params;
   const tag = decodeURIComponent(rawTag);
   const posts = getPosts().filter((post) => post.tags?.includes(tag));
   if (posts.length === 0) {
@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: { params: Params | Promise<Pa
 }
 
 export default async function PostTagPage({ params }: { params: Params | Promise<Params> }) {
-  const { tag: rawTag } = await Promise.resolve(params);
+  const { tag: rawTag } = await params;
   const tag = decodeURIComponent(rawTag);
   const posts = getPosts().filter((post) => post.tags?.includes(tag));
   if (posts.length === 0) {

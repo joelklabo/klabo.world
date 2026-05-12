@@ -1,6 +1,5 @@
 'use server';
 
-import { redirect } from 'next/navigation';
 import { after } from 'next/server';
 import { z } from 'zod';
 import { upsertApp, deleteApp, type AppInput } from '@/lib/appPersistence';
@@ -9,7 +8,7 @@ import { withSpan } from '@/lib/telemetry';
 import { optionalUrlField, parseNewlineList, requiredTextField } from '@/lib/adminFormSchemas';
 import { parseFormData, type ActionState as SharedActionState } from '@/lib/formActions';
 import { normalizeSlug } from '@/lib/slugUtils';
-import { getFormSlug, runAdminAction } from '@/lib/adminActionHelpers';
+import { getFormSlug, runAdminActionAndRedirect } from '@/lib/adminActionHelpers';
 
 const appSchema = z.object({
   name: requiredTextField('Name'),
@@ -30,7 +29,7 @@ export async function upsertAppAction(
   prevState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const result = await runAdminAction(async () => {
+  const result = await runAdminActionAndRedirect(async () => {
     const parsed = parseFormData(appSchema, formData);
     if (!parsed.ok) {
       return parsed.state;
@@ -64,20 +63,15 @@ export async function upsertAppAction(
 
     revalidateAppCache(input.slug);
     return { message: 'App saved', success: true };
-  }, 'Failed to save app');
-
-  if (!result.success) {
-    return result;
-  }
-
-  redirect('/admin/apps');
+  }, 'Failed to save app', '/admin/apps');
+  return result;
 }
 
 export async function deleteAppAction(
   prevState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const result = await runAdminAction(async () => {
+  const result = await runAdminActionAndRedirect(async () => {
     const slug = getFormSlug(formData, 'app');
     await deleteApp(slug);
 
@@ -89,11 +83,6 @@ export async function deleteAppAction(
 
     revalidateAppCache();
     return { message: 'App deleted', success: true };
-  }, 'Failed to delete app');
-
-  if (!result.success) {
-    return result;
-  }
-
-  redirect('/admin/apps');
+  }, 'Failed to delete app', '/admin/apps');
+  return result;
 }

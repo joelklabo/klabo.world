@@ -15,7 +15,7 @@ type AdminSearchParams = {
 
 export default async function AdminLanding({ searchParams }: { searchParams?: AdminSearchParams | Promise<AdminSearchParams> }) {
   const session = await getAdminSession();
-  const resolvedSearchParams = searchParams ? await Promise.resolve(searchParams as AdminSearchParams) : undefined;
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
   const posts = session?.user ? await getPostsForAdmin() : [];
 
   if (!session?.user) {

@@ -7,6 +7,7 @@ import { MDXContent } from '@/components/mdx-content';
 import { ContentDate } from '@/components/content-date';
 import { getPublicSiteUrl } from '@/lib/public-env';
 import { LightningTipWidget } from '@/components/lightning';
+import { runPublicSlugMetadata, runPublicSlugPage } from '@/lib/publicPageHelpers';
 
 type Params = { slug: string };
 
@@ -25,96 +26,94 @@ export function generateStaticParams(): Params[] {
 }
 
 export async function generateMetadata({ params }: { params: Params | Promise<Params> }): Promise<Metadata> {
-  const resolvedParams = await Promise.resolve(params as Params);
-  const post = getPostBySlug(resolvedParams.slug);
-  if (!post) {
-    return { title: 'Post not found' };
-  }
+  return runPublicSlugMetadata(
+    params,
+    getPostBySlug,
+    (post) => {
+      const siteUrl = getPublicSiteUrl();
+      const canonicalPath = `/posts/${post.slug}`;
+      const publishedTime = post.publishDate ?? post.date;
+      const heroImage = post.featuredImage ?? DEFAULT_POST_HERO_IMAGE;
 
-  const siteUrl = getPublicSiteUrl();
-  const canonicalPath = `/posts/${post.slug}`;
-  const publishedTime = post.publishDate ?? post.date;
-  const heroImage = post.featuredImage ?? DEFAULT_POST_HERO_IMAGE;
-
-  return {
-    title: post.title,
-    description: post.summary,
-    alternates: { canonical: canonicalPath },
-    openGraph: {
-      type: 'article',
-      url: canonicalPath,
-      title: post.title,
-      description: post.summary,
-      publishedTime,
-      tags: post.tags ?? [],
-      images: [
-        {
-          url: new URL(heroImage, siteUrl),
-          width: 1600,
-          height: 900,
-          alt: post.title,
-          type: getImageMimeType(heroImage),
+      return {
+        title: post.title,
+        description: post.summary,
+        alternates: { canonical: canonicalPath },
+        openGraph: {
+          type: 'article',
+          url: canonicalPath,
+          title: post.title,
+          description: post.summary,
+          publishedTime,
+          tags: post.tags ?? [],
+          images: [
+            {
+              url: new URL(heroImage, siteUrl),
+              width: 1600,
+              height: 900,
+              alt: post.title,
+              type: getImageMimeType(heroImage),
+            },
+          ],
         },
-      ],
+        twitter: {
+          card: 'summary_large_image',
+          title: post.title,
+          description: post.summary,
+          images: [new URL(heroImage, siteUrl)],
+        },
+      };
     },
-    twitter: {
-      card: 'summary_large_image',
-      title: post.title,
-      description: post.summary,
-      images: [new URL(heroImage, siteUrl)],
-    },
-  };
+    () => ({ title: 'Post not found' }),
+  );
 }
 
 export default async function PostPage({ params }: { params: Params | Promise<Params> }) {
-  const resolvedParams = await Promise.resolve(params as Params);
-  const requestedSlug = resolvedParams.slug;
-  const postCandidate = getPostBySlug(requestedSlug);
-  if (!postCandidate) {
-    notFound();
-  }
-  const post = postCandidate;
-  if (normalizePostSlug(post.slug) !== normalizePostSlug(requestedSlug)) {
-    permanentRedirect(`/posts/${post.slug}`);
-  }
-  const rawBody = post.body?.raw;
-  const bodyCode = post.body?.code;
-  if (!rawBody || !bodyCode) {
-    notFound();
-  }
-  const posts = getPosts();
-  const index = posts.findIndex((entry) => entry.slug === post.slug);
-  const previous = posts[index - 1];
-  const next = posts[index + 1];
-  const readingTime = Math.max(1, Math.round(rawBody.split(/\s+/).length / 200));
-  const siteUrl = getPublicSiteUrl();
-  const canonicalUrl = `${siteUrl}/posts/${post.slug}`;
-  const lightningAddress = post.lightningAddress ?? 'joel@klabo.world';
-  const publishedDate = post.publishDate ?? post.date;
-  const heroImage = post.featuredImage ?? DEFAULT_POST_HERO_IMAGE;
-  const heroImageUrl = new URL(heroImage, siteUrl).toString();
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'BlogPosting',
-    headline: post.title,
-    description: post.summary,
-    datePublished: publishedDate,
-    dateModified: publishedDate,
-    url: canonicalUrl,
-    mainEntityOfPage: {
-      '@type': 'WebPage',
-      '@id': canonicalUrl,
-    },
-    image: [heroImageUrl],
-    keywords: post.tags ?? [],
-    publisher: {
-      '@type': 'Organization',
-      name: 'klabo.world',
-      url: siteUrl,
-    },
-  };
+  return runPublicSlugPage(
+    params,
+    getPostBySlug,
+    (post, requestedSlug) => {
+      if (normalizePostSlug(post.slug) !== normalizePostSlug(requestedSlug)) {
+        permanentRedirect(`/posts/${post.slug}`);
+      }
+      const rawBody = post.body?.raw;
+      const bodyCode = post.body?.code;
+      if (!rawBody || !bodyCode) {
+        notFound();
+      }
+      const posts = getPosts();
+      const index = posts.findIndex((entry) => entry.slug === post.slug);
+      const previous = posts[index - 1];
+      const next = posts[index + 1];
+      const readingTime = Math.max(1, Math.round(rawBody.split(/\s+/).length / 200));
+      const siteUrl = getPublicSiteUrl();
+      const canonicalUrl = `${siteUrl}/posts/${post.slug}`;
+      const lightningAddress = post.lightningAddress ?? 'joel@klabo.world';
+      const publishedDate = post.publishDate ?? post.date;
+      const heroImage = post.featuredImage ?? DEFAULT_POST_HERO_IMAGE;
+      const heroImageUrl = new URL(heroImage, siteUrl).toString();
+      const jsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        headline: post.title,
+        description: post.summary,
+        datePublished: publishedDate,
+        dateModified: publishedDate,
+        url: canonicalUrl,
+        mainEntityOfPage: {
+          '@type': 'WebPage',
+          '@id': canonicalUrl,
+        },
+        image: [heroImageUrl],
+        keywords: post.tags ?? [],
+        publisher: {
+          '@type': 'Organization',
+          name: 'klabo.world',
+          url: siteUrl,
+        },
+      };
 
-  return (
+      return (
     <div className="relative min-h-screen overflow-x-hidden bg-background text-foreground">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <section className="relative isolate min-h-[560px] overflow-hidden border-b border-border/60 sm:min-h-[620px]">
@@ -252,5 +251,7 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
         </div>
       </div>
     </div>
+    },
+    () => notFound(),
   );
 }

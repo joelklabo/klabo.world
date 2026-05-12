@@ -15,8 +15,8 @@ function clampText(value: string, max: number) {
 }
 
 export async function GET(_req: Request, context: { params: Params | Promise<Params> }) {
-  const resolvedParams = await Promise.resolve(context.params as Params);
-  const post = allPosts.find((entry) => entry.slug === resolvedParams.slug);
+  const { slug } = await context.params;
+  const post = allPosts.find((entry) => entry.slug === slug);
   const title = clampText(post?.title ?? 'Post', 84);
   const summary = clampText(post?.summary ?? 'Read the latest writing on klabo.world.', 180);
   const tags = (post?.tags ?? []).slice(0, 4);

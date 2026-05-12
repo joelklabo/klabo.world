@@ -1,6 +1,5 @@
 'use server';
 
-import { redirect } from 'next/navigation';
 import { after } from 'next/server';
 import { z } from 'zod';
 import {
@@ -16,7 +15,7 @@ import {
 import { withSpan } from '@/lib/telemetry';
 import { optionalUrlField, parseListField, requiredTextField } from '@/lib/adminFormSchemas';
 import { parseFormData, type ActionState as SharedActionState } from '@/lib/formActions';
-import { getFormSlug, runAdminAction } from '@/lib/adminActionHelpers';
+import { getFormSlug, runAdminActionAndRedirect } from '@/lib/adminActionHelpers';
 
 const dashboardSchema = z
   .object({
@@ -58,15 +57,16 @@ export async function createDashboardAction(
   formData: FormData,
 ): Promise<ActionState> {
   let slug: string | undefined;
-  const result = await runAdminAction(async () => {
-    const parsed = parseFormData(dashboardSchema, formData);
-    if (!parsed.ok) {
-      return parsed.state;
-    }
+  const result = await runAdminActionAndRedirect(
+    async () => {
+      const parsed = parseFormData(dashboardSchema, formData);
+      if (!parsed.ok) {
+        return parsed.state;
+      }
 
-    const input = parsed.data;
-    const createResult = await createDashboard(input);
-    slug = createResult.slug;
+      const input = parsed.data;
+      const createResult = await createDashboard(input);
+      slug = createResult.slug;
 
     after(async () => {
       await withSpan('admin.dashboard.create', async (span) => {
@@ -74,17 +74,13 @@ export async function createDashboardAction(
       });
     });
 
-    revalidateDashboardCache(slug);
-    return { message: 'Dashboard created', success: true };
-  }, 'Failed to create dashboard');
-
-  if (!result.success) {
-    return result;
-  }
-  if (slug) {
-    redirect(`/admin/dashboards/${slug}`);
-  }
-  return { message: 'Dashboard created', success: true };
+      revalidateDashboardCache(slug);
+      return { message: 'Dashboard created', success: true };
+    },
+    'Failed to create dashboard',
+    () => (slug ? `/admin/dashboards/${slug}` : undefined),
+  );
+  return result;
 }
 
 export async function updateDashboardAction(
@@ -92,37 +88,34 @@ export async function updateDashboardAction(
   formData: FormData,
 ): Promise<ActionState> {
   let slug: string | undefined;
-  const result = await runAdminAction(async () => {
-    slug = getFormSlug(formData, 'dashboard');
-    const parsed = parseFormData(dashboardSchema, formData);
-    if (!parsed.ok) {
-      return parsed.state;
-    }
+  const result = await runAdminActionAndRedirect(
+    async () => {
+      slug = getFormSlug(formData, 'dashboard');
+      const parsed = parseFormData(dashboardSchema, formData);
+      if (!parsed.ok) {
+        return parsed.state;
+      }
 
-    const input = parsed.data;
-    await updateDashboard(slug, input);
+      const input = parsed.data;
+      await updateDashboard(slug, input);
 
-    after(async () => {
-      await withSpan('admin.dashboard.update', async (span) => {
-        span.setAttributes({ 'dashboard.slug': slug });
+      after(async () => {
+        await withSpan('admin.dashboard.update', async (span) => {
+          span.setAttributes({ 'dashboard.slug': slug });
+        });
       });
-    });
 
-    revalidateDashboardCache(slug);
-    return { message: 'Dashboard updated', success: true };
-  }, 'Failed to update dashboard');
-
-  if (!result.success) {
-    return result;
-  }
-  if (slug) {
-    redirect(`/admin/dashboards/${slug}`);
-  }
-  return { message: 'Dashboard updated', success: true };
+      revalidateDashboardCache(slug);
+      return { message: 'Dashboard updated', success: true };
+    },
+    'Failed to update dashboard',
+    () => (slug ? `/admin/dashboards/${slug}` : undefined),
+  );
+  return result;
 }
 
 export async function deleteDashboardAction(formData: FormData): Promise<ActionState> {
-  const result = await runAdminAction(async () => {
+  const result = await runAdminActionAndRedirect(async () => {
     const slug = getFormSlug(formData, 'dashboard');
     await deleteDashboard(slug);
 
@@ -134,11 +127,6 @@ export async function deleteDashboardAction(formData: FormData): Promise<ActionS
 
     revalidateDashboardCache();
     return { message: 'Dashboard deleted', success: true };
-  }, 'Failed to delete dashboard');
-
-  if (!result.success) {
-    return result;
-  }
-
-  redirect('/admin/dashboards');
+  }, 'Failed to delete dashboard', '/admin/dashboards');
+  return result;
 }
