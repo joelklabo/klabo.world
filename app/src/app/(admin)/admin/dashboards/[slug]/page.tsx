@@ -10,19 +10,9 @@ import { requireAdminSession } from "@/lib/adminSession";
 import { formatUtcDate } from "@/lib/dateDisplay";
 import { ContentDate } from "@/components/content-date";
 import { Button } from "@/components/ui/button";
+import { getHostnameForDisplay } from "@/lib/urlDisplay";
 
 export const dynamic = "force-dynamic";
-
-function getHostname(url?: string | null) {
-  if (!url) {
-    return "dashboard";
-  }
-  try {
-    return new URL(url).hostname;
-  } catch {
-    return url.replace(/^https?:\/\//, "");
-  }
-}
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -141,7 +131,7 @@ export default async function DashboardDetailPage({ params }: PageProps) {
                 </p>
                 <Button asChild size="xs" className="mt-4">
                   <a href={linkUrl} target="_blank" rel="noreferrer">
-                    Open {getHostname(linkUrl)}
+                    Open {getHostnameForDisplay(linkUrl)}
                     <span className="sr-only"> (opens in new tab)</span>
                   </a>
                 </Button>
