@@ -1,23 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { requireAdminSession } from '@/lib/adminSession';
 import { getDashboardBySlugForAdmin } from '@/lib/dashboards';
+import { runAdminRoute } from '@/lib/adminRouteHelpers';
 import { loadDashboardLogs } from '@/lib/dashboardLogs';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest, context: { params: Promise<{ slug: string }> }) {
-  const { slug } = await context.params;
-  await requireAdminSession();
-  const dashboard = await getDashboardBySlugForAdmin(slug);
-  if (!dashboard) {
-    return NextResponse.json({ message: 'Dashboard not found' }, { status: 404 });
-  }
+  return runAdminRoute(async () => {
+    const { slug } = await context.params;
+    const dashboard = await getDashboardBySlugForAdmin(slug);
+    if (!dashboard) {
+      return NextResponse.json({ message: 'Dashboard not found' }, { status: 404 });
+    }
 
-  const search = req.nextUrl.searchParams.get('search') ?? undefined;
-  const severity = req.nextUrl.searchParams.get('severity') ?? undefined;
-  const limitParam = Number(req.nextUrl.searchParams.get('limit'));
-  const limit = Number.isFinite(limitParam) ? limitParam : undefined;
+    const search = req.nextUrl.searchParams.get('search') ?? undefined;
+    const severity = req.nextUrl.searchParams.get('severity') ?? undefined;
+    const limitParam = Number(req.nextUrl.searchParams.get('limit'));
+    const limit = Number.isFinite(limitParam) ? limitParam : undefined;
 
-  const state = await loadDashboardLogs(dashboard, { search, severity, limit });
-  return NextResponse.json(state);
+    const state = await loadDashboardLogs(dashboard, { search, severity, limit });
+    return NextResponse.json(state);
+  });
 }

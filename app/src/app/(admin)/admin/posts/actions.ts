@@ -4,7 +4,6 @@ import { redirect } from 'next/navigation';
 import { after } from 'next/server';
 import { z } from 'zod';
 import { createPost, deletePost, updatePost, updatePostXPostId } from '@/lib/postPersistence';
-import { requireAdminSession } from '@/lib/adminSession';
 import { revalidatePostCache } from '@/lib/adminRevalidation';
 import { withSpan } from '@/lib/telemetry';
 import { getEditablePostBySlug } from '@/lib/posts';
@@ -12,6 +11,8 @@ import { isXPublishingEnabled, publishToX } from '@/lib/x-publisher';
 import { env } from '@/lib/env';
 import { requiredTextField, parseListField } from '@/lib/adminFormSchemas';
 import { parseFormValues, type ActionState as SharedActionState } from '@/lib/formActions';
+import { requireAdminSession } from '@/lib/adminSession';
+import { getFormSlug, runAdminAction } from '@/lib/adminActionHelpers';
 
 const postSchema = z.object({
   title: requiredTextField('Title'),
@@ -49,9 +50,7 @@ export async function createPostAction(
   prevState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  let slug: string | undefined;
-  try {
-    await requireAdminSession();
+  const result = await runAdminAction(async () => {
     // Checkbox handling: if unchecked, it's missing from formData.
     // We can manually set it to 'false' if missing, or let Zod handle optional.
     // But Zod coerce boolean treats "on" as true, missing as undefined.
@@ -65,24 +64,22 @@ export async function createPostAction(
 
     const data = parsed.data;
     const input = buildPostPersistenceInput(data);
-
     const createResult = await createPost(input);
-    slug = createResult.slug;
 
     after(async () => {
       await withSpan('admin.post.create', async (span) => {
-        span.setAttributes({ 'post.title': input.title, 'post.slug': slug! });
+        span.setAttributes({ 'post.title': input.title, 'post.slug': createResult.slug });
       });
     });
 
-    revalidatePostCache(slug);
-  } catch (error) {
-    return {
-      message: error instanceof Error ? error.message : 'Failed to create post',
-      success: false,
-    };
+    revalidatePostCache(createResult.slug);
+    return { message: 'Post created', success: true };
+  }, 'Failed to create post');
+
+  if (!result.success) {
+    return result;
   }
-  
+
   redirect('/admin');
 }
 
@@ -90,17 +87,8 @@ export async function updatePostAction(
   prevState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  let slug: string | undefined;
-  let shouldAutoPost = false;
-  let postTitle = '';
-  let postSummary = '';
-
-  try {
-    await requireAdminSession();
-    slug = formData.get('slug')?.toString().trim();
-    if (!slug) {
-      throw new Error('Missing post slug');
-    }
+  const result = await runAdminAction(async () => {
+    const slug = getFormSlug(formData, 'post');
 
     // Get existing post state to detect publish transition
     const existingPost = await getEditablePostBySlug(slug);
@@ -118,6 +106,9 @@ export async function updatePostAction(
     const data = parsed.data;
     const input = buildPostPersistenceInput(data);
     const now = new Date();
+    let shouldAutoPost = false;
+    let postTitle = '';
+    let postSummary = '';
 
     await updatePost(slug, input);
 
@@ -135,11 +126,11 @@ export async function updatePostAction(
 
     after(async () => {
       await withSpan('admin.post.update', async (span) => {
-        span.setAttributes({ 'post.slug': slug! });
+        span.setAttributes({ 'post.slug': slug });
       });
 
       // Auto-post to X if this is an immediate publish
-      if (shouldAutoPost && slug) {
+      if (shouldAutoPost) {
         const siteUrl = env.SITE_URL;
         const postUrl = `${siteUrl}/posts/${slug}`;
         const result = await publishToX({
@@ -157,12 +148,13 @@ export async function updatePostAction(
     });
 
     revalidatePostCache(slug);
-  } catch (error) {
-    return {
-      message: error instanceof Error ? error.message : 'Failed to update post',
-      success: false,
-    };
+    return { message: 'Post updated', success: true };
+  }, 'Failed to update post');
+
+  if (!result.success) {
+    return result;
   }
+
   redirect('/admin');
 }
 
@@ -170,13 +162,8 @@ export async function deletePostAction(
   prevState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  try {
-    await requireAdminSession();
-    const slug = formData.get('slug')?.toString().trim();
-    if (!slug) {
-      throw new Error('Missing post slug');
-    }
-
+  const result = await runAdminAction(async () => {
+    const slug = getFormSlug(formData, 'post');
     await deletePost(slug);
 
     after(async () => {
@@ -186,12 +173,13 @@ export async function deletePostAction(
     });
 
     revalidatePostCache();
-  } catch (error) {
-    return {
-      message: error instanceof Error ? error.message : 'Failed to delete post',
-      success: false,
-    };
+    return { message: 'Post deleted', success: true };
+  }, 'Failed to delete post');
+
+  if (!result.success) {
+    return result;
   }
+
   redirect('/admin');
 }
 
@@ -208,7 +196,6 @@ export type ShareToXResult = {
 export async function shareToXAction(slug: string): Promise<ShareToXResult> {
   try {
     await requireAdminSession();
-
     const post = await getEditablePostBySlug(slug);
     if (!post) {
       return { success: false, error: 'Post not found' };

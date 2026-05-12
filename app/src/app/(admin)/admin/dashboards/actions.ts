@@ -8,7 +8,6 @@ import {
   deleteDashboard,
   updateDashboard,
 } from '@/lib/dashboardPersistence';
-import { requireAdminSession } from '@/lib/adminSession';
 import { revalidateDashboardCache } from '@/lib/adminRevalidation';
 import {
   DASHBOARD_PANEL_REQUIREMENTS,
@@ -17,6 +16,7 @@ import {
 import { withSpan } from '@/lib/telemetry';
 import { optionalUrlField, parseListField, requiredTextField } from '@/lib/adminFormSchemas';
 import { parseFormData, type ActionState as SharedActionState } from '@/lib/formActions';
+import { getFormSlug, runAdminAction } from '@/lib/adminActionHelpers';
 
 const dashboardSchema = z
   .object({
@@ -58,8 +58,7 @@ export async function createDashboardAction(
   formData: FormData,
 ): Promise<ActionState> {
   let slug: string | undefined;
-  try {
-    await requireAdminSession();
+  const result = await runAdminAction(async () => {
     const parsed = parseFormData(dashboardSchema, formData);
     if (!parsed.ok) {
       return parsed.state;
@@ -71,16 +70,16 @@ export async function createDashboardAction(
 
     after(async () => {
       await withSpan('admin.dashboard.create', async (span) => {
-        span.setAttributes({ 'dashboard.title': input.title, 'dashboard.slug': slug! });
+        span.setAttributes({ 'dashboard.title': input.title, 'dashboard.slug': slug });
       });
     });
 
     revalidateDashboardCache(slug);
-  } catch (error) {
-    return {
-      message: error instanceof Error ? error.message : 'Failed to create dashboard',
-      success: false,
-    };
+    return { message: 'Dashboard created', success: true };
+  }, 'Failed to create dashboard');
+
+  if (!result.success) {
+    return result;
   }
   if (slug) {
     redirect(`/admin/dashboards/${slug}`);
@@ -93,33 +92,28 @@ export async function updateDashboardAction(
   formData: FormData,
 ): Promise<ActionState> {
   let slug: string | undefined;
-  try {
-    await requireAdminSession();
-    slug = formData.get('slug')?.toString().trim();
-    if (!slug) {
-      throw new Error('Missing dashboard slug');
-    }
-
+  const result = await runAdminAction(async () => {
+    slug = getFormSlug(formData, 'dashboard');
     const parsed = parseFormData(dashboardSchema, formData);
     if (!parsed.ok) {
       return parsed.state;
     }
 
     const input = parsed.data;
-    await updateDashboard(slug!, input);
+    await updateDashboard(slug, input);
 
     after(async () => {
       await withSpan('admin.dashboard.update', async (span) => {
-        span.setAttributes({ 'dashboard.slug': slug! });
+        span.setAttributes({ 'dashboard.slug': slug });
       });
     });
 
     revalidateDashboardCache(slug);
-  } catch (error) {
-    return {
-      message: error instanceof Error ? error.message : 'Failed to update dashboard',
-      success: false,
-    };
+    return { message: 'Dashboard updated', success: true };
+  }, 'Failed to update dashboard');
+
+  if (!result.success) {
+    return result;
   }
   if (slug) {
     redirect(`/admin/dashboards/${slug}`);
@@ -127,20 +121,24 @@ export async function updateDashboardAction(
   return { message: 'Dashboard updated', success: true };
 }
 
-export async function deleteDashboardAction(formData: FormData) {
-  await requireAdminSession();
-  const slug = formData.get('slug')?.toString().trim();
-  if (!slug) {
-    throw new Error('Missing dashboard slug');
-  }
-  await deleteDashboard(slug);
+export async function deleteDashboardAction(formData: FormData): Promise<ActionState> {
+  const result = await runAdminAction(async () => {
+    const slug = getFormSlug(formData, 'dashboard');
+    await deleteDashboard(slug);
 
-  after(async () => {
-    await withSpan('admin.dashboard.delete', async (span) => {
-      span.setAttributes({ 'dashboard.slug': slug });
+    after(async () => {
+      await withSpan('admin.dashboard.delete', async (span) => {
+        span.setAttributes({ 'dashboard.slug': slug });
+      });
     });
-  });
 
-  revalidateDashboardCache();
+    revalidateDashboardCache();
+    return { message: 'Dashboard deleted', success: true };
+  }, 'Failed to delete dashboard');
+
+  if (!result.success) {
+    return result;
+  }
+
   redirect('/admin/dashboards');
 }

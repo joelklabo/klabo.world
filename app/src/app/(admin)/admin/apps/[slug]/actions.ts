@@ -3,13 +3,13 @@
 import { redirect } from 'next/navigation';
 import { after } from 'next/server';
 import { z } from 'zod';
-import { requireAdminSession } from '@/lib/adminSession';
 import { upsertApp, deleteApp, type AppInput } from '@/lib/appPersistence';
 import { revalidateAppCache } from '@/lib/adminRevalidation';
 import { withSpan } from '@/lib/telemetry';
 import { optionalUrlField, parseNewlineList, requiredTextField } from '@/lib/adminFormSchemas';
 import { parseFormData, type ActionState as SharedActionState } from '@/lib/formActions';
 import { normalizeSlug } from '@/lib/slugUtils';
+import { getFormSlug, runAdminAction } from '@/lib/adminActionHelpers';
 
 const appSchema = z.object({
   name: requiredTextField('Name'),
@@ -30,8 +30,7 @@ export async function upsertAppAction(
   prevState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  try {
-    await requireAdminSession();
+  const result = await runAdminAction(async () => {
     const parsed = parseFormData(appSchema, formData);
     if (!parsed.ok) {
       return parsed.state;
@@ -64,13 +63,13 @@ export async function upsertAppAction(
     });
 
     revalidateAppCache(input.slug);
-  } catch (error) {
-    return {
-      message: error instanceof Error ? error.message : 'Failed to save app',
-      success: false,
-    };
+    return { message: 'App saved', success: true };
+  }, 'Failed to save app');
+
+  if (!result.success) {
+    return result;
   }
-  
+
   redirect('/admin/apps');
 }
 
@@ -78,13 +77,8 @@ export async function deleteAppAction(
   prevState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  try {
-    await requireAdminSession();
-    const slug = formData.get('slug')?.toString().trim();
-    if (!slug) {
-      throw new Error('Missing app slug');
-    }
-
+  const result = await runAdminAction(async () => {
+    const slug = getFormSlug(formData, 'app');
     await deleteApp(slug);
 
     after(async () => {
@@ -94,11 +88,12 @@ export async function deleteAppAction(
     });
 
     revalidateAppCache();
-  } catch (error) {
-    return {
-      message: error instanceof Error ? error.message : 'Failed to delete app',
-      success: false,
-    };
+    return { message: 'App deleted', success: true };
+  }, 'Failed to delete app');
+
+  if (!result.success) {
+    return result;
   }
+
   redirect('/admin/apps');
 }
