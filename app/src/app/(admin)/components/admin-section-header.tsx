@@ -2,8 +2,8 @@ import type { ReactNode } from 'react';
 
 type AdminSectionHeaderProps = {
   label: string;
-  title: string;
-  description?: string;
+  title: ReactNode;
+  description?: ReactNode;
   action?: ReactNode;
 };
 

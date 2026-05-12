@@ -2,6 +2,7 @@ import Link from "next/link";
 import { DashboardForm } from "@/app/(admin)/components/dashboard-form";
 import { DashboardChart } from "@/app/(admin)/components/dashboard-chart";
 import { DashboardLogsPanel } from "@/app/(admin)/components/dashboard-logs-panel";
+import { AdminSectionHeader } from '@/app/(admin)/components/admin-section-header';
 import { deleteDashboardAction, updateDashboardAction } from "../actions";
 import { getDashboardBySlugForAdmin } from "@/lib/dashboards";
 import { loadDashboardChartState } from "@/lib/dashboardCharts";
@@ -37,26 +38,19 @@ export default async function DashboardDetailPage({ params }: PageProps) {
 
     return (
       <div className="space-y-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">Dashboard</p>
-            <h1 className="text-3xl font-bold text-foreground" data-testid="dashboard-title">
-              {dashboard.title}
-            </h1>
-            <p
-              className="text-sm text-muted-foreground"
-              data-testid="dashboard-summary-text"
+        <AdminSectionHeader
+          label="Dashboard"
+          title={<span data-testid="dashboard-title">{dashboard.title}</span>}
+          description={<span data-testid="dashboard-summary-text">{dashboard.summary}</span>}
+          action={
+            <Link
+              href="/admin/dashboards"
+              className="text-sm font-semibold text-muted-foreground hover:text-foreground rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
             >
-              {dashboard.summary}
-            </p>
-          </div>
-          <Link
-            href="/admin/dashboards"
-            className="text-sm font-semibold text-muted-foreground hover:text-foreground rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
-          >
-            ← Back to dashboards
-          </Link>
-        </div>
+              ← Back to dashboards
+            </Link>
+          }
+        />
 
         {showPanelPreview && (
           <div className="rounded-2xl border border-border/60 bg-card p-6 shadow-[0_20px_45px_rgba(6,10,20,0.35)]">
