@@ -4,6 +4,7 @@ import { useCallback, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { ImageUploadStatus } from './image-upload-status';
 import { useImageUpload } from './image-upload-hook';
 
 type Props = {
@@ -69,9 +70,12 @@ export function ImageListUploadField({
           Upload + append URL
         </Button>
         <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={onFileChange} aria-label="Upload image files" />
-        {status === 'uploading' && <span className="text-muted-foreground" role="status" aria-live="polite">Uploading…</span>}
-        {status === 'success' && <span className="text-muted-foreground" role="status" aria-live="polite">Added latest upload.</span>}
-        {status === 'error' && error && <span className="text-destructive" role="alert" aria-live="assertive">{error}</span>}
+        <ImageUploadStatus
+          status={status}
+          successMessage="Added latest upload."
+          errorMessage={error}
+          successRole="status"
+        />
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { ImageUploadStatus } from './image-upload-status';
 import { useImageUpload } from './image-upload-hook';
 
 type Props = {
@@ -86,20 +87,15 @@ export function ImageUploadField({
           Upload image
         </Button>
         <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={onFileChange} aria-label="Upload image file" />
-        {status === 'uploading' && <span className="text-muted-foreground" role="status" aria-live="polite">Uploading…</span>}
-        {status === 'success' && uploadedPath && <span className="text-primary">Uploaded! {uploadedPath}</span>}
-        {status === 'quarantined' && (
-          <span className="text-amber-600">
-            Upload queued for scanning. We will publish the asset once it clears.
-          </span>
-        )}
-        {status === 'rate-limited' && (
-          <span className="text-amber-600">
-            {error ?? 'Upload rate limit reached.'}
-            {retryAfterSeconds ? ` Try again in ${retryAfterSeconds}s.` : ''}
-          </span>
-        )}
-        {status === 'error' && error && <span className="text-destructive" role="alert" aria-live="assertive">{error}</span>}
+        <ImageUploadStatus
+          status={status}
+          successMessage={uploadedPath ? `Uploaded! ${uploadedPath}` : null}
+          errorMessage={error}
+          successClassName="text-primary"
+          quarantinedMessage="Upload queued for scanning. We will publish the asset once it clears."
+          rateLimitedMessage={error ?? 'Upload rate limit reached.'}
+          retryAfterSeconds={retryAfterSeconds}
+        />
       </div>
     </div>
   );
