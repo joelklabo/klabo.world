@@ -1,4 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
+import {
+  DEFAULT_LIGHTNING_NODE_ALIAS,
+  DEFAULT_LIGHTNING_NODE_HOST,
+  DEFAULT_LIGHTNING_NODE_PORT,
+  DEFAULT_LIGHTNING_NODE_PUBKEY,
+} from '@/lib/site-config';
 
 const getLightningNodeStatusMock = vi.fn();
 
@@ -9,11 +15,11 @@ vi.mock('../src/lib/lightning-node-status', () => ({
 describe('lightning node status API', () => {
   it('returns only public connection status fields', async () => {
     getLightningNodeStatusMock.mockResolvedValueOnce({
-      alias: 'klabo.world',
-      pubkey: '0276dc1ed542d0d777b518f1bd05f042847f19f312718cf1303288119a0a789a68',
-      host: 'lnbits.klabo.world',
-      port: 9735,
-      uri: '0276dc1ed542d0d777b518f1bd05f042847f19f312718cf1303288119a0a789a68@lnbits.klabo.world:9735',
+      alias: DEFAULT_LIGHTNING_NODE_ALIAS,
+      pubkey: DEFAULT_LIGHTNING_NODE_PUBKEY,
+      host: DEFAULT_LIGHTNING_NODE_HOST,
+      port: DEFAULT_LIGHTNING_NODE_PORT,
+      uri: `${DEFAULT_LIGHTNING_NODE_PUBKEY}@${DEFAULT_LIGHTNING_NODE_HOST}:${DEFAULT_LIGHTNING_NODE_PORT}`,
       reachable: true,
       latencyMs: 42,
       checkedAt: '2026-05-03T18:00:00.000Z',
@@ -27,9 +33,9 @@ describe('lightning node status API', () => {
     expect(response.status).toBe(200);
     expect(response.headers.get('Cache-Control')).toContain('max-age=30');
     expect(payload).toMatchObject({
-      alias: 'klabo.world',
-      host: 'lnbits.klabo.world',
-      port: 9735,
+      alias: DEFAULT_LIGHTNING_NODE_ALIAS,
+      host: DEFAULT_LIGHTNING_NODE_HOST,
+      port: DEFAULT_LIGHTNING_NODE_PORT,
       reachable: true,
       latencyMs: 42,
       source: 'tcp-connect',

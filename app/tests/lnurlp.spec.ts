@@ -1,8 +1,30 @@
 import { createHash } from 'node:crypto';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { buildLightningAddressMetadata, normalizeLnurlUsername } from '../src/lib/lnurlp';
+import { LIGHTNING_NAMESPACE_PREFIX, SITE_CANONICAL_URL } from '@/lib/site-config';
 
 const fetchMock = vi.fn();
+const siteDomain = new URL(SITE_CANONICAL_URL).hostname;
+
+function atDomain(local: string): string {
+  return `${local}%40${siteDomain}`;
+}
+
+function lightningAddress(local: string): string {
+  return `${local}@${siteDomain}`;
+}
+
+function lightningAddressComment(username: string, namespace: string): string {
+  return `${LIGHTNING_NAMESPACE_PREFIX}${username}:${namespace}`;
+}
+
+function siteUrl(path: string): string {
+  return new URL(path, SITE_CANONICAL_URL).toString();
+}
+
+function doubleEncodedAtDomain(local: string): string {
+  return `${local}%2540${siteDomain}`;
+}
 
 vi.mock('@/lib/lnbits', () => ({
   getLnbitsBaseUrl: vi.fn(() => 'https://lnbits.test'),
@@ -11,7 +33,7 @@ vi.mock('@/lib/lnbits', () => ({
 }));
 
 vi.mock('@/lib/public-env', () => ({
-  getPublicSiteUrl: vi.fn(() => 'https://klabo.world'),
+  getPublicSiteUrl: vi.fn(() => SITE_CANONICAL_URL),
 }));
 
 beforeEach(() => {
@@ -31,19 +53,19 @@ describe('lnurlp normalization', () => {
   });
 
   it('drops domain suffix from raw lightning addresses', () => {
-    expect(normalizeLnurlUsername('Gary%40klabo.world')).toBe('Gary');
+    expect(normalizeLnurlUsername(atDomain('Gary'))).toBe('Gary');
   });
 
   it('decodes and trims whitespace', () => {
-    expect(normalizeLnurlUsername('  Hurt%40klabo.world  ')).toBe('Hurt');
+    expect(normalizeLnurlUsername(`  ${atDomain('Hurt')}  `)).toBe('Hurt');
   });
 });
 
 describe('lnurlp normalization edge cases', () => {
   it('handles encoded and double-encoded input', () => {
-    expect(normalizeLnurlUsername('Gary%2540klabo.world')).toBe('Gary');
+    expect(normalizeLnurlUsername(doubleEncodedAtDomain('Gary'))).toBe('Gary');
     expect(normalizeLnurlUsername('s%2540domain.org')).toBe('s');
-    expect(normalizeLnurlUsername('Gary%40klabo.world')).toBe('Gary');
+    expect(normalizeLnurlUsername(atDomain('Gary'))).toBe('Gary');
   });
 });
 
@@ -61,8 +83,8 @@ describe('lnurlp route handlers', () => {
     fetchMock.mockResolvedValueOnce(Response.json(payload, { status: 200 }));
 
     const { GET } = await import('@/app/.well-known/lnurlp/[username]/route');
-    const response = await GET(new Request('https://klabo.world/.well-known/lnurlp/Gary%40klabo.world'), {
-      params: Promise.resolve({ username: 'Gary%40klabo.world' }),
+    const response = await GET(new Request(siteUrl(`/.well-known/lnurlp/${atDomain('Gary')}`)), {
+      params: Promise.resolve({ username: atDomain('Gary') }),
     });
 
     expect(response.status).toBe(200);
@@ -71,7 +93,7 @@ describe('lnurlp route handlers', () => {
     expect(callbackUrl.pathname).toContain('/api/lnurlp/Gary/invoice');
     expect(callbackUrl.search).toBe('');
 
-    expect(responsePayload.metadata).toBe(buildLightningAddressMetadata('Gary@klabo.world'));
+    expect(responsePayload.metadata).toBe(buildLightningAddressMetadata(lightningAddress('Gary')));
     expect(response.headers.get('x-lnurlp-request-id')).toBeTruthy();
   });
 
@@ -79,7 +101,7 @@ describe('lnurlp route handlers', () => {
     fetchMock.mockRejectedValueOnce(new Error('upstream reset'));
 
     const { GET } = await import('@/app/.well-known/lnurlp/[username]/route');
-    const response = await GET(new Request('https://klabo.world/.well-known/lnurlp/test'), {
+    const response = await GET(new Request(siteUrl('/.well-known/lnurlp/test')), {
       params: Promise.resolve({ username: 'test' }),
     });
 
@@ -102,7 +124,7 @@ describe('lnurlp route handlers', () => {
     );
 
     const { GET } = await import('@/app/.well-known/lnurlp/[username]/route');
-    const response = await GET(new Request('https://klabo.world/.well-known/lnurlp/test'), {
+    const response = await GET(new Request(siteUrl('/.well-known/lnurlp/test')), {
       params: Promise.resolve({ username: 'test' }),
     });
 
@@ -120,9 +142,12 @@ describe('lnurlp route handlers', () => {
     );
 
     const { GET } = await import('@/app/api/lnurlp/[username]/invoice/route');
-    const response = await GET(new Request('https://klabo.world/api/lnurlp/Gary%40klabo.world/invoice?amount=1000&ns=test'), {
-      params: Promise.resolve({ username: 'Gary%40klabo.world' }),
-    });
+    const response = await GET(
+      new Request(siteUrl(`/api/lnurlp/${atDomain('Gary')}/invoice?amount=1000&ns=test`)),
+      {
+        params: Promise.resolve({ username: atDomain('Gary') }),
+      }
+    );
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(response.status).toBe(200);
@@ -131,10 +156,10 @@ describe('lnurlp route handlers', () => {
     const init = fetchMock.mock.calls[0]![1] as RequestInit;
     expect(init.method).toBe('POST');
     const body = JSON.parse(String(init.body)) as { amount: number; description_hash: string; extra: Record<string, string> };
-    const metadata = buildLightningAddressMetadata('Gary@klabo.world');
+    const metadata = buildLightningAddressMetadata(lightningAddress('Gary'));
     expect(body.amount).toBe(1);
     expect(body.description_hash).toBe(createHash('sha256').update(metadata, 'utf8').digest('hex'));
-    expect(body.extra.lnurlp_comment).toBe('klabo.world:Gary:test');
+    expect(body.extra.lnurlp_comment).toBe(lightningAddressComment('Gary', 'test'));
 
     const invoice = (await response.json()) as { pr: string; payment_hash: string };
     expect(invoice.pr).toBe('lnbc1abcdef');
@@ -149,9 +174,11 @@ describe('lnurlp route handlers', () => {
 
     const { GET } = await import('@/app/api/lnurlp/[username]/invoice/route');
     const response = await GET(
-      new Request('https://klabo.world/api/lnurlp/Gary%40klabo.world/invoice?rid=deadbeef?amount=1000&ns=abc'),
+      new Request(
+        siteUrl(`/api/lnurlp/${atDomain('Gary')}/invoice?rid=deadbeef?amount=1000&ns=abc`)
+      ),
       {
-        params: Promise.resolve({ username: 'Gary%40klabo.world' }),
+        params: Promise.resolve({ username: atDomain('Gary') }),
       }
     );
 
@@ -171,13 +198,13 @@ describe('lnurlp route handlers', () => {
     const { GET } = await import('@/app/api/lnurlp/[username]/invoice/route');
     const response = await GET(
       new Request(
-        'https://klabo.world/api/lnurlp/Can%40klabo.world/invoice?rid=oops%3Famount%3D1000&ns=Can%40klabo.world',
+        siteUrl(`/api/lnurlp/${atDomain('Can')}/invoice?rid=oops%3Famount%3D1000&ns=${atDomain('Can')}`),
         {
           method: 'GET',
         }
       ),
       {
-        params: Promise.resolve({ username: 'Can%40klabo.world' }),
+        params: Promise.resolve({ username: atDomain('Can') }),
       }
     );
 

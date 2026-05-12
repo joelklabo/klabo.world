@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { LIGHTNING_NAMESPACE_PREFIX, SITE_CANONICAL_URL } from '@/lib/site-config';
 
 const mocks = vi.hoisted(() => ({
   getLnbitsBaseUrl: vi.fn(),
@@ -23,6 +24,16 @@ beforeEach(() => {
   mocks.buildLnbitsHeaders.mockReturnValue({ Accept: 'application/json' });
 });
 
+const siteTipApiUrl = `${SITE_CANONICAL_URL}/api/tip-stats`;
+
+function namespaceComment(namespace: string): string {
+  return `${LIGHTNING_NAMESPACE_PREFIX}${namespace}`;
+}
+
+function namespaceUserComment(username: string, namespace: string): string {
+  return `${LIGHTNING_NAMESPACE_PREFIX}${username}:${namespace}`;
+}
+
 describe('tip stats API', () => {
   it('returns empty public stats when LNBits is not configured', async () => {
     mocks.getLnbitsBaseUrl.mockImplementation(() => {
@@ -31,7 +42,7 @@ describe('tip stats API', () => {
     mocks.getLnbitsAdminKey.mockReturnValue(null);
 
     const { GET } = await import('@/app/api/tip-stats/route');
-    const response = await GET(new Request('https://klabo.world/api/tip-stats?ns=home'));
+    const response = await GET(new Request(`${siteTipApiUrl}?ns=home`));
     const payload = await response.json();
 
     expect(response.status).toBe(200);
@@ -48,16 +59,16 @@ describe('tip stats API', () => {
     mocks.getLnbitsAdminKey.mockReturnValue('admin-key');
     mocks.fetch.mockResolvedValueOnce(
       Response.json([
-        { amount: 21 * 1000, pending: false, extra: { comment: 'klabo.world:joel:home' } },
-        { amount: 100 * 1000, pending: null, extra: { comment: 'klabo.world:home' } },
-        { amount: 999 * 1000, pending: false, extra: { comment: 'klabo.world:joel:post:other' } },
-        { amount: 5 * 1000, pending: true, extra: { comment: 'klabo.world:joel:home' } },
-        { amount: -1 * 1000, pending: false, extra: { comment: 'klabo.world:joel:home' } },
+        { amount: 21 * 1000, pending: false, extra: { comment: namespaceUserComment('joel', 'home') } },
+        { amount: 100 * 1000, pending: null, extra: { comment: namespaceComment('home') } },
+        { amount: 999 * 1000, pending: false, extra: { comment: `${namespaceUserComment('joel', 'post')}:other` } },
+        { amount: 5 * 1000, pending: true, extra: { comment: namespaceUserComment('joel', 'home') } },
+        { amount: -1 * 1000, pending: false, extra: { comment: namespaceUserComment('joel', 'home') } },
       ])
     );
 
     const { GET } = await import('@/app/api/tip-stats/route');
-    const response = await GET(new Request('https://klabo.world/api/tip-stats?ns=home'));
+    const response = await GET(new Request(`${siteTipApiUrl}?ns=home`));
     const payload = await response.json();
 
     expect(response.status).toBe(200);
