@@ -254,7 +254,11 @@ export default async function Home() {
                         dateTime={getDateTimeAttr(post.publishDate, post.date)}
                         className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.22em] text-muted-foreground"
                       >
-                        {formatDisplayDate(post.publishDate, post.date, { month: "short", day: "numeric", year: "numeric" })}
+                        {formatDisplayDate(post.publishDate, post.date, {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
                       </time>
                       </div>
                       <p className="mt-2 text-sm text-muted-foreground line-clamp-2">
