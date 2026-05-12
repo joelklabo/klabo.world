@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { resolveContentSubdir } from '@klaboworld/core/server/contentPaths';
 import { deleteRepoFile, fetchRepoFile, resolveExistingSha, shouldUseGitHubStorage, upsertRepoFile } from './github-service';
+import { resolveAvailableSlug } from './contentSlugHelpers';
 import { type DashboardPanelType } from './dashboardPanelTypes';
 import { normalizeSlug } from './slugUtils';
 
@@ -20,25 +21,6 @@ export type DashboardInput = {
 
 const DASHBOARDS_DIR = resolveContentSubdir('dashboards');
 const GITHUB_DASHBOARD_DIR = 'content/dashboards';
-
-async function fileExists(filePath: string): Promise<boolean> {
-  try {
-    await fs.access(filePath);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-async function resolveSlug(base: string): Promise<string> {
-  let candidate = base;
-  let counter = 1;
-  while (await fileExists(path.join(DASHBOARDS_DIR, `${candidate}.mdx`))) {
-    candidate = `${base}-${counter}`;
-    counter += 1;
-  }
-  return candidate;
-}
 
 function pushString(lines: string[], key: string, value?: string | null) {
   if (!value) return;
@@ -103,7 +85,7 @@ async function writeGitHubFile(slug: string, content: string) {
 
 export async function createDashboard(input: DashboardInput) {
   const baseSlug = normalizeSlug(input.title);
-  const slug = await resolveSlug(baseSlug);
+  const slug = await resolveAvailableSlug(baseSlug, DASHBOARDS_DIR, 'mdx');
   const markdown = buildMarkdown(slug, input);
   await (shouldUseGitHubStorage() ? writeGitHubFile(slug, markdown) : writeLocalFile(slug, markdown));
   return { slug };

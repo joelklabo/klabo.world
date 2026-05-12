@@ -5,6 +5,7 @@ import { resolveContentSubdir } from '@klaboworld/core/server/contentPaths';
 import { deleteRepoFile, fetchRepoFile, resolveExistingSha, shouldUseGitHubStorage, upsertRepoFile } from './github-service';
 import { normalizeSlug } from './slugUtils';
 import { getCurrentDateString } from './dateDisplay';
+import { resolveAvailableSlug } from './contentSlugHelpers';
 
 type PostInput = {
   title: string;
@@ -22,25 +23,6 @@ type PostInput = {
 
 const POSTS_DIR = resolveContentSubdir('posts');
 const GITHUB_POSTS_DIR = 'content/posts';
-
-async function fileExists(filePath: string): Promise<boolean> {
-  try {
-    await fs.access(filePath);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-async function resolveSlug(base: string): Promise<string> {
-  let candidate = base;
-  let counter = 1;
-  while (await fileExists(path.join(POSTS_DIR, `${candidate}.mdx`))) {
-    candidate = `${base}-${counter}`;
-    counter += 1;
-  }
-  return candidate;
-}
 
 function toFrontMatterValue(value: string | string[] | undefined | null): string | undefined {
   if (value === undefined || value === null) {
@@ -123,7 +105,7 @@ async function persistPostMarkdown(
 
 export async function createPost(input: PostInput) {
   const baseSlug = normalizeSlug(input.title);
-  const slug = await resolveSlug(baseSlug);
+  const slug = await resolveAvailableSlug(baseSlug, POSTS_DIR, 'mdx');
   const markdown = buildMarkdown(slug, input);
   await persistPostMarkdown(slug, markdown);
   return { slug };
