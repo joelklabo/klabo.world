@@ -1,11 +1,11 @@
 import Link from 'next/link';
 import type { Route } from 'next';
-import { auth } from '@/lib/nextAuth';
 import { LoginForm } from '../login-form';
 import { getPostsForAdmin } from '@/lib/posts';
 import { ContentDate } from '@/components/content-date';
 import { Button } from '@/components/ui/button';
 import { Surface } from '@/components/ui/surface';
+import { getAdminSession } from '@/lib/adminSession';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,7 +14,7 @@ type AdminSearchParams = {
 };
 
 export default async function AdminLanding({ searchParams }: { searchParams?: AdminSearchParams | Promise<AdminSearchParams> }) {
-  const session = await auth();
+  const session = await getAdminSession();
   const resolvedSearchParams = searchParams ? await Promise.resolve(searchParams as AdminSearchParams) : undefined;
   const posts = session?.user ? await getPostsForAdmin() : [];
 

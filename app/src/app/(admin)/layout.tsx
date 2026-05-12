@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import type { Route } from 'next';
-import { auth } from '@/lib/nextAuth';
 import { SignOutButton } from './signout-button';
 import { Button } from '@/components/ui/button';
+import { getAdminSession } from '@/lib/adminSession';
 
 const navLinks = [
   { href: '/admin', label: 'Dashboard', id: 'dashboard' },
@@ -14,7 +14,7 @@ const navLinks = [
 ];
 
 export default async function AdminLayout({ children }: { children: ReactNode }) {
-  const session = await auth();
+  const session = await getAdminSession();
 
   return (
     <div className="min-h-dvh bg-background text-foreground">
