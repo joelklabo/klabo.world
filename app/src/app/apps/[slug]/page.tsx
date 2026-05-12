@@ -21,10 +21,15 @@ export async function generateMetadata({
   return runPublicSlugMetadata(
     params,
     getAppBySlug,
-    (app) => ({
-      title: app.name,
-      description: app.fullDescription,
-    }),
+    (app) =>
+      app
+        ? {
+            title: app.name,
+            description: app.fullDescription,
+          }
+        : {
+            title: 'App not found',
+          },
     () => ({ title: 'App not found' }),
   );
 }
