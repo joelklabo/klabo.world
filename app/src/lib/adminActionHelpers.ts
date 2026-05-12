@@ -22,16 +22,6 @@ export function getFormSlug(formData: FormData, resourceLabel: string): string {
   return slug;
 }
 
-export async function runAdminAction(
-  action: () => Promise<ActionState>,
-  fallbackErrorMessage: string,
-): Promise<ActionState> {
-  return runAdminOperation<ActionState>(action, fallbackErrorMessage, (message) => ({
-    message,
-    success: false,
-  }));
-}
-
 type RedirectDestination<T> = string | ((result: T) => string | undefined);
 
 export async function runAdminActionAndRedirect<T extends ActionState>(
