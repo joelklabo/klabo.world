@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Metadata } from 'next';
-import { getPosts } from '@/lib/posts';
+import { getPostHeroImage, getPosts } from '@/lib/posts';
 import { ContentDate } from '@/components/content-date';
 import { Button } from '@/components/ui/button';
 import { ViewTransitionLink } from '@/components/view-transition-link';
@@ -9,8 +9,6 @@ import { ViewTransitionLink } from '@/components/view-transition-link';
 export const metadata: Metadata = {
   title: 'Posts',
 };
-
-const DEFAULT_POST_HERO_IMAGE = '/images/posts/klabo-world-editorial-hero.webp';
 
 export default function PostsIndex() {
   const posts = getPosts();
@@ -40,7 +38,7 @@ export default function PostsIndex() {
                   aria-label={`Read ${post.title}`}
                 >
                   <Image
-                    src={post.featuredImage ?? DEFAULT_POST_HERO_IMAGE}
+                    src={getPostHeroImage(post)}
                     alt=""
                     fill
                     sizes="(max-width: 640px) 100vw, 560px"

@@ -3,6 +3,8 @@ import { allPosts, type Post } from 'contentlayer/generated';
 import { summarizePostMetadata, type AdminPostSummary } from './postFrontmatter';
 import { formatDisplayDate, getCurrentDateString, type DateInput } from './dateDisplay';
 import { readDiskRecord, readDiskRecords } from './readDiskRecords';
+
+export const DEFAULT_POST_HERO_IMAGE = '/images/posts/klabo-world-editorial-hero.webp';
 type PostsDirectoryLoader = () => Promise<string>;
 
 const resolvePostsDirectory: PostsDirectoryLoader = async () => {
@@ -63,6 +65,10 @@ export function getPosts(options: { includeUnpublished?: boolean } = {}): Post[]
 
 export function getRecentPosts(limit = 3): Post[] {
   return getPosts().slice(0, limit);
+}
+
+export function getPostHeroImage(post: Pick<Post, 'featuredImage'>): string {
+  return post.featuredImage ?? DEFAULT_POST_HERO_IMAGE;
 }
 
 export function getPostReadableBody(post: Pick<Post, 'body'>): { raw: string; code: string; readingTime: number } | null {

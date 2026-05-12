@@ -2,7 +2,13 @@ import { notFound, permanentRedirect } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Metadata } from 'next';
-import { getPostBySlug, getPosts, getPostReadableBody, normalizePostSlug } from '@/lib/posts';
+import {
+  getPostBySlug,
+  getPosts,
+  getPostReadableBody,
+  getPostHeroImage,
+  normalizePostSlug,
+} from '@/lib/posts';
 import { MDXContent } from '@/components/mdx-content';
 import { ContentDate } from '@/components/content-date';
 import { getPublicSiteUrl } from '@/lib/public-env';
@@ -12,7 +18,6 @@ import { runPublicSlugMetadata, runPublicSlugPage } from '@/lib/publicPageHelper
 type Params = { slug: string };
 
 export const dynamic = 'force-dynamic';
-const DEFAULT_POST_HERO_IMAGE = '/images/posts/klabo-world-editorial-hero.webp';
 
 function getImageMimeType(src: string) {
   if (src.endsWith('.webp')) return 'image/webp';
@@ -37,7 +42,7 @@ export async function generateMetadata({ params }: { params: Params | Promise<Pa
       const siteUrl = getPublicSiteUrl();
       const canonicalPath = `/posts/${post.slug}`;
       const publishedTime = post.publishDate ?? post.date;
-      const heroImage = post.featuredImage ?? DEFAULT_POST_HERO_IMAGE;
+      const heroImage = getPostHeroImage(post);
 
       return {
         title: post.title,
@@ -97,7 +102,7 @@ export default async function PostPage({ params }: { params: Params | Promise<Pa
       const canonicalUrl = `${siteUrl}/posts/${post.slug}`;
       const lightningAddress = post.lightningAddress ?? 'joel@klabo.world';
       const publishedDate = post.publishDate ?? post.date;
-      const heroImage = post.featuredImage ?? DEFAULT_POST_HERO_IMAGE;
+      const heroImage = getPostHeroImage(post);
       const heroImageUrl = new URL(heroImage, siteUrl).toString();
       const jsonLd = {
         '@context': 'https://schema.org',
