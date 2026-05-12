@@ -5,6 +5,7 @@ import { ContentDate } from '@/components/content-date';
 import { Button } from '@/components/ui/button';
 import { Surface } from '@/components/ui/surface';
 import { AdminSectionHeader } from '@/app/(admin)/components/admin-section-header';
+import { AdminActionLink } from '@/app/(admin)/components/admin-action-link';
 import { runAdminPage } from '@/lib/adminPageHelpers';
 
 export const dynamic = 'force-dynamic';
@@ -52,13 +53,13 @@ export default async function AdminAppsPage() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex gap-3 text-sm">
-                      <Link href={`/apps/${app.slug}`} target="_blank" className="inline-block rounded px-3 py-2 font-semibold text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                      <AdminActionLink href={`/apps/${app.slug}`} target="_blank">
                         View
                         <span className="sr-only"> (opens in new tab)</span>
-                      </Link>
-                      <Link href={`/admin/apps/${app.slug}/edit`} className="inline-block rounded px-3 py-2 font-semibold text-primary hover:text-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                      </AdminActionLink>
+                      <AdminActionLink href={`/admin/apps/${app.slug}/edit`} variant="primary">
                         Edit
-                      </Link>
+                      </AdminActionLink>
                     </div>
                   </td>
                 </tr>

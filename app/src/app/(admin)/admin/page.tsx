@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Surface } from '@/components/ui/surface';
 import { getAdminSession } from '@/lib/adminSession';
 import { AdminSectionHeader } from '@/app/(admin)/components/admin-section-header';
+import { AdminActionLink } from '@/app/(admin)/components/admin-action-link';
 
 export const dynamic = 'force-dynamic';
 
@@ -64,13 +65,13 @@ export default async function AdminLanding({ searchParams }: { searchParams?: Ad
                 <td className="px-6 py-4 text-muted-foreground">{post.tags?.length ? post.tags.join(', ') : '—'}</td>
                 <td className="px-6 py-4 text-sm">
                   <div className="flex gap-3">
-                    <Link href={`/posts/${post.slug}` as Route} target="_blank" className="inline-block rounded px-3 py-2 font-semibold text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                    <AdminActionLink href={`/posts/${post.slug}` as Route} target="_blank">
                       View
                       <span className="sr-only"> (opens in new tab)</span>
-                    </Link>
-                    <Link href={`/admin/posts/${post.slug}/edit` as Route} className="inline-block rounded px-3 py-2 font-semibold text-primary hover:text-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                    </AdminActionLink>
+                    <AdminActionLink href={`/admin/posts/${post.slug}/edit` as Route} variant="primary">
                       Edit
-                    </Link>
+                    </AdminActionLink>
                   </div>
                 </td>
               </tr>
