@@ -3,7 +3,7 @@ type SlugParams = { slug: string } | Promise<{ slug: string }>;
 export async function runPublicSlugPage<TResource, TOutput>(
   params: SlugParams,
   loadResource: (slug: string) => TResource | Promise<TResource | null | undefined>,
-  render: (resource: TResource, requestedSlug: string) => Promise<TOutput> | TOutput,
+  render: (resource: NonNullable<TResource>, requestedSlug: string) => Promise<TOutput> | TOutput,
   renderMissing: () => Promise<TOutput> | TOutput,
 ): Promise<TOutput> {
   const { slug } = await params;
