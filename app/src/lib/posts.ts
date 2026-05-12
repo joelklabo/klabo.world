@@ -1,10 +1,8 @@
-import fs from 'node:fs/promises';
-import path from 'node:path';
 import matter from 'gray-matter';
 import { allPosts, type Post } from 'contentlayer/generated';
 import { summarizePostMetadata, type AdminPostSummary } from './postFrontmatter';
 import { formatDisplayDate, getCurrentDateString, type DateInput } from './dateDisplay';
-import { readDiskRecords } from './readDiskRecords';
+import { readDiskRecord, readDiskRecords } from './readDiskRecords';
 type PostsDirectoryLoader = () => Promise<string>;
 
 const resolvePostsDirectory: PostsDirectoryLoader = async () => {
@@ -185,6 +183,26 @@ export async function getPostsForAdmin(): Promise<AdminPostSummary[]> {
   );
 }
 
+async function readDiskPostBySlug(slug: string): Promise<EditablePost | undefined> {
+  return readDiskRecord({
+    getDirectory: resolvePostsDirectory,
+    extension: '.mdx',
+    slug,
+    parseRecord: ({ slug, raw }) => {
+      const parsed = matter(raw);
+      return {
+        ...summarizePostMetadata(parsed.data, {
+          slug,
+          titleFallback: slug,
+          summaryFallback: '',
+          date: parseFrontmatterDate(parsed.data.date),
+        }),
+        body: parsed.content.trim(),
+      };
+    },
+  });
+}
+
 export async function getEditablePostBySlug(slug: string): Promise<EditablePost | undefined> {
   const contentlayerPost = getPostBySlug(slug);
   if (contentlayerPost) {
@@ -200,24 +218,5 @@ export async function getEditablePostBySlug(slug: string): Promise<EditablePost 
       body: contentlayerPost.body.raw,
     };
   }
-  const postsDir = await resolvePostsDirectory();
-  const filePath = path.join(postsDir, `${slug}.mdx`);
-  try {
-    const raw = await fs.readFile(filePath, 'utf8');
-    const parsed = matter(raw);
-    return {
-      ...summarizePostMetadata(parsed.data, {
-        slug,
-        titleFallback: slug,
-        summaryFallback: '',
-        date: parseFrontmatterDate(parsed.data.date),
-      }),
-      body: parsed.content.trim(),
-    };
-  } catch (error) {
-    if ((error as { code?: string }).code === 'ENOENT') {
-      return undefined;
-    }
-    throw error;
-  }
+  return readDiskPostBySlug(slug);
 }

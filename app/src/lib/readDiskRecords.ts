@@ -42,3 +42,32 @@ export async function readDiskRecords<TRecord>({
 
   return records;
 }
+
+type ReadDiskRecordOptions<TRecord> = {
+  getDirectory: ResolveDirectory;
+  extension: `.${string}`;
+  slug: string;
+  parseRecord: (opts: { slug: string; raw: string; filename: string }) => Promise<TRecord | null> | TRecord | null;
+};
+
+export async function readDiskRecord<TRecord>({
+  getDirectory,
+  extension,
+  slug,
+  parseRecord,
+}: ReadDiskRecordOptions<TRecord>): Promise<TRecord | undefined> {
+  const directory = await getDirectory();
+  const filename = `${slug}${extension}`;
+
+  let raw: string;
+  try {
+    raw = await fs.readFile(path.join(directory, filename), 'utf8');
+  } catch (error) {
+    if ((error as { code?: string }).code === 'ENOENT') {
+      return undefined;
+    }
+    throw error;
+  }
+
+  return (await parseRecord({ slug, raw, filename })) ?? undefined;
+}

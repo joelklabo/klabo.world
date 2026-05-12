@@ -1,7 +1,5 @@
-import fs from 'node:fs/promises';
-import path from 'node:path';
 import { allAppDocs, type AppDoc } from 'contentlayer/generated';
-import { readDiskRecords } from './readDiskRecords';
+import { readDiskRecord, readDiskRecords } from './readDiskRecords';
 type AppsDirectoryLoader = () => Promise<string>;
 
 const resolveAppsDirectory: AppsDirectoryLoader = async () => {
@@ -90,21 +88,22 @@ export async function getAppsForAdmin(): Promise<AdminApp[]> {
   );
 }
 
+async function readDiskAppBySlug(slug: string): Promise<AdminApp | undefined> {
+  return readDiskRecord({
+    getDirectory: resolveAppsDirectory,
+    extension: '.json',
+    slug,
+    parseRecord: ({ slug, raw }) => {
+      const parsed = JSON.parse(raw) as Partial<AdminApp>;
+      return normalizeAdminAppPayload(slug, parsed);
+    },
+  });
+}
+
 export async function getEditableAppBySlug(slug: string): Promise<AdminApp | undefined> {
   const contentlayerApp = getAppBySlug(slug);
   if (contentlayerApp) {
     return normalizeAdminApp(contentlayerApp);
   }
-  const dir = await resolveAppsDirectory();
-  const filePath = path.join(dir, `${slug}.json`);
-  try {
-    const raw = await fs.readFile(filePath, 'utf8');
-    const parsed = JSON.parse(raw) as Partial<AdminApp>;
-    return normalizeAdminAppPayload(slug, parsed);
-  } catch (error) {
-    if ((error as { code?: string }).code === 'ENOENT') {
-      return undefined;
-    }
-    throw error;
-  }
+  return readDiskAppBySlug(slug);
 }
