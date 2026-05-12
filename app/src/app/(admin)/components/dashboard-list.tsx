@@ -1,10 +1,10 @@
 'use client';
 
 import { useOptimistic } from 'react';
-import Link from 'next/link';
 import { type Dashboard } from '@/lib/dashboards';
 import { Surface } from '@/components/ui/surface';
 import { DASHBOARD_PANEL_TYPES } from '@/lib/dashboardPanelTypes';
+import { AdminActionLink } from '@/app/(admin)/components/admin-action-link';
 
 type DashboardListProps = {
   initialDashboards: Dashboard[];
@@ -63,12 +63,9 @@ export function DashboardList({ initialDashboards }: DashboardListProps) {
                 </div>
               </td>
               <td className="px-4 py-4 text-sm">
-                <Link
-                  href={`/admin/dashboards/${dashboard.slug}`}
-                  className="inline-block rounded px-3 py-2 font-semibold text-primary hover:text-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                >
+                <AdminActionLink href={`/admin/dashboards/${dashboard.slug}`} variant="primary">
                   View
-                </Link>
+                </AdminActionLink>
               </td>
             </tr>
           ))}

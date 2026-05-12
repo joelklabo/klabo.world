@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { DashboardForm } from "@/app/(admin)/components/dashboard-form";
 import { AdminSectionHeader } from '@/app/(admin)/components/admin-section-header';
+import { AdminBackLink } from '@/app/(admin)/components/admin-back-link';
 import { createDashboardAction } from "../actions";
 import { runAdminPage } from '@/lib/adminPageHelpers';
 
@@ -14,12 +14,11 @@ export default async function NewDashboardPage() {
         title="New dashboard"
         description="Link Azure dashboards, graphs, or log searches so they’re one click away."
         action={
-          <Link
+          <AdminBackLink
             href="/admin/dashboards"
-            className="text-sm font-semibold text-muted-foreground hover:text-foreground rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
           >
             ← Back to dashboards
-          </Link>
+          </AdminBackLink>
         }
       />
 

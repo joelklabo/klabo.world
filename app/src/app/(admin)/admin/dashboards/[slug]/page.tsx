@@ -1,8 +1,9 @@
-import Link from "next/link";
 import { DashboardForm } from "@/app/(admin)/components/dashboard-form";
 import { DashboardChart } from "@/app/(admin)/components/dashboard-chart";
 import { DashboardLogsPanel } from "@/app/(admin)/components/dashboard-logs-panel";
 import { AdminSectionHeader } from '@/app/(admin)/components/admin-section-header';
+import { AdminBackLink } from '@/app/(admin)/components/admin-back-link';
+import { AdminActionLink } from '@/app/(admin)/components/admin-action-link';
 import { deleteDashboardAction, updateDashboardAction } from "../actions";
 import { getDashboardBySlugForAdmin } from "@/lib/dashboards";
 import { loadDashboardChartState } from "@/lib/dashboardCharts";
@@ -39,18 +40,17 @@ export default async function DashboardDetailPage({ params }: PageProps) {
     return (
       <div className="space-y-6">
         <AdminSectionHeader
-          label="Dashboard"
-          title={<span data-testid="dashboard-title">{dashboard.title}</span>}
-          description={<span data-testid="dashboard-summary-text">{dashboard.summary}</span>}
-          action={
-            <Link
-              href="/admin/dashboards"
-              className="text-sm font-semibold text-muted-foreground hover:text-foreground rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
-            >
-              ← Back to dashboards
-            </Link>
-          }
-        />
+        label="Dashboard"
+        title={<span data-testid="dashboard-title">{dashboard.title}</span>}
+        description={<span data-testid="dashboard-summary-text">{dashboard.summary}</span>}
+        action={
+          <AdminBackLink
+            href="/admin/dashboards"
+          >
+            ← Back to dashboards
+          </AdminBackLink>
+        }
+      />
 
         {showPanelPreview && (
           <div className="rounded-2xl border border-border/60 bg-card p-6 shadow-[0_20px_45px_rgba(6,10,20,0.35)]">
@@ -190,15 +190,14 @@ export default async function DashboardDetailPage({ params }: PageProps) {
                   <div>
                     <dt className="font-semibold text-foreground">External link</dt>
                     <dd>
-                      <a
+                      <AdminActionLink
                         href={dashboard.externalUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-primary hover:text-primary/80 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                       >
                         {dashboard.externalUrl}
                         <span className="sr-only"> (opens in new tab)</span>
-                      </a>
+                      </AdminActionLink>
                     </dd>
                   </div>
                 )}
