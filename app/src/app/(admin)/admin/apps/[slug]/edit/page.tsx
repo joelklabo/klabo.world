@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { getEditableAppBySlug } from '@/lib/apps';
 import { AppForm } from '@/app/(admin)/components/app-form';
 import { AdminSectionHeader } from '@/app/(admin)/components/admin-section-header';
-import { AdminBackLink } from '@/app/(admin)/components/admin-back-link';
+import { AdminActionLink } from '@/app/(admin)/components/admin-action-link';
 import { upsertAppAction, deleteAppAction } from '../actions';
 import { runAdminSlugPage, runAdminSlugMetadata } from '@/lib/adminPageHelpers';
 
@@ -24,11 +24,12 @@ export default async function EditAppPage({ params }: { params: Promise<{ slug: 
         label="Apps"
         title="Edit app"
         action={
-          <AdminBackLink
+          <AdminActionLink
+            variant="back"
             href="/admin/apps"
           >
             ← Back to apps
-          </AdminBackLink>
+          </AdminActionLink>
         }
       />
       <AppForm

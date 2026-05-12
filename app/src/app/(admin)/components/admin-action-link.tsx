@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import type { HTMLAttributeAnchorTarget, ReactNode } from 'react';
 
-type AdminActionLinkVariant = 'muted' | 'primary';
+type AdminActionLinkVariant = 'muted' | 'primary' | 'back';
 
 type AdminActionLinkProps = {
   href: string;
@@ -14,6 +14,7 @@ type AdminActionLinkProps = {
 const variantStyles: Record<AdminActionLinkVariant, string> = {
   muted: 'text-muted-foreground hover:text-foreground',
   primary: 'text-primary hover:text-primary/80',
+  back: 'text-muted-foreground hover:text-foreground focus-visible:ring-primary/50',
 };
 
 export function AdminActionLink({

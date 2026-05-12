@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { AppForm } from '@/app/(admin)/components/app-form';
 import { AdminSectionHeader } from '@/app/(admin)/components/admin-section-header';
-import { AdminBackLink } from '@/app/(admin)/components/admin-back-link';
+import { AdminActionLink } from '@/app/(admin)/components/admin-action-link';
 import { upsertAppAction } from '../[slug]/actions';
 import { runAdminPage } from '@/lib/adminPageHelpers';
 
@@ -18,11 +18,12 @@ export default async function NewAppPage() {
         title="Create app listing"
         description="Provide metadata, features, and screenshots for the apps page."
         action={
-          <AdminBackLink
+          <AdminActionLink
+            variant="back"
             href="/admin/apps"
           >
             ← Back to apps
-          </AdminBackLink>
+          </AdminActionLink>
         }
       />
       <AppForm

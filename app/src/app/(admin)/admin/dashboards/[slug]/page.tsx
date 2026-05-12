@@ -2,7 +2,6 @@ import { DashboardForm } from "@/app/(admin)/components/dashboard-form";
 import { DashboardChart } from "@/app/(admin)/components/dashboard-chart";
 import { DashboardLogsPanel } from "@/app/(admin)/components/dashboard-logs-panel";
 import { AdminSectionHeader } from '@/app/(admin)/components/admin-section-header';
-import { AdminBackLink } from '@/app/(admin)/components/admin-back-link';
 import { AdminActionLink } from '@/app/(admin)/components/admin-action-link';
 import { deleteDashboardAction, updateDashboardAction } from "../actions";
 import { getDashboardBySlugForAdmin } from "@/lib/dashboards";
@@ -44,11 +43,12 @@ export default async function DashboardDetailPage({ params }: PageProps) {
         title={<span data-testid="dashboard-title">{dashboard.title}</span>}
         description={<span data-testid="dashboard-summary-text">{dashboard.summary}</span>}
         action={
-          <AdminBackLink
+          <AdminActionLink
+            variant="back"
             href="/admin/dashboards"
           >
             ← Back to dashboards
-          </AdminBackLink>
+          </AdminActionLink>
         }
       />
 

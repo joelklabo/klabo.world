@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { getEditablePostBySlug } from '@/lib/posts';
 import { PostForm } from '@/app/(admin)/components/post-form';
 import { AdminSectionHeader } from '@/app/(admin)/components/admin-section-header';
-import { AdminBackLink } from '@/app/(admin)/components/admin-back-link';
+import { AdminActionLink } from '@/app/(admin)/components/admin-action-link';
 import { updatePostAction, deletePostAction } from '../../actions';
 import { runAdminSlugPage, runAdminSlugMetadata } from '@/lib/adminPageHelpers';
 
@@ -26,11 +26,12 @@ export default async function EditPostPage({ params }: { params: Promise<Params>
         label="Posts"
         title="Edit post"
         action={
-          <AdminBackLink
+          <AdminActionLink
+            variant="back"
             href="/admin"
           >
             ← Back to dashboard
-          </AdminBackLink>
+          </AdminActionLink>
         }
       />
       <PostForm
