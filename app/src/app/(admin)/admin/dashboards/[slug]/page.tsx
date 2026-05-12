@@ -15,15 +15,15 @@ import { runAdminSlugPage } from '@/lib/adminPageHelpers';
 
 export const dynamic = "force-dynamic";
 
+async function deleteDashboardFormAction(formData: FormData): Promise<void> {
+  await deleteDashboardAction(formData);
+}
+
 type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
 export default async function DashboardDetailPage({ params }: PageProps) {
-  const deleteDashboardFormAction = async (formData: FormData) => {
-    await deleteDashboardAction(formData);
-  };
-
   return runAdminSlugPage(params, getDashboardBySlugForAdmin, async (dashboard) => {
     const isChartPanel = dashboard.panelType === DASHBOARD_PANEL_TYPES.chart;
     const isLogsPanel = dashboard.panelType === DASHBOARD_PANEL_TYPES.logs;
