@@ -20,6 +20,10 @@ type PageProps = {
 };
 
 export default async function DashboardDetailPage({ params }: PageProps) {
+  const deleteDashboardFormAction = async (formData: FormData) => {
+    await deleteDashboardAction(formData);
+  };
+
   return runAdminSlugPage(params, getDashboardBySlugForAdmin, async (dashboard) => {
     const isChartPanel = dashboard.panelType === DASHBOARD_PANEL_TYPES.chart;
     const isLogsPanel = dashboard.panelType === DASHBOARD_PANEL_TYPES.logs;
@@ -147,7 +151,7 @@ export default async function DashboardDetailPage({ params }: PageProps) {
               />
             </div>
             <form
-              action={deleteDashboardAction}
+              action={deleteDashboardFormAction}
               className="mt-6 rounded-2xl border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive"
             >
               <input type="hidden" name="slug" value={dashboard.slug} />
