@@ -1,10 +1,8 @@
-import fs from 'node:fs/promises';
-import path from 'node:path';
 import matter from 'gray-matter';
 import { resolveContentSubdir } from '@klaboworld/core/server/contentPaths';
-import { deleteRepoFile, fetchRepoFile, resolveExistingSha, shouldUseGitHubStorage, upsertRepoFile } from './github-service';
 import { normalizeSlug } from './slugUtils';
 import { getCurrentDateString } from './dateDisplay';
+import { persistContentFile, readContentFile, removeContentFile } from './contentFilePersistence';
 import { resolveAvailableSlug } from './contentSlugHelpers';
 
 type PostInput = {
@@ -23,6 +21,7 @@ type PostInput = {
 
 const POSTS_DIR = resolveContentSubdir('posts');
 const GITHUB_POSTS_DIR = 'content/posts';
+const POST_FILE_EXTENSION = 'mdx';
 
 function toFrontMatterValue(value: string | string[] | undefined | null): string | undefined {
   if (value === undefined || value === null) {
@@ -32,14 +31,6 @@ function toFrontMatterValue(value: string | string[] | undefined | null): string
     return value.length > 0 ? `\n${value.map((item) => `  - ${item}`).join('\n')}` : undefined;
   }
   return JSON.stringify(value);
-}
-
-function getLocalPostPath(slug: string) {
-  return path.join(POSTS_DIR, `${slug}.mdx`);
-}
-
-function getGithubPostPath(slug: string) {
-  return `${GITHUB_POSTS_DIR}/${slug}.mdx`;
 }
 
 function buildMarkdown(slug: string, input: PostInput) {
@@ -81,62 +72,41 @@ function buildMarkdown(slug: string, input: PostInput) {
   return lines.join('\n');
 }
 
-async function persistPostMarkdown(
-  slug: string,
-  content: string,
-  message = `chore: update post ${slug}`,
-  existingSha?: string,
-) {
-  const relativePath = getGithubPostPath(slug);
-  if (!shouldUseGitHubStorage()) {
-    await fs.mkdir(POSTS_DIR, { recursive: true });
-    await fs.writeFile(getLocalPostPath(slug), content, 'utf8');
-    return;
-  }
-
-  const sha = existingSha ?? (await resolveExistingSha(relativePath));
-  await upsertRepoFile({
-    path: relativePath,
-    message,
-    content,
-    sha,
-  });
-}
+const contentStorage = {
+  baseDir: POSTS_DIR,
+  githubDir: GITHUB_POSTS_DIR,
+  extension: POST_FILE_EXTENSION,
+};
 
 export async function createPost(input: PostInput) {
   const baseSlug = normalizeSlug(input.title);
   const slug = await resolveAvailableSlug(baseSlug, POSTS_DIR, 'mdx');
   const markdown = buildMarkdown(slug, input);
-  await persistPostMarkdown(slug, markdown);
+  await persistContentFile({
+    ...contentStorage,
+    slug,
+    content: markdown,
+    message: `chore: update post ${slug}`,
+  });
   return { slug };
 }
 
 export async function updatePost(slug: string, input: PostInput) {
   const markdown = buildMarkdown(slug, input);
-  await persistPostMarkdown(slug, markdown);
-}
-
-async function readPostMarkdown(slug: string): Promise<{ content: string; sha?: string }> {
-  if (!shouldUseGitHubStorage()) {
-    return { content: await fs.readFile(getLocalPostPath(slug), 'utf8') };
-  }
-
-  const relativePath = getGithubPostPath(slug);
-  const existing = await fetchRepoFile(relativePath);
-  return {
-    content: Buffer.from(existing.content, 'base64').toString('utf8'),
-    sha: existing.sha,
-  };
+  await persistContentFile({
+    ...contentStorage,
+    slug,
+    content: markdown,
+    message: `chore: update post ${slug}`,
+  });
 }
 
 export async function deletePost(slug: string) {
-  if (shouldUseGitHubStorage()) {
-    const relativePath = getGithubPostPath(slug);
-    const existing = await fetchRepoFile(relativePath);
-    await deleteRepoFile(relativePath, `chore: delete post ${slug}`, existing.sha);
-  } else {
-    await fs.unlink(getLocalPostPath(slug));
-  }
+  await removeContentFile({
+    ...contentStorage,
+    slug,
+    message: `chore: delete post ${slug}`,
+  });
 }
 
 export function getPostsDirectory() {
@@ -148,9 +118,15 @@ export function getPostsDirectory() {
  * Reads the existing file, parses frontmatter, updates xPostId, and writes back.
  */
 export async function updatePostXPostId(slug: string, xPostId: string): Promise<void> {
-  const current = await readPostMarkdown(slug);
+  const current = await readContentFile({ ...contentStorage, slug });
   const parsed = matter(current.content);
   parsed.data.xPostId = xPostId;
   const updated = matter.stringify(parsed.content, parsed.data);
-  await persistPostMarkdown(slug, updated, `chore: add xPostId to ${slug}`, current.sha);
+  await persistContentFile({
+    ...contentStorage,
+    slug,
+    content: updated,
+    message: `chore: add xPostId to ${slug}`,
+    existingSha: current.sha,
+  });
 }

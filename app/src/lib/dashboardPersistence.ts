@@ -1,7 +1,5 @@
-import fs from 'node:fs/promises';
-import path from 'node:path';
 import { resolveContentSubdir } from '@klaboworld/core/server/contentPaths';
-import { deleteRepoFile, fetchRepoFile, resolveExistingSha, shouldUseGitHubStorage, upsertRepoFile } from './github-service';
+import { persistContentFile, removeContentFile } from './contentFilePersistence';
 import { resolveAvailableSlug } from './contentSlugHelpers';
 import { type DashboardPanelType } from './dashboardPanelTypes';
 import { normalizeSlug } from './slugUtils';
@@ -21,6 +19,13 @@ export type DashboardInput = {
 
 const DASHBOARDS_DIR = resolveContentSubdir('dashboards');
 const GITHUB_DASHBOARD_DIR = 'content/dashboards';
+const DASHBOARD_FILE_EXTENSION = 'mdx';
+
+const contentStorage = {
+  baseDir: DASHBOARDS_DIR,
+  githubDir: GITHUB_DASHBOARD_DIR,
+  extension: DASHBOARD_FILE_EXTENSION,
+};
 
 function pushString(lines: string[], key: string, value?: string | null) {
   if (!value) return;
@@ -67,43 +72,35 @@ function buildMarkdown(slug: string, input: DashboardInput) {
   return lines.join('\n');
 }
 
-async function writeLocalFile(slug: string, content: string) {
-  await fs.mkdir(DASHBOARDS_DIR, { recursive: true });
-  await fs.writeFile(path.join(DASHBOARDS_DIR, `${slug}.mdx`), content, 'utf8');
-}
-
-async function writeGitHubFile(slug: string, content: string) {
-  const relativePath = `${GITHUB_DASHBOARD_DIR}/${slug}.mdx`;
-  const sha = await resolveExistingSha(relativePath);
-  await upsertRepoFile({
-    path: relativePath,
-    message: `chore: update dashboard ${slug}`,
-    content,
-    sha,
-  });
-}
-
 export async function createDashboard(input: DashboardInput) {
   const baseSlug = normalizeSlug(input.title);
   const slug = await resolveAvailableSlug(baseSlug, DASHBOARDS_DIR, 'mdx');
   const markdown = buildMarkdown(slug, input);
-  await (shouldUseGitHubStorage() ? writeGitHubFile(slug, markdown) : writeLocalFile(slug, markdown));
+  await persistContentFile({
+    ...contentStorage,
+    slug,
+    content: markdown,
+    message: `chore: update dashboard ${slug}`,
+  });
   return { slug };
 }
 
 export async function updateDashboard(slug: string, input: DashboardInput) {
   const markdown = buildMarkdown(slug, input);
-  await (shouldUseGitHubStorage() ? writeGitHubFile(slug, markdown) : writeLocalFile(slug, markdown));
+  await persistContentFile({
+    ...contentStorage,
+    slug,
+    content: markdown,
+    message: `chore: update dashboard ${slug}`,
+  });
 }
 
 export async function deleteDashboard(slug: string) {
-  if (shouldUseGitHubStorage()) {
-    const relativePath = `${GITHUB_DASHBOARD_DIR}/${slug}.mdx`;
-    const existing = await fetchRepoFile(relativePath);
-    await deleteRepoFile(relativePath, `chore: delete dashboard ${slug}`, existing.sha);
-  } else {
-    await fs.unlink(path.join(DASHBOARDS_DIR, `${slug}.mdx`));
-  }
+  await removeContentFile({
+    ...contentStorage,
+    slug,
+    message: `chore: delete dashboard ${slug}`,
+  });
 }
 
 export function getDashboardsDirectory() {
