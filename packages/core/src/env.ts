@@ -1,4 +1,12 @@
 import { z } from 'zod';
+import {
+  DEFAULT_BITCOIN_ONCHAIN_ADDRESS,
+  DEFAULT_LIGHTNING_NODE_ALIAS,
+  DEFAULT_LIGHTNING_NODE_HOST,
+  DEFAULT_LIGHTNING_NODE_PUBKEY,
+  DEFAULT_LIGHTNING_NODE_PORT,
+  SITE_CANONICAL_URL,
+} from './site-defaults';
 
 const optionalUrl = z.preprocess(
   (value) => {
@@ -75,8 +83,8 @@ const schema = z.object({
   GITHUB_TOKEN: z.string().optional(),
   GITHUB_OWNER: z.string().default('joelklabo'),
   GITHUB_REPO: z.string().default('KlaboWorld'),
-  SITE_URL: z.string().url().default('https://klabo.world'),
-  NEXTAUTH_URL: z.string().url().default('https://klabo.world'),
+  SITE_URL: z.string().url().default(SITE_CANONICAL_URL),
+  NEXTAUTH_URL: z.string().url().default(SITE_CANONICAL_URL),
   LOG_ANALYTICS_WORKSPACE_ID: z.string().optional(),
   LOG_ANALYTICS_SHARED_KEY: z.string().optional(),
   APPINSIGHTS_APP_ID: z.string().optional(),
@@ -89,12 +97,14 @@ const schema = z.object({
   NOSTRSTACK_RELAYS: z.string().optional(),
   LNBITS_BASE_URL: optionalUrl,
   LNBITS_ADMIN_KEY: z.string().optional(),
-  BITCOIN_ONCHAIN_ADDRESS: z.string().default('bc1qzafw20xpesnvwup6gmtx38e5j6ddjjdpc0zh78'),
+  BITCOIN_ONCHAIN_ADDRESS: z.string().default(DEFAULT_BITCOIN_ONCHAIN_ADDRESS),
   BITCOIN_ONCHAIN_ADDRESS_POOL: z.string().optional(),
-  LIGHTNING_NODE_PUBKEY: z.string().default('0276dc1ed542d0d777b518f1bd05f042847f19f312718cf1303288119a0a789a68'),
-  LIGHTNING_NODE_ALIAS: z.string().default('klabo.world'),
-  LIGHTNING_NODE_HOST: z.string().default('lnbits.klabo.world'),
-  LIGHTNING_NODE_PORT: optionalNumber(z.coerce.number().int().min(1).max(65_535).default(9735)),
+  LIGHTNING_NODE_PUBKEY: z.string().default(DEFAULT_LIGHTNING_NODE_PUBKEY),
+  LIGHTNING_NODE_ALIAS: z.string().default(DEFAULT_LIGHTNING_NODE_ALIAS),
+  LIGHTNING_NODE_HOST: z.string().default(DEFAULT_LIGHTNING_NODE_HOST),
+  LIGHTNING_NODE_PORT: optionalNumber(
+    z.coerce.number().int().min(1).max(65_535).default(DEFAULT_LIGHTNING_NODE_PORT),
+  ),
   LIGHTNING_NODE_STATUS_TIMEOUT_MS: optionalNumber(z.coerce.number().int().min(100).max(10_000).default(2000)),
   NEXT_PUBLIC_NOSTRSTACK_BASE_URL: optionalUrl,
   NEXT_PUBLIC_NOSTRSTACK_HOST: z.string().optional(),

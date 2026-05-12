@@ -1,26 +1,41 @@
-export const SITE_NAME = 'klabo.world';
-export const SITE_CANONICAL_URL = 'https://klabo.world';
+import {
+  DEFAULT_BITCOIN_ONCHAIN_ADDRESS as CORE_DEFAULT_BITCOIN_ONCHAIN_ADDRESS,
+  DEFAULT_LIGHTNING_NODE_ALIAS as CORE_DEFAULT_LIGHTNING_NODE_ALIAS,
+  DEFAULT_LIGHTNING_NODE_HOST as CORE_DEFAULT_LIGHTNING_NODE_HOST,
+  DEFAULT_LIGHTNING_NODE_PUBKEY as CORE_DEFAULT_LIGHTNING_NODE_PUBKEY,
+  DEFAULT_LIGHTNING_NODE_PORT as CORE_DEFAULT_LIGHTNING_NODE_PORT,
+  DEFAULT_PAYMENT_HOST,
+  DEFAULT_PAYMENT_URL,
+  DEFAULT_POST_LIGHTNING_ADDRESS as CORE_DEFAULT_POST_LIGHTNING_ADDRESS,
+  LEGACY_HOSTS as CORE_LEGACY_HOSTS,
+  LIGHTNING_NAMESPACE_PREFIX as CORE_LIGHTNING_NAMESPACE_PREFIX,
+  PAYMENT_HOSTS as CORE_PAYMENT_HOSTS,
+  PRIMARY_HOST as CORE_PRIMARY_HOST,
+  SITE_CANONICAL_URL as CORE_SITE_CANONICAL_URL,
+  SITE_NAME as CORE_SITE_NAME,
+} from '@klaboworld/core';
+
+export const SITE_NAME = CORE_SITE_NAME;
+export const SITE_CANONICAL_URL = CORE_SITE_CANONICAL_URL;
 export const SITE_TITLE = `${SITE_NAME} • Bitcoin, Lightning & Agentic Engineering`;
 export const SITE_DESCRIPTION = 'Bitcoin, Lightning, and agentic engineering with tutorials, project updates, and AI context libraries.';
-export const SITE_DESCRIPTION_WITHOUT_PERIOD = 'klabo.world covers Bitcoin, Lightning, and agentic engineering with tutorials, project updates, and AI context libraries.';
+export const SITE_DESCRIPTION_WITHOUT_PERIOD = `${SITE_NAME} covers Bitcoin, Lightning, and agentic engineering with tutorials, project updates, and AI context libraries.`;
 export const SITE_FEED_DESCRIPTION = 'Bitcoin, Lightning, Nostr & Agentic Engineering insights from klabo.world.';
 export const SITE_TAGLINE = 'Bitcoin, Lightning & agentic engineering. Tutorials, project updates, and AI context libraries.';
-export const DEFAULT_PAYMENT_HOST = 'pay.klabo.world';
-export const DEFAULT_PAYMENT_URL = `https://${DEFAULT_PAYMENT_HOST}`;
+export { DEFAULT_PAYMENT_HOST, DEFAULT_PAYMENT_URL };
 export const DEFAULT_PAYMENT_TITLE = `Pay ${SITE_NAME}`;
 export const DEFAULT_PAYMENT_DESCRIPTION = 'Lightning and on-chain Bitcoin payment options for klabo.world.';
 
 export const DEFAULT_POST_OG_SUMMARY = 'Read the latest writing on klabo.world.';
-export const DEFAULT_POST_LIGHTNING_ADDRESS = 'joel@klabo.world';
+export const DEFAULT_POST_LIGHTNING_ADDRESS = CORE_DEFAULT_POST_LIGHTNING_ADDRESS;
 export const DEFAULT_LIGHTNING_ADDRESS = DEFAULT_POST_LIGHTNING_ADDRESS;
-export const DEFAULT_LIGHTNING_NODE_ALIAS = SITE_NAME;
-export const DEFAULT_LIGHTNING_NODE_HOST = 'lnbits.klabo.world';
-export const DEFAULT_LIGHTNING_NODE_PUBKEY =
-  '0276dc1ed542d0d777b518f1bd05f042847f19f312718cf1303288119a0a789a68';
-export const DEFAULT_LIGHTNING_NODE_PORT = 9735;
+export const DEFAULT_LIGHTNING_NODE_ALIAS = CORE_DEFAULT_LIGHTNING_NODE_ALIAS;
+export const DEFAULT_LIGHTNING_NODE_HOST = CORE_DEFAULT_LIGHTNING_NODE_HOST;
+export const DEFAULT_LIGHTNING_NODE_PUBKEY = CORE_DEFAULT_LIGHTNING_NODE_PUBKEY;
+export const DEFAULT_LIGHTNING_NODE_PORT = CORE_DEFAULT_LIGHTNING_NODE_PORT;
 export const DEFAULT_LIGHTNING_NODE_COLOR = '#f7931a';
-export const DEFAULT_BITCOIN_ONCHAIN_ADDRESS = 'bc1qzafw20xpesnvwup6gmtx38e5j6ddjjdpc0zh78';
-export const LIGHTNING_NAMESPACE_PREFIX = `${SITE_NAME}:`;
-export const PRIMARY_HOST = SITE_NAME;
-export const LEGACY_HOSTS = ['klabo.blog', 'www.klabo.blog'] as const;
-export const PAYMENT_HOSTS = [DEFAULT_PAYMENT_HOST] as const;
+export const DEFAULT_BITCOIN_ONCHAIN_ADDRESS = CORE_DEFAULT_BITCOIN_ONCHAIN_ADDRESS;
+export const LIGHTNING_NAMESPACE_PREFIX = CORE_LIGHTNING_NAMESPACE_PREFIX;
+export const PRIMARY_HOST = CORE_PRIMARY_HOST;
+export const LEGACY_HOSTS = CORE_LEGACY_HOSTS;
+export const PAYMENT_HOSTS = CORE_PAYMENT_HOSTS;
