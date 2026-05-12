@@ -11,7 +11,8 @@ export function getFormSlug(formData: FormData, resourceLabel: string): string {
   return slug;
 }
 
-type RedirectDestination<T> = `/${string}` | ((result: T) => `/${string}` | undefined);
+type RedirectDestination<T> =
+  Parameters<typeof redirect>[0] | ((result: T) => Parameters<typeof redirect>[0] | undefined);
 
 export async function runAdminActionAndRedirect<T extends ActionState>(
   action: () => Promise<T>,
