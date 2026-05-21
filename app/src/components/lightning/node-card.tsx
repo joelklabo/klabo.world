@@ -82,7 +82,7 @@ export function LightningNodeCard(props: NodeCardProps) {
       setCopiedField(field);
       setTimeout(() => setCopiedField(null), 2000);
     }
-  }, [resolvedPubkey, nodeUri]);
+  }, [resolvedPubkey, nodeUri, setCopiedField]);
 
   const explorers = [
     { name: 'Amboss', url: `https://amboss.space/node/${resolvedPubkey}` },

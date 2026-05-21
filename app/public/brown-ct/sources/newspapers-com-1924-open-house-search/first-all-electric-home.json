@@ -1,0 +1,14 @@
+{
+  "facets": {
+    "city": [],
+    "country": [],
+    "county": [],
+    "region": []
+  },
+  "nextStart": "*",
+  "partialResults": false,
+  "queryEngine": "primary",
+  "queryTime": 710,
+  "recordCount": 0,
+  "records": []
+}

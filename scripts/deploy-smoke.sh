@@ -2,7 +2,7 @@
 set -euo pipefail
 
 BASE_URL=${SMOKE_BASE_URL:-"https://klabo-world-app.azurewebsites.net"}
-ENDPOINTS=("/" "/posts" "/apps" "/search?q=bitcoin" "/api/health")
+ENDPOINTS=("/" "/posts" "/apps" "/brown-ct" "/search?q=bitcoin" "/api/health")
 MAX_ATTEMPTS=${SMOKE_MAX_ATTEMPTS:-6}
 RETRY_DELAY_SECONDS=${SMOKE_RETRY_DELAY_SECONDS:-2}
 CONNECT_TIMEOUT_SECONDS=${SMOKE_CONNECT_TIMEOUT_SECONDS:-10}

@@ -1,0 +1,65 @@
+{
+  "facets": {
+    "city": [
+      {
+        "count": 2,
+        "value": "petaluma"
+      }
+    ],
+    "country": [
+      {
+        "count": 2,
+        "value": "us"
+      }
+    ],
+    "county": [
+      {
+        "count": 2,
+        "value": "sonoma"
+      }
+    ],
+    "region": [
+      {
+        "count": 2,
+        "value": "us-ca"
+      }
+    ]
+  },
+  "nextStart": "AoMIQRyfpHLpks4GLnBhZ2U6MjIxODEyMzcw",
+  "partialResults": false,
+  "queryEngine": "primary",
+  "queryTime": 141,
+  "recordCount": 2,
+  "records": [
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-08",
+        "id": 609939736,
+        "pageNumber": "3",
+        "viewerUrl": "https://www.newspapers.com/image/609939736?terms=%22efficiency+economy+comfort%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-08",
+        "id": 221812370,
+        "pageNumber": "8",
+        "viewerUrl": "https://www.newspapers.com/image/221812370?terms=%22efficiency+economy+comfort%22"
+      }
+    }
+  ]
+}

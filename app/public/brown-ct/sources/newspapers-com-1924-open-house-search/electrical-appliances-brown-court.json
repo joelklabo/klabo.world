@@ -1,0 +1,230 @@
+{
+  "facets": {
+    "city": [
+      {
+        "count": 13,
+        "value": "petaluma"
+      }
+    ],
+    "country": [
+      {
+        "count": 13,
+        "value": "us"
+      }
+    ],
+    "county": [
+      {
+        "count": 13,
+        "value": "sonoma"
+      }
+    ],
+    "region": [
+      {
+        "count": 13,
+        "value": "us-ca"
+      }
+    ]
+  },
+  "nextStart": "AoMIQSU7Anmo3pYSLnBhZ2U6NjA5OTQwMTA1",
+  "partialResults": false,
+  "queryEngine": "primary",
+  "queryTime": 89,
+  "recordCount": 13,
+  "records": [
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-13",
+        "id": 609939929,
+        "pageNumber": "4",
+        "viewerUrl": "https://www.newspapers.com/image/609939929?terms=%22electrical+appliances%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-15",
+        "id": 221812436,
+        "pageNumber": "2",
+        "viewerUrl": "https://www.newspapers.com/image/221812436?terms=%22electrical+appliances%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-12",
+        "id": 609939889,
+        "pageNumber": "3",
+        "viewerUrl": "https://www.newspapers.com/image/609939889?terms=%22electrical+appliances%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-08",
+        "id": 221812370,
+        "pageNumber": "8",
+        "viewerUrl": "https://www.newspapers.com/image/221812370?terms=%22electrical+appliances%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-12",
+        "id": 221812409,
+        "pageNumber": "7",
+        "viewerUrl": "https://www.newspapers.com/image/221812409?terms=%22electrical+appliances%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-09",
+        "id": 221812373,
+        "pageNumber": "1",
+        "viewerUrl": "https://www.newspapers.com/image/221812373?terms=%22electrical+appliances%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-08",
+        "id": 609939736,
+        "pageNumber": "3",
+        "viewerUrl": "https://www.newspapers.com/image/609939736?terms=%22electrical+appliances%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-19",
+        "id": 609940138,
+        "pageNumber": "6",
+        "viewerUrl": "https://www.newspapers.com/image/609940138?terms=%22electrical+appliances%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-07",
+        "id": 221812354,
+        "pageNumber": "2",
+        "viewerUrl": "https://www.newspapers.com/image/221812354?terms=%22electrical+appliances%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-18",
+        "id": 609940091,
+        "pageNumber": "5",
+        "viewerUrl": "https://www.newspapers.com/image/609940091?terms=%22electrical+appliances%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-15",
+        "id": 609939965,
+        "pageNumber": "5",
+        "viewerUrl": "https://www.newspapers.com/image/609939965?terms=%22electrical+appliances%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-18",
+        "id": 221812507,
+        "pageNumber": "3",
+        "viewerUrl": "https://www.newspapers.com/image/221812507?terms=%22electrical+appliances%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-18",
+        "id": 609940105,
+        "pageNumber": "8",
+        "viewerUrl": "https://www.newspapers.com/image/609940105?terms=%22electrical+appliances%22+%22Brown+Court%22"
+      }
+    }
+  ]
+}

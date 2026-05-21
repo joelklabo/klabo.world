@@ -52,4 +52,6 @@ export function BitcoinPaymentsGrid({
   );
 }
 
+// Re-export through this module for existing imports.
+// eslint-disable-next-line unicorn/prefer-export-from
 export { DEFAULT_BITCOIN_ONCHAIN_ADDRESS };

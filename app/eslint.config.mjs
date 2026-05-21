@@ -135,6 +135,7 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
     ".contentlayer/**",
+    "public/**",
   ]),
 ]);
 

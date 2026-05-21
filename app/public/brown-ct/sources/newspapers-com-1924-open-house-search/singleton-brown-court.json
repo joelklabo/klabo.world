@@ -1,0 +1,275 @@
+{
+  "facets": {
+    "city": [
+      {
+        "count": 16,
+        "value": "petaluma"
+      }
+    ],
+    "country": [
+      {
+        "count": 16,
+        "value": "us"
+      }
+    ],
+    "county": [
+      {
+        "count": 16,
+        "value": "sonoma"
+      }
+    ],
+    "region": [
+      {
+        "count": 16,
+        "value": "us-ca"
+      }
+    ]
+  },
+  "nextStart": "AoMIQTD4FH7rks4GLnBhZ2U6MjIxODEyNDE0",
+  "partialResults": false,
+  "queryEngine": "primary",
+  "queryTime": 161,
+  "recordCount": 16,
+  "records": [
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-18",
+        "id": 221812507,
+        "pageNumber": "3",
+        "viewerUrl": "https://www.newspapers.com/image/221812507?terms=Singleton+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-18",
+        "id": 609940091,
+        "pageNumber": "5",
+        "viewerUrl": "https://www.newspapers.com/image/609940091?terms=Singleton+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-12",
+        "id": 609939889,
+        "pageNumber": "3",
+        "viewerUrl": "https://www.newspapers.com/image/609939889?terms=Singleton+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-12",
+        "id": 221812404,
+        "pageNumber": "2",
+        "viewerUrl": "https://www.newspapers.com/image/221812404?terms=Singleton+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-07",
+        "id": 221812354,
+        "pageNumber": "2",
+        "viewerUrl": "https://www.newspapers.com/image/221812354?terms=Singleton+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-19",
+        "id": 609940127,
+        "pageNumber": "3",
+        "viewerUrl": "https://www.newspapers.com/image/609940127?terms=Singleton+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-17",
+        "id": 609940058,
+        "pageNumber": "7",
+        "viewerUrl": "https://www.newspapers.com/image/609940058?terms=Singleton+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-16",
+        "id": 609940017,
+        "pageNumber": "7",
+        "viewerUrl": "https://www.newspapers.com/image/609940017?terms=Singleton+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-15",
+        "id": 609939960,
+        "pageNumber": "4",
+        "viewerUrl": "https://www.newspapers.com/image/609939960?terms=Singleton+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-13",
+        "id": 609939936,
+        "pageNumber": "6",
+        "viewerUrl": "https://www.newspapers.com/image/609939936?terms=Singleton+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-08",
+        "id": 609939736,
+        "pageNumber": "3",
+        "viewerUrl": "https://www.newspapers.com/image/609939736?terms=Singleton+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-19",
+        "id": 221812528,
+        "pageNumber": "3",
+        "viewerUrl": "https://www.newspapers.com/image/221812528?terms=Singleton+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-17",
+        "id": 221812483,
+        "pageNumber": "3",
+        "viewerUrl": "https://www.newspapers.com/image/221812483?terms=Singleton+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-16",
+        "id": 221812460,
+        "pageNumber": "4",
+        "viewerUrl": "https://www.newspapers.com/image/221812460?terms=Singleton+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-15",
+        "id": 221812438,
+        "pageNumber": "3",
+        "viewerUrl": "https://www.newspapers.com/image/221812438?terms=Singleton+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-14",
+        "id": 221812414,
+        "pageNumber": "2",
+        "viewerUrl": "https://www.newspapers.com/image/221812414?terms=Singleton+%22Brown+Court%22"
+      }
+    }
+  ]
+}

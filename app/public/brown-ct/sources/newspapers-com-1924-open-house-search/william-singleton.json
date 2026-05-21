@@ -1,0 +1,65 @@
+{
+  "facets": {
+    "city": [
+      {
+        "count": 2,
+        "value": "hollister"
+      }
+    ],
+    "country": [
+      {
+        "count": 2,
+        "value": "us"
+      }
+    ],
+    "county": [
+      {
+        "count": 2,
+        "value": "san benito"
+      }
+    ],
+    "region": [
+      {
+        "count": 2,
+        "value": "us-ca"
+      }
+    ]
+  },
+  "nextStart": "AoMIQRPtoHHggsIhL3BhZ2U6MTEyNDYwMzM5Mw==",
+  "partialResults": false,
+  "queryEngine": "primary",
+  "queryTime": 203,
+  "recordCount": 2,
+  "records": [
+    {
+      "type": "page",
+      "publication": {
+        "id": 40690,
+        "canonicalId": 40696,
+        "name": "Hollister Advance",
+        "location": "Hollister, California"
+      },
+      "page": {
+        "date": "1924-07-25",
+        "id": 1124603479,
+        "pageNumber": "2",
+        "viewerUrl": "https://www.newspapers.com/image/1124603479?terms=%22William+Singleton%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 40690,
+        "canonicalId": 40696,
+        "name": "Hollister Advance",
+        "location": "Hollister, California"
+      },
+      "page": {
+        "date": "1924-07-11",
+        "id": 1124603393,
+        "pageNumber": "4",
+        "viewerUrl": "https://www.newspapers.com/image/1124603393?terms=%22William+Singleton%22"
+      }
+    }
+  ]
+}

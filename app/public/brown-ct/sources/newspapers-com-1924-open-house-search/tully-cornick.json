@@ -1,0 +1,80 @@
+{
+  "facets": {
+    "city": [
+      {
+        "count": 3,
+        "value": "petaluma"
+      }
+    ],
+    "country": [
+      {
+        "count": 3,
+        "value": "us"
+      }
+    ],
+    "county": [
+      {
+        "count": 3,
+        "value": "sonoma"
+      }
+    ],
+    "region": [
+      {
+        "count": 3,
+        "value": "us-ca"
+      }
+    ]
+  },
+  "nextStart": "AoMIQYj9yHy/3pYSLnBhZ2U6NjA5OTQwNDc2",
+  "partialResults": false,
+  "queryEngine": "primary",
+  "queryTime": 172,
+  "recordCount": 3,
+  "records": [
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-14",
+        "id": 221812425,
+        "pageNumber": "7",
+        "viewerUrl": "https://www.newspapers.com/image/221812425?terms=%22Tully+Cornick%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-10",
+        "id": 221812383,
+        "pageNumber": "1",
+        "viewerUrl": "https://www.newspapers.com/image/221812383?terms=%22Tully+Cornick%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-31",
+        "id": 609940476,
+        "pageNumber": "4",
+        "viewerUrl": "https://www.newspapers.com/image/609940476?terms=%22Tully+Cornick%22"
+      }
+    }
+  ]
+}

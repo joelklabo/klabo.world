@@ -1,0 +1,380 @@
+{
+  "facets": {
+    "city": [
+      {
+        "count": 23,
+        "value": "petaluma"
+      }
+    ],
+    "country": [
+      {
+        "count": 23,
+        "value": "us"
+      }
+    ],
+    "county": [
+      {
+        "count": 23,
+        "value": "sonoma"
+      }
+    ],
+    "region": [
+      {
+        "count": 23,
+        "value": "us-ca"
+      }
+    ]
+  },
+  "nextStart": "AoMIQODxY3Xpks4GLnBhZ2U6MjIxODEyMzcz",
+  "partialResults": false,
+  "queryEngine": "primary",
+  "queryTime": 632,
+  "recordCount": 23,
+  "records": [
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-13",
+        "id": 609939929,
+        "pageNumber": "4",
+        "viewerUrl": "https://www.newspapers.com/image/609939929?terms=%22Brown+Court%22+%22electric+home%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-16",
+        "id": 609939998,
+        "pageNumber": "4",
+        "viewerUrl": "https://www.newspapers.com/image/609939998?terms=%22Brown+Court%22+%22electric+home%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-12",
+        "id": 609939889,
+        "pageNumber": "3",
+        "viewerUrl": "https://www.newspapers.com/image/609939889?terms=%22Brown+Court%22+%22electric+home%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-08",
+        "id": 221812370,
+        "pageNumber": "8",
+        "viewerUrl": "https://www.newspapers.com/image/221812370?terms=%22Brown+Court%22+%22electric+home%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-07",
+        "id": 221812354,
+        "pageNumber": "2",
+        "viewerUrl": "https://www.newspapers.com/image/221812354?terms=%22Brown+Court%22+%22electric+home%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-22",
+        "id": 609940205,
+        "pageNumber": "5",
+        "viewerUrl": "https://www.newspapers.com/image/609940205?terms=%22Brown+Court%22+%22electric+home%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-08",
+        "id": 609939736,
+        "pageNumber": "3",
+        "viewerUrl": "https://www.newspapers.com/image/609939736?terms=%22Brown+Court%22+%22electric+home%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-21",
+        "id": 221812548,
+        "pageNumber": "5",
+        "viewerUrl": "https://www.newspapers.com/image/221812548?terms=%22Brown+Court%22+%22electric+home%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-14",
+        "id": 221812425,
+        "pageNumber": "7",
+        "viewerUrl": "https://www.newspapers.com/image/221812425?terms=%22Brown+Court%22+%22electric+home%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-15",
+        "id": 221812436,
+        "pageNumber": "2",
+        "viewerUrl": "https://www.newspapers.com/image/221812436?terms=%22Brown+Court%22+%22electric+home%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-20",
+        "id": 609940170,
+        "pageNumber": "6",
+        "viewerUrl": "https://www.newspapers.com/image/609940170?terms=%22Brown+Court%22+%22electric+home%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-18",
+        "id": 609940105,
+        "pageNumber": "8",
+        "viewerUrl": "https://www.newspapers.com/image/609940105?terms=%22Brown+Court%22+%22electric+home%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-17",
+        "id": 609940070,
+        "pageNumber": "10",
+        "viewerUrl": "https://www.newspapers.com/image/609940070?terms=%22Brown+Court%22+%22electric+home%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-15",
+        "id": 609939965,
+        "pageNumber": "5",
+        "viewerUrl": "https://www.newspapers.com/image/609939965?terms=%22Brown+Court%22+%22electric+home%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-15",
+        "id": 609939957,
+        "pageNumber": "3",
+        "viewerUrl": "https://www.newspapers.com/image/609939957?terms=%22Brown+Court%22+%22electric+home%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-21",
+        "id": 236269555,
+        "pageNumber": "6",
+        "viewerUrl": "https://www.newspapers.com/image/236269555?terms=%22Brown+Court%22+%22electric+home%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-31",
+        "id": 221812714,
+        "pageNumber": "5",
+        "viewerUrl": "https://www.newspapers.com/image/221812714?terms=%22Brown+Court%22+%22electric+home%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-16",
+        "id": 221812472,
+        "pageNumber": "10",
+        "viewerUrl": "https://www.newspapers.com/image/221812472?terms=%22Brown+Court%22+%22electric+home%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-16",
+        "id": 221812470,
+        "pageNumber": "9",
+        "viewerUrl": "https://www.newspapers.com/image/221812470?terms=%22Brown+Court%22+%22electric+home%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-16",
+        "id": 221812460,
+        "pageNumber": "4",
+        "viewerUrl": "https://www.newspapers.com/image/221812460?terms=%22Brown+Court%22+%22electric+home%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-15",
+        "id": 221812433,
+        "pageNumber": "1",
+        "viewerUrl": "https://www.newspapers.com/image/221812433?terms=%22Brown+Court%22+%22electric+home%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-12",
+        "id": 221812406,
+        "pageNumber": "4",
+        "viewerUrl": "https://www.newspapers.com/image/221812406?terms=%22Brown+Court%22+%22electric+home%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-09",
+        "id": 221812373,
+        "pageNumber": "1",
+        "viewerUrl": "https://www.newspapers.com/image/221812373?terms=%22Brown+Court%22+%22electric+home%22"
+      }
+    }
+  ]
+}

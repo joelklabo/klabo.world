@@ -1,0 +1,122 @@
+{
+  "facets": {
+    "city": [
+      {
+        "count": 2,
+        "value": "sacramento"
+      },
+      {
+        "count": 2,
+        "value": "santa rosa"
+      },
+      {
+        "count": 1,
+        "value": "petaluma"
+      }
+    ],
+    "country": [
+      {
+        "count": 5,
+        "value": "us"
+      }
+    ],
+    "county": [
+      {
+        "count": 3,
+        "value": "sonoma"
+      },
+      {
+        "count": 2,
+        "value": "sacramento"
+      }
+    ],
+    "region": [
+      {
+        "count": 5,
+        "value": "us-ca"
+      }
+    ]
+  },
+  "nextStart": "AoMIQSYfJXfP/skRLnBhZ2U6NTg5ODIxMTc1",
+  "partialResults": false,
+  "queryEngine": "primary",
+  "queryTime": 132,
+  "recordCount": 5,
+  "records": [
+    {
+      "type": "page",
+      "publication": {
+        "id": 22428,
+        "canonicalId": 22428,
+        "name": "The Sacramento Bee",
+        "location": "Sacramento, California"
+      },
+      "page": {
+        "date": "1924-07-10",
+        "id": 616742053,
+        "pageNumber": "10",
+        "viewerUrl": "https://www.newspapers.com/image/616742053?terms=%22Walter+Singleton%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 22428,
+        "canonicalId": 22428,
+        "name": "The Sacramento Bee",
+        "location": "Sacramento, California"
+      },
+      "page": {
+        "date": "1924-07-09",
+        "id": 616741716,
+        "pageNumber": "21",
+        "viewerUrl": "https://www.newspapers.com/image/616741716?terms=%22Walter+Singleton%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-11",
+        "id": 609939860,
+        "pageNumber": "4",
+        "viewerUrl": "https://www.newspapers.com/image/609939860?terms=%22Walter+Singleton%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 22046,
+        "canonicalId": 22046,
+        "name": "Santa Rosa Republican",
+        "location": "Santa Rosa, California"
+      },
+      "page": {
+        "date": "1924-07-10",
+        "id": 609186017,
+        "pageNumber": "8",
+        "viewerUrl": "https://www.newspapers.com/image/609186017?terms=%22Walter+Singleton%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 5136,
+        "canonicalId": 5136,
+        "name": "The Press Democrat",
+        "location": "Santa Rosa, California"
+      },
+      "page": {
+        "date": "1924-07-10",
+        "id": 589821175,
+        "pageNumber": "6",
+        "viewerUrl": "https://www.newspapers.com/image/589821175?terms=%22Walter+Singleton%22"
+      }
+    }
+  ]
+}

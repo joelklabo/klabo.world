@@ -17,7 +17,7 @@ const NODE_URI = buildLightningNodeUri({
   host: DEFAULT_LIGHTNING_NODE_HOST,
   port: DEFAULT_LIGHTNING_NODE_PORT,
 });
-const NODE_URI_REGEX = new RegExp(`^lightning:${NODE_URI.replace(/\./g, '\\.')}$`);
+const NODE_URI_REGEX = new RegExp(`^lightning:${NODE_URI.replaceAll('.', String.raw`\.`)}$`);
 const chainTipPayload = {
   network: 'mainnet',
   source: 'playwright',
@@ -182,7 +182,7 @@ test.describe('public smoke', () => {
   for (const route of routes) {
     test(`renders ${route}`, async ({ page }) => {
       await page.goto(route);
-      await expect(page).toHaveTitle(new RegExp(`^${SITE_NAME.replace(/\./g, '\\.')}$`, 'i'));
+      await expect(page).toHaveTitle(new RegExp(`^${SITE_NAME.replaceAll('.', String.raw`\.`)}$`, 'i'));
     });
   }
 

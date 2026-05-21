@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og';
 import { allPosts } from 'contentlayer/generated';
-import { DEFAULT_POST_OG_SUMMARY, SITE_NAME } from '@/lib/site-config';
+import { DEFAULT_POST_OG_SUMMARY } from '@/lib/site-config';
 
 export const runtime = 'nodejs';
 export const size = { width: 1200, height: 630 };

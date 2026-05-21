@@ -1,0 +1,462 @@
+{
+  "facets": {
+    "city": [
+      {
+        "count": 59,
+        "value": "petaluma"
+      },
+      {
+        "count": 2,
+        "value": "san francisco"
+      },
+      {
+        "count": 1,
+        "value": "alameda"
+      },
+      {
+        "count": 1,
+        "value": "davis"
+      },
+      {
+        "count": 1,
+        "value": "los angeles"
+      },
+      {
+        "count": 1,
+        "value": "sacramento"
+      },
+      {
+        "count": 1,
+        "value": "santa ana"
+      },
+      {
+        "count": 1,
+        "value": "santa rosa"
+      }
+    ],
+    "country": [
+      {
+        "count": 67,
+        "value": "us"
+      }
+    ],
+    "county": [
+      {
+        "count": 60,
+        "value": "sonoma"
+      },
+      {
+        "count": 2,
+        "value": "san francisco"
+      },
+      {
+        "count": 1,
+        "value": "alameda"
+      },
+      {
+        "count": 1,
+        "value": "los angeles"
+      },
+      {
+        "count": 1,
+        "value": "orange"
+      },
+      {
+        "count": 1,
+        "value": "sacramento"
+      },
+      {
+        "count": 1,
+        "value": "yolo"
+      }
+    ],
+    "region": [
+      {
+        "count": 67,
+        "value": "us-ca"
+      }
+    ]
+  },
+  "nextStart": "AoMIQU/y+nmo3pYSLnBhZ2U6NjA5OTQwMTA1",
+  "partialResults": false,
+  "queryEngine": "primary",
+  "queryTime": 66,
+  "recordCount": 67,
+  "records": [
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-14",
+        "id": 221812425,
+        "pageNumber": "7",
+        "viewerUrl": "https://www.newspapers.com/image/221812425?terms=Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-18",
+        "id": 221812507,
+        "pageNumber": "3",
+        "viewerUrl": "https://www.newspapers.com/image/221812507?terms=Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 3160,
+        "canonicalId": 14322,
+        "name": "The Register",
+        "location": "Santa Ana, California"
+      },
+      "page": {
+        "date": "1924-07-31",
+        "id": 72294604,
+        "pageNumber": "6",
+        "viewerUrl": "https://www.newspapers.com/image/72294604?terms=Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 40216,
+        "canonicalId": 40216,
+        "name": "Davis Enterprise",
+        "location": "Davis, California"
+      },
+      "page": {
+        "date": "1924-07-11",
+        "id": 1100174783,
+        "pageNumber": "1",
+        "viewerUrl": "https://www.newspapers.com/image/1100174783?terms=Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-19",
+        "id": 609940129,
+        "pageNumber": "4",
+        "viewerUrl": "https://www.newspapers.com/image/609940129?terms=Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-17",
+        "id": 609940070,
+        "pageNumber": "10",
+        "viewerUrl": "https://www.newspapers.com/image/609940070?terms=Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-16",
+        "id": 609939998,
+        "pageNumber": "4",
+        "viewerUrl": "https://www.newspapers.com/image/609939998?terms=Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-10",
+        "id": 609939809,
+        "pageNumber": "4",
+        "viewerUrl": "https://www.newspapers.com/image/609939809?terms=Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-19",
+        "id": 221812526,
+        "pageNumber": "2",
+        "viewerUrl": "https://www.newspapers.com/image/221812526?terms=Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 835,
+        "canonicalId": 835,
+        "name": "San Francisco Chronicle",
+        "location": "San Francisco, California"
+      },
+      "page": {
+        "date": "1924-07-06",
+        "id": 1235740987,
+        "pageNumber": "46",
+        "viewerUrl": "https://www.newspapers.com/image/1235740987?terms=Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 40191,
+        "canonicalId": 40201,
+        "name": "Alameda Times Star",
+        "location": "Alameda, California"
+      },
+      "page": {
+        "date": "1924-07-24",
+        "id": 1097277716,
+        "pageNumber": "2",
+        "viewerUrl": "https://www.newspapers.com/image/1097277716?terms=Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 22428,
+        "canonicalId": 22428,
+        "name": "The Sacramento Bee",
+        "location": "Sacramento, California"
+      },
+      "page": {
+        "date": "1924-07-09",
+        "id": 616741689,
+        "pageNumber": "20",
+        "viewerUrl": "https://www.newspapers.com/image/616741689?terms=Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-31",
+        "id": 609940486,
+        "pageNumber": "7",
+        "viewerUrl": "https://www.newspapers.com/image/609940486?terms=Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-31",
+        "id": 609940476,
+        "pageNumber": "4",
+        "viewerUrl": "https://www.newspapers.com/image/609940476?terms=Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-30",
+        "id": 609940454,
+        "pageNumber": "7",
+        "viewerUrl": "https://www.newspapers.com/image/609940454?terms=Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-30",
+        "id": 609940449,
+        "pageNumber": "6",
+        "viewerUrl": "https://www.newspapers.com/image/609940449?terms=Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-29",
+        "id": 609940421,
+        "pageNumber": "7",
+        "viewerUrl": "https://www.newspapers.com/image/609940421?terms=Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-27",
+        "id": 609940389,
+        "pageNumber": "8",
+        "viewerUrl": "https://www.newspapers.com/image/609940389?terms=Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-24",
+        "id": 609940267,
+        "pageNumber": "3",
+        "viewerUrl": "https://www.newspapers.com/image/609940267?terms=Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-23",
+        "id": 609940242,
+        "pageNumber": "5",
+        "viewerUrl": "https://www.newspapers.com/image/609940242?terms=Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-23",
+        "id": 609940234,
+        "pageNumber": "3",
+        "viewerUrl": "https://www.newspapers.com/image/609940234?terms=Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-20",
+        "id": 609940170,
+        "pageNumber": "6",
+        "viewerUrl": "https://www.newspapers.com/image/609940170?terms=Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-19",
+        "id": 609940138,
+        "pageNumber": "6",
+        "viewerUrl": "https://www.newspapers.com/image/609940138?terms=Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-19",
+        "id": 609940127,
+        "pageNumber": "3",
+        "viewerUrl": "https://www.newspapers.com/image/609940127?terms=Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-18",
+        "id": 609940105,
+        "pageNumber": "8",
+        "viewerUrl": "https://www.newspapers.com/image/609940105?terms=Cornick"
+      }
+    }
+  ]
+}

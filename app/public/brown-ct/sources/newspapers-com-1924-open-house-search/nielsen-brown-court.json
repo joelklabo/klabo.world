@@ -1,0 +1,410 @@
+{
+  "facets": {
+    "city": [
+      {
+        "count": 27,
+        "value": "petaluma"
+      }
+    ],
+    "country": [
+      {
+        "count": 27,
+        "value": "us"
+      }
+    ],
+    "county": [
+      {
+        "count": 27,
+        "value": "sonoma"
+      }
+    ],
+    "region": [
+      {
+        "count": 27,
+        "value": "us-ca"
+      }
+    ]
+  },
+  "nextStart": "AoMIQTX+Onrrks4GLnBhZ2U6MjIxODEyNDEw",
+  "partialResults": false,
+  "queryEngine": "primary",
+  "queryTime": 190,
+  "recordCount": 27,
+  "records": [
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-16",
+        "id": 609939998,
+        "pageNumber": "4",
+        "viewerUrl": "https://www.newspapers.com/image/609939998?terms=%22Nielsen%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-07",
+        "id": 221812354,
+        "pageNumber": "2",
+        "viewerUrl": "https://www.newspapers.com/image/221812354?terms=%22Nielsen%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-12",
+        "id": 609939889,
+        "pageNumber": "3",
+        "viewerUrl": "https://www.newspapers.com/image/609939889?terms=%22Nielsen%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-17",
+        "id": 609940058,
+        "pageNumber": "7",
+        "viewerUrl": "https://www.newspapers.com/image/609940058?terms=%22Nielsen%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-16",
+        "id": 609940020,
+        "pageNumber": "8",
+        "viewerUrl": "https://www.newspapers.com/image/609940020?terms=%22Nielsen%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-12",
+        "id": 221812404,
+        "pageNumber": "2",
+        "viewerUrl": "https://www.newspapers.com/image/221812404?terms=%22Nielsen%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-14",
+        "id": 221812425,
+        "pageNumber": "7",
+        "viewerUrl": "https://www.newspapers.com/image/221812425?terms=%22Nielsen%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-20",
+        "id": 609940170,
+        "pageNumber": "6",
+        "viewerUrl": "https://www.newspapers.com/image/609940170?terms=%22Nielsen%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-08",
+        "id": 609939736,
+        "pageNumber": "3",
+        "viewerUrl": "https://www.newspapers.com/image/609939736?terms=%22Nielsen%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-21",
+        "id": 236269555,
+        "pageNumber": "6",
+        "viewerUrl": "https://www.newspapers.com/image/236269555?terms=%22Nielsen%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-17",
+        "id": 221812483,
+        "pageNumber": "3",
+        "viewerUrl": "https://www.newspapers.com/image/221812483?terms=%22Nielsen%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-18",
+        "id": 221812507,
+        "pageNumber": "3",
+        "viewerUrl": "https://www.newspapers.com/image/221812507?terms=%22Nielsen%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-14",
+        "id": 221812427,
+        "pageNumber": "8",
+        "viewerUrl": "https://www.newspapers.com/image/221812427?terms=%22Nielsen%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-19",
+        "id": 609940127,
+        "pageNumber": "3",
+        "viewerUrl": "https://www.newspapers.com/image/609940127?terms=%22Nielsen%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-18",
+        "id": 609940091,
+        "pageNumber": "5",
+        "viewerUrl": "https://www.newspapers.com/image/609940091?terms=%22Nielsen%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-16",
+        "id": 609940017,
+        "pageNumber": "7",
+        "viewerUrl": "https://www.newspapers.com/image/609940017?terms=%22Nielsen%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-15",
+        "id": 609939965,
+        "pageNumber": "5",
+        "viewerUrl": "https://www.newspapers.com/image/609939965?terms=%22Nielsen%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-15",
+        "id": 609939960,
+        "pageNumber": "4",
+        "viewerUrl": "https://www.newspapers.com/image/609939960?terms=%22Nielsen%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-13",
+        "id": 609939936,
+        "pageNumber": "6",
+        "viewerUrl": "https://www.newspapers.com/image/609939936?terms=%22Nielsen%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-18",
+        "id": 221812518,
+        "pageNumber": "8",
+        "viewerUrl": "https://www.newspapers.com/image/221812518?terms=%22Nielsen%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-17",
+        "id": 221812497,
+        "pageNumber": "10",
+        "viewerUrl": "https://www.newspapers.com/image/221812497?terms=%22Nielsen%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-16",
+        "id": 221812460,
+        "pageNumber": "4",
+        "viewerUrl": "https://www.newspapers.com/image/221812460?terms=%22Nielsen%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-15",
+        "id": 221812438,
+        "pageNumber": "3",
+        "viewerUrl": "https://www.newspapers.com/image/221812438?terms=%22Nielsen%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-14",
+        "id": 221812414,
+        "pageNumber": "2",
+        "viewerUrl": "https://www.newspapers.com/image/221812414?terms=%22Nielsen%22+%22Brown+Court%22"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-12",
+        "id": 221812410,
+        "pageNumber": "8",
+        "viewerUrl": "https://www.newspapers.com/image/221812410?terms=%22Nielsen%22+%22Brown+Court%22"
+      }
+    }
+  ]
+}

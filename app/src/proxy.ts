@@ -1,8 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { LEGACY_HOSTS, PAYMENT_HOSTS, PRIMARY_HOST } from '@/lib/site-config';
 
-const LEGACY_HOST_SET = new Set(LEGACY_HOSTS);
-const PAYMENT_HOST_SET = new Set(PAYMENT_HOSTS);
+const LEGACY_HOST_SET: ReadonlySet<string> = new Set(LEGACY_HOSTS);
+const PAYMENT_HOST_SET: ReadonlySet<string> = new Set(PAYMENT_HOSTS);
 
 function withSecurityHeaders(response: NextResponse) {
   response.headers.set('X-Frame-Options', 'DENY');

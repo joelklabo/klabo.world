@@ -1,0 +1,422 @@
+{
+  "facets": {
+    "city": [
+      {
+        "count": 31,
+        "value": "petaluma"
+      },
+      {
+        "count": 1,
+        "value": "san francisco"
+      },
+      {
+        "count": 1,
+        "value": "santa rosa"
+      }
+    ],
+    "country": [
+      {
+        "count": 33,
+        "value": "us"
+      }
+    ],
+    "county": [
+      {
+        "count": 32,
+        "value": "sonoma"
+      },
+      {
+        "count": 1,
+        "value": "san francisco"
+      }
+    ],
+    "region": [
+      {
+        "count": 33,
+        "value": "us-ca"
+      }
+    ]
+  },
+  "nextStart": "AoMIQYYFZnP/pYUHLnBhZ2U6MjM2MjY5NTU1",
+  "partialResults": false,
+  "queryEngine": "primary",
+  "queryTime": 163,
+  "recordCount": 33,
+  "records": [
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-18",
+        "id": 221812507,
+        "pageNumber": "3",
+        "viewerUrl": "https://www.newspapers.com/image/221812507?terms=%22Brown+Court%22+Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-14",
+        "id": 221812425,
+        "pageNumber": "7",
+        "viewerUrl": "https://www.newspapers.com/image/221812425?terms=%22Brown+Court%22+Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-16",
+        "id": 609939998,
+        "pageNumber": "4",
+        "viewerUrl": "https://www.newspapers.com/image/609939998?terms=%22Brown+Court%22+Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-19",
+        "id": 609940129,
+        "pageNumber": "4",
+        "viewerUrl": "https://www.newspapers.com/image/609940129?terms=%22Brown+Court%22+Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-17",
+        "id": 609940070,
+        "pageNumber": "10",
+        "viewerUrl": "https://www.newspapers.com/image/609940070?terms=%22Brown+Court%22+Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-13",
+        "id": 609939929,
+        "pageNumber": "4",
+        "viewerUrl": "https://www.newspapers.com/image/609939929?terms=%22Brown+Court%22+Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-12",
+        "id": 609939889,
+        "pageNumber": "3",
+        "viewerUrl": "https://www.newspapers.com/image/609939889?terms=%22Brown+Court%22+Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-31",
+        "id": 609940476,
+        "pageNumber": "4",
+        "viewerUrl": "https://www.newspapers.com/image/609940476?terms=%22Brown+Court%22+Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-19",
+        "id": 609940138,
+        "pageNumber": "6",
+        "viewerUrl": "https://www.newspapers.com/image/609940138?terms=%22Brown+Court%22+Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 5136,
+        "canonicalId": 5136,
+        "name": "The Press Democrat",
+        "location": "Santa Rosa, California"
+      },
+      "page": {
+        "date": "1924-07-06",
+        "id": 589820643,
+        "pageNumber": "1",
+        "viewerUrl": "https://www.newspapers.com/image/589820643?terms=%22Brown+Court%22+Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 9317,
+        "canonicalId": 9317,
+        "name": "The San Francisco Examiner",
+        "location": "San Francisco, California"
+      },
+      "page": {
+        "date": "1924-07-06",
+        "id": 457899716,
+        "pageNumber": "6",
+        "viewerUrl": "https://www.newspapers.com/image/457899716?terms=%22Brown+Court%22+Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-12",
+        "id": 221812404,
+        "pageNumber": "2",
+        "viewerUrl": "https://www.newspapers.com/image/221812404?terms=%22Brown+Court%22+Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-07",
+        "id": 221812354,
+        "pageNumber": "2",
+        "viewerUrl": "https://www.newspapers.com/image/221812354?terms=%22Brown+Court%22+Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 15299,
+        "canonicalId": 4734,
+        "name": "Petaluma Argus-Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-15",
+        "id": 221812436,
+        "pageNumber": "2",
+        "viewerUrl": "https://www.newspapers.com/image/221812436?terms=%22Brown+Court%22+Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-20",
+        "id": 609940170,
+        "pageNumber": "6",
+        "viewerUrl": "https://www.newspapers.com/image/609940170?terms=%22Brown+Court%22+Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-19",
+        "id": 609940127,
+        "pageNumber": "3",
+        "viewerUrl": "https://www.newspapers.com/image/609940127?terms=%22Brown+Court%22+Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-18",
+        "id": 609940105,
+        "pageNumber": "8",
+        "viewerUrl": "https://www.newspapers.com/image/609940105?terms=%22Brown+Court%22+Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-18",
+        "id": 609940091,
+        "pageNumber": "5",
+        "viewerUrl": "https://www.newspapers.com/image/609940091?terms=%22Brown+Court%22+Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-17",
+        "id": 609940046,
+        "pageNumber": "4",
+        "viewerUrl": "https://www.newspapers.com/image/609940046?terms=%22Brown+Court%22+Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-16",
+        "id": 609940020,
+        "pageNumber": "8",
+        "viewerUrl": "https://www.newspapers.com/image/609940020?terms=%22Brown+Court%22+Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-16",
+        "id": 609940017,
+        "pageNumber": "7",
+        "viewerUrl": "https://www.newspapers.com/image/609940017?terms=%22Brown+Court%22+Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-15",
+        "id": 609939965,
+        "pageNumber": "5",
+        "viewerUrl": "https://www.newspapers.com/image/609939965?terms=%22Brown+Court%22+Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-13",
+        "id": 609939936,
+        "pageNumber": "6",
+        "viewerUrl": "https://www.newspapers.com/image/609939936?terms=%22Brown+Court%22+Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-08",
+        "id": 609939736,
+        "pageNumber": "3",
+        "viewerUrl": "https://www.newspapers.com/image/609939736?terms=%22Brown+Court%22+Cornick"
+      }
+    },
+    {
+      "type": "page",
+      "publication": {
+        "id": 4813,
+        "canonicalId": 4813,
+        "name": "Petaluma Daily Morning Courier",
+        "location": "Petaluma, California"
+      },
+      "page": {
+        "date": "1924-07-21",
+        "id": 236269555,
+        "pageNumber": "6",
+        "viewerUrl": "https://www.newspapers.com/image/236269555?terms=%22Brown+Court%22+Cornick"
+      }
+    }
+  ]
+}
