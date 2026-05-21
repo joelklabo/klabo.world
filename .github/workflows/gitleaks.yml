@@ -40,7 +40,7 @@ jobs:
           if [ -z "$BASE_REF" ] || [ "$BASE_REF" = "0000000000000000000000000000000000000000" ]; then
             LOG_OPTS="-1"
           else
-            LOG_OPTS="--no-merges --first-parent ${BASE_REF}^..${HEAD_REF}"
+            LOG_OPTS="--no-merges --first-parent ${BASE_REF}..${HEAD_REF}"
           fi
           gitleaks detect \
             --config .gitleaks.toml \
